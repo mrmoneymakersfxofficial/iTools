@@ -1,0 +1,9 @@
+{
+  "framework": "nextjs",
+  "buildCommand": "cd /home/z/my-project && bun run build",
+  "installCommand": "cd /home/z/my-project && bun install",
+  "outputDirectory": ".next",
+  "git": {
+    "deploymentEnabled": true
+  }
+}
