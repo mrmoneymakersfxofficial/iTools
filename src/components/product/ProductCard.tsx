@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Wrench, Star, Heart, ShoppingCart } from "lucide-react";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useCartStore } from "@/stores/cart-store";
@@ -54,6 +55,13 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
       transition={{ duration: 0.4, delay: Math.min(index * 0.05, 0.3) }}
       className="group product-card-hover relative flex flex-col rounded-lg border border-border bg-white overflow-hidden"
     >
+      {/* Clickable overlay for entire card */}
+      <Link
+        href={`/producto/${product.slug}`}
+        className="absolute inset-0 z-[5]"
+        aria-label={`Ver ${product.name}`}
+      />
+
       {/* Badges */}
       <div className="absolute top-2 left-2 z-10 flex flex-col gap-1">
         {discount > 0 && (
@@ -72,7 +80,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
       <button
         type="button"
         onClick={() => toggleItem(product.id)}
-        className="absolute top-2 right-2 z-10 h-8 w-8 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-sm hover:bg-white transition-colors"
+        className="absolute top-2 right-2 z-[10] h-8 w-8 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-sm hover:bg-white transition-colors"
         aria-label={wishlisted ? "Quitar de favoritos" : "Añadir a favoritos"}
       >
         <Heart
@@ -139,7 +147,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
           <Button
             size="sm"
             onClick={() => addToCart(product)}
-            className="bg-itools-red hover:bg-itools-red-dark text-white h-9 px-3 text-xs font-impact shrink-0 transition-colors"
+            className="bg-itools-red hover:bg-itools-red-dark text-white h-9 px-3 text-xs font-impact shrink-0 transition-colors relative z-[10]"
           >
             <ShoppingCart className="h-3.5 w-3.5 mr-1.5" />
             <span className="hidden sm:inline">Añadir</span>

@@ -486,6 +486,31 @@ export function getProductById(id: string): Product | undefined {
   return products.find((p) => p.id === id);
 }
 
+export function getProductBySlug(slug: string): Product | undefined {
+  return products.find((p) => p.slug === slug);
+}
+
+export function getCategoryBySlug(slug: string): Category | undefined {
+  return categories.find((c) => c.slug === slug);
+}
+
+export function getProductsByCategorySlug(categorySlug: string): Product[] {
+  const cat = categories.find((c) => c.slug === categorySlug);
+  if (!cat) return [];
+  // If it has children, include products from all children
+  if (cat.children?.length) {
+    const childIds = cat.children.map((c) => c.id);
+    return products.filter((p) => p.categoryId && childIds.includes(p.categoryId));
+  }
+  // Otherwise, return products directly in this category
+  const parentCat = categories.find((c) => c.children?.some(ch => ch.slug === categorySlug));
+  if (parentCat) {
+    const child = parentCat.children!.find((c) => c.slug === categorySlug);
+    if (child) return products.filter((p) => p.categoryId === child.id);
+  }
+  return products.filter((p) => p.categoryId === cat.id);
+}
+
 export function getProductsByCategory(categoryId: string): Product[] {
   return products.filter((p) => p.categoryId === categoryId);
 }

@@ -3,6 +3,7 @@ import Footer from "@/components/layout/Footer";
 import { HeroSlider } from "@/components/home/HeroSlider";
 import { TrustBar } from "@/components/home/TrustBar";
 import { CategoriesSection } from "@/components/home/CategoriesSection";
+import { TopDealsSection } from "@/components/home/TopDealsSection";
 import { DealsSection, FeaturedSection, NewArrivalsSection } from "@/components/home/ProductSections";
 import { BrandShowcase } from "@/components/home/BrandShowcase";
 
@@ -12,6 +13,7 @@ export default function Home() {
       <Header />
       <main className="flex-1">
         <HeroSlider />
+        <TopDealsSection />
         <TrustBar />
         <CategoriesSection />
         <DealsSection />
