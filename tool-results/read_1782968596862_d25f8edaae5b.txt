@@ -1,0 +1,515 @@
+     1→import type { Product, Brand, Category, HeroSlide } from "@/types";
+     2→
+     3→// ── Brands ────────────────────────────────────────────────
+     4→export const brands: Brand[] = [
+     5→  { id: "b1", name: "Milwaukee", slug: "milwaukee", logo: null, featured: true },
+     6→  { id: "b2", name: "DeWalt", slug: "dewalt", logo: null, featured: true },
+     7→  { id: "b3", name: "Bosch", slug: "bosch", logo: null, featured: true },
+     8→  { id: "b4", name: "Makita", slug: "makita", logo: null, featured: false },
+     9→  { id: "b5", name: "Stanley", slug: "stanley", logo: null, featured: false },
+    10→  { id: "b6", name: "3M", slug: "3m", logo: null, featured: false },
+    11→  { id: "b7", name: "Husky", slug: "husky", logo: null, featured: false },
+    12→  { id: "b8", name: "Ridge Tool", slug: "ridge-tool", logo: null, featured: false },
+    13→];
+    14→
+    15→// ── Categories ────────────────────────────────────────────
+    16→export const categories: Category[] = [
+    17→  {
+    18→    id: "c1", name: "Herramientas Eléctricas", slug: "herramientas-electricas",
+    19→    parentId: null, image: null, icon: "Zap", order: 1,
+    20→    children: [
+    21→      { id: "c1-1", name: "Taladros", slug: "taladros", parentId: "c1", image: null, icon: "CircleDot", order: 1 },
+    22→      { id: "c1-2", name: "Atornilladores", slug: "atornilladores", parentId: "c1", image: null, icon: "Settings", order: 2 },
+    23→      { id: "c1-3", name: "Sierras", slug: "sierras", parentId: "c1", image: null, icon: "Scissors", order: 3 },
+    24→      { id: "c1-4", name: "Esmeriladoras", slug: "esmeriladoras", parentId: "c1", image: null, icon: "Disc", order: 4 },
+    25→      { id: "c1-5", name: "Rotomartillos", slug: "rotomartillos", parentId: "c1", image: null, icon: "Hammer", order: 5 },
+    26→    ],
+    27→  },
+    28→  {
+    29→    id: "c2", name: "Herramientas Manuales", slug: "herramientas-manuales",
+    30→    parentId: null, image: null, icon: "Wrench", order: 2,
+    31→    children: [
+    32→      { id: "c2-1", name: "Llaves", slug: "llaves", parentId: "c2", image: null, icon: "Wrench", order: 1 },
+    33→      { id: "c2-2", name: "Pinzas", slug: "pinzas", parentId: "c2", image: null, icon: "Grip", order: 2 },
+    34→      { id: "c2-3", name: "Destornilladores", slug: "destornilladores", parentId: "c2", image: null, icon: "Screwdriver", order: 3 },
+    35→      { id: "c2-4", name: "Martillos", slug: "martillos", parentId: "c2", image: null, icon: "Hammer", order: 4 },
+    36→    ],
+    37→  },
+    38→  {
+    39→    id: "c3", name: "Jardín y Exterior", slug: "jardin-exterior",
+    40→    parentId: null, image: null, icon: "Trees", order: 3,
+    41→  },
+    42→  {
+    43→    id: "c4", name: "Seguridad Industrial", slug: "seguridad-industrial",
+    44→    parentId: null, image: null, icon: "Shield", order: 4,
+    45→  },
+    46→  {
+    47→    id: "c5", name: "Servicio Técnico Milwaukee", slug: "servicio-tecnico-milwaukee",
+    48→    parentId: null, image: null, icon: "Settings", order: 5,
+    49→  },
+    50→  {
+    51→    id: "c6", name: "Accesorios", slug: "accesorios",
+    52→    parentId: null, image: null, icon: "Package", order: 6,
+    53→  },
+    54→  {
+    55→    id: "c7", name: "Almacenamiento", slug: "almacenamiento",
+    56→    parentId: null, image: null, icon: "HardHat", order: 7,
+    57→  },
+    58→  {
+    59→    id: "c8", name: "Medición", slug: "medicion",
+    60→    parentId: null, image: null, icon: "Ruler", order: 8,
+    61→  },
+    62→];
+    63→
+    64→// ── Products ──────────────────────────────────────────────
+    65→export const products: Product[] = [
+    66→  // ── Taladros Milwaukee ──
+    67→  {
+    68→    id: "p1", sku: "MIL-2801-20", name: "Taladro Percutor M18 FUEL 1/2\" Milwaukee",
+    69→    slug: "taladro-percutor-m18-fuel-12-milwaukee",
+    70→    description: "El Taladro Percutor M18 FUEL de 1/2\" cuenta con el motor POWERSTATE Brushless de Milwaukee, que ofrece hasta 60% más potencia que los taladros con cable. Con el sistema REDLINK PLUS Intelligence, el taladro proporciona un rendimiento óptimo al protegerse contra sobrecargas, sobrecalentamientos y descargas excesivas. Incluye 2 baterías M18 XC5.0 de alta capacidad, cargador M18 y maletín.",
+    71→    shortDescription: "Motor brushless POWERSTATE. Hasta 1,200 RPM y 18,000 BPM. Kit con 2 baterías XC5.0.",
+    72→    price: 2899.00, comparePrice: 3499.00,
+    73→    categoryId: "c1-1", brandId: "b1", brand: brands[0], category: categories[0]?.children?.[0],
+    74→    stock: 15, images: ["/images/products/placeholder-tool.jpg"],
+    75→    specs: {
+    76→      "Voltaje": "18V", "Tipo de Motor": "Brushless POWERSTATE",
+    77→      "Velocidad (RPM)": "0-550 / 0-1,800", "Golpes por Minuto (BPM)": "0-18,500 / 0-31,500",
+    78→      "Mandril": "1/2\" metálico de 3 quijadas", "Capacidad Máx. Concreto": "1-1/4\"",
+    79→      "Peso": "5.3 lb (2.4 kg)", "Garantía": "5 años herramienta / 2 años batería",
+    80→    },
+    81→    rating: 4.8, reviewCount: 124, isFeatured: true, isOnSale: true, isNewArrival: false,
+    82→  },
+    83→  {
+    84→    id: "p2", sku: "MIL-2802-20", name: "Taladro Percutor Compacto M18 1/2\" Milwaukee",
+    85→    slug: "taladro-percutor-compacto-m18-12-milwaukee",
+    86→    description: "Taladro percutor compacto de la serie M18 diseñado para espacios reducidos sin sacrificar potencia. Cuenta con motor brushless, mandril de 1/2\" y solo 3.4 lb de peso, ideal para trabajos prolongados. Kit incluye 2 baterías M18 CP2.0, cargador y maletín.",
+    87→    shortDescription: "Ultra compacto. Solo 3.4 lb. Mandril 1/2\". Kit con 2 baterías CP2.0.",
+    88→    price: 1799.00, comparePrice: 2199.00,
+    89→    categoryId: "c1-1", brandId: "b1", brand: brands[0], category: categories[0]?.children?.[0],
+    90→    stock: 22, images: ["/images/products/placeholder-tool.jpg"],
+    91→    specs: {
+    92→      "Voltaje": "18V", "Tipo de Motor": "Brushless",
+    93→      "Velocidad (RPM)": "0-450 / 0-1,700", "Peso": "3.4 lb (1.5 kg)",
+    94→      "Mandril": "1/2\"", "Longitud": "7.0\"",
+    95→    },
+    96→    rating: 4.6, reviewCount: 87, isFeatured: false, isOnSale: true, isNewArrival: false,
+    97→  },
+    98→  // ── Atornilladores Milwaukee ──
+    99→  {
+   100→    id: "p3", sku: "MIL-2953-20", name: "Impacto Inalámbrico M18 FUEL 1/4\" Hex Milwaukee",
+   101→    slug: "impacto-inalambrico-m18-fuel-14-hex-milwaukee",
+   102→    description: "El Impacto Inalámbrico M18 FUEL 1/4\" Hex de Milwaukee ofrece hasta 2,000 in-lbs de par de apriete, el más potente de su clase. Cuenta con el motor POWERSTATE Brushless de 4 polos y tecnología REDLINK PLUS. Kit completo con 2 baterías M18 XC5.0.",
+   103→    shortDescription: "2,000 in-lbs de par. El más potente de su clase. Kit con 2 baterías XC5.0.",
+   104→    price: 2599.00, comparePrice: 3099.00,
+   105→    categoryId: "c1-2", brandId: "b1", brand: brands[0], category: categories[0]?.children?.[1],
+   106→    stock: 18, images: ["/images/products/placeholder-tool.jpg"],
+   107→    specs: {
+   108→      "Voltaje": "18V", "Par Máximo": "2,000 in-lbs",
+   109→      "Velocidad (RPM)": "0-3,500", "Golpes por Minuto": "0-4,300",
+   110→      "Peso": "3.1 lb (1.4 kg)", "Garantía": "5 años",
+   111→    },
+   112→    rating: 4.9, reviewCount: 203, isFeatured: true, isOnSale: true, isNewArrival: false,
+   113→  },
+   114→  // ── Sierras Milwaukee ──
+   115→  {
+   116→    id: "p4", sku: "MIL-2730-20", name: "Sierra Circular M18 FUEL 7-1/4\" Milwaukee",
+   117→    slug: "sierra-circular-m18-fuel-714-milwaukee",
+   118→    description: "Sierra circular con el motor POWERSTATE Brushless de Milwaukee que corta hasta 600 pies de tablero OSB por carga. El sistema REDLITHIUM XC5.0 proporciona hasta 370 cortes por carga. Incluye disco de 7-1/4\" y maletín.",
+   119→    shortDescription: "Motor brushless POWERSTATE. Hasta 600 pies de corte por carga. Disco 7-1/4\" incluido.",
+   120→    price: 2199.00, comparePrice: 2699.00,
+   121→    categoryId: "c1-3", brandId: "b1", brand: brands[0], category: categories[0]?.children?.[2],
+   122→    stock: 10, images: ["/images/products/placeholder-tool.jpg"],
+   123→    specs: {
+   124→      "Voltaje": "18V", "Diámetro de Disco": "7-1/4\"",
+   125→      "Profundidad de Corte (90°)": "2-7/16\"", "Profundidad de Corte (45°)": "1-15/16\"",
+   126→      "Velocidad sin Carga": "5,800 RPM", "Peso": "5.5 lb (2.5 kg)",
+   127→    },
+   128→    rating: 4.7, reviewCount: 76, isFeatured: true, isOnSale: false, isNewArrival: false,
+   129→  },
+   130→  {
+   131→    id: "p5", sku: "MIL-2520-20", name: "Sierra Caladora M18 FUEL Milwaukee",
+   132→    slug: "sierra-caladora-m18-fuel-milwaukee",
+   133→    description: "La Sierra Caladora M18 FUEL de Milwaukee es la primera sierra caladora que elimina los desafíos que los usuarios han enfrentado con las sierras caladoras inalámbricas. Hasta 30% más potencia y el sistema ONE-KEY para personalización.",
+   134→    shortDescription: "30% más potencia que la generación anterior. Systema ONE-KEY. Cortes limpios en madera y metal.",
+   135→    price: 1599.00, comparePrice: null,
+   136→    categoryId: "c1-3", brandId: "b1", brand: brands[0], category: categories[0]?.children?.[2],
+   137→    stock: 8, images: ["/images/products/placeholder-tool.jpg"],
+   138→    specs: {
+   139→      "Voltaje": "18V", "Velocidad Variable": "0-3,000 SPM",
+   140→      "Capacidad de Corte Madera": "2-3/4\"", "Capacidad de Corte Metal": "3/8\"",
+   141→      "Peso": "5.1 lb (2.3 kg)", "Longitud de Golpe": "1\"",
+   142→    },
+   143→    rating: 4.5, reviewCount: 54, isFeatured: false, isOnSale: false, isNewArrival: true,
+   144→  },
+   145→  // ── Rotomartillos ──
+   146→  {
+   147→    id: "p6", sku: "MIL-2715-20", name: "Rotomartillo SDS-Plus M18 FUEL 1-1/8\" Milwaukee",
+   148→    slug: "rotomartillo-sds-plus-m18-fuel-118-milwaukee",
+   149→    description: "El Rotomartillo SDS-Plus M18 FUEL de Milwaukee ofrece la potencia de un taladro con cable en formato inalámbrico. Con el motor POWERSTATE Brushless, proporciona 1.7 ft-lbs de energía de impacto. Ideal para perforación pesada en concreto.",
+   150→    shortDescription: "1.7 ft-lbs de energía de impacto. SDS-Plus. Kit con 2 baterías XC5.0.",
+   151→    price: 3299.00, comparePrice: 3899.00,
+   152→    categoryId: "c1-5", brandId: "b1", brand: brands[0], category: categories[0]?.children?.[4],
+   153→    stock: 6, images: ["/images/products/placeholder-tool.jpg"],
+   154→    specs: {
+   155→      "Voltaje": "18V", "Energía de Impacto": "1.7 ft-lbs (EPTA)",
+   156→      "Velocidad (RPM)": "0-1,250 / 0-2,100", "Golpes por Minuto": "0-4,600 / 0-7,800",
+   157→      "Tipo de Encastre": "SDS-Plus", "Diámetro Máx. Concreto": "1-1/8\"",
+   158→      "Peso": "6.2 lb (2.8 kg)",
+   159→    },
+   160→    rating: 4.9, reviewCount: 92, isFeatured: true, isOnSale: true, isNewArrival: false,
+   161→  },
+   162→  // ── Esmeriladoras ──
+   163→  {
+   164→    id: "p7", sku: "MIL-2864-20", name: "Esmeriladora Angular M18 FUEL 4-1/2\" - 5\" Milwaukee",
+   165→    slug: "esmeriladora-angular-m18-fuel-45-5-milwaukee",
+   166→    description: "La Esmeriladora Angular M18 FUEL de 4-1/2\" / 5\" es la primera esmeriladora inalámbrica que supera el rendimiento de las herramientas con cable. Sistema de frenado REDLITHIUM que detiene el disco en menos de 2 segundos.",
+   167→    shortDescription: "Supera el rendimiento de herramientas con cable. Frenado en <2 seg. Kit completo.",
+   168→    price: 1899.00, comparePrice: 2299.00,
+   169→    categoryId: "c1-4", brandId: "b1", brand: brands[0], category: categories[0]?.children?.[3],
+   170→    stock: 12, images: ["/images/products/placeholder-tool.jpg"],
+   171→    specs: {
+   172→      "Voltaje": "18V", "Diámetro de Disco": "4-1/2\" - 5\"",
+   173→      "Velocidad sin Carga": "8,500 RPM", "Interruptor": "Sin retención / con retención (ambos incluidos)",
+   174→      "Peso": "4.8 lb (2.2 kg)", "Longitud": "12.3\"",
+   175→    },
+   176→    rating: 4.7, reviewCount: 68, isFeatured: false, isOnSale: true, isNewArrival: false,
+   177→  },
+   178→  // ── DeWalt Products ──
+   179→  {
+   180→    id: "p8", sku: "DW-DCD791D2", name: "Taladro Inalámbrico DeWalt 20V MAX XR 1/2\"",
+   181→    slug: "taladro-inalambrico-dewalt-20v-max-xr-12",
+   182→    description: "Taladro DeWalt 20V MAX XR con motor brushless de alta eficiencia. Cuenta con 2 velocidades, mandril de 1/2\" metal rígido y LED integrado con modo de 20 segundos de retardo. Kit incluye 2 baterías 2.0Ah.",
+   183→    shortDescription: "Motor brushless XR. 2 velocidades. LED de 20 seg. Kit con 2 baterías 2.0Ah.",
+   184→    price: 1699.00, comparePrice: 1999.00,
+   185→    categoryId: "c1-1", brandId: "b2", brand: brands[1], category: categories[0]?.children?.[0],
+   186→    stock: 20, images: ["/images/products/placeholder-tool.jpg"],
+   187→    specs: {
+   188→      "Voltaje": "20V MAX", "Motor": "Brushless",
+   189→      "Velocidad": "0-650 / 0-2,000 RPM", "Mandril": "1/2\" metal rígido",
+   190→      "Peso": "3.4 lb", "Batería Incluida": "2x 2.0Ah",
+   191→    },
+   192→    rating: 4.5, reviewCount: 145, isFeatured: false, isOnSale: true, isNewArrival: false,
+   193→  },
+   194→  {
+   195→    id: "p9", sku: "DW-DCF887D2", name: "Impacto DeWalt 20V MAX XR 1/4\" Hex",
+   196→    slug: "impacto-dewalt-20v-max-xr-14-hex",
+   197→    description: "Impacto inalámbrico DeWalt con motor brushless XR de 3 velocidades. Ofrece hasta 1,825 in-lbs de par de apriete con modo de precisión a 3 velocidades. Compacto y liviano para máxima maniobrabilidad.",
+   198→    shortDescription: "3 velocidades. 1,825 in-lbs de par. Modo de precisión. Kit con 2 baterías.",
+   199→    price: 1499.00, comparePrice: 1799.00,
+   200→    categoryId: "c1-2", brandId: "b2", brand: brands[1], category: categories[0]?.children?.[1],
+   201→    stock: 25, images: ["/images/products/placeholder-tool.jpg"],
+   202→    specs: {
+   203→      "Voltaje": "20V MAX", "Par Máximo": "1,825 in-lbs",
+   204→      "Velocidad": "0-400 / 0-1,200 / 0-1,750 / 0-2,250 RPM",
+   205→      "Peso": "3.4 lb", "Garantía": "3 años limitada",
+   206→    },
+   207→    rating: 4.6, reviewCount: 178, isFeatured: false, isOnSale: true, isNewArrival: false,
+   208→  },
+   209→  // ── Bosch Products ──
+   210→  {
+   211→    id: "p10", sku: "BOS-GBH18V-28DK", name: "Taladro Percutor Bosch 18V 1/2\" con Kit",
+   212→    slug: "taladro-percutor-bosch-18v-12-con-kit",
+   213→    description: "Taladro percutor Bosch 18V con tecnología brushless de alto rendimiento. Máxima potencia en perforación de madera, metal y concreto. Diseño ergonómico con empuñadura suave. Kit con 2 baterías ProCore18V 4.0Ah.",
+   214→    shortDescription: "Brushless ECC. Ergonómico. Kit con 2 baterías ProCore 4.0Ah.",
+   215→    price: 2199.00, comparePrice: null,
+   216→    categoryId: "c1-1", brandId: "b3", brand: brands[2], category: categories[0]?.children?.[0],
+   217→    stock: 14, images: ["/images/products/placeholder-tool.jpg"],
+   218→    specs: {
+   219→      "Voltaje": "18V", "Par Máximo (duro)": "57 Nm",
+   220→      "Velocidad": "0-500 / 0-1,900 RPM", "Peso": "1.7 kg",
+   221→      "Batería": "2x ProCore18V 4.0Ah", "Garantía": "3 años",
+   222→    },
+   223→    rating: 4.4, reviewCount: 63, isFeatured: false, isOnSale: false, isNewArrival: true,
+   224→  },
+   225→  {
+   226→    id: "p11", sku: "BOS-GSR18V-190", name: "Taladro Destornillador Bosch 18V EC Brushless",
+   227→    slug: "taladro-destornillador-bosch-18v-ec-brushless",
+   228→    description: "Taladro destornillador Bosch 18V con motor EC Brushless para mayor durabilidad y tiempos de ejecución. 20 posiciones de torque para una gran variedad de aplicaciones. Incluye 2 baterías 2.0Ah.",
+   229→    shortDescription: "Motor EC Brushless. 20 posiciones de torque. Compacto y ligero.",
+   230→    price: 1199.00, comparePrice: 1499.00,
+   231→    categoryId: "c1-2", brandId: "b3", brand: brands[2], category: categories[0]?.children?.[1],
+   232→    stock: 30, images: ["/images/products/placeholder-tool.jpg"],
+   233→    specs: {
+   234→      "Voltaje": "18V", "Par Máximo": "54 Nm (duro)",
+   235→      "Velocidad": "0-500 / 0-1,900 RPM", "Torque": "20+1 posiciones",
+   236→      "Peso": "1.5 kg",
+   237→    },
+   238→    rating: 4.3, reviewCount: 91, isFeatured: false, isOnSale: true, isNewArrival: false,
+   239→  },
+   240→  // ── Herramientas Manuales ──
+   241→  {
+   242→    id: "p12", sku: "STN-90-947", name: "Juego de Llaves Combinadas Stanley 14 Piezas 1/4\" - 3/4\"",
+   243→    slug: "juego-llaves-combinadas-stanley-14-piezas",
+   244→    description: "Juego de 14 llaves combinadas Stanley con acabado cromado brillante. Fabricadas en acero al carbono de alta calidad con restricción de torque. Incluye maletín de plástico para almacenamiento organizado.",
+   245→    shortDescription: "14 llaces combinadas. Acero cromado. Maletín incluido.",
+   246→    price: 189.00, comparePrice: 249.00,
+   247→    categoryId: "c2-1", brandId: "b5", brand: brands[4], category: categories[1]?.children?.[0],
+   248→    stock: 50, images: ["/images/products/placeholder-tool.jpg"],
+   249→    specs: {
+   250→      "Cantidad de Piezas": "14", "Tamaño": "1/4\" a 3/4\"",
+   251→      "Material": "Acero al carbono cromado", "Acabado": "Cromado brillante",
+   252→      "Tipo": "Combinadas (boca + estrella)",
+   253→    },
+   254→    rating: 4.5, reviewCount: 234, isFeatured: false, isOnSale: true, isNewArrival: false,
+   255→  },
+   256→  {
+   257→    id: "p13", sku: "STN-20-045", name: "Juego de Destornilladores Stanley 10 Piezas",
+   258→    slug: "juego-destornilladores-stanley-10-piezas",
+   259→    description: "Juego de 10 destornilladores Stanley con puntas magnéticas. Mango bi-material ergonómico para mayor comodidad. Incluye destornilladores de punta plana y Phillips en diferentes tamaños.",
+   260→    shortDescription: "10 piezas. Puntas magnéticas. Mango ergonómico bi-material.",
+   261→    price: 79.90, comparePrice: 99.90,
+   262→    categoryId: "c2-3", brandId: "b5", brand: brands[4], category: categories[1]?.children?.[2],
+   263→    stock: 75, images: ["/images/products/placeholder-tool.jpg"],
+   264→    specs: {
+   265→      "Cantidad": "10 piezas", "Tipo de Puntas": "Plana y Phillips",
+   266→      "Mango": "Bi-material", "Magnetizado": "Sí",
+   267→    },
+   268→    rating: 4.2, reviewCount: 156, isFeatured: false, isOnSale: true, isNewArrival: false,
+   269→  },
+   270→  {
+   271→    id: "p14", sku: "STN-84-098", name: "Cinta Métrica Stanley 25ft x 1\" POWERLOCK",
+   272→    slug: "cinta-metrica-stanley-25ft-powerlock",
+   273→    description: "Cinta métrica Stanley POWERLOCK de 25 pies con diseño duradero y resistente. Caja de plástico resistente a impactos, gancho de cinta de 3 remaches y marcaciones fáciles de leer.",
+   274→    shortDescription: "25 pies. POWERLOCK. Resistente a impactos. 3 remaches en gancho.",
+   275→    price: 49.90, comparePrice: null,
+   276→    categoryId: "c8", brandId: "b5", brand: brands[4], category: categories[7],
+   277→    stock: 100, images: ["/images/products/placeholder-tool.jpg"],
+   278→    specs: {
+   279→      "Longitud": "25 ft (7.5m)", "Ancho de Cinta": "1\" (25mm)",
+   280→      "Material Cinta": "Acero", "Tipo": "POWERLOCK",
+   281→    },
+   282→    rating: 4.6, reviewCount: 312, isFeatured: false, isOnSale: false, isNewArrival: false,
+   283→  },
+   284→  // ── Seguridad Industrial ──
+   285→  {
+   286→    id: "p15", sku: "3M-1100-132501", name: "Protectores Auditivos 3M Peltor Optime",
+   287→    slug: "protectores-auditivos-3m-peltor-optime",
+   288→    description: "Protectores auditivos 3M Peltor Optime diseñados para entornos de alto ruido industrial. Reducción de ruido de 30 dB. Diadema ajustable y almohadillas reemplazables para máxima comodidad durante todo el día.",
+   289→    shortDescription: "NRR 30 dB. Diadema ajustable. Almohadillas reemplazables. Uso industrial.",
+   290→    price: 159.00, comparePrice: null,
+   291→    categoryId: "c4", brandId: "b6", brand: brands[5], category: categories[3],
+   292→    stock: 40, images: ["/images/products/placeholder-tool.jpg"],
+   293→    specs: {
+   294→      "Reducción de Ruido (NRR)": "30 dB", "Tipo": "Diadema (over-ear)",
+   295→      "Material": "ABS / espuma", "Uso": "Industrial",
+   296→      "Certificación": "ANSI S3.19",
+   297→    },
+   298→    rating: 4.4, reviewCount: 87, isFeatured: false, isOnSale: false, isNewArrival: true,
+   299→  },
+   300→  {
+   301→    id: "p16", sku: "3M-11650", name: "Gafas de Seguridad 3M Virtua con Lente Clara",
+   302→    slug: "gafas-seguridad-3m-virtua-lente-clara",
+   303→    description: "Gafas de seguridad 3M Virtua con lente clara anti-rayas. Montura ligera en policarbonato, protector de nariz integrado y protección UV400. Ideales para entornos de trabajo donde se requiere protección ocular básica.",
+   304→    shortDescription: "Lente anti-rayas. UV400. Montura ligera. Paquete de 12 unidades.",
+   305→    price: 189.00, comparePrice: 228.00,
+   306→    categoryId: "c4", brandId: "b6", brand: brands[5], category: categories[3],
+   307→    stock: 60, images: ["/images/products/placeholder-tool.jpg"],
+   308→    specs: {
+   309→      "Cantidad": "12 unidades", "Lente": "Clara anti-rayas",
+   310→      "Material Montura": "Policarbonato", "Protección UV": "UV400",
+   311→      "Certificación": "ANSI Z87.1",
+   312→    },
+   313→    rating: 4.3, reviewCount: 145, isFeatured: false, isOnSale: true, isNewArrival: false,
+   314→  },
+   315→  // ── More Milwaukee ──
+   316→  {
+   317→    id: "p17", sku: "MIL-49-24-0216", name: "Kit de Baterías M18 REDLITHIUM XC5.0 (2 unidades)",
+   318→    slug: "kit-baterias-m18-redlithium-xc5-2-unidades",
+   319→    description: "Kit de 2 baterías Milwaukee M18 REDLITHIUM XC5.0 de 5.0Ah. Proporcionan hasta 2.5x más tiempo de ejecución, 20% más potencia y 2x más recargas que las baterías estándar. Compatible con toda la línea M18.",
+   320→    shortDescription: "2x 5.0Ah. 2.5x más duración. Compatible con toda la línea M18.",
+   321→    price: 1199.00, comparePrice: 1499.00,
+   322→    categoryId: "c6", brandId: "b1", brand: brands[0], category: categories[5],
+   323→    stock: 35, images: ["/images/products/placeholder-tool.jpg"],
+   324→    specs: {
+   325→      "Capacidad": "5.0 Ah", "Voltaje": "18V",
+   326→      "Tecnología": "REDLITHIUM XC", "Células": "18650 premium",
+   327→      "Temperatura Operación": "-20°C a 60°C",
+   328→    },
+   329→    rating: 4.8, reviewCount: 267, isFeatured: true, isOnSale: true, isNewArrival: false,
+   330→  },
+   331→  {
+   332→    id: "p18", sku: "MIL-48-59-1812", name: "Cargador Rápido M18/M12 Milwaukee",
+   333→    slug: "cargador-rapido-m18-m12-milwaukee",
+   334→    description: "Cargador de baterías rápido Milwaukee compatible con los sistemas M18 y M12. Carga una batería M18 XC5.0 en solo 60 minutos. Diseño compacto con indicadores LED de estado de carga y protección contra sobrecarga.",
+   335→    shortDescription: "Compatible M18/M12. Carga en 60 min. Indicadores LED.",
+   336→    price: 399.00, comparePrice: null,
+   337→    categoryId: "c6", brandId: "b1", brand: brands[0], category: categories[5],
+   338→    stock: 45, images: ["/images/products/placeholder-tool.jpg"],
+   339→    specs: {
+   340→      "Compatible con": "M18 y M12", "Tiempo de Carga XC5.0": "~60 min",
+   341→      "Voltaje Entrada": "120V", "Peso": "1.1 lb",
+   342→    },
+   343→    rating: 4.7, reviewCount: 189, isFeatured: false, isOnSale: false, isNewArrival: true,
+   344→  },
+   345→  // ── Almacenamiento ──
+   346→  {
+   347→    id: "p19", sku: "MIL-48-22-8425", name: "Organizador Modular Milwaukee PACKOUT 2 Piezas",
+   348→    slug: "organizador-modular-milwaukee-packout-2-piezas",
+   349→    description: "Sistema de almacenamiento modular Milwaukee PACKOUT con 2 organizadores. Cuentas con 11 compartimientos removibles en el organizador superior y protección IP65 contra polvo y agua. Se conectan entre sí y con otros componentes PACKOUT.",
+   350→    shortDescription: "2 organizadores. 11 compartimientos. IP65. Sistema modular PACKOUT.",
+   351→    price: 449.00, comparePrice: 549.00,
+   352→    categoryId: "c7", brandId: "b1", brand: brands[0], category: categories[6],
+   353→    stock: 20, images: ["/images/products/placeholder-tool.jpg"],
+   354→    specs: {
+   355→      "Compartimientos": "11 removibles", "Protección": "IP65 (polvo y agua)",
+   356→      "Material": "Polipropileno de impacto", "Sistema": "PACKOUT modular",
+   357→      "Peso": "3.5 lb",
+   358→    },
+   359→    rating: 4.6, reviewCount: 98, isFeatured: false, isOnSale: true, isNewArrival: false,
+   360→  },
+   361→  {
+   362→    id: "p20", sku: "MIL-48-22-8430", name: "Caja de Herramientas PACKOUT Rolling Milwaukee",
+   363→    slug: "caja-herramientas-packout-rolling-milwaukee",
+   364→    description: "Caja de herramientas rodante Milwaukee PACKOUT de 22 pulgadas. Ruedas de 9\" todo terreno, asa retráctil y capacidad de carga de 100 lb. Interior amplio con organizador removible. Compatible con todo el ecosistema PACKOUT.",
+   365→    shortDescription: "22\" rodante. Ruedas 9\" todo terreno. 100 lb capacidad. PACKOUT.",
+   366→    price: 799.00, comparePrice: 999.00,
+   367→    categoryId: "c7", brandId: "b1", brand: brands[0], category: categories[6],
+   368→    stock: 8, images: ["/images/products/placeholder-tool.jpg"],
+   369→    specs: {
+   370→      "Capacidad": "100 lb", "Ruedas": "9\" todo terreno",
+   371→      "Interior": "30.5\" x 16.5\" x 14\"", "Material": "Polipropileno de impacto",
+   372→      "Protección": "IP65",
+   373→    },
+   374→    rating: 4.9, reviewCount: 56, isFeatured: true, isOnSale: true, isNewArrival: false,
+   375→  },
+   376→  // ── Makita ──
+   377→  {
+   378→    id: "p21", sku: "MKT-XRFO1Z", name: "Rotomartillo SDS-Plus Makita 18V LXT Brushless",
+   379→    slug: "rotomartillo-sds-plus-makita-18v-lxt-brushless",
+   380→    description: "Rotomartillo Makita 18V LXT con motor brushless de alta eficiencia. Ofrece 3 modos de operación: solo rotación, rotación con percusión y solo percusión. Con sistema XPT (Extreme Protection Technology) contra polvo y agua.",
+   381→    shortDescription: "3 modos de operación. Brushless. XPT (resistente al polvo/agua).",
+   382→    price: 2499.00, comparePrice: 2899.00,
+   383→    categoryId: "c1-5", brandId: "b4", brand: brands[3], category: categories[0]?.children?.[4],
+   384→    stock: 11, images: ["/images/products/placeholder-tool.jpg"],
+   385→    specs: {
+   386→      "Voltaje": "18V", "Energía de Impacto": "1.7 Joules",
+   387→      "Velocidad (RPM)": "0-680 / 0-1,200 / 0-2,350",
+   388→      "Golpes por Minuto": "0-4,600 / 0-8,200 / 0-17,500",
+   389→      "Encastre": "SDS-Plus", "Protección": "XPT",
+   390→    },
+   391→    rating: 4.5, reviewCount: 72, isFeatured: false, isOnSale: true, isNewArrival: true,
+   392→  },
+   393→  // ── More manual tools ──
+   394→  {
+   395→    id: "p22", sku: "STN-84-106", name: "Nivel de Burbuja Stanley 24\" Torpedo",
+   396→    slug: "nivel-burbuja-stanley-24-torpedo",
+   397→    description: "Nivel de burbuja Stanley de 24 pulgadas con 3 viales de precisión (horizontal, vertical y 45°). Cuerpo de aluminio extruido con bordes reforzados. Precisión de 0.0005\" por pulgada.",
+   398→    shortDescription: "24\" aluminio. 3 viales de precisión. Precisión 0.0005\"/pulgada.",
+   399→    price: 69.90, comparePrice: 89.90,
+   400→    categoryId: "c8", brandId: "b5", brand: brands[4], category: categories[7],
+   401→    stock: 35, images: ["/images/products/placeholder-tool.jpg"],
+   402→    specs: {
+   403→      "Longitud": "24\"", "Material": "Aluminio extruido",
+   404→      "Viales": "3 (horizontal, vertical, 45°)", "Precisión": "0.0005\"/pulgada",
+   405→    },
+   406→    rating: 4.4, reviewCount: 167, isFeatured: false, isOnSale: true, isNewArrival: false,
+   407→  },
+   408→  {
+   409→    id: "p23", sku: "MIL-48-22-2401", name: "Navaja Retráctil Milwaukee FASTBACK 10-1/4\"",
+   410→    slug: "navaja-retractil-milwaukee-fastback-10-14",
+   411→    description: "Navaja retráctil Milwaukee FASTBACK con apertura de una sola mano y cambio de hoja rápido sin herramientas. Mango ergonómico con inserto de goma para agarre firme. Incluye 5 hojas extra.",
+   412→    shortDescription: "Apertura 1 mano. Cambio rápido de hoja. Incluye 5 hojas extra.",
+   413→    price: 89.90, comparePrice: null,
+   414→    categoryId: "c2", brandId: "b1", brand: brands[0], category: categories[1],
+   415→    stock: 55, images: ["/images/products/placeholder-tool.jpg"],
+   416→    specs: {
+   417→      "Longitud Abierto": "10-1/4\"", "Cambio de Hoja": "Sin herramientas",
+   418→      "Hojas Incluidas": "5 extra", "Material Mango": "Aluminio + goma",
+   419→    },
+   420→    rating: 4.7, reviewCount: 289, isFeatured: false, isOnSale: false, isNewArrival: false,
+   421→  },
+   422→  {
+   423→    id: "p24", sku: "MIL-48-59-1202", name: "Set de Puntas y Bitas Milwaukee SHOCKWAVE 60 Piezas",
+   424→    slug: "set-puntas-bitas-milwaukee-shockwave-60-piezas",
+   425→    description: "Set completo de 60 piezas Milwaukee SHOCKWAVE con punta de impacto, bitas Phillips, Torx, Hex y Square. Geometría SHOCKWAVE para mayor durabilidad. Compatible con todos los impactos de 1/4\".",
+   426→    shortDescription: "60 piezas. Geometría SHOCKWAVE. Para impacto. Maletín incluido.",
+   427→    price: 349.00, comparePrice: 429.00,
+   428→    categoryId: "c6", brandId: "b1", brand: brands[0], category: categories[5],
+   429→    stock: 28, images: ["/images/products/placeholder-tool.jpg"],
+   430→    specs: {
+   431→      "Total de Piezas": "60", "Tipos": "Phillips, Torx, Hex, Square",
+   432→      "Compatible con": "Impacto 1/4\" hex", "Maletín": "Incluido",
+   433→    },
+   434→    rating: 4.8, reviewCount: 198, isFeatured: false, isOnSale: true, isNewArrival: false,
+   435→  },
+   436→];
+   437→
+   438→// ── Hero Slides ───────────────────────────────────────────
+   439→export const heroSlides: HeroSlide[] = [
+   440→  {
+   441→    id: 1,
+   442→    title: "M18 FUEL™ — El Poder Sin Límites",
+   443→    subtitle: "Herramientas inalámbricas de mayor rendimiento. Servicio Técnico Oficial Milwaukee Perú.",
+   444→    cta: "Ver Colección M18",
+   445→    ctaLink: "#",
+   446→    image: "/images/hero/hero-1.jpg",
+   447→    badge: "NUEVO",
+   448→    badgeColor: "bg-milwaukee-red",
+   449→  },
+   450→  {
+   451→    id: 2,
+   452→    title: "Ofertas del Mes — Hasta 30% OFF",
+   453→    subtitle: "Taladros, impactos, sierras y más. Aprovecha los mejores precios en herramientas profesionales.",
+   454→    cta: "Ver Ofertas",
+   455→    ctaLink: "#",
+   456→    image: "/images/hero/hero-2.jpg",
+   457→    badge: "OFERTA",
+   458→    badgeColor: "bg-amber-500",
+   459→  },
+   460→  {
+   461→    id: 3,
+   462→    title: "Servicio Técnico Oficial Milwaukee",
+   463→    subtitle: "Reparación, mantenimiento y garantía. RUC: 20610613749. Atención profesional garantizada.",
+   464→    cta: "Conocer Más",
+   465→    ctaLink: "#",
+   466→    image: "/images/hero/hero-3.jpg",
+   467→    badge: "SERVICIO",
+   468→    badgeColor: "bg-steel-dark",
+   469→  },
+   470→];
+   471→
+   472→// ── Helper functions ──────────────────────────────────────
+   473→export function getFeaturedProducts(): Product[] {
+   474→  return products.filter((p) => p.isFeatured);
+   475→}
+   476→
+   477→export function getOnSaleProducts(): Product[] {
+   478→  return products.filter((p) => p.isOnSale);
+   479→}
+   480→
+   481→export function getNewArrivals(): Product[] {
+   482→  return products.filter((p) => p.isNewArrival);
+   483→}
+   484→
+   485→export function getProductById(id: string): Product | undefined {
+   486→  return products.find((p) => p.id === id);
+   487→}
+   488→
+   489→export function getProductsByCategory(categoryId: string): Product[] {
+   490→  return products.filter((p) => p.categoryId === categoryId);
+   491→}
+   492→
+   493→export function getProductsByBrand(brandId: string): Product[] {
+   494→  return products.filter((p) => p.brandId === brandId);
+   495→}
+   496→
+   497→export function getTopCategories(): Category[] {
+   498→  return categories.filter((c) => !c.parentId);
+   499→}
+   500→
+   501→export function getFeaturedBrands(): Brand[] {
+   502→  return brands.filter((b) => b.featured);
+   503→}
+   504→
+   505→export function searchProducts(query: string): Product[] {
+   506→  const q = query.toLowerCase().trim();
+   507→  if (!q) return [];
+   508→  return products.filter(
+   509→    (p) =>
+   510→      p.name.toLowerCase().includes(q) ||
+   511→      p.sku.toLowerCase().includes(q) ||
+   512→      p.shortDescription.toLowerCase().includes(q) ||
+   513→      p.brand?.name.toLowerCase().includes(q)
+   514→  );
+   515→}
