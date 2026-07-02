@@ -114,11 +114,11 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
 
       {/* Content */}
       <div className="flex flex-col flex-1 p-3 sm:p-4">
-        <h3 className="text-sm font-medium text-foreground leading-snug line-clamp-2 mb-1.5 group-hover:text-itools-blue transition-colors min-h-[2.5rem]">
+        <h3 className="text-sm text-foreground leading-snug line-clamp-2 mb-1.5 group-hover:text-itools-blue transition-colors min-h-[2.5rem]">
           {product.name}
         </h3>
 
-        <p className="text-xs text-muted-foreground line-clamp-1 mb-2 hidden sm:block">
+        <p className="text-sm text-muted-foreground line-clamp-1 mb-2">
           {product.shortDescription}
         </p>
 
@@ -132,14 +132,14 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
                 {formatPrice(product.comparePrice)}
               </span>
             )}
-            <span className="text-base sm:text-lg font-impact text-itools-red">
+            <span className="text-lg sm:text-xl font-impact text-itools-red">
               {formatPrice(product.price)}
             </span>
           </div>
           <Button
             size="sm"
             onClick={() => addToCart(product)}
-            className="bg-itools-red hover:bg-itools-red-dark text-white h-9 px-3 text-xs font-impact shrink-0 transition-colors"
+            className="bg-itools-red hover:bg-itools-red-dark text-white h-10 px-3 text-sm font-impact shrink-0 transition-colors"
           >
             <ShoppingCart className="h-3.5 w-3.5 mr-1.5" />
             <span className="hidden sm:inline">Añadir</span>

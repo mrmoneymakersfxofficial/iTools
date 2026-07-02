@@ -82,10 +82,10 @@ export function HeroSlider() {
                   {slide.badge}
                 </span>
               )}
-              <h1 className="font-impact text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-white leading-tight mb-3 md:mb-4">
+              <h1 className="font-impact text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-white leading-tight mb-3 md:mb-4">
                 {slide.title}
               </h1>
-              <p className="text-sm sm:text-base md:text-lg text-white/70 max-w-xl mb-6 md:mb-8 leading-relaxed">
+              <p className="text-base sm:text-lg md:text-xl text-white/70 max-w-xl mb-6 md:mb-8 leading-relaxed">
                 {slide.subtitle}
               </p>
               <div>

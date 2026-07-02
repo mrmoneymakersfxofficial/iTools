@@ -45,10 +45,10 @@ export function TrustBar() {
               >
                 <feature.icon className="h-7 w-7 md:h-8 md:w-8 text-itools-blue" strokeWidth={1.5} />
                 <div>
-                  <p className="text-xs md:text-sm font-impact leading-tight">
+                  <p className="text-sm md:text-base font-impact leading-tight">
                     {feature.title}
                   </p>
-                  <p className="text-[10px] md:text-xs text-white/50 mt-0.5 hidden sm:block">
+                  <p className="text-xs md:text-sm text-white/50 mt-0.5 hidden sm:block">
                     {feature.desc}
                   </p>
                 </div>

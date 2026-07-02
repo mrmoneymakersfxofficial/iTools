@@ -16,7 +16,7 @@ export function DealsSection() {
           <div>
             <h2
               id="deals-heading"
-              className="text-xl md:text-2xl font-impact text-foreground"
+              className="text-2xl md:text-3xl font-impact text-foreground"
             >
               Ofertas del Día
             </h2>
@@ -57,7 +57,7 @@ export function FeaturedSection() {
           <div>
             <h2
               id="featured-heading"
-              className="text-xl md:text-2xl font-impact text-foreground"
+              className="text-2xl md:text-3xl font-impact text-foreground"
             >
               Productos Destacados
             </h2>
@@ -97,7 +97,7 @@ export function NewArrivalsSection() {
           <div>
             <h2
               id="new-arrivals-heading"
-              className="text-xl md:text-2xl font-impact text-foreground"
+              className="text-2xl md:text-3xl font-impact text-foreground"
             >
               Nuevos Ingresos
             </h2>

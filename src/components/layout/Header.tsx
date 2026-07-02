@@ -65,7 +65,7 @@ function CategoryNavItem({ category }: { category: Category }) {
     >
       <button
         type="button"
-        className="flex items-center gap-1 px-4 py-2.5 text-sm font-medium text-white/90 hover:text-white hover:bg-white/10 transition-colors whitespace-nowrap"
+        className="flex items-center gap-1 px-4 py-2.5 text-[15px] font-medium text-white/90 hover:text-white hover:bg-white/10 transition-colors whitespace-nowrap"
       >
         {category.name}
         {hasChildren && <ChevronDown className="h-3.5 w-3.5" />}
@@ -78,7 +78,7 @@ function CategoryNavItem({ category }: { category: Category }) {
               <a
                 key={child.id}
                 href={`/categoria/${child.slug}`}
-                className="block px-5 py-2.5 text-sm text-itools-dark hover:bg-surface hover:text-itools-blue transition-colors"
+                className="block px-5 py-2.5 text-[15px] text-itools-dark hover:bg-surface hover:text-itools-blue transition-colors"
               >
                 {child.name}
               </a>

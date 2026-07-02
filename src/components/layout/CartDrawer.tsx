@@ -78,13 +78,13 @@ export function CartDrawer() {
 
                       {/* Product Info */}
                       <div className="flex-1 min-w-0">
-                        <h4 className="font-medium text-sm text-foreground leading-snug line-clamp-2">
+                        <h4 className="font-medium text-base text-foreground leading-snug line-clamp-2">
                           {item.product.name}
                         </h4>
-                        <p className="text-xs text-muted-foreground mt-1">
+                        <p className="text-sm text-muted-foreground mt-1">
                           {item.product.brand?.name ?? "Marca"}
                         </p>
-                        <p className="text-itools-blue text-sm mt-1">
+                        <p className="text-itools-blue text-base mt-1">
                           {formatPrice(item.product.price)}
                         </p>
                       </div>

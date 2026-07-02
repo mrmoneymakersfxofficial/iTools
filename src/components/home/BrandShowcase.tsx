@@ -40,7 +40,7 @@ export function BrandShowcase() {
               >
                 Milwaukee M18 FUEL™
               </h2>
-              <p className="text-sm md:text-base text-white/60 max-w-lg mb-6 leading-relaxed">
+              <p className="text-base md:text-lg text-white/60 max-w-lg mb-6 leading-relaxed">
                 La línea más potente de herramientas inalámbricas del mercado. Motor POWERSTATE
                 Brushless, tecnología REDLINK PLUS y baterías REDLITHIUM. Rendimiento que supera
                 a las herramientas con cable.
@@ -48,15 +48,15 @@ export function BrandShowcase() {
               <div className="flex flex-wrap gap-4 mb-8">
                 <div className="flex items-center gap-2">
                   <Zap className="h-5 w-5 text-itools-blue" />
-                  <span className="text-sm text-white/80 font-medium">Motor POWERSTATE Brushless</span>
+                  <span className="text-base text-white/80 font-medium">Motor POWERSTATE Brushless</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Battery className="h-5 w-5 text-itools-blue" />
-                  <span className="text-sm text-white/80 font-medium">REDLITHIUM XC5.0</span>
+                  <span className="text-base text-white/80 font-medium">REDLITHIUM XC5.0</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <ShieldCheck className="h-5 w-5 text-itools-blue" />
-                  <span className="text-sm text-white/80 font-medium">Garantía 5 años</span>
+                  <span className="text-base text-white/80 font-medium">Garantía 5 años</span>
                 </div>
               </div>
               <Button className="bg-itools-blue hover:bg-itools-blue-dark text-white font-impact px-8 h-11 transition-colors">

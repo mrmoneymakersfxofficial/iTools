@@ -33,7 +33,7 @@ export function CategoriesSection() {
           <div>
             <h2
               id="categories-heading"
-              className="text-xl md:text-2xl font-impact text-foreground"
+              className="text-2xl md:text-3xl font-impact text-foreground"
             >
               Top Categorías
             </h2>
@@ -78,7 +78,7 @@ function CategoryCard({ category, index }: { category: Category; index: number }
       <div className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-surface flex items-center justify-center mb-2.5 group-hover:bg-itools-blue/10 transition-colors">
         <Icon className="h-6 w-6 md:h-7 md:w-7 text-itools-steel-light group-hover:text-itools-blue transition-colors" />
       </div>
-      <span className="text-xs md:text-sm font-medium text-foreground group-hover:text-itools-blue transition-colors leading-tight line-clamp-2">
+      <span className="text-sm md:text-base text-foreground group-hover:text-itools-blue transition-colors leading-tight line-clamp-2">
         {category.name}
       </span>
     </motion.a>
