@@ -14,6 +14,7 @@ import {
   Truck,
   Shield,
 } from "lucide-react";
+import { AccountMenu, AccountMenuDesktop } from "@/components/layout/AccountMenu";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -545,27 +546,14 @@ export default function Header() {
                 )}
               </Button>
 
-              {/* User: mobile icon only, desktop with text */}
-              <a href="/cuenta" className="hidden md:block">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="text-itools-dark hover:text-itools-blue gap-1.5"
-                >
-                  <User className="h-4 w-4" />
-                  <span className="text-sm font-medium">Mi Cuenta</span>
-                </Button>
-              </a>
-              <a href="/cuenta" className="md:hidden">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="text-itools-dark hover:text-itools-blue"
-                  aria-label="Mi cuenta"
-                >
-                  <User className="h-5 w-5" />
-                </Button>
-              </a>
+              {/* Account Menu: desktop with text */}
+              <div className="hidden md:block">
+                <AccountMenuDesktop />
+              </div>
+              {/* Account Menu: mobile icon */}
+              <div className="md:hidden">
+                <AccountMenu />
+              </div>
             </div>
           </div>
         </div>
