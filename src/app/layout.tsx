@@ -1,7 +1,14 @@
 import type { Metadata } from "next";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { CartDrawer } from "@/components/layout/CartDrawer";
+
+const inter = Inter({
+  variable: "--font-inter",
+  subsets: ["latin"],
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "iTools Perú | Herramientas Milwaukee — Distribuidor Oficial",
@@ -36,7 +43,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es" suppressHydrationWarning>
-      <body className="font-impact antialiased bg-background text-foreground">
+      <body className={`${inter.variable} font-sans antialiased bg-background text-foreground`}>
         {children}
         <CartDrawer />
         <Toaster />

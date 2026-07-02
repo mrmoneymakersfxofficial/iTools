@@ -25,7 +25,7 @@ export function CartDrawer() {
         {/* Header */}
         <SheetHeader className="px-6 pt-6 pb-4 shrink-0">
           <div className="flex items-center justify-between">
-            <SheetTitle className="text-lg text-foreground font-impact">
+            <SheetTitle className="text-lg text-foreground">
               Mi Carrito ({itemCount} {itemCount === 1 ? "item" : "items"})
             </SheetTitle>
             <Button
@@ -78,13 +78,13 @@ export function CartDrawer() {
 
                       {/* Product Info */}
                       <div className="flex-1 min-w-0">
-                        <h4 className="font-medium text-base text-foreground leading-snug line-clamp-2">
+                        <h4 className="font-medium text-sm text-foreground leading-snug line-clamp-2">
                           {item.product.name}
                         </h4>
-                        <p className="text-sm text-muted-foreground mt-1">
+                        <p className="text-xs text-muted-foreground mt-1">
                           {item.product.brand?.name ?? "Marca"}
                         </p>
-                        <p className="text-itools-blue text-base mt-1">
+                        <p className="text-itools-blue text-sm mt-1">
                           {formatPrice(item.product.price)}
                         </p>
                       </div>

@@ -217,7 +217,7 @@ export default function Footer() {
         <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8 lg:py-12">
           {/* Newsletter */}
           <div className="mb-8 text-center lg:mb-10">
-            <h3 className="mb-1 text-lg font-impact text-white sm:text-xl">
+            <h3 className="mb-1 text-lg text-white sm:text-xl">
               Suscríbete a nuestro boletín
             </h3>
             <p className="mb-6 text-sm text-gray-400">

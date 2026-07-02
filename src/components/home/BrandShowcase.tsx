@@ -40,7 +40,7 @@ export function BrandShowcase() {
               >
                 Milwaukee M18 FUEL™
               </h2>
-              <p className="text-base md:text-lg text-white/60 max-w-lg mb-6 leading-relaxed">
+              <p className="text-sm md:text-base text-white/60 max-w-lg mb-6 leading-relaxed">
                 La línea más potente de herramientas inalámbricas del mercado. Motor POWERSTATE
                 Brushless, tecnología REDLINK PLUS y baterías REDLITHIUM. Rendimiento que supera
                 a las herramientas con cable.
@@ -48,15 +48,15 @@ export function BrandShowcase() {
               <div className="flex flex-wrap gap-4 mb-8">
                 <div className="flex items-center gap-2">
                   <Zap className="h-5 w-5 text-itools-blue" />
-                  <span className="text-base text-white/80 font-medium">Motor POWERSTATE Brushless</span>
+                  <span className="text-sm text-white/80">Motor POWERSTATE Brushless</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Battery className="h-5 w-5 text-itools-blue" />
-                  <span className="text-base text-white/80 font-medium">REDLITHIUM XC5.0</span>
+                  <span className="text-sm text-white/80">REDLITHIUM XC5.0</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <ShieldCheck className="h-5 w-5 text-itools-blue" />
-                  <span className="text-base text-white/80 font-medium">Garantía 5 años</span>
+                  <span className="text-sm text-white/80">Garantía 5 años</span>
                 </div>
               </div>
               <Button className="bg-itools-blue hover:bg-itools-blue-dark text-white font-impact px-8 h-11 transition-colors">
@@ -80,7 +80,7 @@ export function BrandShowcase() {
 
         {/* Brand logos row */}
         <div className="text-center">
-          <h3 className="text-sm font-impact text-muted-foreground uppercase tracking-wider mb-6">
+          <h3 className="text-sm text-muted-foreground uppercase tracking-wider mb-6">
             Marcas que trabajamos
           </h3>
           <div className="flex items-center justify-center gap-6 md:gap-10 flex-wrap">
@@ -104,7 +104,7 @@ export function BrandShowcase() {
                   }}
                 >
                   <span
-                    className="text-sm md:text-base font-impact tracking-tight"
+                    className="text-sm md:text-base tracking-tight"
                     style={{
                       color:
                         brand.slug === "milwaukee" ? "#D1001C" :
