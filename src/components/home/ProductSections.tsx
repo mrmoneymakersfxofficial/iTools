@@ -16,7 +16,7 @@ export function DealsSection() {
           <div>
             <h2
               id="deals-heading"
-              className="text-xl md:text-2xl font-bold text-foreground"
+              className="text-xl md:text-2xl font-impact text-foreground"
             >
               Ofertas del Día
             </h2>
@@ -28,7 +28,7 @@ export function DealsSection() {
             <Button
               variant="outline"
               size="sm"
-              className="border-milwaukee-red text-milwaukee-red hover:bg-milwaukee-red hover:text-white font-semibold text-xs transition-colors"
+              className="border-itools-blue text-itools-blue hover:bg-itools-blue hover:text-white font-impact text-xs transition-colors"
             >
               Ver Todas
               <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
@@ -57,7 +57,7 @@ export function FeaturedSection() {
           <div>
             <h2
               id="featured-heading"
-              className="text-xl md:text-2xl font-bold text-foreground"
+              className="text-xl md:text-2xl font-impact text-foreground"
             >
               Productos Destacados
             </h2>
@@ -69,7 +69,7 @@ export function FeaturedSection() {
             <Button
               variant="outline"
               size="sm"
-              className="border-milwaukee-red text-milwaukee-red hover:bg-milwaukee-red hover:text-white font-semibold text-xs transition-colors"
+              className="border-itools-blue text-itools-blue hover:bg-itools-blue hover:text-white font-impact text-xs transition-colors"
             >
               Ver Todos
               <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
@@ -97,7 +97,7 @@ export function NewArrivalsSection() {
           <div>
             <h2
               id="new-arrivals-heading"
-              className="text-xl md:text-2xl font-bold text-foreground"
+              className="text-xl md:text-2xl font-impact text-foreground"
             >
               Nuevos Ingresos
             </h2>
@@ -109,7 +109,7 @@ export function NewArrivalsSection() {
             <Button
               variant="outline"
               size="sm"
-              className="border-milwaukee-red text-milwaukee-red hover:bg-milwaukee-red hover:text-white font-semibold text-xs transition-colors"
+              className="border-itools-blue text-itools-blue hover:bg-itools-blue hover:text-white font-impact text-xs transition-colors"
             >
               Ver Todos
               <ArrowRight className="ml-1.5 h-3.5 w-3.5" />

@@ -25,7 +25,7 @@ export function CartDrawer() {
         {/* Header */}
         <SheetHeader className="px-6 pt-6 pb-4 shrink-0">
           <div className="flex items-center justify-between">
-            <SheetTitle className="text-lg font-bold text-foreground">
+            <SheetTitle className="text-lg font-bold text-foreground font-impact">
               Mi Carrito ({itemCount} {itemCount === 1 ? "item" : "items"})
             </SheetTitle>
             <Button
@@ -54,7 +54,7 @@ export function CartDrawer() {
             </p>
             <Button
               variant="outline"
-              className="border-milwaukee-red text-milwaukee-red hover:bg-milwaukee-red hover:text-white transition-colors"
+              className="border-itools-blue text-itools-blue hover:bg-itools-blue hover:text-white transition-colors"
               onClick={closeCart}
             >
               Ver Productos
@@ -84,7 +84,7 @@ export function CartDrawer() {
                         <p className="text-xs text-muted-foreground mt-1">
                           {item.product.brand?.name ?? "Marca"}
                         </p>
-                        <p className="text-milwaukee-red font-bold text-sm mt-1">
+                        <p className="text-itools-blue font-bold text-sm mt-1">
                           {formatPrice(item.product.price)}
                         </p>
                       </div>
@@ -164,7 +164,7 @@ export function CartDrawer() {
                 </p>
 
                 {/* Checkout Button */}
-                <Button className="w-full bg-milwaukee-red hover:bg-milwaukee-red-dark text-white font-semibold h-11 transition-colors">
+                <Button className="w-full bg-itools-red hover:bg-itools-red-dark text-white font-impact h-11 transition-colors">
                   Ir a Pagar
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
@@ -172,7 +172,7 @@ export function CartDrawer() {
                 {/* Continue Shopping */}
                 <button
                   type="button"
-                  className="w-full text-sm text-milwaukee-red hover:underline cursor-pointer text-center py-1"
+                  className="w-full text-sm text-itools-blue hover:underline cursor-pointer text-center py-1"
                   onClick={closeCart}
                 >
                   Seguir Comprando

@@ -57,12 +57,12 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
       {/* Badges */}
       <div className="absolute top-2 left-2 z-10 flex flex-col gap-1">
         {discount > 0 && (
-          <Badge className="bg-milwaukee-red text-white border-0 text-[10px] font-bold px-2 py-0.5">
+          <Badge className="bg-itools-red text-white border-0 text-[10px] font-impact px-2 py-0.5">
             -{discount}%
           </Badge>
         )}
         {product.isNewArrival && (
-          <Badge className="bg-steel-dark text-white border-0 text-[10px] font-bold px-2 py-0.5">
+          <Badge className="bg-itools-dark text-white border-0 text-[10px] font-bold px-2 py-0.5">
             NUEVO
           </Badge>
         )}
@@ -77,7 +77,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
       >
         <Heart
           className={`h-4 w-4 transition-colors ${
-            wishlisted ? "fill-milwaukee-red text-milwaukee-red" : "text-gray-400"
+            wishlisted ? "fill-itools-red text-itools-red" : "text-gray-400"
           }`}
         />
       </button>
@@ -114,7 +114,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
 
       {/* Content */}
       <div className="flex flex-col flex-1 p-3 sm:p-4">
-        <h3 className="text-sm font-medium text-foreground leading-snug line-clamp-2 mb-1.5 group-hover:text-milwaukee-red transition-colors min-h-[2.5rem]">
+        <h3 className="text-sm font-medium text-foreground leading-snug line-clamp-2 mb-1.5 group-hover:text-itools-blue transition-colors min-h-[2.5rem]">
           {product.name}
         </h3>
 
@@ -132,14 +132,14 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
                 {formatPrice(product.comparePrice)}
               </span>
             )}
-            <span className="text-base sm:text-lg font-bold text-milwaukee-red">
+            <span className="text-base sm:text-lg font-impact text-itools-red">
               {formatPrice(product.price)}
             </span>
           </div>
           <Button
             size="sm"
             onClick={() => addToCart(product)}
-            className="bg-milwaukee-red hover:bg-milwaukee-red-dark text-white h-9 px-3 text-xs font-semibold shrink-0 transition-colors"
+            className="bg-itools-red hover:bg-itools-red-dark text-white h-9 px-3 text-xs font-impact shrink-0 transition-colors"
           >
             <ShoppingCart className="h-3.5 w-3.5 mr-1.5" />
             <span className="hidden sm:inline">Añadir</span>

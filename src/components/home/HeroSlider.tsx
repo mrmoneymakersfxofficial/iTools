@@ -51,7 +51,7 @@ export function HeroSlider() {
   };
 
   return (
-    <section className="relative w-full overflow-hidden bg-steel-dark" aria-label="Banner principal">
+    <section className="relative w-full overflow-hidden bg-itools-dark" aria-label="Banner principal">
       <div className="relative h-[280px] sm:h-[360px] md:h-[440px] lg:h-[500px]">
         <AnimatePresence initial={false} custom={direction} mode="wait">
           <motion.div
@@ -65,13 +65,13 @@ export function HeroSlider() {
             className="absolute inset-0 flex"
           >
             {/* Background gradient */}
-            <div className="absolute inset-0 bg-gradient-to-r from-steel-dark via-steel-dark/95 to-steel-dark/70 z-10" />
+            <div className="absolute inset-0 bg-gradient-to-r from-itools-dark via-itools-dark/95 to-itools-dark/70 z-10" />
 
             {/* Decorative pattern */}
             <div className="absolute inset-0 opacity-[0.04] texture-overlay z-10" />
 
             {/* Red accent line */}
-            <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-milwaukee-red z-20" />
+            <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-itools-red z-20" />
 
             {/* Content */}
             <div className="relative z-20 flex flex-col justify-center h-full px-6 sm:px-10 md:px-16 lg:px-24 max-w-3xl">
@@ -82,14 +82,14 @@ export function HeroSlider() {
                   {slide.badge}
                 </span>
               )}
-              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-white leading-tight mb-3 md:mb-4">
+              <h1 className="font-impact text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-white leading-tight mb-3 md:mb-4">
                 {slide.title}
               </h1>
               <p className="text-sm sm:text-base md:text-lg text-white/70 max-w-xl mb-6 md:mb-8 leading-relaxed">
                 {slide.subtitle}
               </p>
               <div>
-                <Button className="bg-milwaukee-red hover:bg-milwaukee-red-dark text-white font-bold px-6 md:px-8 h-11 md:h-12 text-sm md:text-base tracking-wide transition-colors">
+                <Button className="bg-itools-red hover:bg-itools-red-dark text-white font-impact px-6 md:px-8 h-11 md:h-12 text-sm md:text-base tracking-wide transition-colors">
                   {slide.cta}
                 </Button>
               </div>
@@ -99,8 +99,8 @@ export function HeroSlider() {
             <div className="hidden md:flex absolute right-0 top-0 bottom-0 w-1/2 items-center justify-center z-10">
               <div className="relative">
                 <div className="w-64 h-64 lg:w-80 lg:h-80 rounded-full border-2 border-white/10" />
-                <div className="absolute inset-8 rounded-full border border-milwaukee-red/30" />
-                <div className="absolute inset-16 rounded-full bg-milwaukee-red/5 flex items-center justify-center">
+                <div className="absolute inset-8 rounded-full border border-itools-blue/30" />
+                <div className="absolute inset-16 rounded-full bg-itools-blue/5 flex items-center justify-center">
                   <span className="text-6xl lg:text-7xl font-extrabold text-white/10">
                     M18
                   </span>
@@ -139,7 +139,7 @@ export function HeroSlider() {
               aria-label={`Ir al slide ${i + 1}`}
               className={`h-2 rounded-full transition-all duration-300 ${
                 i === current
-                  ? "w-8 bg-milwaukee-red"
+                  ? "w-8 bg-itools-red"
                   : "w-2 bg-white/40 hover:bg-white/60"
               }`}
             />

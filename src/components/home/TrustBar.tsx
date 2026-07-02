@@ -22,12 +22,12 @@ const features: { icon: LucideIcon; title: string; desc: string }[] = [
 
 export function TrustBar() {
   return (
-    <section className="bg-steel-dark text-white" aria-label="Beneficios de comprar en iTools">
+    <section className="bg-itools-dark text-white" aria-label="Beneficios de comprar en iTools">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="py-5 md:py-6">
           {/* Slogan */}
           <div className="text-center mb-4 md:mb-5">
-            <p className="text-white/90 text-xs md:text-sm tracking-widest uppercase font-medium">
+            <p className="text-white/90 text-xs md:text-sm font-impact tracking-widest uppercase">
               LAS HERRAMIENTAS ADECUADAS LO HACEN.
             </p>
           </div>
@@ -43,9 +43,9 @@ export function TrustBar() {
                 transition={{ duration: 0.3, delay: i * 0.05 }}
                 className="flex flex-col items-center text-center gap-2"
               >
-                <feature.icon className="h-7 w-7 md:h-8 md:w-8 text-milwaukee-red" strokeWidth={1.5} />
+                <feature.icon className="h-7 w-7 md:h-8 md:w-8 text-itools-blue" strokeWidth={1.5} />
                 <div>
-                  <p className="text-xs md:text-sm font-semibold leading-tight">
+                  <p className="text-xs md:text-sm font-impact leading-tight">
                     {feature.title}
                   </p>
                   <p className="text-[10px] md:text-xs text-white/50 mt-0.5 hidden sm:block">

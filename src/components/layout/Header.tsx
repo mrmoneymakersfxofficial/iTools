@@ -72,13 +72,13 @@ function CategoryNavItem({ category }: { category: Category }) {
       </button>
 
       {hasChildren && open && (
-        <div className="absolute left-0 top-full z-50 min-w-[220px] rounded-b-lg border-t-2 border-milwaukee-red bg-white shadow-lg animate-in fade-in-0 slide-in-from-top-2 duration-150">
+        <div className="absolute left-0 top-full z-50 min-w-[220px] rounded-b-lg border-t-2 border-itools-blue bg-white shadow-lg animate-in fade-in-0 slide-in-from-top-2 duration-150">
           <div className="py-2">
             {category.children!.map((child) => (
               <a
                 key={child.id}
                 href={`/categoria/${child.slug}`}
-                className="block px-5 py-2.5 text-sm text-steel-dark hover:bg-surface hover:text-milwaukee-red transition-colors"
+                className="block px-5 py-2.5 text-sm text-itools-dark hover:bg-surface hover:text-itools-blue transition-colors"
               >
                 {child.name}
               </a>
@@ -137,7 +137,7 @@ function MobileSearchOverlay({
           value={query}
           onChange={(e) => handleChange(e.target.value)}
           placeholder="Buscar herramientas, marcas, SKUs..."
-          className="flex-1 h-11 text-base border-milwaukee-red/30 focus-visible:border-milwaukee-red focus-visible:ring-milwaukee-red/20"
+          className="flex-1 h-11 text-base focus-visible:ring-itools-blue/30 focus-visible:border-itools-blue/50"
         />
         <Button
           variant="ghost"
@@ -179,7 +179,7 @@ function MobileSearchOverlay({
                   </p>
                 </div>
                 <div className="text-right shrink-0">
-                  <p className="text-sm font-bold text-milwaukee-red">
+                  <p className="text-sm font-bold text-itools-red">
                     {formatPrice(product.price)}
                   </p>
                   {product.comparePrice && (
@@ -226,10 +226,10 @@ function MobileMenuContent({ onClose }: { onClose: () => void }) {
     <div className="flex flex-col h-full">
       <SheetHeader className="border-b border-border pb-4">
         <SheetTitle className="flex items-center gap-2">
-          <span className="text-xl font-extrabold text-milwaukee-red tracking-tight">
+          <span className="text-xl font-extrabold text-itools-blue font-impact tracking-tight">
             iTools
           </span>
-          <span className="text-[10px] font-bold text-steel-dark tracking-[0.2em] uppercase leading-none">
+          <span className="text-[10px] font-bold text-itools-red font-impact tracking-[0.2em] uppercase leading-none">
             PERÚ
           </span>
         </SheetTitle>
@@ -249,7 +249,7 @@ function MobileMenuContent({ onClose }: { onClose: () => void }) {
                     ? toggleCategory(category.id)
                     : onClose()
                 }
-                className="flex items-center justify-between w-full px-4 py-3 text-sm font-medium text-steel-dark hover:bg-surface transition-colors"
+                className="flex items-center justify-between w-full px-4 py-3 text-sm font-medium text-itools-dark hover:bg-surface transition-colors"
               >
                 <a
                   href={`/categoria/${category.slug}`}
@@ -259,7 +259,7 @@ function MobileMenuContent({ onClose }: { onClose: () => void }) {
                       onClose();
                     }
                   }}
-                  className="hover:text-milwaukee-red transition-colors"
+                  className="hover:text-itools-blue transition-colors"
                 >
                   {category.name}
                 </a>
@@ -273,13 +273,13 @@ function MobileMenuContent({ onClose }: { onClose: () => void }) {
               </button>
 
               {hasChildren && isExpanded && (
-                <div className="bg-surface/60 border-l-2 border-milwaukee-red/20">
+                <div className="bg-surface/60 border-l-2 border-itools-blue/20">
                   {category.children!.map((child) => (
                     <a
                       key={child.id}
                       href={`/categoria/${child.slug}`}
                       onClick={() => onClose()}
-                      className="block pl-8 pr-4 py-2.5 text-sm text-muted-foreground hover:text-milwaukee-red hover:bg-white transition-colors"
+                      className="block pl-8 pr-4 py-2.5 text-sm text-muted-foreground hover:text-itools-blue hover:bg-white transition-colors"
                     >
                       {child.name}
                     </a>
@@ -295,7 +295,7 @@ function MobileMenuContent({ onClose }: { onClose: () => void }) {
         <a
           href="/cuenta"
           onClick={() => onClose()}
-          className="flex items-center gap-2 text-sm font-medium text-steel-dark hover:text-milwaukee-red transition-colors"
+          className="flex items-center gap-2 text-sm font-medium text-itools-dark hover:text-itools-blue transition-colors"
         >
           <User className="h-4 w-4" />
           Mi Cuenta
@@ -364,7 +364,7 @@ export default function Header() {
     <>
       <header className="sticky top-0 z-50 w-full">
         {/* ── Top Bar (hidden on mobile) ── */}
-        <div className="hidden md:block bg-steel-dark text-white">
+        <div className="hidden md:block bg-itools-dark text-white">
           <div className="mx-auto max-w-7xl px-4 flex items-center justify-between h-8 text-xs">
             {/* Left side */}
             <div className="flex items-center gap-4">
@@ -408,7 +408,7 @@ export default function Header() {
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="md:hidden -ml-1 text-steel-dark hover:text-milwaukee-red"
+                    className="md:hidden -ml-1 text-itools-dark hover:text-itools-blue"
                     aria-label="Abrir menú"
                   >
                     <Menu className="h-5 w-5" />
@@ -421,10 +421,10 @@ export default function Header() {
 
               {/* Logo */}
               <a href="/" className="flex flex-col items-start leading-none">
-                <span className="text-xl lg:text-2xl font-extrabold text-milwaukee-red tracking-tight">
+                <span className="text-xl lg:text-2xl font-extrabold text-itools-blue font-impact tracking-tight">
                   iTools
                 </span>
-                <span className="text-[9px] lg:text-[10px] font-bold text-steel-dark tracking-[0.18em] uppercase -mt-0.5">
+                <span className="text-[9px] lg:text-[10px] font-bold text-itools-red font-impact tracking-[0.18em] uppercase -mt-0.5">
                   PERÚ
                 </span>
               </a>
@@ -441,7 +441,7 @@ export default function Header() {
                     if (desktopResults.length > 0) setDesktopResultsOpen(true);
                   }}
                   placeholder="Buscar herramientas, marcas, SKUs..."
-                  className="w-full h-10 pl-10 pr-4 bg-surface border-0 rounded-lg text-sm focus-visible:ring-milwaukee-red/30 focus-visible:border-milwaukee-red/50"
+                  className="w-full h-10 pl-10 pr-4 bg-surface border-0 rounded-lg text-sm focus-visible:ring-itools-blue/30 focus-visible:border-itools-blue/50"
                   aria-label="Buscar productos"
                   aria-expanded={desktopResultsOpen}
                   role="combobox"
@@ -472,7 +472,7 @@ export default function Header() {
                           </p>
                         </div>
                         <div className="text-right shrink-0">
-                          <p className="text-sm font-bold text-milwaukee-red">
+                          <p className="text-sm font-bold text-itools-red">
                             {formatPrice(product.price)}
                           </p>
                           {product.comparePrice && (
@@ -488,7 +488,7 @@ export default function Header() {
                     <div className="px-4 py-2.5 border-t border-border text-center">
                       <a
                         href={`/buscar?q=${encodeURIComponent(desktopQuery)}`}
-                        className="text-xs font-medium text-milwaukee-red hover:underline"
+                        className="text-xs font-medium text-itools-blue hover:underline"
                         onClick={() => setDesktopResultsOpen(false)}
                       >
                         Ver todos los resultados ({desktopResults.length})
@@ -505,7 +505,7 @@ export default function Header() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="md:hidden text-steel-dark hover:text-milwaukee-red"
+                className="md:hidden text-itools-dark hover:text-itools-blue"
                 onClick={() => setMobileSearchOpen(true)}
                 aria-label="Buscar"
               >
@@ -516,12 +516,12 @@ export default function Header() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="relative text-steel-dark hover:text-milwaukee-red"
+                className="relative text-itools-dark hover:text-itools-blue"
                 aria-label={`Lista de deseos (${wishlistCount} artículos)`}
               >
                 <Heart className="h-5 w-5" />
                 {wishlistCount > 0 && (
-                  <Badge className="absolute -top-1 -right-1 h-4 min-w-4 px-1 text-[10px] font-bold flex items-center justify-center bg-milwaukee-red text-white border-0 rounded-full">
+                  <Badge className="absolute -top-1 -right-1 h-4 min-w-4 px-1 text-[10px] font-bold flex items-center justify-center bg-itools-red text-white border-0 rounded-full">
                     {wishlistCount > 99 ? "99+" : wishlistCount}
                   </Badge>
                 )}
@@ -531,13 +531,13 @@ export default function Header() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="relative text-steel-dark hover:text-milwaukee-red"
+                className="relative text-itools-dark hover:text-itools-blue"
                 onClick={openCart}
                 aria-label={`Carrito de compras (${cartItemCount} artículos)`}
               >
                 <ShoppingCart className="h-5 w-5" />
                 {cartItemCount > 0 && (
-                  <Badge className="absolute -top-1 -right-1 h-4 min-w-4 px-1 text-[10px] font-bold flex items-center justify-center bg-milwaukee-red text-white border-0 rounded-full">
+                  <Badge className="absolute -top-1 -right-1 h-4 min-w-4 px-1 text-[10px] font-bold flex items-center justify-center bg-itools-red text-white border-0 rounded-full">
                     {cartItemCount > 99 ? "99+" : cartItemCount}
                   </Badge>
                 )}
@@ -548,7 +548,7 @@ export default function Header() {
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="text-steel-dark hover:text-milwaukee-red gap-1.5"
+                  className="text-itools-dark hover:text-itools-blue gap-1.5"
                 >
                   <User className="h-4 w-4" />
                   <span className="text-sm font-medium">Mi Cuenta</span>
@@ -558,7 +558,7 @@ export default function Header() {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="text-steel-dark hover:text-milwaukee-red"
+                  className="text-itools-dark hover:text-itools-blue"
                   aria-label="Mi cuenta"
                 >
                   <User className="h-5 w-5" />
@@ -570,7 +570,7 @@ export default function Header() {
 
         {/* ── Category Nav (desktop only) ── */}
         <nav
-          className="hidden md:block bg-steel-dark"
+          className="hidden md:block bg-itools-dark"
           aria-label="Categorías de productos"
         >
           <div className="mx-auto max-w-7xl px-4 flex items-center">

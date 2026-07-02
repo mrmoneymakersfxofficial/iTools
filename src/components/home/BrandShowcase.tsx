@@ -20,23 +20,23 @@ export function BrandShowcase() {
           className="relative rounded-xl overflow-hidden mb-8 md:mb-10"
         >
           {/* Background */}
-          <div className="absolute inset-0 bg-gradient-to-r from-[#1A1A2E] via-[#2D1A1A] to-[#3D1A1A]" />
+          <div className="absolute inset-0 bg-gradient-to-r from-itools-dark via-[#1A1A3D] to-[#0D1A3D]" />
           <div className="absolute inset-0 texture-overlay opacity-30" />
 
-          {/* Red accent */}
-          <div className="absolute left-0 top-0 bottom-0 w-1 bg-milwaukee-red" />
+          {/* Blue accent */}
+          <div className="absolute left-0 top-0 bottom-0 w-1 bg-itools-blue" />
 
           <div className="relative z-10 px-6 sm:px-10 md:px-14 py-10 md:py-14 flex flex-col md:flex-row items-start md:items-center gap-8">
             {/* Left content */}
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-3">
-                <span className="bg-milwaukee-red text-white text-[10px] font-bold px-2.5 py-1 rounded-sm uppercase tracking-wider">
+                <span className="bg-itools-blue text-white text-[10px] font-impact px-2.5 py-1 rounded-sm uppercase tracking-wider">
                   Distribuidor Oficial
                 </span>
               </div>
               <h2
                 id="brand-heading"
-                className="text-2xl md:text-3xl lg:text-4xl font-extrabold text-white leading-tight mb-3"
+                className="text-2xl md:text-3xl lg:text-4xl font-impact text-white leading-tight mb-3"
               >
                 Milwaukee M18 FUEL™
               </h2>
@@ -47,19 +47,19 @@ export function BrandShowcase() {
               </p>
               <div className="flex flex-wrap gap-4 mb-8">
                 <div className="flex items-center gap-2">
-                  <Zap className="h-5 w-5 text-milwaukee-red" />
+                  <Zap className="h-5 w-5 text-itools-blue" />
                   <span className="text-sm text-white/80 font-medium">Motor POWERSTATE Brushless</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Battery className="h-5 w-5 text-milwaukee-red" />
+                  <Battery className="h-5 w-5 text-itools-blue" />
                   <span className="text-sm text-white/80 font-medium">REDLITHIUM XC5.0</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <ShieldCheck className="h-5 w-5 text-milwaukee-red" />
+                  <ShieldCheck className="h-5 w-5 text-itools-blue" />
                   <span className="text-sm text-white/80 font-medium">Garantía 5 años</span>
                 </div>
               </div>
-              <Button className="bg-milwaukee-red hover:bg-milwaukee-red-dark text-white font-bold px-8 h-11 transition-colors">
+              <Button className="bg-itools-blue hover:bg-itools-blue-dark text-white font-impact px-8 h-11 transition-colors">
                 Ver Colección M18
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
@@ -68,10 +68,10 @@ export function BrandShowcase() {
             {/* Right decorative */}
             <div className="hidden lg:flex items-center justify-center">
               <div className="relative">
-                <div className="w-48 h-48 rounded-full border-2 border-milwaukee-red/30" />
+                <div className="w-48 h-48 rounded-full border-2 border-itools-blue/30" />
                 <div className="absolute inset-6 rounded-full border border-white/10" />
-                <div className="absolute inset-12 rounded-full bg-milwaukee-red/10 flex items-center justify-center">
-                  <span className="text-5xl font-extrabold text-milwaukee-red">M18</span>
+                <div className="absolute inset-12 rounded-full bg-itools-blue/10 flex items-center justify-center">
+                  <span className="text-5xl font-impact text-itools-blue">M18</span>
                 </div>
               </div>
             </div>
@@ -80,7 +80,7 @@ export function BrandShowcase() {
 
         {/* Brand logos row */}
         <div className="text-center">
-          <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-6">
+          <h3 className="text-sm font-impact text-muted-foreground uppercase tracking-wider mb-6">
             Marcas que trabajamos
           </h3>
           <div className="flex items-center justify-center gap-6 md:gap-10 flex-wrap">
@@ -104,7 +104,7 @@ export function BrandShowcase() {
                   }}
                 >
                   <span
-                    className="text-sm md:text-base font-bold tracking-tight"
+                    className="text-sm md:text-base font-impact tracking-tight"
                     style={{
                       color:
                         brand.slug === "milwaukee" ? "#D1001C" :

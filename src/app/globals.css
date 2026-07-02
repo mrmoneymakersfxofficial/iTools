@@ -3,10 +3,35 @@
 
 @custom-variant dark (&:is(.dark *));
 
+@font-face {
+  font-family: 'Impact';
+  src: url('/fonts/impact.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Impact';
+  src: url('/fonts/Impacted.ttf') format('truetype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Impact';
+  src: url('/fonts/unicode.impact.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-inter);
+  --font-impact: 'Impact', 'Arial Narrow Bold', sans-serif;
   --font-mono: var(--font-geist-mono);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
@@ -42,17 +67,20 @@
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
 
-  --color-milwaukee-red: #D1001C;
-  --color-milwaukee-red-dark: #A80016;
-  --color-milwaukee-red-light: #E8354A;
-  --color-steel-dark: #1A1A2E;
-  --color-steel: #2D2D44;
-  --color-steel-light: #4A4A5A;
-  --color-surface: #F5F5F5;
-  --color-surface-dark: #E8E8E8;
-  --color-gold: #F59E0B;
-  --color-success: #16A34A;
-  --color-warning: #EA580C;
+  /* ── iTools Brand Colors ── */
+  --color-itools-blue: #0066FF;
+  --color-itools-blue-dark: #004FCC;
+  --color-itools-blue-light: #338AFF;
+  --color-itools-blue-soft: #E6F0FF;
+  --color-itools-red: #FF0000;
+  --color-itools-red-dark: #CC0000;
+  --color-itools-red-light: #FF3333;
+  --color-itools-dark: #1A1A2E;
+  --color-itools-steel: #2D2D44;
+  --color-itools-steel-light: #4A4A5A;
+  --color-itools-surface: #F5F5F5;
+  --color-itools-gold: #F59E0B;
+  --color-itools-success: #16A34A;
 }
 
 :root {
@@ -63,7 +91,7 @@
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.5 0.2 25);
+  --primary: oklch(0.55 0.22 260);
   --primary-foreground: oklch(1 0 0);
   --secondary: oklch(0.965 0 0);
   --secondary-foreground: oklch(0.205 0 0);
@@ -74,20 +102,20 @@
   --destructive: oklch(0.577 0.245 27.325);
   --border: oklch(0.91 0 0);
   --input: oklch(0.91 0 0);
-  --ring: oklch(0.5 0.2 25);
-  --chart-1: oklch(0.5 0.2 25);
+  --ring: oklch(0.55 0.22 260);
+  --chart-1: oklch(0.55 0.22 260);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.5 0.2 25);
+  --sidebar-primary: oklch(0.55 0.22 260);
   --sidebar-primary-foreground: oklch(1 0 0);
   --sidebar-accent: oklch(0.965 0 0);
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.91 0 0);
-  --sidebar-ring: oklch(0.5 0.2 25);
+  --sidebar-ring: oklch(0.55 0.22 260);
 }
 
 @layer base {
@@ -99,7 +127,7 @@
   }
 }
 
-/* Custom scrollbar */
+/* ── Custom scrollbar ── */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -115,7 +143,6 @@
   background: #555;
 }
 
-/* Hide scrollbar for horizontal scroll areas */
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
@@ -124,17 +151,7 @@
   scrollbar-width: none;
 }
 
-/* Hero slider animations */
-@keyframes slideIn {
-  from { opacity: 0; transform: translateX(30px); }
-  to { opacity: 1; transform: translateX(0); }
-}
-
-.animate-slide-in {
-  animation: slideIn 0.6s ease-out forwards;
-}
-
-/* Product card hover effect */
+/* ── Product card hover effect ── */
 .product-card-hover {
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
@@ -143,7 +160,7 @@
   box-shadow: 0 12px 24px -8px rgba(0,0,0,0.15);
 }
 
-/* Industrial texture overlay */
+/* ── Industrial texture overlay ── */
 .texture-overlay {
   background-image: 
     repeating-linear-gradient(
@@ -153,4 +170,16 @@
       rgba(0,0,0,0.02) 2px,
       rgba(0,0,0,0.02) 4px
     );
+}
+
+/* ── Impact Font Utility Classes ── */
+.font-impact {
+  font-family: 'Impact', 'Arial Narrow Bold', sans-serif;
+  letter-spacing: 0.02em;
+}
+
+.font-impact-italic {
+  font-family: 'Impact', 'Arial Narrow Bold', sans-serif;
+  font-style: italic;
+  letter-spacing: 0.02em;
 }

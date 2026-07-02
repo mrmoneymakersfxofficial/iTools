@@ -14,9 +14,14 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { cn } from "@/lib/utils";
 import { categories } from "@/lib/data";
 
-const trustFeatures = [
+const trustFeatures: {
+  icon: React.ComponentType<React.SVGProps<SVGSVGElement> & { strokeWidth?: number }>;
+  label: string;
+  iconClassName?: string;
+}[] = [
   {
     icon: Truck,
     label: "Envío a Todo el Perú",
@@ -24,6 +29,7 @@ const trustFeatures = [
   {
     icon: Shield,
     label: "Servicio Técnico Oficial Milwaukee",
+    iconClassName: "text-itools-gold",
   },
   {
     icon: Clock,
@@ -60,7 +66,7 @@ export default function Footer() {
       {/* ── Trust / Features Bar ──────────────────────────────── */}
       <section
         aria-label="Beneficios de iTools Perú"
-        className="bg-milwaukee-red"
+        className="bg-itools-blue"
       >
         <div className="mx-auto grid max-w-7xl grid-cols-2 gap-4 px-4 py-5 sm:px-6 lg:grid-cols-4 lg:gap-6 lg:py-6">
           {trustFeatures.map((feature) => (
@@ -69,7 +75,7 @@ export default function Footer() {
               className="flex items-center gap-3 text-white"
             >
               <feature.icon
-                className="h-7 w-7 shrink-0 sm:h-8 sm:w-8"
+                className={cn("h-7 w-7 shrink-0 sm:h-8 sm:w-8", feature.iconClassName)}
                 strokeWidth={1.5}
                 aria-hidden="true"
               />
@@ -82,17 +88,17 @@ export default function Footer() {
       </section>
 
       {/* ── Main Footer ───────────────────────────────────────── */}
-      <section className="bg-steel-dark text-gray-300" aria-label="Pie de página">
+      <section className="bg-itools-dark text-gray-300" aria-label="Pie de página">
         <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
           <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8">
             {/* Column 1 — About iTools */}
             <div>
               {/* Logo */}
               <div className="mb-4 flex items-baseline gap-1">
-                <span className="text-2xl font-extrabold tracking-tight text-milwaukee-red">
+                <span className="text-2xl font-impact tracking-tight text-itools-blue">
                   iTools
                 </span>
-                <span className="text-xs font-semibold uppercase tracking-widest text-gray-400">
+                <span className="text-xs font-impact uppercase tracking-widest text-gray-400">
                   PERÚ
                 </span>
               </div>
@@ -110,7 +116,7 @@ export default function Footer() {
                         target="_blank"
                         rel="noopener noreferrer"
                         aria-label={social.label}
-                        className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition-colors duration-200 hover:bg-milwaukee-red"
+                        className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition-colors duration-200 hover:bg-itools-blue"
                       >
                         <social.icon className="h-4 w-4" />
                       </a>
@@ -122,7 +128,7 @@ export default function Footer() {
 
             {/* Column 2 — Categorías */}
             <div>
-              <h3 className="mb-5 text-sm font-bold uppercase tracking-wider text-white">
+              <h3 className="mb-5 text-sm font-impact uppercase tracking-wider text-white">
                 Categorías
               </h3>
               <ul className="space-y-2.5" role="list">
@@ -130,7 +136,7 @@ export default function Footer() {
                   <li key={category.id}>
                     <a
                       href={`/categoria/${category.slug}`}
-                      className="flex items-center gap-2 text-sm text-gray-400 transition-colors duration-200 hover:text-milwaukee-red-light"
+                      className="flex items-center gap-2 text-sm text-gray-400 transition-colors duration-200 hover:text-itools-blue-light"
                     >
                       <ChevronRight
                         className="h-3.5 w-3.5 shrink-0"
@@ -145,7 +151,7 @@ export default function Footer() {
 
             {/* Column 3 — Información */}
             <div>
-              <h3 className="mb-5 text-sm font-bold uppercase tracking-wider text-white">
+              <h3 className="mb-5 text-sm font-impact uppercase tracking-wider text-white">
                 Información
               </h3>
               <ul className="space-y-2.5" role="list">
@@ -153,7 +159,7 @@ export default function Footer() {
                   <li key={link.label}>
                     <a
                       href={link.href}
-                      className="flex items-center gap-2 text-sm text-gray-400 transition-colors duration-200 hover:text-milwaukee-red-light"
+                      className="flex items-center gap-2 text-sm text-gray-400 transition-colors duration-200 hover:text-itools-blue-light"
                     >
                       <ChevronRight
                         className="h-3.5 w-3.5 shrink-0"
@@ -168,13 +174,13 @@ export default function Footer() {
 
             {/* Column 4 — Contacto */}
             <div>
-              <h3 className="mb-5 text-sm font-bold uppercase tracking-wider text-white">
+              <h3 className="mb-5 text-sm font-impact uppercase tracking-wider text-white">
                 Contacto
               </h3>
               <address className="not-italic space-y-4">
                 <a
                   href="tel:+5112345678"
-                  className="flex items-start gap-3 text-sm text-gray-400 transition-colors duration-200 hover:text-milwaukee-red-light"
+                  className="flex items-start gap-3 text-sm text-gray-400 transition-colors duration-200 hover:text-itools-blue-light"
                 >
                   <Phone
                     className="mt-0.5 h-4 w-4 shrink-0 text-gray-500"
@@ -184,7 +190,7 @@ export default function Footer() {
                 </a>
                 <a
                   href="mailto:ventas@itoolsperu.com"
-                  className="flex items-start gap-3 text-sm text-gray-400 transition-colors duration-200 hover:text-milwaukee-red-light"
+                  className="flex items-start gap-3 text-sm text-gray-400 transition-colors duration-200 hover:text-itools-blue-light"
                 >
                   <Mail
                     className="mt-0.5 h-4 w-4 shrink-0 text-gray-500"
@@ -210,7 +216,7 @@ export default function Footer() {
         <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8 lg:py-12">
           {/* Newsletter */}
           <div className="mb-8 text-center lg:mb-10">
-            <h3 className="mb-1 text-lg font-semibold text-white sm:text-xl">
+            <h3 className="mb-1 text-lg font-impact text-white sm:text-xl">
               Suscríbete a nuestro boletín
             </h3>
             <p className="mb-6 text-sm text-gray-400">
@@ -225,11 +231,11 @@ export default function Footer() {
                 placeholder="Tu correo electrónico"
                 aria-label="Correo electrónico para suscripción"
                 required
-                className="h-11 flex-1 border-white/20 bg-white/10 text-white placeholder:text-gray-500 focus-visible:ring-milwaukee-red"
+                className="h-11 flex-1 border-white/20 bg-white/10 text-white placeholder:text-gray-500 focus-visible:ring-itools-blue"
               />
               <Button
                 type="submit"
-                className="h-11 shrink-0 bg-milwaukee-red px-6 font-semibold uppercase tracking-wider text-white hover:bg-milwaukee-red-dark"
+                className="h-11 shrink-0 bg-itools-blue px-6 font-semibold uppercase tracking-wider text-white hover:bg-itools-blue-dark"
               >
                 Suscribirse
               </Button>

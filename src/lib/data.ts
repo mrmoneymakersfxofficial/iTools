@@ -445,7 +445,7 @@ export const heroSlides: HeroSlide[] = [
     ctaLink: "#",
     image: "/images/hero/hero-1.jpg",
     badge: "NUEVO",
-    badgeColor: "bg-milwaukee-red",
+    badgeColor: "bg-itools-red",
   },
   {
     id: 2,
@@ -465,7 +465,7 @@ export const heroSlides: HeroSlide[] = [
     ctaLink: "#",
     image: "/images/hero/hero-3.jpg",
     badge: "SERVICIO",
-    badgeColor: "bg-steel-dark",
+    badgeColor: "bg-itools-blue",
   },
 ];
 
