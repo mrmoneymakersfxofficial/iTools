@@ -127,20 +127,44 @@
   }
 }
 
-/* ── Custom scrollbar ── */
+/* ── Premium Scrollbar ── */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 102, 255, 0.4) transparent;
+}
+
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
 }
+
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: transparent;
 }
+
 ::-webkit-scrollbar-thumb {
-  background: #888;
-  border-radius: 4px;
+  background: linear-gradient(180deg, #0066FF 0%, #004FCC 100%);
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+  box-shadow: 0 0 6px rgba(0, 102, 255, 0.3);
+  transition: all 0.2s ease;
 }
+
 ::-webkit-scrollbar-thumb:hover {
-  background: #555;
+  background: linear-gradient(180deg, #338AFF 0%, #0066FF 100%);
+  background-clip: content-box;
+  box-shadow: 0 0 12px rgba(0, 102, 255, 0.5);
+  border: 2px solid transparent;
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* Firefox premium scrollbar */
+html {
+  scrollbar-color: rgba(0, 102, 255, 0.4) transparent;
 }
 
 .no-scrollbar::-webkit-scrollbar {
@@ -149,6 +173,55 @@
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+/* ── Reading Progress Bar ── */
+.reading-progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  z-index: 9999;
+  background: transparent;
+  pointer-events: none;
+}
+
+.reading-progress-bar__fill {
+  height: 100%;
+  background: linear-gradient(90deg, #0066FF 0%, #E35205 50%, #FF0000 100%);
+  border-radius: 0 2px 2px 0;
+  box-shadow: 0 0 10px rgba(0, 102, 255, 0.5), 0 0 20px rgba(227, 82, 5, 0.3);
+  transition: width 0.1s linear;
+  will-change: width;
+}
+
+/* ── Particle Trail Canvas ── */
+.particle-trail-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 9998;
+}
+
+/* ── Section Deep Linking: smooth scroll offset for sticky header ── */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 120px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* ── Active section highlight (used by navigation) ── */
+[data-section] {
+  scroll-margin-top: 120px;
 }
 
 /* ── Product card hover effect ── */

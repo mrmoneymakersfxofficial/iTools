@@ -12,14 +12,37 @@ export default function Home() {
     <div className="flex min-h-screen flex-col">
       <Header />
       <main className="flex-1">
-        <HeroSlider />
-        <TopDealsSection />
-        <TrustBar />
-        <CategoriesSection />
-        <DealsSection />
-        <BrandShowcase />
-        <FeaturedSection />
-        <NewArrivalsSection />
+        <section data-section="Hero — Ofertas Destacadas">
+          <HeroSlider />
+        </section>
+
+        <section data-section="Ofertas del Día">
+          <TopDealsSection />
+        </section>
+
+        <section data-section="¿Por Qué Elegir iTools?">
+          <TrustBar />
+        </section>
+
+        <section data-section="Categorías Populares">
+          <CategoriesSection />
+        </section>
+
+        <section data-section="Ofertas Especiales">
+          <DealsSection />
+        </section>
+
+        <section data-section="Marcas Oficiales">
+          <BrandShowcase />
+        </section>
+
+        <section data-section="Productos Destacados">
+          <FeaturedSection />
+        </section>
+
+        <section data-section="Nuevos Ingresos">
+          <NewArrivalsSection />
+        </section>
       </main>
       <Footer />
     </div>
