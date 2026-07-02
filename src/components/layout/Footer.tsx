@@ -94,13 +94,14 @@ export default function Footer() {
             {/* Column 1 — About iTools */}
             <div>
               {/* Logo */}
-              <div className="mb-4 flex items-baseline gap-1">
-                <span className="text-2xl font-impact tracking-tight text-itools-blue">
-                  iTools
-                </span>
-                <span className="text-xs font-impact uppercase tracking-widest text-gray-400">
-                  PERÚ
-                </span>
+              <div className="mb-4">
+                <img
+                  src="/logo.png"
+                  alt="iTools.Pe"
+                  className="h-10 w-auto object-contain brightness-0 invert opacity-90"
+                  width={180}
+                  height={56}
+                />
               </div>
               <p className="mb-6 text-sm leading-relaxed text-gray-400">
                 Distribuidor autorizado de herramientas Milwaukee en Perú. Más
@@ -235,7 +236,7 @@ export default function Footer() {
               />
               <Button
                 type="submit"
-                className="h-11 shrink-0 bg-itools-blue px-6 font-semibold uppercase tracking-wider text-white hover:bg-itools-blue-dark"
+                className="h-11 shrink-0 bg-itools-blue px-6 uppercase tracking-wider text-white hover:bg-itools-blue-dark"
               >
                 Suscribirse
               </Button>

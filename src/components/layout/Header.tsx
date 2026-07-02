@@ -179,7 +179,7 @@ function MobileSearchOverlay({
                   </p>
                 </div>
                 <div className="text-right shrink-0">
-                  <p className="text-sm font-bold text-itools-red">
+                  <p className="text-sm text-itools-red">
                     {formatPrice(product.price)}
                   </p>
                   {product.comparePrice && (
@@ -225,13 +225,14 @@ function MobileMenuContent({ onClose }: { onClose: () => void }) {
   return (
     <div className="flex flex-col h-full">
       <SheetHeader className="border-b border-border pb-4">
-        <SheetTitle className="flex items-center gap-2">
-          <span className="text-xl font-extrabold text-itools-blue font-impact tracking-tight">
-            iTools
-          </span>
-          <span className="text-[10px] font-bold text-itools-red font-impact tracking-[0.2em] uppercase leading-none">
-            PERÚ
-          </span>
+        <SheetTitle className="flex items-center">
+          <img
+            src="/logo.png"
+            alt="iTools.Pe"
+            className="h-9 w-auto object-contain"
+            width={160}
+            height={45}
+          />
         </SheetTitle>
       </SheetHeader>
 
@@ -420,13 +421,14 @@ export default function Header() {
               </Sheet>
 
               {/* Logo */}
-              <a href="/" className="flex flex-col items-start leading-none">
-                <span className="text-xl lg:text-2xl font-extrabold text-itools-blue font-impact tracking-tight">
-                  iTools
-                </span>
-                <span className="text-[9px] lg:text-[10px] font-bold text-itools-red font-impact tracking-[0.18em] uppercase -mt-0.5">
-                  PERÚ
-                </span>
+              <a href="/" className="flex items-center">
+                <img
+                  src="/logo.png"
+                  alt="iTools.Pe — Herramientas profesionales en Perú"
+                  className="h-10 lg:h-12 w-auto object-contain"
+                  width={180}
+                  height={56}
+                />
               </a>
             </div>
 
@@ -472,7 +474,7 @@ export default function Header() {
                           </p>
                         </div>
                         <div className="text-right shrink-0">
-                          <p className="text-sm font-bold text-itools-red">
+                          <p className="text-sm text-itools-red">
                             {formatPrice(product.price)}
                           </p>
                           {product.comparePrice && (
@@ -521,7 +523,7 @@ export default function Header() {
               >
                 <Heart className="h-5 w-5" />
                 {wishlistCount > 0 && (
-                  <Badge className="absolute -top-1 -right-1 h-4 min-w-4 px-1 text-[10px] font-bold flex items-center justify-center bg-itools-red text-white border-0 rounded-full">
+                  <Badge className="absolute -top-1 -right-1 h-4 min-w-4 px-1 text-[10px] flex items-center justify-center bg-itools-red text-white border-0 rounded-full">
                     {wishlistCount > 99 ? "99+" : wishlistCount}
                   </Badge>
                 )}
@@ -537,7 +539,7 @@ export default function Header() {
               >
                 <ShoppingCart className="h-5 w-5" />
                 {cartItemCount > 0 && (
-                  <Badge className="absolute -top-1 -right-1 h-4 min-w-4 px-1 text-[10px] font-bold flex items-center justify-center bg-itools-red text-white border-0 rounded-full">
+                  <Badge className="absolute -top-1 -right-1 h-4 min-w-4 px-1 text-[10px] flex items-center justify-center bg-itools-red text-white border-0 rounded-full">
                     {cartItemCount > 99 ? "99+" : cartItemCount}
                   </Badge>
                 )}

@@ -25,7 +25,7 @@ export function CartDrawer() {
         {/* Header */}
         <SheetHeader className="px-6 pt-6 pb-4 shrink-0">
           <div className="flex items-center justify-between">
-            <SheetTitle className="text-lg font-bold text-foreground font-impact">
+            <SheetTitle className="text-lg text-foreground font-impact">
               Mi Carrito ({itemCount} {itemCount === 1 ? "item" : "items"})
             </SheetTitle>
             <Button
@@ -46,7 +46,7 @@ export function CartDrawer() {
             <div className="rounded-full bg-gray-100 p-6 mb-6">
               <ShoppingBag className="h-12 w-12 text-muted-foreground/50" />
             </div>
-            <h3 className="text-lg font-semibold text-foreground mb-2">
+            <h3 className="text-lg text-foreground mb-2">
               Tu carrito está vacío
             </h3>
             <p className="text-sm text-muted-foreground max-w-[260px] mb-6">
@@ -84,7 +84,7 @@ export function CartDrawer() {
                         <p className="text-xs text-muted-foreground mt-1">
                           {item.product.brand?.name ?? "Marca"}
                         </p>
-                        <p className="text-itools-blue font-bold text-sm mt-1">
+                        <p className="text-itools-blue text-sm mt-1">
                           {formatPrice(item.product.price)}
                         </p>
                       </div>
@@ -133,7 +133,7 @@ export function CartDrawer() {
                     <div className="flex justify-end mt-2 pr-1">
                       <span className="text-xs text-muted-foreground">
                         Subtotal:{" "}
-                        <span className="font-semibold text-foreground">
+                        <span className="text-foreground">
                           {formatPrice(item.product.price * item.quantity)}
                         </span>
                       </span>
@@ -154,7 +154,7 @@ export function CartDrawer() {
                 {/* Subtotal Row */}
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-medium text-muted-foreground">Subtotal</span>
-                  <span className="text-lg font-bold text-foreground tabular-nums">
+                  <span className="text-lg text-foreground tabular-nums">
                     {formatPrice(subtotal)}
                   </span>
                 </div>

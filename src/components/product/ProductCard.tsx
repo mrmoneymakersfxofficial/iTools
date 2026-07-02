@@ -62,7 +62,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
           </Badge>
         )}
         {product.isNewArrival && (
-          <Badge className="bg-itools-dark text-white border-0 text-[10px] font-bold px-2 py-0.5">
+          <Badge className="bg-itools-dark text-white border-0 text-[10px] px-2 py-0.5">
             NUEVO
           </Badge>
         )}
@@ -91,7 +91,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
         {product.brand && (
           <div className="absolute bottom-2 left-2">
             <span
-              className="text-[10px] font-bold px-2 py-0.5 rounded-sm text-white"
+              className="text-[10px] px-2 py-0.5 rounded-sm text-white"
               style={{
                 backgroundColor:
                   product.brand.slug === "milwaukee"

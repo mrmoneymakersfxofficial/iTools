@@ -77,7 +77,7 @@ export function HeroSlider() {
             <div className="relative z-20 flex flex-col justify-center h-full px-6 sm:px-10 md:px-16 lg:px-24 max-w-3xl">
               {slide.badge && (
                 <span
-                  className={`${slide.badgeColor} inline-block self-start px-3 py-1 text-[11px] font-bold uppercase tracking-widest text-white rounded-sm mb-4`}
+                  className={`${slide.badgeColor} inline-block self-start px-3 py-1 text-[11px] uppercase tracking-widest text-white rounded-sm mb-4`}
                 >
                   {slide.badge}
                 </span>
@@ -101,7 +101,7 @@ export function HeroSlider() {
                 <div className="w-64 h-64 lg:w-80 lg:h-80 rounded-full border-2 border-white/10" />
                 <div className="absolute inset-8 rounded-full border border-itools-blue/30" />
                 <div className="absolute inset-16 rounded-full bg-itools-blue/5 flex items-center justify-center">
-                  <span className="text-6xl lg:text-7xl font-extrabold text-white/10">
+                  <span className="text-6xl lg:text-7xl text-white/10">
                     M18
                   </span>
                 </div>
