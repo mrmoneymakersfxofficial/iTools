@@ -1,47 +1,50 @@
 "use client";
 
 import Link from "next/link";
-import { Wrench, Zap, TreePine, Shield, Package, Settings, Hammer, Disc, Ruler, HardHat, Cog, Drill } from "lucide-react";
 
 /**
  * Horizontal scrolling category menu for mobile.
- * Matches Acme's "ALL TOOLS | OUTDOOR LIVING | LAWN & GARDEN" overflow scroll.
- * Shows icon + label in white rounded pills, scrollable horizontally.
+ * Acme style: "ALL TOOLS | OUTDOOR POWER | LAWN & GARDEN" —
+ * text-only items with pipe separators, overflow-x scroll.
  */
 const menuItems = [
-  { name: "Todas las Herramientas", slug: "herramientas-electricas", icon: Wrench },
-  { name: "Herramientas Eléctricas", slug: "herramientas-electricas", icon: Zap },
-  { name: "Herramientas Manuales", slug: "herramientas-manuales", icon: Hammer },
-  { name: "Sierras y Corte", slug: "esmeriladoras", icon: Disc },
-  { name: "Medición", slug: "herramientas-manuales", icon: Ruler },
-  { name: "Seguridad y EPP", slug: "equipos-de-proteccion", icon: Shield },
-  { name: "Almacenamiento", slug: "almacenamiento-herramientas", icon: HardHat },
-  { name: "Accesorios", slug: "accesorios-herramientas", icon: Package },
-  { name: "Kits Combinados", slug: "herramientas-electricas", icon: Settings },
-  { name: "Taladros", slug: "taladros", icon: Drill },
-  { name: "Jardín", slug: "herramientas-manuales", icon: TreePine },
-  { name: "Corte y Pulido", slug: "esmeriladoras", icon: Cog },
+  { name: "Todas las Herramientas", slug: "herramientas-electricas" },
+  { name: "Herramientas Eléctricas", slug: "herramientas-electricas" },
+  { name: "Herramientas Manuales", slug: "herramientas-manuales" },
+  { name: "Taladros", slug: "taladros" },
+  { name: "Impactos y Atornilladores", slug: "atornilladores" },
+  { name: "Sierras y Corte", slug: "sierras" },
+  { name: "Milwaukee M18", slug: "herramientas-electricas" },
+  { name: "Milwaukee M12", slug: "herramientas-electricas" },
+  { name: "Baterías y Cargadores", slug: "accesorios-herramientas" },
+  { name: "Seguridad y EPP", slug: "equipos-de-proteccion" },
+  { name: "Almacenamiento", slug: "almacenamiento-herramientas" },
+  { name: "Accesorios", slug: "accesorios-herramientas" },
+  { name: "Kits Combinados", slug: "herramientas-electricas" },
+  { name: "Jardín", slug: "herramientas-manuales" },
 ];
 
 export function HorizontalCategoryMenu() {
   return (
-    <div
-      className="overflow-x-auto flex gap-2 px-2.5 py-2.5 bg-white"
+    <nav
+      className="overflow-x-auto bg-white border-b border-[#E0E0E0]"
       style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
     >
-      {menuItems.map((item) => {
-        const Icon = item.icon;
-        return (
-          <Link
-            key={item.slug + item.name}
-            href={`/categoria/${item.slug}`}
-            className="flex items-center gap-1.5 px-3 py-2 bg-[#F5F6F8] hover:bg-[#E8EDF2] rounded-lg text-[11px] font-semibold text-[#333] whitespace-nowrap transition-colors shrink-0"
-          >
-            <Icon className="h-3.5 w-3.5 text-[#666]" />
-            <span>{item.name}</span>
-          </Link>
-        );
-      })}
-    </div>
+      <div className="flex items-center whitespace-nowrap px-3 py-2.5 gap-0">
+        {menuItems.map((item, i) => (
+          <span key={item.slug + item.name} className="flex items-center shrink-0">
+            {i > 0 && (
+              <span className="text-[#D0D0D0] mx-2 select-none" aria-hidden="true">|</span>
+            )}
+            <Link
+              href={`/categoria/${item.slug}`}
+              className="text-[11px] font-semibold text-[#333] hover:text-[#E35205] uppercase tracking-[0.04em] transition-colors"
+            >
+              {item.name}
+            </Link>
+          </span>
+        ))}
+      </div>
+    </nav>
   );
 }

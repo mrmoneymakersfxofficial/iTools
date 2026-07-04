@@ -37,18 +37,19 @@ export default function Home() {
             → Best Deals (lower) → Brands → Explore
             ═══════════════════════════════════════════════════ */}
         <div className="lg:hidden">
-          {/* 0. Horizontal Scrolling Category Menu (Acme style) */}
+          {/* 0. Horizontal Scrolling Category Menu (Acme overflow scroll) */}
           <HorizontalCategoryMenu />
 
-          {/* 1. Hero banner — full-width horizontal */}
-          <div className="px-2.5">
-            <CenterHeroBanner />
-          </div>
+          {/* ── BANNER CONTAINER: max-w-7xl, px-4/md:px-6 ── */}
+          <section className="container mx-auto max-w-7xl px-4 md:px-6 py-4 md:py-8">
+            {/* 1. Hero banner — 100% width, h-[200/320/400px] */}
+            <div className="mb-4 md:mb-6">
+              <CenterHeroBanner />
+            </div>
 
-          {/* 2. Two tall vertical banners — 2 columns side-by-side */}
-          <div className="px-2.5 pt-2.5">
+            {/* 2. Two promo banners — grid-cols-2, tall vertical cards */}
             <CenterSmallBanners />
-          </div>
+          </section>
 
           {/* 3. Tool Crib — thin horizontal bar */}
           <ToolCribMobileBar />
@@ -57,7 +58,7 @@ export default function Home() {
           <TrendingCategoriesMobile />
 
           {/* 5. Giveaway banner */}
-          <div className="px-2.5">
+          <div className="px-4 md:px-6">
             <CenterGiveawayBanner />
           </div>
 
