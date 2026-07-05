@@ -41,3 +41,20 @@ Stage Summary:
 - All changes committed and pushed: fc9b49c
 - 3 files modified (globals.css, layout.tsx, brand-page-client.tsx), 1 new (BottomNav.tsx)
 - Build 100% clean, deploy triggered to Vercel
+---
+Task ID: 2
+Agent: main
+Task: Mobile UX overhaul - brand cards, modals, sub-categories, admin panel
+
+Work Log:
+- Analyzed 5 user reference images with VLM
+- Redesigned BrandsGridMobile.tsx: horizontal scrolling cards (140-160px wide) with brand color header, product count, white CTA footer, Acme Tools style
+- Rewrote BottomNav.tsx: lg:hidden (mobile only), Marcas button opens bottom sheet modal with scrollable brand ticker + 2-col brand card grid (no redirect), Categorías button opens category modal with icon grid → subcategory pills → product preview cards, chatbot panel
+- Updated brand-page-client.tsx: added horizontal scrolling sub-category pills on mobile (lg:hidden), fixed gradient from brandColor → #0A0A0A without white intermediates, darkened mobile sidebar shadow
+- Created /admin route: dark dashboard layout with stats cards (ventas, pedidos, productos, visitas), recent orders table, top products list, brand performance bars, responsive sidebar
+- Build: 138 pages, all clean. Push: 0329e1b
+
+Stage Summary:
+- 5 files changed, 675 insertions, 210 deletions
+- Admin panel at /admin with full dark UI
+- All mobile interactions now use modals instead of page redirects
