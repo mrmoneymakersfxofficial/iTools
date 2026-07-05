@@ -15,6 +15,7 @@ import {
   Shield,
 } from "lucide-react";
 import { AccountMenu, AccountMenuDesktop } from "@/components/layout/AccountMenu";
+import { ThemeToggle } from "@/components/layout/ThemeToggle";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -385,7 +386,8 @@ export default function Header() {
             </div>
 
             {/* Right side */}
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
+              <ThemeToggle />
               <span className="flex items-center gap-1.5 text-white/80">
                 <Shield className="h-3 w-3 text-gold" />
                 <span>Servicio Técnico Oficial Milwaukee</span>
