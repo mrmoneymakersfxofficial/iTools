@@ -273,7 +273,7 @@ export function BrandPageClient({
   // Immersive gradient: brand color → black with continuity
   const pageBgStyle = {
     background: `
-      linear-gradient(160deg, ${brandColor} 0%, ${brandColor}88 8%, ${brandColor}44 15%, ${brandColor}22 22%, rgba(0,0,0,0.97) 40%, rgba(0,0,0,1) 55%, rgba(0,0,0,1) 100%)
+      linear-gradient(160deg, ${brandColor} 0%, ${brandColor}99 6%, ${brandColor}66 12%, ${brandColor}33 20%, rgba(10,10,10,0.98) 35%, #0A0A0A 50%)
     `,
     minHeight: "100vh",
   };
@@ -318,6 +318,7 @@ export function BrandPageClient({
             <div
               className="absolute left-0 top-0 bottom-0 w-[300px] overflow-y-auto"
               onClick={(e) => e.stopPropagation()}
+              style={{ boxShadow: "12px 0 50px rgba(0,0,0,0.9)" }}
             >
               <div className="bg-[#111] min-h-full">
                 <div className="px-4 py-4 flex items-center justify-between" style={{ backgroundColor: brandColor }}>
@@ -404,7 +405,36 @@ export function BrandPageClient({
 
           {/* CENTER COLUMN */}
           <div className="flex-1 min-w-0 space-y-3">
-            {/* Main brand promo banner — immersive glass card */}
+            <div className="lg:hidden">
+              <nav
+                className="flex gap-2 overflow-x-auto pb-1 -mx-2.5 px-2.5 no-scrollbar"
+                style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+              >
+                {/* "Todos" pill */}
+                <button
+                  onClick={() => {}}
+                  className="shrink-0 flex items-center gap-1.5 px-3.5 py-2 rounded-full text-[10px] font-bold uppercase tracking-wider border transition-all"
+                  style={{
+                    backgroundColor: "#E35205",
+                    color: "#FFF",
+                    borderColor: "#E35205",
+                    boxShadow: "0 0 8px rgba(227,82,5,0.3)",
+                  }}
+                >
+                  Todos
+                </button>
+                {cats.map((cat, i) => (
+                  <button
+                    key={i}
+                    className="shrink-0 flex items-center gap-1.5 px-3.5 py-2 rounded-full text-[10px] font-semibold uppercase tracking-wider border border-[#333] bg-[#111] text-[#CCC] hover:border-[#E35205] hover:text-[#E35205] transition-all"
+                  >
+                    <span style={{ color: brandColor }}><BrandCategoryIcon type={cat.icon} color={brandColor} /></span>
+                    <span>{cat.name}</span>
+                    <span className="text-[#555] ml-0.5">{cat.count}</span>
+                  </button>
+                ))}
+              </nav>
+            </div>
             <Link
               href={`/marca/${brand.slug}`}
               className="block relative overflow-hidden rounded-xl group"
