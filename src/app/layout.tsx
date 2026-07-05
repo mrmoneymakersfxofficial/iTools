@@ -4,6 +4,7 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { CartDrawer } from "@/components/layout/CartDrawer";
 import { ClientLayoutEffects } from "@/components/layout/ClientLayoutEffects";
+import { BottomNav } from "@/components/layout/BottomNav";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -91,6 +92,7 @@ export default function RootLayout({
         <ClientLayoutEffects />
         {children}
         <CartDrawer />
+        <BottomNav />
         <Toaster />
       </body>
     </html>

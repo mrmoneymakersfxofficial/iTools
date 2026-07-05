@@ -195,21 +195,21 @@ html {
   opacity: 0;
 }
 
-/* Wide ambient glow behind the bar */
+/* Wide ambient glow behind the bar — reduced to 30% */
 .reading-progress-bar__glow {
   position: absolute;
   top: 0;
   left: 0;
-  height: 24px;
+  height: 10px;
   background: linear-gradient(90deg,
-    rgba(0, 102, 255, 0.35) 0%,
-    rgba(99, 102, 241, 0.4) 25%,
-    rgba(227, 82, 5, 0.45) 50%,
-    rgba(255, 0, 0, 0.35) 75%,
-    rgba(227, 82, 5, 0.2) 100%
+    rgba(0, 102, 255, 0.10) 0%,
+    rgba(99, 102, 241, 0.12) 25%,
+    rgba(227, 82, 5, 0.14) 50%,
+    rgba(255, 0, 0, 0.10) 75%,
+    rgba(227, 82, 5, 0.06) 100%
   );
-  filter: blur(10px);
-  border-radius: 0 12px 12px 0;
+  filter: blur(4px);
+  border-radius: 0 6px 6px 0;
   transition: width 0.15s linear;
   will-change: width;
 }
@@ -231,9 +231,9 @@ html {
   animation: rpb-shimmer 3s ease-in-out infinite;
   border-radius: 0 3px 3px 0;
   box-shadow:
-    0 0 8px rgba(0, 102, 255, 0.8),
-    0 0 16px rgba(99, 102, 241, 0.5),
-    0 0 24px rgba(227, 82, 5, 0.3);
+    0 0 3px rgba(0, 102, 255, 0.24),
+    0 0 6px rgba(99, 102, 241, 0.15),
+    0 0 9px rgba(227, 82, 5, 0.09);
   transition: width 0.1s linear;
   will-change: width;
 }
@@ -271,9 +271,9 @@ html {
   border-radius: 50%;
   background: #fff;
   box-shadow:
-    0 0 6px 2px rgba(0, 102, 255, 0.9),
-    0 0 14px 4px rgba(227, 82, 5, 0.6),
-    0 0 24px 8px rgba(255, 0, 0, 0.3);
+    0 0 2px 1px rgba(0, 102, 255, 0.27),
+    0 0 5px 2px rgba(227, 82, 5, 0.18),
+    0 0 8px 3px rgba(255, 0, 0, 0.09);
   animation: rpb-pulse 1.5s ease-in-out infinite;
 }
 
