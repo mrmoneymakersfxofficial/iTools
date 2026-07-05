@@ -36,7 +36,7 @@ export default function Home() {
             → Trending Categories → Giveaway → Trending Products
             → Best Deals (lower) → Brands → Explore
             ═══════════════════════════════════════════════════ */}
-        <div className="lg:hidden">
+        <div className="lg:hidden" data-mobile>
           {/* 0. Horizontal Scrolling Category Menu (Acme overflow scroll) */}
           <HorizontalCategoryMenu />
 
@@ -130,46 +130,45 @@ export default function Home() {
   );
 }
 
-/* ── Desktop-only 3-column deal tiles ── */
+/* ── Desktop deal tiles — brand-colored cards with dark bottom gradient ── */
 function DesktopDealTiles() {
   const tiles = [
-    { brand: "BOSCH", brandColor: "#005691", title: "Batería de 18 V de regalo", subtitle: "Consigue una batería GRATIS con kits BOSCH.", href: "/categoria/herramientas-electricas" },
-    { brand: "MILWAUKEE", brandColor: "#D1001C", title: "Kit M18 FUEL™ con 2 baterías", subtitle: "Lleva el kit M18 FUEL™ y recibe batería extra.", href: "/categoria/herramientas-electricas" },
-    { brand: "DEWALT", brandColor: "#FFD700", textColor: "#1A1A1A", title: "20V MAX XR — Hasta 25% OFF", subtitle: "Descuentos exclusivos en la línea 20V MAX XR.", href: "/categoria/herramientas-electricas" },
-    { brand: "MAKITA", brandColor: "#0077C8", title: "18V LXT — 15% adicional", subtitle: "15% extra en herramientas Makita 18V.", href: "/categoria/herramientas-electricas" },
+    { brand: "BOSCH", brandColor: "#1e4b8f", title: "Batería de 18 V de regalo", subtitle: "Consigue una batería GRATIS con kits BOSCH.", href: "/marca/bosch" },
+    { brand: "MILWAUKEE", brandColor: "#c61010", title: "Herramienta gratuita de elección", subtitle: "Con la compra de kits Milwaukee M18 seleccionados.", href: "/marca/milwaukee" },
+    { brand: "DEWALT", brandColor: "#e6a817", textColor: "#1A1A1A", title: "Herramienta gratuita por nuestra cuenta", subtitle: "Con kit de batería DEWALT 20V MAX XR seleccionado.", href: "/marca/dewalt" },
+    { brand: "MAKITA", brandColor: "#0077C8", title: "18V LXT — 15% adicional", subtitle: "15% extra en herramientas Makita 18V.", href: "/marca/makita" },
     { brand: "STANLEY", brandColor: "#E35205", title: "Envío Gratis en Manuales", subtitle: "Herramientas manuales Stanley envío gratis.", href: "/categoria/herramientas-manuales" },
     { brand: "3M", brandColor: "#CC3300", title: "Seguridad — 10% extra", subtitle: "EPP 3M con 10% de descuento adicional.", href: "/categoria/equipos-de-proteccion" },
   ];
 
   return (
     <>
-      <div className="grid grid-cols-3 gap-2 mb-2.5">
-        {tiles.map((tile) => (
-          <a
-            key={tile.brand}
-            href={tile.href}
-            className="enhanced-7by-tile group relative overflow-hidden rounded-lg bg-white border border-[#E0E0E0] hover:shadow-md transition-shadow"
-          >
-            <div className="h-1 w-full" style={{ backgroundColor: tile.brandColor }} />
-            <div className="p-3">
-              <span className="text-[11px] font-bold tracking-[0.06em]" style={{ color: tile.brandColor }}>
-                {tile.brand}
-              </span>
-              <p className="font-impact text-[#1A1A1A] text-xs leading-tight mt-1 mb-1">{tile.title}</p>
-              <p className="text-[#666] text-[10px] leading-relaxed mb-2 line-clamp-2">{tile.subtitle}</p>
-              <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-[#F5F6F8] group-hover:bg-[#E35205] text-[#999] group-hover:text-white transition-all">
-                <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
-              </span>
-            </div>
-          </a>
-        ))}
+      <div className="grid grid-cols-3 gap-2.5 mb-2.5">
+        {tiles.map((tile) => {
+          const textCol = tile.textColor || "#FFFFFF";
+          return (
+            <a
+              key={tile.brand}
+              href={tile.href}
+              className="group relative overflow-hidden rounded-lg h-[200px] transition-shadow hover:shadow-lg"
+            >
+              <div className="absolute inset-0" style={{ backgroundColor: tile.brandColor }} />
+              <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.45) 100%)" }} />
+              <div className="relative z-10 flex flex-col justify-between h-full p-4">
+                <span className="text-[11px] font-bold tracking-[0.08em] uppercase" style={{ color: textCol, opacity: 0.85 }}>{tile.brand}</span>
+                <div>
+                  <p className="font-impact text-sm leading-tight mb-1" style={{ color: textCol }}>{tile.title}</p>
+                  <p className="text-[10px] leading-relaxed mb-2 line-clamp-2" style={{ color: textCol, opacity: 0.8 }}>{tile.subtitle}</p>
+                  <span className="inline-flex items-center justify-center w-6 h-6 rounded-full transition-all" style={{ backgroundColor: `${textCol}20`, color: textCol }}>
+                    <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
+                  </span>
+                </div>
+              </div>
+            </a>
+          );
+        })}
       </div>
-      <a
-        href="/categoria/herramientas-electricas"
-        className="block w-full text-center bg-[#E35205] hover:bg-[#CC4400] text-white py-2.5 rounded-lg text-sm font-bold uppercase tracking-wide transition-colors"
-      >
-        Ver Todas Las Ofertas
-      </a>
+      <a href="/categoria/herramientas-electricas" className="block w-full text-center bg-[#E35205] hover:bg-[#CC4400] text-white py-2.5 rounded-lg text-sm font-bold uppercase tracking-wide transition-colors">Ver Todas Las Ofertas</a>
     </>
   );
 }

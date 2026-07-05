@@ -46,7 +46,7 @@ test.describe('Homepage - Acme Layout', () => {
     await expect(page.locator('section[data-section="Las Mejores Ofertas de Hoy"]')).toBeVisible();
     await expect(page.locator('section[data-section="Productos de Moda Móvil"]')).toBeVisible();
     await expect(page.locator('section[data-section="Categorías Principales"]')).toBeVisible();
-    await expect(page.locator('section[data-section="Comprar por Marca"]')).toBeVisible();
+    await expect(page.locator('[data-mobile] section[data-section="Comprar por Marca"]')).toBeVisible();
     await expect(page.locator('section[data-section="Explorar Productos"]')).toBeVisible();
   });
 
@@ -141,11 +141,11 @@ test.describe('Homepage - Acme Layout', () => {
     await page.goto('/');
     await page.waitForLoadState('networkidle');
 
-    const brandSection = page.locator('section[data-section="Comprar por Marca"]');
+    const brandSection = page.locator('[data-mobile] section[data-section="Comprar por Marca"]');
     await expect(brandSection).toBeVisible();
     await expect(brandSection.locator('text=Milwaukee')).toBeVisible();
-    await expect(brandSection.locator('text=DeWalt')).toBeVisible();
-    await expect(brandSection.locator('text=Bosch')).toBeVisible();
+    await expect(brandSection.locator('text=DEWALT')).toBeVisible();
+    await expect(brandSection.locator('text=BOSCH')).toBeVisible();
   });
 
   test('Mobile: explore products with tabs', async ({ page }) => {
