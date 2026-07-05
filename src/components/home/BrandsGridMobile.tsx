@@ -35,20 +35,20 @@ export function BrandsGridMobile() {
           </h2>
         </div>
 
-        {/* Colored brand buttons grid */}
-        <div className="grid grid-cols-3 sm:grid-cols-4 gap-1.5">
+        {/* Colored brand buttons grid - taller and wider */}
+        <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
           {brands.map((brand) => (
             <Link
               key={brand.slug}
               href={`/marca/${brand.slug}`}
-              className="acme-brand-btn text-center h-12 rounded-lg text-xs font-bold uppercase tracking-wide transition-all hover:opacity-90 hover:-translate-y-0.5 hover:shadow-md"
+              className="acme-brand-btn flex items-center justify-center h-[60px] sm:h-[68px] rounded-lg text-xs sm:text-sm font-bold uppercase tracking-wider transition-all hover:opacity-90 hover:-translate-y-0.5 hover:shadow-lg active:scale-[0.97]"
               style={{
                 backgroundColor: brand.color,
                 color: brand.textColor,
                 fontStyle: brand.fontStyle || "normal",
               }}
             >
-              {brand.name}
+              <span className="text-center leading-tight">{brand.name}</span>
             </Link>
           ))}
         </div>

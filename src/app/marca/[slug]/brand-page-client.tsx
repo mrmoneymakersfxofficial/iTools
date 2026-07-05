@@ -3,10 +3,10 @@
 import Link from "next/link";
 import { useState } from "react";
 import {
-  ChevronRight, CircleArrowRight, Wrench, Star, TrendingUp, Plus,
+  ChevronRight, CircleArrowRight, Wrench, Star, TrendingUp, Plus, Search,
 } from "lucide-react";
 import { ProductCard } from "@/components/product/ProductCard";
-import type { Product, Brand } from "@/types";
+import type { Product, Brand, Category } from "@/types";
 
 interface BrandTheme {
   color: string;
@@ -14,6 +14,7 @@ interface BrandTheme {
   tabs?: string[];
 }
 
+/* ── Per-brand category definitions ── */
 const brandCategories: Record<string, { name: string; count: string; icon: string }[]> = {
   milwaukee: [
     { name: "Herramientas eléctricas M18", count: "28.1K", icon: "drill" },
@@ -28,6 +29,174 @@ const brandCategories: Record<string, { name: string; count: string; icon: strin
     { name: "EPI y seguridad", count: "4.3K", icon: "shield" },
     { name: "Sierras", count: "2.3K", icon: "saw" },
   ],
+  dewalt: [
+    { name: "Herramientas 20V MAX XR", count: "22.4K", icon: "drill" },
+    { name: "Herramientas 12V MAX", count: "9.8K", icon: "drill" },
+    { name: "Herramientas FLEXVOLT 60V", count: "8.2K", icon: "drill" },
+    { name: "ATOMIC Compact Series", count: "6.5K", icon: "drill" },
+    { name: "Baterías y cargadores", count: "11.3K", icon: "battery" },
+    { name: "Taladros", count: "7.1K", icon: "drill" },
+    { name: "Impactos", count: "5.9K", icon: "wrench" },
+    { name: "Sierras", count: "4.8K", icon: "saw" },
+    { name: "Esmeriladoras", count: "3.2K", icon: "saw" },
+    { name: "Kits combinados", count: "5.4K", icon: "box" },
+  ],
+  bosch: [
+    { name: "Herramientas 18V Professional", count: "19.6K", icon: "drill" },
+    { name: "Herramientas 12V", count: "8.4K", icon: "drill" },
+    { name: "Herramientas Green", count: "5.2K", icon: "drill" },
+    { name: "Taladros y atornilladores", count: "9.7K", icon: "drill" },
+    { name: "Sierras", count: "4.1K", icon: "saw" },
+    { name: "Esmeriladoras", count: "3.8K", icon: "saw" },
+    { name: "Medición láser", count: "2.9K", icon: "ruler" },
+    { name: "Baterías ProCore", count: "6.3K", icon: "battery" },
+    { name: "Detectores y sensores", count: "1.8K", icon: "shield" },
+  ],
+  makita: [
+    { name: "Herramientas 18V LXT", count: "24.5K", icon: "drill" },
+    { name: "Herramientas 12V CXT", count: "10.2K", icon: "drill" },
+    { name: "Herramientas 40V X2", count: "5.8K", icon: "drill" },
+    { name: "Taladros", count: "8.6K", icon: "drill" },
+    { name: "Impactos", count: "6.4K", icon: "wrench" },
+    { name: "Sierras", count: "5.1K", icon: "saw" },
+    { name: "Rotomartillos", count: "3.9K", icon: "drill" },
+    { name: "Baterías y cargadores", count: "9.8K", icon: "battery" },
+    { name: "Radios y altavoces", count: "2.1K", icon: "box" },
+    { name: "Jardín", count: "4.3K", icon: "saw" },
+  ],
+  stanley: [
+    { name: "Herramientas manuales FATMAX", count: "15.8K", icon: "wrench" },
+    { name: "Llaves", count: "8.2K", icon: "wrench" },
+    { name: "Destornilladores", count: "7.4K", icon: "wrench" },
+    { name: "Cintas métricas", count: "9.1K", icon: "ruler" },
+    { name: "Niveles", count: "4.6K", icon: "ruler" },
+    { name: "Cajas de herramientas", count: "5.3K", icon: "box" },
+    { name: "Martillos", count: "3.7K", icon: "wrench" },
+    { name: "Pinzas y alicates", count: "4.2K", icon: "wrench" },
+    { name: "STANLEY PRO", count: "6.8K", icon: "wrench" },
+  ],
+  "3m": [
+    { name: "Protección auditiva", count: "4.8K", icon: "shield" },
+    { name: "Protección ocular", count: "6.2K", icon: "shield" },
+    { name: "Protección respiratoria", count: "5.7K", icon: "shield" },
+    { name: "Cintas adhesivas", count: "12.4K", icon: "box" },
+    { name: "Discos abrasivos", count: "8.9K", icon: "saw" },
+    { name: "Líquidos y limpieza", count: "3.4K", icon: "box" },
+    { name: "Selladores y espumas", count: "4.1K", icon: "box" },
+    { name: "EPP industrial", count: "7.3K", icon: "shield" },
+  ],
+  honda: [
+    { name: "Generadores inverter", count: "3.2K", icon: "drill" },
+    { name: "Generadores industriales", count: "2.8K", icon: "drill" },
+    { name: "Motobombas de agua", count: "4.1K", icon: "box" },
+    { name: "Motores stationary", count: "5.6K", icon: "drill" },
+    { name: "Cortacéspedes", count: "2.4K", icon: "saw" },
+    { name: "Motocompresores", count: "1.8K", icon: "drill" },
+    { name: "Repuestos y accesorios", count: "8.9K", icon: "box" },
+  ],
+  "klein-tools": [
+    { name: "Herramientas eléctricas", count: "14.2K", icon: "drill" },
+    { name: "Multímetros y medición", count: "8.7K", icon: "ruler" },
+    { name: "Pinzas y alicates", count: "6.3K", icon: "wrench" },
+    { name: "Destornilladores", count: "5.8K", icon: "wrench" },
+    { name: "Cintas métricas", count: "7.1K", icon: "ruler" },
+    { name: "Niveles", count: "3.9K", icon: "ruler" },
+    { name: "Pelacables y conectores", count: "4.5K", icon: "wrench" },
+    { name: "Bolsas y organizadores", count: "3.2K", icon: "box" },
+  ],
+  toro: [
+    { name: "Cortacéspedes", count: "5.4K", icon: "saw" },
+    { name: "Sopladores de hojas", count: "3.8K", icon: "drill" },
+    { name: "Podadoras de setos", count: "2.9K", icon: "saw" },
+    { name: "Limpiadoras a presión", count: "2.1K", icon: "drill" },
+    { name: "Sopladores inalámbricos", count: "1.6K", icon: "drill" },
+    { name: "Cortadoras de césped", count: "3.2K", icon: "saw" },
+    { name: "Repuestos", count: "4.8K", icon: "box" },
+  ],
+  ego: [
+    { name: "Sopladores POWER+", count: "4.2K", icon: "drill" },
+    { name: "Cortacéspedes", count: "3.1K", icon: "saw" },
+    { name: "Sierras de cadena", count: "2.4K", icon: "saw" },
+    { name: "Taladros", count: "1.8K", icon: "drill" },
+    { name: "Recortabordes", count: "2.6K", icon: "saw" },
+    { name: "Baterías 56V ARC Lithium", count: "5.7K", icon: "battery" },
+    { name: "Cargadores", count: "3.4K", icon: "battery" },
+    { name: "Accesorios de jardín", count: "4.1K", icon: "box" },
+  ],
+  "metabo-hpt": [
+    { name: "Clavadoras neumáticas", count: "6.8K", icon: "drill" },
+    { name: "Herramientas 18V", count: "9.4K", icon: "drill" },
+    { name: "Herramientas 36V Multivolt", count: "4.2K", icon: "drill" },
+    { name: "Taladros", count: "5.1K", icon: "drill" },
+    { name: "Sierras circulares", count: "3.7K", icon: "saw" },
+    { name: "Esmeriladoras", count: "3.2K", icon: "saw" },
+    { name: "Aire comprimido", count: "4.8K", icon: "box" },
+  ],
+  flex: [
+    { name: "Herramientas 24V", count: "12.6K", icon: "drill" },
+    { name: "Herramientas 40V MAX", count: "5.8K", icon: "drill" },
+    { name: "Taladros", count: "4.1K", icon: "drill" },
+    { name: "Impactos", count: "3.8K", icon: "wrench" },
+    { name: "Sierras circulares", count: "3.2K", icon: "saw" },
+    { name: "Esmeriladoras", count: "2.9K", icon: "saw" },
+    { name: "Rotomartillos", count: "2.4K", icon: "drill" },
+    { name: "Baterías y cargadores", count: "6.7K", icon: "battery" },
+  ],
+  stihl: [
+    { name: "Motosierras", count: "8.4K", icon: "saw" },
+    { name: "Sopladores de hojas", count: "6.2K", icon: "drill" },
+    { name: "Desbrozadoras", count: "5.1K", icon: "saw" },
+    { name: "Hidrolimpiadoras", count: "3.4K", icon: "drill" },
+    { name: "Motobombas", count: "2.8K", icon: "box" },
+    { name: "Herramientas a batería", count: "4.5K", icon: "battery" },
+    { name: "Cortacéspedes", count: "2.1K", icon: "saw" },
+    { name: "Accesorios y repuestos", count: "7.3K", icon: "box" },
+  ],
+  fein: [
+    { name: "Multiherramientas MultiMaster", count: "4.8K", icon: "drill" },
+    { name: "Sierras de calar", count: "2.9K", icon: "saw" },
+    { name: "Pulidoras", count: "2.4K", icon: "saw" },
+    { name: "Taladros de columna", count: "1.6K", icon: "drill" },
+    { name: "Aspiradoras industriales", count: "3.2K", icon: "box" },
+    { name: "Accesorios MultiMaster", count: "5.7K", icon: "box" },
+  ],
+  skil: [
+    { name: "Herramientas 20V", count: "8.4K", icon: "drill" },
+    { name: "Herramientas 12V", count: "5.2K", icon: "drill" },
+    { name: "Taladros", count: "3.8K", icon: "drill" },
+    { name: "Sierras circulares", count: "3.1K", icon: "saw" },
+    { name: "Esmeriladoras", count: "2.7K", icon: "saw" },
+    { name: "Impactos", count: "2.9K", icon: "wrench" },
+    { name: "Sierras caladoras", count: "2.4K", icon: "saw" },
+    { name: "Kits combinados", count: "4.6K", icon: "box" },
+  ],
+  festool: [
+    { name: "Sierras de corte", count: "4.2K", icon: "saw" },
+    { name: "Sierras circulares", count: "3.8K", icon: "saw" },
+    { name: "Aspiradoras CT", count: "3.4K", icon: "box" },
+    { name: "Taladros", count: "2.9K", icon: "drill" },
+    { name: "Enrutadores", count: "2.4K", icon: "drill" },
+    { name: "Lijadoras", count: "3.1K", icon: "saw" },
+    { name: "Sistema Systainer", count: "5.6K", icon: "box" },
+    { name: "Accesorios y discos", count: "8.2K", icon: "box" },
+  ],
+  jet: [
+    { name: "Sierras de cinta", count: "2.8K", icon: "saw" },
+    { name: "Sierras de mesa", count: "2.4K", icon: "saw" },
+    { name: "Tornos de banco", count: "1.9K", icon: "drill" },
+    { name: "Taladros de columna", count: "2.1K", icon: "drill" },
+    { name: "Esmeriladores de banco", count: "1.6K", icon: "saw" },
+    { name: "Martillos neumáticos", count: "2.3K", icon: "wrench" },
+    { name: "Prensas y sujetadores", count: "1.8K", icon: "box" },
+  ],
+  knaack: [
+    { name: "Cajas de herramientas", count: "4.2K", icon: "box" },
+    { name: "Bancos de trabajo", count: "2.8K", icon: "box" },
+    { name: "Cestas y soportes", count: "3.1K", icon: "box" },
+    { name: "Estantes de almacenamiento", count: "2.4K", icon: "box" },
+    { name: "Carritos utilitarios", count: "1.9K", icon: "box" },
+    { name: "Organizadores modulares", count: "2.6K", icon: "box" },
+  ],
 };
 
 const defaultBrandCategories = [
@@ -41,7 +210,7 @@ const defaultBrandCategories = [
   { name: "EPI y seguridad", count: "4.0K", icon: "shield" },
 ];
 
-function BrandCategoryIcon({ type }: { type: string }) {
+function BrandCategoryIcon({ type, color }: { type: string; color: string }) {
   const cls = "h-4 w-4";
   switch (type) {
     case "drill":
@@ -54,6 +223,25 @@ function BrandCategoryIcon({ type }: { type: string }) {
       return (
         <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
           <rect x="6" y="4" width="12" height="18" rx="2" /><path d="M9 2h6" /><path d="M10 9h4M10 13h4M10 17h4" />
+        </svg>
+      );
+    case "shield":
+      return (
+        <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+        </svg>
+      );
+    case "ruler":
+      return (
+        <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
+          <path d="M21.3 15.3a2.4 2.4 0 0 1 0 3.4l-2.6 2.6a2.4 2.4 0 0 1-3.4 0L2.7 8.7a2.41 2.41 0 0 1 0-3.4l2.6-2.6a2.41 2.41 0 0 1 3.4 0Z" />
+          <path d="m14.5 12.5 2-2" /><path d="m11.5 9.5 2-2" /><path d="m8.5 6.5 2-2" /><path d="m17.5 15.5 2-2" />
+        </svg>
+      );
+    case "saw":
+      return (
+        <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
+          <circle cx="6" cy="6" r="3" /><path d="M8.12 8.12 12 12" /><path d="M20 4 8.12 15.88" /><path d="M14.47 14.48 20 20" /><path d="M16 8 20 12" /><path d="M8 12 12 8" />
         </svg>
       );
     default:
@@ -78,7 +266,7 @@ export function BrandPageClient({
   const cats = brandCategories[brand.slug] || defaultBrandCategories;
   const brandColor = theme.color;
   const textCol = theme.textColor;
-  const isDark = textCol === "#FFF";
+  const isDark = textCol === "#FFF" || textCol === "#00A651";
 
   return (
     <main className="min-h-screen bg-[#F5F6F8]">
@@ -92,40 +280,40 @@ export function BrandPageClient({
 
         {/* ── 3-Column Layout (desktop) ── */}
         <div className="flex gap-3">
-          {/* LEFT SIDEBAR — Brand categories */}
+          {/* LEFT SIDEBAR — Acme style: black bg + brand color accents */}
           <aside className="hidden lg:block w-[240px] xl:w-[260px] shrink-0">
-            <div className="sticky top-[120px] bg-white border border-[#E0E0E0] rounded-lg overflow-hidden">
-              {/* Header */}
+            <div className="sticky top-[120px] bg-[#1A1A1A] rounded-lg overflow-hidden">
+              {/* Header with brand color */}
               <div
                 className="px-4 py-3 flex items-center gap-2"
                 style={{ backgroundColor: brandColor, color: textCol }}
               >
                 <Wrench className="h-4 w-4" />
                 <h2 className="text-sm font-bold uppercase tracking-wide">
-                  Herramientas {brand.name}
+                  {brand.name} Tools
                 </h2>
               </div>
-              {/* Category list */}
-              <ul className="divide-y divide-[#F0F0F0]">
+              {/* Category list - dark background */}
+              <ul className="divide-y divide-[#333]">
                 {cats.map((cat, i) => (
                   <li key={i}>
                     <Link
                       href={`/marca/${brand.slug}`}
-                      className="flex items-center justify-between px-4 py-2.5 hover:bg-[#F5F6F8] transition-colors group"
+                      className="flex items-center justify-between px-4 py-2.5 hover:bg-[#2A2A2A] transition-colors group"
                     >
                       <div className="flex items-center gap-2.5">
                         <span style={{ color: brandColor }}>
-                          <BrandCategoryIcon type={cat.icon} />
+                          <BrandCategoryIcon type={cat.icon} color={brandColor} />
                         </span>
-                        <span className="text-sm text-[#333] group-hover:text-[#E35205] transition-colors truncate">
+                        <span className="text-sm text-[#CCC] group-hover:text-white transition-colors truncate">
                           {cat.name}
                         </span>
                       </div>
                       <div className="flex items-center gap-2 shrink-0">
-                        <span className="text-xs text-[#999] bg-[#F0F0F0] px-1.5 py-0.5 rounded-full">
+                        <span className="text-xs text-[#888] bg-[#333] px-1.5 py-0.5 rounded-full">
                           {cat.count}
                         </span>
-                        <ChevronRight className="h-3 w-3 text-[#ccc] group-hover:text-[#E35205] transition-colors" />
+                        <ChevronRight className="h-3 w-3 text-[#555] group-hover:text-white transition-colors" />
                       </div>
                     </Link>
                   </li>
@@ -136,7 +324,7 @@ export function BrandPageClient({
 
           {/* CENTER COLUMN */}
           <div className="flex-1 min-w-0 space-y-3">
-            {/* Brand promo banners */}
+            {/* Main brand promo banner */}
             <Link
               href={`/marca/${brand.slug}`}
               className="block relative overflow-hidden rounded-lg"
@@ -146,16 +334,16 @@ export function BrandPageClient({
                 className="absolute inset-0"
                 style={{
                   background: isDark
-                    ? "linear-gradient(135deg, rgba(0,0,0,0.3) 0%, transparent 50%, rgba(0,0,0,0.4) 100%)"
-                    : "linear-gradient(135deg, rgba(0,0,0,0.1) 0%, transparent 50%, rgba(0,0,0,0.15) 100%)",
+                    ? "linear-gradient(135deg, rgba(0,0,0,0.25) 0%, transparent 40%, rgba(0,0,0,0.35) 100%)"
+                    : "linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 50%, rgba(255,255,255,0.15) 100%)",
                 }}
               />
               <div className="relative z-10 flex items-center justify-between px-6 py-8 md:py-12">
                 <div className="max-w-md space-y-2">
-                  <span className="font-impact text-2xl md:text-3xl" style={{ color: textCol }}>
+                  <span className="font-impact text-2xl md:text-3xl lg:text-4xl" style={{ color: textCol }}>
                     MÁS {brand.name.toUpperCase()}, MÁS AHORROS
                   </span>
-                  <p className="text-sm md:text-base" style={{ color: textCol, opacity: 0.85 }}>
+                  <p className="text-sm md:text-base" style={{ color: textCol, opacity: 0.9 }}>
                     Ofertas exclusivas en herramientas {brand.name}. Envío a todo Perú.
                   </p>
                   <span
@@ -176,7 +364,7 @@ export function BrandPageClient({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
               <Link href={`/marca/${brand.slug}`} className="block relative overflow-hidden rounded-lg">
                 <div className="absolute inset-0" style={{ backgroundColor: brandColor }} />
-                <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.45) 100%)" }} />
+                <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, transparent 30%, rgba(0,0,0,0.5) 100%)" }} />
                 <div className="relative z-10 flex flex-col justify-between h-[160px] md:h-[200px] p-4">
                   <span className="text-[11px] font-bold tracking-[0.08em] uppercase" style={{ color: textCol, opacity: 0.85 }}>
                     {brand.name.toUpperCase()}
@@ -196,7 +384,7 @@ export function BrandPageClient({
               </Link>
               <Link href={`/marca/${brand.slug}`} className="block relative overflow-hidden rounded-lg">
                 <div className="absolute inset-0" style={{ backgroundColor: brandColor, filter: "brightness(0.85)" }} />
-                <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.5) 100%)" }} />
+                <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, transparent 30%, rgba(0,0,0,0.55) 100%)" }} />
                 <div className="relative z-10 flex flex-col justify-between h-[160px] md:h-[200px] p-4">
                   <span className="text-[11px] font-bold tracking-[0.08em] uppercase" style={{ color: textCol, opacity: 0.85 }}>
                     {brand.name.toUpperCase()}
@@ -248,9 +436,9 @@ export function BrandPageClient({
             </div>
           </div>
 
-          {/* RIGHT SIDEBAR — Featured products / Pipeline */}
+          {/* RIGHT SIDEBAR — Pipeline (Acme style: dark bg) */}
           <aside className="hidden lg:block w-[280px] xl:w-[300px] shrink-0">
-            <div className="sticky top-[120px] bg-white border border-[#E0E0E0] rounded-lg overflow-hidden">
+            <div className="sticky top-[120px] bg-[#1A1A1A] rounded-lg overflow-hidden">
               {/* Header */}
               <div
                 className="px-4 py-3 flex items-center justify-between"
@@ -262,13 +450,13 @@ export function BrandPageClient({
                     PIPELINE
                   </h2>
                 </div>
-                <Link href={`/marca/${brand.slug}`} className="text-xs underline opacity-80">
+                <Link href={`/marca/${brand.slug}`} className="text-xs underline opacity-80 hover:opacity-100">
                   Ver más
                 </Link>
               </div>
-              {/* Product cards */}
+              {/* Product list */}
               <div>
-                {(products.slice(0, 7)).map((product) => {
+                {(products.slice(0, 8)).map((product) => {
                   const discount = product.comparePrice
                     ? Math.round(((product.comparePrice - product.price) / product.comparePrice) * 100)
                     : 0;
@@ -276,10 +464,10 @@ export function BrandPageClient({
                     <Link
                       key={product.id}
                       href={`/producto/${product.slug}`}
-                      className="group flex gap-3 p-3 hover:bg-[#F5F6F8] transition-colors border-b border-[#F0F0F0] last:border-b-0"
+                      className="group flex gap-3 p-3 hover:bg-[#2A2A2A] transition-colors border-b border-[#333] last:border-b-0"
                     >
-                      <div className="shrink-0 w-16 h-16 rounded bg-[#F5F5F5] flex items-center justify-center border border-[#E8E8E8]">
-                        <Wrench className="h-7 w-7 text-gray-300" />
+                      <div className="shrink-0 w-16 h-16 rounded bg-[#2A2A2A] flex items-center justify-center border border-[#444]">
+                        <Wrench className="h-7 w-7 text-[#555]" />
                       </div>
                       <div className="flex-1 min-w-0">
                         {discount > 0 && (
@@ -290,7 +478,7 @@ export function BrandPageClient({
                             -{discount}%
                           </span>
                         )}
-                        <p className="text-xs leading-snug text-[#333] group-hover:text-[#E35205] transition-colors line-clamp-2 mb-1">
+                        <p className="text-xs leading-snug text-[#CCC] group-hover:text-white transition-colors line-clamp-2 mb-1">
                           {product.name}
                         </p>
                         <div className="flex items-center gap-1 mb-0.5">
@@ -301,16 +489,16 @@ export function BrandPageClient({
                                 className={`h-2.5 w-2.5 ${
                                   star <= Math.round(product.rating)
                                     ? "fill-amber-400 text-amber-400"
-                                    : "fill-gray-200 text-gray-200"
+                                    : "fill-[#444] text-[#444]"
                                 }`}
                               />
                             ))}
                           </div>
-                          <span className="text-[10px] text-[#999]">({product.reviewCount})</span>
+                          <span className="text-[10px] text-[#777]">({product.reviewCount})</span>
                         </div>
                         <div className="flex items-center gap-2">
                           {product.comparePrice && (
-                            <span className="text-[11px] text-[#999] line-through">
+                            <span className="text-[11px] text-[#777] line-through">
                               {formatPrice(product.comparePrice)}
                             </span>
                           )}
