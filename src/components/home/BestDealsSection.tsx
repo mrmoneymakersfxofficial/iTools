@@ -70,11 +70,11 @@ function DealCard({ tile }: { tile: typeof dealTiles[0] }) {
 
 export function BestDealsSection() {
   return (
-    <section className="bg-white py-2.5 md:py-3" data-section="Las Mejores Ofertas de Hoy">
+    <section className="bg-white dark:bg-[#111111] py-2.5 md:py-3" data-section="Las Mejores Ofertas de Hoy">
       <div className="mx-auto max-w-7xl px-2.5 sm:px-4 lg:px-8">
         <div className="flex items-center gap-2 mb-2">
           <Flame className="h-4 w-4 text-[#CC3300]" />
-          <h2 className="text-sm font-bold text-[#1A1A1A] uppercase tracking-wide">
+          <h2 className="text-sm font-bold text-[#1A1A1A] dark:text-white uppercase tracking-wide">
             Las Mejores Ofertas de Hoy
           </h2>
         </div>

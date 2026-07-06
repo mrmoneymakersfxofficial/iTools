@@ -43,7 +43,7 @@ export function CartDrawer() {
         {items.length === 0 ? (
           /* Empty State */
           <div className="flex-1 flex flex-col items-center justify-center px-6 text-center">
-            <div className="rounded-full bg-gray-100 p-6 mb-6">
+            <div className="rounded-full bg-gray-100 dark:bg-[#222] p-6 mb-6">
               <ShoppingBag className="h-12 w-12 text-muted-foreground/50" />
             </div>
             <h3 className="text-lg text-foreground mb-2">
@@ -68,12 +68,12 @@ export function CartDrawer() {
                 {items.map((item: CartItem) => (
                   <div
                     key={item.product.id}
-                    className="group py-4 transition-colors hover:bg-gray-50 rounded-lg px-2 -mx-2"
+                    className="group py-4 transition-colors hover:bg-gray-50 dark:hover:bg-[#1a1a1a] rounded-lg px-2 -mx-2"
                   >
                     <div className="flex gap-4">
                       {/* Product Image Placeholder */}
-                      <div className="w-20 h-20 rounded-lg bg-gray-100 shrink-0 flex items-center justify-center">
-                        <Wrench className="h-8 w-8 text-gray-300" />
+                      <div className="w-20 h-20 rounded-lg bg-gray-100 dark:bg-[#222] shrink-0 flex items-center justify-center">
+                        <Wrench className="h-8 w-8 text-gray-300 dark:text-gray-500" />
                       </div>
 
                       {/* Product Info */}
@@ -104,7 +104,7 @@ export function CartDrawer() {
                         <div className="flex items-center gap-1">
                           <button
                             type="button"
-                            className="w-8 h-8 flex items-center justify-center border border-input rounded hover:bg-gray-100 transition-colors"
+                            className="w-8 h-8 flex items-center justify-center border border-input rounded hover:bg-gray-100 dark:bg-[#222] transition-colors"
                             onClick={() =>
                               updateQuantity(item.product.id, item.quantity - 1)
                             }
@@ -117,7 +117,7 @@ export function CartDrawer() {
                           </span>
                           <button
                             type="button"
-                            className="w-8 h-8 flex items-center justify-center border border-input rounded hover:bg-gray-100 transition-colors"
+                            className="w-8 h-8 flex items-center justify-center border border-input rounded hover:bg-gray-100 dark:bg-[#222] transition-colors"
                             onClick={() =>
                               updateQuantity(item.product.id, item.quantity + 1)
                             }

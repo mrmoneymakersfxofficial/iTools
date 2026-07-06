@@ -51,7 +51,7 @@ export function FeaturedSection() {
   const featured = getFeaturedProducts().slice(0, 8);
 
   return (
-    <section className="py-10 md:py-14 bg-white" aria-labelledby="featured-heading">
+    <section className="py-10 md:py-14 bg-white dark:bg-[#111111]" aria-labelledby="featured-heading">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between mb-6 md:mb-8">
           <div>

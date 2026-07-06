@@ -27,7 +27,7 @@ const menuItems = [
 export function HorizontalCategoryMenu() {
   return (
     <nav
-      className="overflow-x-auto bg-white border-b border-[#E0E0E0]"
+      className="overflow-x-auto bg-white dark:bg-[#111111] border-b border-[#E0E0E0] dark:border-[#333]"
       style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
     >
       <div className="flex items-center whitespace-nowrap px-3 py-2.5 gap-0">
@@ -38,7 +38,7 @@ export function HorizontalCategoryMenu() {
             )}
             <Link
               href={`/categoria/${item.slug}`}
-              className="text-[11px] font-semibold text-[#333] hover:text-[#E35205] uppercase tracking-[0.04em] transition-colors"
+              className="text-[11px] font-semibold text-[#333] dark:text-gray-200 hover:text-[#E35205] uppercase tracking-[0.04em] transition-colors"
             >
               {item.name}
             </Link>

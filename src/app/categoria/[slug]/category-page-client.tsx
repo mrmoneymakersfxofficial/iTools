@@ -53,7 +53,7 @@ export function CategoryPageClient({ category, products }: { category: Category;
                 <Link
                   key={child.id}
                   href={`/categoria/${child.slug}`}
-                  className="px-4 py-2 bg-white border border-border rounded-lg text-sm text-foreground hover:border-itools-blue hover:text-itools-blue transition-colors"
+                  className="px-4 py-2 bg-white dark:bg-[#1a1a1a] border border-border dark:border-[#333] rounded-lg text-sm text-foreground hover:border-itools-blue hover:text-itools-blue transition-colors"
                 >
                   {child.name}
                 </Link>
@@ -64,7 +64,7 @@ export function CategoryPageClient({ category, products }: { category: Category;
 
         {/* Section: Filters */}
         <section data-section={SECTION_FILTERS} className="mb-6">
-          <div className="flex items-center justify-between bg-white rounded-lg border border-border px-4 py-3">
+          <div className="flex items-center justify-between bg-white dark:bg-[#1a1a1a] rounded-lg border border-border dark:border-[#333] px-4 py-3">
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <SlidersHorizontal className="h-4 w-4" />
               <span>{products.length} resultado{products.length !== 1 ? "s" : ""}</span>
@@ -91,7 +91,7 @@ export function CategoryPageClient({ category, products }: { category: Category;
               ))}
             </div>
           ) : (
-            <div className="text-center py-20 bg-white rounded-xl border border-border">
+            <div className="text-center py-20 bg-white dark:bg-[#1a1a1a] rounded-xl border border-border dark:border-[#333]">
               <p className="text-muted-foreground mb-4">
                 No hay productos disponibles en esta categoría.
               </p>

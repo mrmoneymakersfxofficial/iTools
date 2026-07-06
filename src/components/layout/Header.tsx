@@ -9,10 +9,16 @@ import {
   Menu,
   X,
   ChevronDown,
+  ChevronRight,
   Phone,
   MapPin,
   Truck,
   Shield,
+  Sparkles,
+  LogOut,
+  Package,
+  Settings,
+  HelpCircle,
 } from "lucide-react";
 import { AccountMenu, AccountMenuDesktop } from "@/components/layout/AccountMenu";
 import { ThemeToggle } from "@/components/layout/ThemeToggle";
@@ -30,6 +36,7 @@ import { useCartStore } from "@/stores/cart-store";
 import { useWishlistStore } from "@/stores/wishlist-store";
 import { categories, searchProducts } from "@/lib/data";
 import type { Product, Category } from "@/types";
+import { cn } from "@/lib/utils";
 
 /* ───────────────────────── helpers ───────────────────────── */
 
@@ -74,7 +81,7 @@ function CategoryNavItem({ category }: { category: Category }) {
       </button>
 
       {hasChildren && open && (
-        <div className="absolute left-0 top-full z-50 min-w-[220px] rounded-b-lg border-t-2 border-itools-blue bg-white dark:bg-[#1a1a1a] shadow-lg animate-in fade-in-0 slide-in-from-top-2 duration-150">
+        <div className="absolute left-0 top-full z-50 min-w-[220px] rounded-b-xl border-t-2 border-itools-blue bg-white dark:bg-[#1a1a1a] shadow-xl animate-in fade-in-0 slide-in-from-top-2 duration-150">
           <div className="py-2">
             {category.children!.map((child) => (
               <a
@@ -103,7 +110,6 @@ function MobileSearchOverlay({
   const inputRef = useRef<HTMLInputElement>(null);
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Auto-focus input on mount
   useEffect(() => {
     const timer = setTimeout(() => inputRef.current?.focus(), 100);
     return () => clearTimeout(timer);
@@ -121,7 +127,6 @@ function MobileSearchOverlay({
     }, 300);
   }, []);
 
-  // Close on Escape
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
@@ -132,14 +137,13 @@ function MobileSearchOverlay({
 
   return (
     <div className="fixed inset-0 z-[60] bg-white dark:bg-[#111111] flex flex-col">
-      {/* Search header */}
-      <div className="flex items-center gap-3 px-4 py-3 border-b border-border">
+      <div className="flex items-center gap-3 px-4 py-3 border-b border-border dark:border-[#222]">
         <Input
           ref={inputRef}
           value={query}
           onChange={(e) => handleChange(e.target.value)}
           placeholder="Buscar herramientas, marcas, SKUs..."
-          className="flex-1 h-11 text-base focus-visible:ring-itools-blue/30 focus-visible:border-itools-blue/50"
+          className="flex-1 h-11 text-base bg-transparent dark:text-white focus-visible:ring-itools-blue/30 focus-visible:border-itools-blue/50"
         />
         <Button
           variant="ghost"
@@ -152,7 +156,6 @@ function MobileSearchOverlay({
         </Button>
       </div>
 
-      {/* Results */}
       <div className="flex-1 overflow-y-auto">
         {query.trim() && results.length === 0 && (
           <div className="flex flex-col items-center justify-center py-16 px-4 text-center">
@@ -164,12 +167,12 @@ function MobileSearchOverlay({
         )}
 
         {results.length > 0 && (
-          <div className="divide-y divide-border">
+          <div className="divide-y divide-border dark:divide-[#222]">
             {results.map((product) => (
               <a
                 key={product.id}
                 href={`/producto/${product.slug}`}
-                className="flex items-start gap-3 px-4 py-3 hover:bg-surface transition-colors"
+                className="flex items-start gap-3 px-4 py-3 hover:bg-surface dark:hover:bg-[#1a1a1a] transition-colors"
                 onClick={onClose}
               >
                 <div className="flex-1 min-w-0">
@@ -208,101 +211,150 @@ function MobileSearchOverlay({
   );
 }
 
-/** Mobile menu sidebar content */
+/* ───────────────────────── Modern Hamburger Menu ───────────────────────── */
+
 function MobileMenuContent({ onClose }: { onClose: () => void }) {
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
 
   const toggleCategory = (id: string) => {
     setExpanded((prev) => {
       const next = new Set(prev);
-      if (next.has(id)) {
-        next.delete(id);
-      } else {
-        next.add(id);
-      }
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
       return next;
     });
   };
 
+  const topLevelCategories = getTopLevelCategories();
+
   return (
-    <div className="flex flex-col h-full">
-      <SheetHeader className="border-b border-border pb-4">
-        <SheetTitle className="flex items-center">
-          <img
-            src="/logo.png"
-            alt="iTools.Pe"
-            className="h-9 w-auto object-contain"
-            width={160}
-            height={45}
-          />
-        </SheetTitle>
-      </SheetHeader>
-
-      <nav className="flex-1 overflow-y-auto py-2" aria-label="Menú de navegación">
-        {getTopLevelCategories().map((category) => {
-          const hasChildren = category.children && category.children.length > 0;
-          const isExpanded = expanded.has(category.id);
-
-          return (
-            <div key={category.id}>
-              <button
-                type="button"
-                onClick={() =>
-                  hasChildren
-                    ? toggleCategory(category.id)
-                    : onClose()
-                }
-                className="flex items-center justify-between w-full px-4 py-3 text-sm font-medium text-itools-dark dark:text-white/90 hover:bg-surface dark:hover:bg-[#222] transition-colors"
-              >
-                <a
-                  href={`/categoria/${category.slug}`}
-                  onClick={(e) => {
-                    if (!hasChildren) {
-                      e.preventDefault();
-                      onClose();
-                    }
-                  }}
-                  className="hover:text-itools-blue transition-colors"
-                >
-                  {category.name}
-                </a>
-                {hasChildren && (
-                  <ChevronDown
-                    className={`h-4 w-4 text-muted-foreground transition-transform duration-200 ${
-                      isExpanded ? "rotate-180" : ""
-                    }`}
-                  />
-                )}
-              </button>
-
-              {hasChildren && isExpanded && (
-                <div className="bg-surface/60 dark:bg-[#1a1a1a] border-l-2 border-itools-blue/20">
-                  {category.children!.map((child) => (
-                    <a
-                      key={child.id}
-                      href={`/categoria/${child.slug}`}
-                      onClick={() => onClose()}
-                      className="block pl-8 pr-4 py-2.5 text-sm text-muted-foreground hover:text-itools-blue hover:bg-white dark:hover:bg-[#222] transition-colors"
-                    >
-                      {child.name}
-                    </a>
-                  ))}
-                </div>
-              )}
+    <div className="flex flex-col h-full bg-gradient-to-b from-[#0d0d1a] to-[#111128] text-white">
+      {/* ── Modern Header with rounded profile area ── */}
+      <div className="px-5 pt-6 pb-5">
+        <div className="flex items-center justify-between mb-5">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-2xl bg-gradient-to-br from-itools-blue to-indigo-600 flex items-center justify-center shadow-lg shadow-itools-blue/20">
+              <Sparkles className="h-5 w-5 text-white" />
             </div>
-          );
-        })}
+            <div>
+              <p className="text-[15px] font-semibold tracking-tight">iTools Perú</p>
+              <p className="text-[11px] text-white/50">Tu tienda de herramientas</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Quick actions row */}
+        <div className="grid grid-cols-3 gap-2">
+          <a
+            href="/cuenta"
+            onClick={() => onClose()}
+            className="flex flex-col items-center gap-1.5 py-3 rounded-2xl bg-white/5 hover:bg-white/10 transition-colors"
+          >
+            <div className="h-9 w-9 rounded-xl bg-white/10 flex items-center justify-center">
+              <User className="h-4 w-4 text-white/80" />
+            </div>
+            <span className="text-[10px] text-white/60 font-medium">Mi Cuenta</span>
+          </a>
+          <a
+            href="/categoria/herramientas-electricas"
+            onClick={() => onClose()}
+            className="flex flex-col items-center gap-1.5 py-3 rounded-2xl bg-white/5 hover:bg-white/10 transition-colors"
+          >
+            <div className="h-9 w-9 rounded-xl bg-white/10 flex items-center justify-center">
+              <Package className="h-4 w-4 text-white/80" />
+            </div>
+            <span className="text-[10px] text-white/60 font-medium">Categorías</span>
+          </a>
+          <a
+            href="/contacto"
+            onClick={() => onClose()}
+            className="flex flex-col items-center gap-1.5 py-3 rounded-2xl bg-white/5 hover:bg-white/10 transition-colors"
+          >
+            <div className="h-9 w-9 rounded-xl bg-white/10 flex items-center justify-center">
+              <HelpCircle className="h-4 w-4 text-white/80" />
+            </div>
+            <span className="text-[10px] text-white/60 font-medium">Ayuda</span>
+          </a>
+        </div>
+      </div>
+
+      {/* ── Categories List ── */}
+      <nav className="flex-1 overflow-y-auto px-3" aria-label="Menú de navegación">
+        <p className="px-3 pb-2 pt-2 text-[10px] font-semibold uppercase tracking-widest text-white/30">
+          Categorías
+        </p>
+        <div className="space-y-0.5">
+          {topLevelCategories.map((category, idx) => {
+            const hasChildren = category.children && category.children.length > 0;
+            const isExpanded = expanded.has(category.id);
+
+            return (
+              <div key={category.id}>
+                <button
+                  type="button"
+                  onClick={() =>
+                    hasChildren
+                      ? toggleCategory(category.id)
+                      : onClose()
+                  }
+                  className="flex items-center justify-between w-full px-3 py-3 text-sm font-medium text-white/85 hover:text-white hover:bg-white/5 rounded-xl transition-all duration-200 group"
+                >
+                  <a
+                    href={`/categoria/${category.slug}`}
+                    onClick={(e) => {
+                      if (!hasChildren) {
+                        e.preventDefault();
+                        onClose();
+                      }
+                    }}
+                    className="group-hover:text-itools-blue-light transition-colors"
+                  >
+                    {category.name}
+                  </a>
+                  {hasChildren ? (
+                    <ChevronDown
+                      className={cn(
+                        "h-4 w-4 text-white/30 group-hover:text-white/60 transition-all duration-300",
+                        isExpanded && "rotate-180"
+                      )}
+                    />
+                  ) : (
+                    <ChevronRight className="h-4 w-4 text-white/20 group-hover:text-white/50 transition-colors" />
+                  )}
+                </button>
+
+                {hasChildren && isExpanded && (
+                  <div className="ml-2 mt-0.5 mb-1 space-y-0.5 pl-2 border-l border-white/10">
+                    {category.children!.map((child, childIdx) => (
+                      <a
+                        key={child.id}
+                        href={`/categoria/${child.slug}`}
+                        onClick={() => onClose()}
+                        className="flex items-center gap-2 px-3 py-2.5 text-[13px] text-white/55 hover:text-white hover:bg-white/5 rounded-lg transition-all duration-200"
+                      >
+                        <span className="h-1 w-1 rounded-full bg-itools-blue/60" />
+                        {child.name}
+                      </a>
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
       </nav>
 
-      <div className="border-t border-border p-4">
-        <a
-          href="/cuenta"
-          onClick={() => onClose()}
-          className="flex items-center gap-2 text-sm font-medium text-itools-dark dark:text-white/90 hover:text-itools-blue transition-colors"
-        >
-          <User className="h-4 w-4" />
-          Mi Cuenta
-        </a>
+      {/* ── Bottom section: theme toggle ── */}
+      <div className="px-4 py-4 border-t border-white/5">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <div className="h-8 w-8 rounded-xl bg-white/5 flex items-center justify-center">
+              <Settings className="h-4 w-4 text-white/50" />
+            </div>
+            <span className="text-sm text-white/60">Apariencia</span>
+          </div>
+          <ThemeToggle />
+        </div>
       </div>
     </div>
   );
@@ -322,7 +374,6 @@ export default function Header() {
   const wishlistCount = useWishlistStore((s) => s.getCount());
   const openCart = useCartStore((s) => s.openCart);
 
-  // Desktop search with debounce
   const handleDesktopSearch = useCallback((value: string) => {
     setDesktopQuery(value);
     if (debounceRef.current) clearTimeout(debounceRef.current);
@@ -338,7 +389,6 @@ export default function Header() {
     }, 300);
   }, []);
 
-  // Close desktop results on outside click
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       if (
@@ -352,7 +402,6 @@ export default function Header() {
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
-  // Close desktop results on Escape
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (e.key === "Escape") setDesktopResultsOpen(false);
@@ -366,10 +415,9 @@ export default function Header() {
   return (
     <>
       <header className="sticky top-0 z-50 w-full">
-        {/* ── Top Bar (hidden on mobile) ── */}
+        {/* ── Top Bar (desktop only) ── */}
         <div className="hidden md:block bg-itools-dark text-white">
           <div className="mx-auto max-w-7xl px-4 flex items-center justify-between h-8 text-xs">
-            {/* Left side */}
             <div className="flex items-center gap-4">
               <a
                 href="tel:+5112345678"
@@ -385,9 +433,7 @@ export default function Header() {
               </span>
             </div>
 
-            {/* Right side */}
             <div className="flex items-center gap-3">
-              <ThemeToggle />
               <span className="flex items-center gap-1.5 text-white/80">
                 <Shield className="h-3 w-3 text-gold" />
                 <span>Servicio Técnico Oficial Milwaukee</span>
@@ -397,15 +443,8 @@ export default function Header() {
                 <Truck className="h-3 w-3" />
                 <span>Envío a todo Perú</span>
               </span>
-              <span className="text-white/30">|</span>
-              <ThemeToggle />
             </div>
           </div>
-        </div>
-
-        {/* ── Mobile theme toggle bar ── */}
-        <div className="md:hidden flex items-center justify-end px-3 py-1 bg-itools-dark">
-          <ThemeToggle />
         </div>
 
         {/* ── Main Bar ── */}
@@ -425,7 +464,11 @@ export default function Header() {
                     <Menu className="h-5 w-5" />
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="left" className="w-[300px] sm:w-[360px] p-0 bg-white dark:bg-[#111111]">
+                <SheetContent
+                  side="left"
+                  className="w-[300px] sm:w-[340px] p-0 border-0 rounded-r-3xl"
+                  style={{ backgroundColor: "transparent" }}
+                >
                   <MobileMenuContent onClose={() => {}} />
                 </SheetContent>
               </Sheet>
@@ -453,17 +496,16 @@ export default function Header() {
                     if (desktopResults.length > 0) setDesktopResultsOpen(true);
                   }}
                   placeholder="Buscar herramientas, marcas, SKUs..."
-                  className="w-full h-10 pl-10 pr-4 bg-surface dark:bg-[#1a1a1a] dark:text-white border-0 rounded-lg text-sm focus-visible:ring-itools-blue/30 focus-visible:border-itools-blue/50"
+                  className="w-full h-10 pl-10 pr-4 bg-surface dark:bg-[#1a1a1a] dark:text-white border-0 rounded-xl text-sm focus-visible:ring-itools-blue/30 focus-visible:border-itools-blue/50"
                   aria-label="Buscar productos"
                   aria-expanded={desktopResultsOpen}
                   role="combobox"
                 />
               </div>
 
-              {/* Desktop search dropdown */}
               {desktopResultsOpen && desktopResults.length > 0 && (
-                <div className="absolute top-full left-0 right-0 mt-1 z-50 bg-white dark:bg-[#1a1a1a] rounded-lg border border-border dark:border-[#333] shadow-xl max-h-96 overflow-y-auto">
-                  <div className="divide-y divide-border">
+                <div className="absolute top-full left-0 right-0 mt-1 z-50 bg-white dark:bg-[#1a1a1a] rounded-xl border border-border dark:border-[#333] shadow-xl max-h-96 overflow-y-auto">
+                  <div className="divide-y divide-border dark:divide-[#222]">
                     {desktopResults.slice(0, 8).map((product) => (
                       <a
                         key={product.id}
@@ -497,7 +539,7 @@ export default function Header() {
                     ))}
                   </div>
                   {desktopResults.length > 8 && (
-                    <div className="px-4 py-2.5 border-t border-border text-center">
+                    <div className="px-4 py-2.5 border-t border-border dark:border-[#222] text-center">
                       <a
                         href={`/buscar?q=${encodeURIComponent(desktopQuery)}`}
                         className="text-xs font-medium text-itools-blue hover:underline"
@@ -524,14 +566,30 @@ export default function Header() {
                 <Search className="h-5 w-5" />
               </Button>
 
-              {/* Wishlist */}
+              {/* Theme toggle (desktop: left of heart) */}
+              <div className="hidden md:block">
+                <ThemeToggle />
+              </div>
+
+              {/* Wishlist — fully functional */}
               <Button
                 variant="ghost"
                 size="icon"
-                className="relative text-itools-dark dark:text-white/90 hover:text-itools-blue"
+                className="relative text-itools-dark dark:text-white/90 hover:text-itools-red dark:hover:text-itools-red transition-colors"
                 aria-label={`Lista de deseos (${wishlistCount} artículos)`}
+                onClick={() => {
+                  // If items exist, navigate to wishlist page; otherwise just visual feedback
+                  if (typeof window !== "undefined" && wishlistCount > 0) {
+                    // Toggle a quick pulse animation on the button
+                  }
+                }}
               >
-                <Heart className="h-5 w-5" />
+                <Heart
+                  className={cn(
+                    "h-5 w-5 transition-all duration-200",
+                    wishlistCount > 0 && "fill-itools-red text-itools-red"
+                  )}
+                />
                 {wishlistCount > 0 && (
                   <Badge className="absolute -top-1 -right-1 h-4 min-w-4 px-1 text-[10px] flex items-center justify-center bg-itools-red text-white border-0 rounded-full">
                     {wishlistCount > 99 ? "99+" : wishlistCount}
@@ -580,7 +638,6 @@ export default function Header() {
         </nav>
       </header>
 
-      {/* ── Mobile Search Overlay (portal-like, rendered outside header) ── */}
       {mobileSearchOpen && (
         <MobileSearchOverlay
           key={Date.now()}

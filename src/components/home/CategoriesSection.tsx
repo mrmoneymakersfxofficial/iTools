@@ -26,7 +26,7 @@ export function CategoriesSection() {
   const topCategories = getTopCategories();
 
   return (
-    <section className="py-10 md:py-14 bg-white" aria-labelledby="categories-heading">
+    <section className="py-10 md:py-14 bg-white dark:bg-[#111111]" aria-labelledby="categories-heading">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="flex items-center justify-between mb-6 md:mb-8">
@@ -73,7 +73,7 @@ function CategoryCard({ category, index }: { category: Category; index: number }
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.3, delay: index * 0.04 }}
-      className="group flex flex-col items-center text-center p-3 md:p-4 rounded-lg border border-border hover:border-itools-blue/30 hover:shadow-md transition-all duration-200 bg-white cursor-pointer"
+      className="group flex flex-col items-center text-center p-3 md:p-4 rounded-lg border border-border hover:border-itools-blue/30 hover:shadow-md transition-all duration-200 bg-white dark:bg-[#111111] cursor-pointer"
     >
       <div className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-surface flex items-center justify-center mb-2.5 group-hover:bg-itools-blue/10 transition-colors">
         <Icon className="h-6 w-6 md:h-7 md:w-7 text-itools-steel-light group-hover:text-itools-blue transition-colors" />

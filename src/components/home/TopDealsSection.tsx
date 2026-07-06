@@ -41,7 +41,7 @@ export function TopDealsSection() {
               <Link
                 key={deal.brandId}
                 href={`/categoria/herramientas-electricas`}
-                className="group bg-white p-5 rounded-lg shadow-sm border border-border hover:shadow-md transition-all duration-200"
+                className="group bg-white dark:bg-[#111111] p-5 rounded-lg shadow-sm border border-border dark:border-[#333] hover:shadow-md transition-all duration-200"
                 style={{ borderLeftWidth: "4px", borderLeftColor: deal.accentColor }}
               >
                 <div className="flex items-start justify-between mb-2">
@@ -67,7 +67,7 @@ export function TopDealsSection() {
         </div>
 
         {/* Promo code */}
-        <div className="mt-6 inline-flex items-center gap-3 bg-white px-5 py-3 rounded-lg border border-border text-sm">
+        <div className="mt-6 inline-flex items-center gap-3 bg-white dark:bg-[#111111] px-5 py-3 rounded-lg border border-border dark:border-[#333] text-sm">
           <span className="text-muted-foreground">Código promocional:</span>
           <span className="font-mono font-bold text-itools-blue tracking-wide">M18PERU2026</span>
           <span className="text-muted-foreground text-xs">(10% adicional en M18)</span>

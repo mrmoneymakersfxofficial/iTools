@@ -25,13 +25,13 @@ const brands = [
 
 export function BrandsGridMobile() {
   return (
-    <section className="bg-[#F5F6F8] py-3 lg:hidden" data-section="Comprar por Marca">
+    <section className="bg-[#F5F6F8] dark:bg-[#1a1a1a] py-3 lg:hidden" data-section="Comprar por Marca">
       <div className="mx-auto max-w-7xl px-2.5 sm:px-4">
         {/* Header with "Ver Todo" link */}
         <div className="flex items-center justify-between mb-2.5">
           <div className="flex items-center gap-2">
             <ShoppingBag className="h-4 w-4 text-[#E35205]" />
-            <h2 className="text-sm font-bold text-[#1A1A1A] uppercase tracking-wide">
+            <h2 className="text-sm font-bold text-[#1A1A1A] dark:text-white uppercase tracking-wide">
               Comprar por Marca
             </h2>
           </div>
@@ -49,7 +49,7 @@ export function BrandsGridMobile() {
               <Link
                 key={brand.slug}
                 href={`/marca/${brand.slug}`}
-                className="shrink-0 w-[140px] sm:w-[160px] group relative overflow-hidden rounded-xl transition-all active:scale-[0.97] hover:shadow-md border border-[#E0E0E0]"
+                className="shrink-0 w-[140px] sm:w-[160px] group relative overflow-hidden rounded-xl transition-all active:scale-[0.97] hover:shadow-md border border-[#E0E0E0] dark:border-[#333]"
               >
                 {/* Brand color header area */}
                 <div
@@ -87,12 +87,12 @@ export function BrandsGridMobile() {
                   </div>
                 </div>
                 {/* White bottom area with CTA */}
-                <div className="bg-white px-3 py-2.5 flex items-center justify-between">
-                  <span className="text-[10px] text-[#666] font-medium uppercase tracking-wide">
+                <div className="bg-white dark:bg-[#111111] px-3 py-2.5 flex items-center justify-between">
+                  <span className="text-[10px] text-[#666] dark:text-gray-300 dark:text-gray-500 font-medium uppercase tracking-wide">
                     Ver tienda
                   </span>
                   <ChevronRight
-                    className="h-3.5 w-3.5 text-[#999] group-hover:text-[#E35205] group-hover:translate-x-0.5 transition-all"
+                    className="h-3.5 w-3.5 text-[#999] dark:text-gray-400 group-hover:text-[#E35205] group-hover:translate-x-0.5 transition-all"
                   />
                 </div>
               </Link>

@@ -19,12 +19,12 @@ const mainCategories = [
 
 export function CategoriesGridMobile() {
   return (
-    <section className="bg-white py-2.5 lg:hidden" data-section="Categorías Principales">
+    <section className="bg-white dark:bg-[#111111] py-2.5 lg:hidden" data-section="Categorías Principales">
       <div className="mx-auto max-w-7xl px-2.5 sm:px-4">
         {/* Header */}
         <div className="flex items-center gap-2 mb-2">
           <LayoutGrid className="h-4 w-4 text-[#CC3300]" />
-          <h2 className="text-sm font-bold text-[#1A1A1A] uppercase tracking-wide">
+          <h2 className="text-sm font-bold text-[#1A1A1A] dark:text-white uppercase tracking-wide">
             Categorías Principales
           </h2>
         </div>
@@ -37,12 +37,12 @@ export function CategoriesGridMobile() {
               <Link
                 key={cat.slug + cat.name}
                 href={`/categoria/${cat.slug}`}
-                className="group flex flex-col items-center justify-center gap-2 p-3 bg-[#F5F6F8] border border-[#E8E8E8] rounded-xl aspect-square transition-all hover:shadow-md hover:border-[#ccc]"
+                className="group flex flex-col items-center justify-center gap-2 p-3 bg-[#F5F6F8] dark:bg-[#1a1a1a] border border-[#E8E8E8] dark:border-[#333] rounded-xl aspect-square transition-all hover:shadow-md hover:border-[#ccc]"
               >
                 <div className="transition-transform group-hover:scale-110" style={{ color: cat.color }}>
                   <Icon className="h-6 w-6" />
                 </div>
-                <p className="text-[#1A1A1A] text-[9px] sm:text-[10px] font-semibold text-center leading-tight line-clamp-2">
+                <p className="text-[#1A1A1A] dark:text-white text-[9px] sm:text-[10px] font-semibold text-center leading-tight line-clamp-2">
                   {cat.name}
                 </p>
               </Link>

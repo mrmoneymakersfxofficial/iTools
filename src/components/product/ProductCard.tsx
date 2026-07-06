@@ -23,7 +23,7 @@ function StarRating({ rating, count }: { rating: number; count: number }) {
             className={`h-3.5 w-3.5 ${
               star <= Math.round(rating)
                 ? "fill-amber-400 text-amber-400"
-                : "fill-gray-200 text-gray-200"
+                : "fill-gray-200 text-gray-200 dark:fill-gray-600 dark:text-gray-600"
             }`}
           />
         ))}
@@ -80,7 +80,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
       <button
         type="button"
         onClick={() => toggleItem(product.id)}
-        className="absolute top-2 right-2 z-[10] h-8 w-8 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-sm hover:bg-white transition-colors"
+        className="absolute top-2 right-2 z-[10] h-8 w-8 rounded-full bg-white/90 dark:bg-[#1a1a1a]/90 backdrop-blur-sm flex items-center justify-center shadow-sm hover:bg-white transition-colors"
         aria-label={wishlisted ? "Quitar de favoritos" : "Añadir a favoritos"}
       >
         <Heart
@@ -93,7 +93,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
       {/* Image area */}
       <div className="relative aspect-square bg-surface flex items-center justify-center p-6 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-transparent to-gray-100/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-        <Wrench className="h-16 w-16 text-gray-300 group-hover:scale-110 transition-transform duration-300" />
+        <Wrench className="h-16 w-16 text-gray-300 dark:text-gray-500 group-hover:scale-110 transition-transform duration-300" />
 
         {/* Brand label */}
         {product.brand && (

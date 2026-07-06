@@ -53,7 +53,7 @@ export function HorizontalScroll({
         <button
           type="button"
           onClick={() => scroll("left")}
-          className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 rounded-full bg-white shadow-lg border border-gray-200 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+          className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 rounded-full bg-white dark:bg-[#222] shadow-lg border border-gray-200 dark:border-[#333] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
         >
           <ChevronLeft className="h-4 w-4" />
         </button>
@@ -78,7 +78,7 @@ export function HorizontalScroll({
         <button
           type="button"
           onClick={() => scroll("right")}
-          className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 rounded-full bg-white shadow-lg border border-gray-200 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+          className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 rounded-full bg-white shadow-lg border border-gray-200 dark:border-[#333] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
         >
           <ChevronRight className="h-4 w-4" />
         </button>

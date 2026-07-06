@@ -40,7 +40,7 @@ function StarRating({ rating, count }: { rating: number; count: number }) {
             className={`h-4 w-4 ${
               star <= Math.round(rating)
                 ? "fill-amber-400 text-amber-400"
-                : "fill-gray-200 text-gray-200"
+                : "fill-gray-200 text-gray-200 dark:fill-gray-600 dark:text-gray-600"
             }`}
           />
         ))}
@@ -107,9 +107,9 @@ export function ProductDetailClient({ product, relatedProducts }: { product: Pro
         <section data-section={product.name}>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
             {/* LEFT: Image */}
-            <div className="bg-white rounded-xl border border-border p-4 lg:p-6">
+            <div className="bg-white dark:bg-[#111111] rounded-xl border border-border dark:border-[#333] p-4 lg:p-6">
               <div className="relative aspect-square bg-surface rounded-lg flex items-center justify-center overflow-hidden">
-                <Wrench className="h-32 w-32 text-gray-200" />
+                <Wrench className="h-32 w-32 text-gray-200 dark:text-gray-600" />
                 <div className="absolute top-3 left-3 flex flex-col gap-1.5 z-10">
                   {discount > 0 && (
                     <Badge className="bg-itools-red text-white border-0 text-sm px-2.5 py-1">
@@ -125,7 +125,7 @@ export function ProductDetailClient({ product, relatedProducts }: { product: Pro
                 <button
                   type="button"
                   onClick={() => toggleItem(product.id)}
-                  className="absolute top-3 right-3 z-10 h-10 w-10 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-sm hover:bg-white transition-colors"
+                  className="absolute top-3 right-3 z-10 h-10 w-10 rounded-full bg-white/90 dark:bg-[#1a1a1a]/90 backdrop-blur-sm flex items-center justify-center shadow-sm hover:bg-white dark:hover:bg-[#222] transition-colors"
                 >
                   <Heart className={`h-5 w-5 transition-colors ${wishlisted ? "fill-itools-red text-itools-red" : "text-gray-400"}`} />
                 </button>
@@ -182,7 +182,7 @@ export function ProductDetailClient({ product, relatedProducts }: { product: Pro
               {product.stock > 0 ? (
                 <div className="flex items-center gap-2">
                   <div className="h-2.5 w-2.5 rounded-full bg-green-500" />
-                  <span className="text-sm text-green-700 font-medium">En Stock — {product.stock} unidades disponibles</span>
+                  <span className="text-sm text-green-700 dark:text-green-400 font-medium">En Stock — {product.stock} unidades disponibles</span>
                 </div>
               ) : (
                 <Badge variant="destructive" className="w-fit">Agotado</Badge>
@@ -250,7 +250,7 @@ export function ProductDetailClient({ product, relatedProducts }: { product: Pro
 
         {/* ── Section: Benefits ── */}
         <section data-section={SECTION_BENEFITS} className="mt-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 bg-white rounded-xl border border-border p-5">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 bg-white dark:bg-[#111111] rounded-xl border border-border dark:border-[#333] p-5">
             <div className="flex flex-col items-center gap-2 text-center">
               <div className="h-10 w-10 rounded-full bg-itools-blue/10 flex items-center justify-center">
                 <Truck className="h-5 w-5 text-itools-blue" />
@@ -318,7 +318,7 @@ export function ProductDetailClient({ product, relatedProducts }: { product: Pro
           <section
             data-section={SECTION_SPECS}
             id={sectionId(SECTION_SPECS)}
-            className="bg-white rounded-b-xl border border-t-0 p-6"
+            className="bg-white dark:bg-[#111111] rounded-b-xl border border-t-0 dark:border-[#333] p-6"
           >
             {activeTab === "specs" && (
               Object.keys(product.specs).length > 0 ? (

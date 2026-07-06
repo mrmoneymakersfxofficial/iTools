@@ -110,7 +110,7 @@ export function AccountMenu() {
             )}
 
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="cursor-pointer py-2.5 text-red-600 focus:bg-red-50 focus:text-red-700">
+            <DropdownMenuItem className="cursor-pointer py-2.5 text-red-600 focus:bg-red-50 dark:focus:bg-red-950 focus:text-red-700">
               <LogOut className="h-4 w-4 mr-2.5" />
               <span className="text-sm">Cerrar Sesión</span>
             </DropdownMenuItem>
@@ -120,7 +120,7 @@ export function AccountMenu() {
             {/* Guest Header */}
             <DropdownMenuLabel className="font-normal bg-surface/50">
               <div className="flex items-center gap-2.5 py-1">
-                <div className="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center">
+                <div className="h-8 w-8 rounded-full bg-gray-200 dark:bg-[#333] flex items-center justify-center">
                   <User className="h-4 w-4 text-gray-500" />
                 </div>
                 <div>
@@ -233,7 +233,7 @@ export function AccountMenuDesktop() {
               </Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="cursor-pointer py-2.5 text-red-600 focus:bg-red-50">
+            <DropdownMenuItem className="cursor-pointer py-2.5 text-red-600 focus:bg-red-50 dark:focus:bg-red-950">
               <LogOut className="h-4 w-4 mr-2.5" />
               <span className="text-sm">Cerrar Sesión</span>
             </DropdownMenuItem>

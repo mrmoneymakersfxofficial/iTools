@@ -36,12 +36,12 @@ function CategoryIcon({ type }: { type: string }) {
  */
 export function TrendingCategoriesMobile() {
   return (
-    <section className="bg-white py-2.5 lg:hidden" data-section="Categorías de Tendencia Móvil">
+    <section className="bg-white dark:bg-[#111111] py-2.5 lg:hidden" data-section="Categorías de Tendencia Móvil">
       <div className="px-2.5">
         {/* Header */}
         <div className="flex items-center gap-2 mb-2">
           <TrendingUp className="h-4 w-4 text-[#00A651]" />
-          <h2 className="text-sm font-bold text-[#1A1A1A] uppercase tracking-wide">
+          <h2 className="text-sm font-bold text-[#1A1A1A] dark:text-white uppercase tracking-wide">
             Categorías de Tendencia
           </h2>
         </div>
@@ -52,27 +52,27 @@ export function TrendingCategoriesMobile() {
             <Link
               key={cat.slug + cat.name}
               href={`/categoria/${cat.slug}`}
-              className="group flex items-center gap-2.5 p-3 bg-white border border-[#E0E0E0] rounded-lg hover:shadow-md hover:border-[#ccc] transition-all"
+              className="group flex items-center gap-2.5 p-3 bg-white border border-[#E0E0E0] dark:border-[#333] rounded-lg hover:shadow-md hover:border-[#ccc] transition-all"
             >
               {/* Icon circle */}
-              <div className="shrink-0 w-10 h-10 rounded-full bg-[#F5F6F8] flex items-center justify-center group-hover:bg-[#E8EDF2] transition-colors">
+              <div className="shrink-0 w-10 h-10 rounded-full bg-[#F5F6F8] dark:bg-[#1a1a1a] flex items-center justify-center group-hover:bg-[#E8EDF2] transition-colors">
                 <CategoryIcon type={cat.icon} />
               </div>
 
               {/* Text */}
               <div className="flex-1 min-w-0">
-                <p className="text-xs font-semibold text-[#333] group-hover:text-[#E35205] transition-colors leading-tight line-clamp-2">
+                <p className="text-xs font-semibold text-[#333] dark:text-gray-200 group-hover:text-[#E35205] transition-colors leading-tight line-clamp-2">
                   {cat.name}
                 </p>
                 <span className="inline-flex items-center gap-0.5 mt-0.5">
-                  <span className="text-[10px] text-[#0071C5] font-bold bg-[#E8F4FD] px-1.5 py-0.5 rounded-full">
+                  <span className="text-[10px] text-[#0071C5] dark:text-[#3399FF] font-bold bg-[#E8F4FD] px-1.5 py-0.5 rounded-full">
                     {cat.views}
                   </span>
                 </span>
               </div>
 
               {/* Arrow */}
-              <ChevronRight className="h-3.5 w-3.5 text-[#ccc] group-hover:text-[#E35205] shrink-0 transition-colors" />
+              <ChevronRight className="h-3.5 w-3.5 text-[#ccc] dark:text-gray-500 group-hover:text-[#E35205] shrink-0 transition-colors" />
             </Link>
           ))}
         </div>
