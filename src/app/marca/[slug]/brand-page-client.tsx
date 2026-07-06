@@ -7,11 +7,14 @@ import {
   Home, ArrowLeft, MessageCircle, ShoppingCart, User,
 } from "lucide-react";
 import { ProductCard } from "@/components/product/ProductCard";
-import type { Product, Brand, Category } from "@/types";
+import { useQuickViewStore } from "@/stores/quickview-store";
+import { useCartStore } from "@/stores/cart-store";
+import type { Product, Brand } from "@/types";
 
 interface BrandTheme {
   color: string;
   textColor: string;
+  secondColor: string;
   tabs?: string[];
 }
 
@@ -254,6 +257,18 @@ function formatPrice(price: number): string {
   return `S/ ${price.toLocaleString("es-PE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
+/* ── Reusable section fade div ── */
+function SectionFade({ color }: { color: string }) {
+  return (
+    <div
+      className="h-8 w-full"
+      style={{
+        background: `linear-gradient(to bottom, ${color}15, transparent)`,
+      }}
+    />
+  );
+}
+
 export function BrandPageClient({
   brand,
   products,
@@ -265,15 +280,25 @@ export function BrandPageClient({
 }) {
   const [activeTab, setActiveTab] = useState<string | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const openQuickView = useQuickViewStore((s) => s.openQuickView);
+  const addToCart = useCartStore((s) => s.addItem);
   const cats = brandCategories[brand.slug] || defaultBrandCategories;
   const brandColor = theme.color;
+  const secondColor = theme.secondColor;
   const textCol = theme.textColor;
   const isDark = textCol === "#FFF" || textCol === "#00A651";
 
-  // Immersive gradient: brand color → black with continuity
+  // Split background: brand color top ~40%, secondColor bottom ~60%, smooth gradient transition
   const pageBgStyle = {
     background: `
-      linear-gradient(160deg, ${brandColor} 0%, ${brandColor}99 6%, ${brandColor}66 12%, ${brandColor}33 20%, rgba(10,10,10,0.98) 35%, #0A0A0A 50%)
+      linear-gradient(
+        180deg,
+        ${brandColor} 0%,
+        ${brandColor} 30%,
+        ${brandColor}cc 35%,
+        ${secondColor} 45%,
+        ${secondColor} 100%
+      )
     `,
     minHeight: "100vh",
   };
@@ -281,31 +306,48 @@ export function BrandPageClient({
   return (
     <main style={pageBgStyle} className="relative">
       {/* Subtle noise overlay for texture */}
-      <div className="absolute inset-0 opacity-[0.03] pointer-events-none"
-        style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")" }}
+      <div
+        className="absolute inset-0 opacity-[0.03] pointer-events-none"
+        style={{
+          backgroundImage:
+            "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")",
+        }}
       />
 
       {/* Top ambient glow line */}
-      <div className="absolute top-0 left-0 right-0 h-1 pointer-events-none"
-        style={{ background: `linear-gradient(90deg, transparent, ${brandColor}, transparent)`, opacity: 0.6 }}
+      <div
+        className="absolute top-0 left-0 right-0 h-1 pointer-events-none"
+        style={{
+          background: `linear-gradient(90deg, transparent, ${brandColor}, transparent)`,
+          opacity: 0.6,
+        }}
       />
 
       <div className="relative z-10 mx-auto max-w-[1440px] px-2.5 lg:px-4 py-4 pb-28">
         {/* Breadcrumb */}
         <nav className="flex items-center gap-1.5 text-sm text-[#999] mb-4 flex-wrap">
-          <Link href="/" className="hover:text-white transition-colors flex items-center gap-1">
+          <Link
+            href="/"
+            className="hover:text-white transition-colors flex items-center gap-1"
+          >
             <Home className="h-3.5 w-3.5" />
             Inicio
           </Link>
           <ChevronRight className="h-3.5 w-3.5 text-[#555]" />
-          <span className="font-medium text-white">Herramientas {brand.name}</span>
+          <span className="font-medium text-white">
+            Herramientas {brand.name}
+          </span>
         </nav>
 
         {/* Mobile sidebar toggle */}
         <button
           onClick={() => setSidebarOpen(!sidebarOpen)}
           className="lg:hidden fixed bottom-20 left-4 z-50 flex items-center gap-2 px-4 py-2.5 rounded-full text-xs font-bold uppercase tracking-wide transition-all active:scale-95"
-          style={{ backgroundColor: brandColor, color: textCol, boxShadow: `0 4px 20px ${brandColor}66` }}
+          style={{
+            backgroundColor: brandColor,
+            color: textCol,
+            boxShadow: `0 4px 20px ${brandColor}66`,
+          }}
         >
           <Wrench className="h-4 w-4" />
           Categorías
@@ -313,23 +355,47 @@ export function BrandPageClient({
 
         {/* Mobile sidebar overlay */}
         {sidebarOpen && (
-          <div className="lg:hidden fixed inset-0 z-40" onClick={() => setSidebarOpen(false)}>
+          <div
+            className="lg:hidden fixed inset-0 z-40"
+            onClick={() => setSidebarOpen(false)}
+          >
             <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
             <div
-              className="absolute left-0 top-0 bottom-0 w-[300px] overflow-y-auto"
+              className="absolute left-0 top-0 bottom-0 w-[300px] overflow-y-auto rounded-r-2xl"
               onClick={(e) => e.stopPropagation()}
               style={{ boxShadow: "12px 0 50px rgba(0,0,0,0.9)" }}
             >
-              <div className="bg-[#111] min-h-full">
-                <div className="px-4 py-4 flex items-center justify-between" style={{ backgroundColor: brandColor }}>
+              <div className="bg-[#111] min-h-full rounded-r-2xl">
+                <div
+                  className="px-4 py-4 flex items-center justify-between rounded-t-r-2xl"
+                  style={{ backgroundColor: brandColor }}
+                >
                   <div className="flex items-center gap-2">
                     <Wrench className="h-5 w-5" style={{ color: textCol }} />
-                    <h2 className="text-sm font-bold uppercase tracking-wide" style={{ color: textCol }}>
+                    <h2
+                      className="text-sm font-bold uppercase tracking-wide"
+                      style={{ color: textCol }}
+                    >
                       {brand.name} Tools
                     </h2>
                   </div>
-                  <button onClick={() => setSidebarOpen(false)} style={{ color: textCol }}>
-                    <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                  <button
+                    onClick={() => setSidebarOpen(false)}
+                    style={{ color: textCol }}
+                  >
+                    <svg
+                      className="h-5 w-5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M6 18L18 6M6 6l12 12"
+                      />
+                    </svg>
                   </button>
                 </div>
                 <ul className="divide-y divide-[#222]">
@@ -342,12 +408,19 @@ export function BrandPageClient({
                       >
                         <div className="flex items-center gap-3">
                           <span style={{ color: brandColor }}>
-                            <BrandCategoryIcon type={cat.icon} color={brandColor} />
+                            <BrandCategoryIcon
+                              type={cat.icon}
+                              color={brandColor}
+                            />
                           </span>
-                          <span className="text-sm text-[#CCC]">{cat.name}</span>
+                          <span className="text-sm text-[#CCC]">
+                            {cat.name}
+                          </span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <span className="text-xs text-[#666] bg-[#222] px-2 py-0.5 rounded-full">{cat.count}</span>
+                          <span className="text-xs text-[#666] bg-[#222] px-2 py-0.5 rounded-full">
+                            {cat.count}
+                          </span>
                           <ChevronRight className="h-3 w-3 text-[#555]" />
                         </div>
                       </Link>
@@ -363,7 +436,7 @@ export function BrandPageClient({
         <div className="flex gap-3">
           {/* LEFT SIDEBAR — Black bg + brand color accents */}
           <aside className="hidden lg:block w-[240px] xl:w-[260px] shrink-0">
-            <div className="sticky top-[120px] bg-[#0A0A0A]/95 backdrop-blur-sm rounded-xl overflow-hidden border border-[#1A1A1A]">
+            <div className="sticky top-[120px] bg-[#0A0A0A]/95 backdrop-blur-sm rounded-2xl overflow-hidden border border-[#1A1A1A]">
               {/* Header with brand color */}
               <div
                 className="px-4 py-3 flex items-center gap-2"
@@ -374,7 +447,7 @@ export function BrandPageClient({
                   {brand.name} Tools
                 </h2>
               </div>
-              {/* Category list - dark background */}
+              {/* Category list */}
               <ul className="divide-y divide-[#1A1A1A]">
                 {cats.map((cat, i) => (
                   <li key={i}>
@@ -384,7 +457,10 @@ export function BrandPageClient({
                     >
                       <div className="flex items-center gap-2.5">
                         <span style={{ color: brandColor }}>
-                          <BrandCategoryIcon type={cat.icon} color={brandColor} />
+                          <BrandCategoryIcon
+                            type={cat.icon}
+                            color={brandColor}
+                          />
                         </span>
                         <span className="text-sm text-[#BBB] group-hover:text-white transition-colors truncate">
                           {cat.name}
@@ -404,21 +480,21 @@ export function BrandPageClient({
           </aside>
 
           {/* CENTER COLUMN */}
-          <div className="flex-1 min-w-0 space-y-3">
-            <div className="lg:hidden">
+          <div className="flex-1 min-w-0">
+            {/* Mobile horizontal scrolling category pills */}
+            <div className="lg:hidden mb-3">
               <nav
                 className="flex gap-2 overflow-x-auto pb-1 -mx-2.5 px-2.5 no-scrollbar"
                 style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
               >
-                {/* "Todos" pill */}
                 <button
                   onClick={() => {}}
                   className="shrink-0 flex items-center gap-1.5 px-3.5 py-2 rounded-full text-[10px] font-bold uppercase tracking-wider border transition-all"
                   style={{
-                    backgroundColor: "#E35205",
-                    color: "#FFF",
-                    borderColor: "#E35205",
-                    boxShadow: "0 0 8px rgba(227,82,5,0.3)",
+                    backgroundColor: brandColor,
+                    color: textCol,
+                    borderColor: brandColor,
+                    boxShadow: `0 0 8px ${brandColor}4D`,
                   }}
                 >
                   Todos
@@ -428,18 +504,28 @@ export function BrandPageClient({
                     key={i}
                     className="shrink-0 flex items-center gap-1.5 px-3.5 py-2 rounded-full text-[10px] font-semibold uppercase tracking-wider border border-[#333] bg-[#111] text-[#CCC] hover:border-[#E35205] hover:text-[#E35205] transition-all"
                   >
-                    <span style={{ color: brandColor }}><BrandCategoryIcon type={cat.icon} color={brandColor} /></span>
+                    <span style={{ color: brandColor }}>
+                      <BrandCategoryIcon
+                        type={cat.icon}
+                        color={brandColor}
+                      />
+                    </span>
                     <span>{cat.name}</span>
                     <span className="text-[#555] ml-0.5">{cat.count}</span>
                   </button>
                 ))}
               </nav>
             </div>
+
+            {/* ── Hero Banner ── */}
             <Link
               href={`/marca/${brand.slug}`}
-              className="block relative overflow-hidden rounded-xl group"
+              className="block relative overflow-hidden rounded-2xl group"
             >
-              <div className="absolute inset-0" style={{ backgroundColor: brandColor }} />
+              <div
+                className="absolute inset-0"
+                style={{ backgroundColor: brandColor }}
+              />
               <div
                 className="absolute inset-0"
                 style={{
@@ -449,7 +535,8 @@ export function BrandPageClient({
                 }}
               />
               {/* Diagonal stripe pattern */}
-              <div className="absolute inset-0 opacity-[0.06]"
+              <div
+                className="absolute inset-0 opacity-[0.06]"
                 style={{
                   backgroundImage: `repeating-linear-gradient(
                     135deg,
@@ -462,14 +549,21 @@ export function BrandPageClient({
               />
               <div className="relative z-10 flex items-center justify-between px-6 py-8 md:py-12">
                 <div className="max-w-md space-y-2">
-                  <span className="font-impact text-2xl md:text-3xl lg:text-4xl" style={{ color: textCol }}>
+                  <span
+                    className="font-impact text-2xl md:text-3xl lg:text-4xl"
+                    style={{ color: textCol }}
+                  >
                     MÁS {brand.name.toUpperCase()}, MÁS AHORROS
                   </span>
-                  <p className="text-sm md:text-base" style={{ color: textCol, opacity: 0.9 }}>
-                    Ofertas exclusivas en herramientas {brand.name}. Envío a todo Perú.
+                  <p
+                    className="text-sm md:text-base"
+                    style={{ color: textCol, opacity: 0.9 }}
+                  >
+                    Ofertas exclusivas en herramientas {brand.name}. Envío a
+                    todo Perú.
                   </p>
                   <span
-                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded text-xs font-bold uppercase tracking-wide transition-all hover:scale-105"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wide transition-all hover:scale-105"
                     style={{
                       backgroundColor: isDark ? "white" : "#1A1A1A",
                       color: isDark ? brandColor : textCol,
@@ -482,43 +576,103 @@ export function BrandPageClient({
               </div>
             </Link>
 
-            {/* Two smaller promo banners */}
+            {/* Fade between hero and promo cards */}
+            <SectionFade color={brandColor} />
+
+            {/* ── Two smaller promo banners ── */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
-              <Link href={`/marca/${brand.slug}`} className="block relative overflow-hidden rounded-xl">
-                <div className="absolute inset-0" style={{ backgroundColor: brandColor }} />
-                <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, transparent 30%, rgba(0,0,0,0.5) 100%)" }} />
+              <Link
+                href={`/marca/${brand.slug}`}
+                className="block relative overflow-hidden rounded-xl"
+              >
+                <div
+                  className="absolute inset-0"
+                  style={{ backgroundColor: brandColor }}
+                />
+                <div
+                  className="absolute inset-0"
+                  style={{
+                    background:
+                      "linear-gradient(to bottom, transparent 30%, rgba(0,0,0,0.5) 100%)",
+                  }}
+                />
                 <div className="relative z-10 flex flex-col justify-between h-[160px] md:h-[200px] p-4">
-                  <span className="text-[11px] font-bold tracking-[0.08em] uppercase" style={{ color: textCol, opacity: 0.85 }}>
+                  <span
+                    className="text-[11px] font-bold tracking-[0.08em] uppercase"
+                    style={{ color: textCol, opacity: 0.85 }}
+                  >
                     {brand.name.toUpperCase()}
                   </span>
                   <div>
-                    <p className="font-impact text-sm leading-tight mb-1" style={{ color: textCol }}>
+                    <p
+                      className="font-impact text-sm leading-tight mb-1"
+                      style={{ color: textCol }}
+                    >
                       PRODUCTO GRATUITO A ELECCIÓN
                     </p>
-                    <p className="text-[10px] leading-relaxed mb-2" style={{ color: textCol, opacity: 0.8 }}>
+                    <p
+                      className="text-[10px] leading-relaxed mb-2"
+                      style={{ color: textCol, opacity: 0.8 }}
+                    >
                       Con un paquete de 2 baterías seleccionado.
                     </p>
-                    <span className="inline-flex items-center gap-2 px-4 py-2 rounded text-[11px] font-bold" style={{ backgroundColor: isDark ? "white" : "#1A1A1A", color: isDark ? brandColor : textCol }}>
+                    <span
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-[11px] font-bold"
+                      style={{
+                        backgroundColor: isDark ? "white" : "#1A1A1A",
+                        color: isDark ? brandColor : textCol,
+                      }}
+                    >
                       COMPRAR AHORA <CircleArrowRight className="h-3 w-3" />
                     </span>
                   </div>
                 </div>
               </Link>
-              <Link href={`/marca/${brand.slug}`} className="block relative overflow-hidden rounded-xl">
-                <div className="absolute inset-0" style={{ backgroundColor: brandColor, filter: "brightness(0.85)" }} />
-                <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, transparent 30%, rgba(0,0,0,0.55) 100%)" }} />
+              <Link
+                href={`/marca/${brand.slug}`}
+                className="block relative overflow-hidden rounded-xl"
+              >
+                <div
+                  className="absolute inset-0"
+                  style={{
+                    backgroundColor: brandColor,
+                    filter: "brightness(0.85)",
+                  }}
+                />
+                <div
+                  className="absolute inset-0"
+                  style={{
+                    background:
+                      "linear-gradient(to bottom, transparent 30%, rgba(0,0,0,0.55) 100%)",
+                  }}
+                />
                 <div className="relative z-10 flex flex-col justify-between h-[160px] md:h-[200px] p-4">
-                  <span className="text-[11px] font-bold tracking-[0.08em] uppercase" style={{ color: textCol, opacity: 0.85 }}>
+                  <span
+                    className="text-[11px] font-bold tracking-[0.08em] uppercase"
+                    style={{ color: textCol, opacity: 0.85 }}
+                  >
                     {brand.name.toUpperCase()}
                   </span>
                   <div>
-                    <p className="font-impact text-sm leading-tight mb-1" style={{ color: textCol }}>
+                    <p
+                      className="font-impact text-sm leading-tight mb-1"
+                      style={{ color: textCol }}
+                    >
                       OFERTA DE BONIFICACIÓN POR BATERÍA
                     </p>
-                    <p className="text-[10px] leading-relaxed mb-2" style={{ color: textCol, opacity: 0.8 }}>
+                    <p
+                      className="text-[10px] leading-relaxed mb-2"
+                      style={{ color: textCol, opacity: 0.8 }}
+                    >
                       Elige un artículo GRATIS con tu compra.
                     </p>
-                    <span className="inline-flex items-center gap-2 px-4 py-2 rounded text-[11px] font-bold" style={{ backgroundColor: isDark ? "white" : "#1A1A1A", color: isDark ? brandColor : textCol }}>
+                    <span
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-[11px] font-bold"
+                      style={{
+                        backgroundColor: isDark ? "white" : "#1A1A1A",
+                        color: isDark ? brandColor : textCol,
+                      }}
+                    >
                       COMPRAR AHORA <CircleArrowRight className="h-3 w-3" />
                     </span>
                   </div>
@@ -526,20 +680,28 @@ export function BrandPageClient({
               </Link>
             </div>
 
-            {/* Products grid — dark glass card */}
+            {/* Fade between promo cards and products grid */}
+            <SectionFade color={brandColor} />
+
+            {/* ── Products grid — dark glass card ── */}
             <div>
               <div className="flex items-center gap-2 mb-3">
                 <TrendingUp className="h-4 w-4" style={{ color: brandColor }} />
                 <h2 className="text-sm font-bold text-white uppercase tracking-wide">
                   Productos {brand.name}
                 </h2>
-                <span className="text-xs text-[#666]">({products.length})</span>
+                <span className="text-xs text-[#666]">
+                  ({products.length})
+                </span>
               </div>
               {products.length > 0 ? (
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-2.5">
-                  {products.map((product) => (
-                    <div key={product.id} className="rounded-xl overflow-hidden bg-[#111]/80 backdrop-blur-sm border border-[#1A1A1A]">
-                      <ProductCard product={product} />
+                  {products.map((product, i) => (
+                    <div
+                      key={product.id}
+                      className="rounded-xl overflow-hidden bg-[#111]/80 backdrop-blur-sm border border-[#1A1A1A]"
+                    >
+                      <ProductCard product={product} index={i} quickView quickViewColor={brandColor} />
                     </div>
                   ))}
                 </div>
@@ -558,11 +720,45 @@ export function BrandPageClient({
                 </div>
               )}
             </div>
+
+            {/* Fade between products grid and bottom tabs */}
+            <SectionFade color={brandColor} />
+
+            {/* ── Bottom Tabs ── */}
+            {theme.tabs && theme.tabs.length > 0 && (
+              <div
+                className="mt-4 flex gap-0 overflow-x-auto rounded-xl border border-[#222]"
+                style={{ scrollbarWidth: "none" }}
+              >
+                {theme.tabs.map((tab) => (
+                  <button
+                    key={tab}
+                    type="button"
+                    onClick={() =>
+                      setActiveTab(activeTab === tab ? null : tab)
+                    }
+                    className="shrink-0 px-4 py-3 text-xs font-bold uppercase tracking-wide transition-all border-r border-[#222] last:border-r-0"
+                    style={{
+                      backgroundColor:
+                        activeTab === tab ? brandColor : "#0A0A0A",
+                      color:
+                        activeTab === tab
+                          ? textCol
+                          : brandColor === "#1A1A1A"
+                            ? "#FFF"
+                            : brandColor,
+                    }}
+                  >
+                    {tab}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* RIGHT SIDEBAR — Pipeline (dark bg) */}
           <aside className="hidden lg:block w-[280px] xl:w-[300px] shrink-0">
-            <div className="sticky top-[120px] bg-[#0A0A0A]/95 backdrop-blur-sm rounded-xl overflow-hidden border border-[#1A1A1A]">
+            <div className="sticky top-[120px] bg-[#0A0A0A]/95 backdrop-blur-sm rounded-2xl overflow-hidden border border-[#1A1A1A]">
               {/* Header */}
               <div
                 className="px-4 py-3 flex items-center justify-between"
@@ -574,23 +770,30 @@ export function BrandPageClient({
                     PIPELINE
                   </h2>
                 </div>
-                <Link href={`/marca/${brand.slug}`} className="text-xs underline opacity-80 hover:opacity-100">
+                <Link
+                  href={`/marca/${brand.slug}`}
+                  className="text-xs underline opacity-80 hover:opacity-100"
+                >
                   Ver más
                 </Link>
               </div>
               {/* Product list */}
               <div>
-                {(products.slice(0, 8)).map((product) => {
+                {products.slice(0, 8).map((product) => {
                   const discount = product.comparePrice
-                    ? Math.round(((product.comparePrice - product.price) / product.comparePrice) * 100)
+                    ? Math.round(
+                        ((product.comparePrice - product.price) /
+                          product.comparePrice) *
+                          100
+                      )
                     : 0;
                   return (
-                    <Link
+                    <div
                       key={product.id}
-                      href={`/producto/${product.slug}`}
-                      className="group flex gap-3 p-3 hover:bg-[#151515] transition-colors border-b border-[#1A1A1A] last:border-b-0"
+                      onClick={() => openQuickView(product, brandColor)}
+                      className="group flex gap-3 p-3 hover:bg-[#151515] transition-colors border-b border-[#1A1A1A] last:border-b-0 cursor-pointer"
                     >
-                      <div className="shrink-0 w-16 h-16 rounded-lg bg-[#151515] flex items-center justify-center border border-[#222]">
+                      <div className="shrink-0 w-16 h-16 rounded-xl bg-[#151515] flex items-center justify-center border border-[#222]">
                         <Wrench className="h-7 w-7 text-[#444]" />
                       </div>
                       <div className="flex-1 min-w-0">
@@ -618,7 +821,9 @@ export function BrandPageClient({
                               />
                             ))}
                           </div>
-                          <span className="text-[10px] text-[#555]">({product.reviewCount})</span>
+                          <span className="text-[10px] text-[#555]">
+                            ({product.reviewCount})
+                          </span>
                         </div>
                         <div className="flex items-center gap-2">
                           {product.comparePrice && (
@@ -626,38 +831,36 @@ export function BrandPageClient({
                               {formatPrice(product.comparePrice)}
                             </span>
                           )}
-                          <span className="text-sm font-bold" style={{ color: brandColor }}>
+                          <span
+                            className="text-sm font-bold"
+                            style={{ color: brandColor }}
+                          >
                             {formatPrice(product.price)}
                           </span>
                         </div>
                       </div>
-                    </Link>
+                      <div className="shrink-0 flex items-center">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            addToCart(product);
+                          }}
+                          className="w-8 h-8 rounded-xl flex items-center justify-center transition-all hover:scale-110"
+                          style={{
+                            backgroundColor: `${brandColor}22`,
+                            color: brandColor,
+                          }}
+                        >
+                          <Plus className="h-4 w-4" />
+                        </button>
+                      </div>
+                    </div>
                   );
                 })}
               </div>
             </div>
           </aside>
         </div>
-
-        {/* ── Bottom Tabs ── */}
-        {theme.tabs && theme.tabs.length > 0 && (
-          <div className="mt-4 flex gap-0 overflow-x-auto rounded-xl border border-[#222]" style={{ scrollbarWidth: "none" }}>
-            {theme.tabs.map((tab) => (
-              <button
-                key={tab}
-                type="button"
-                onClick={() => setActiveTab(activeTab === tab ? null : tab)}
-                className="shrink-0 px-4 py-3 text-xs font-bold uppercase tracking-wide transition-all border-r border-[#222] last:border-r-0"
-                style={{
-                  backgroundColor: activeTab === tab ? brandColor : "#0A0A0A",
-                  color: activeTab === tab ? textCol : (brandColor === "#1A1A1A" ? "#FFF" : brandColor),
-                }}
-              >
-                {tab}
-              </button>
-            ))}
-          </div>
-        )}
       </div>
     </main>
   );

@@ -1354,25 +1354,25 @@ export function searchProducts(query: string): Product[] {
 }
 
 // ── Brand helpers ──────────────────────────────────────────
-export const brandThemes: Record<string, { color: string; textColor: string; tabs?: string[] }> = {
-  milwaukee: { color: "#D1001C", textColor: "#FFF", tabs: ["M18", "M12", "MX FUEL", "PACKOUT", "FORGE", "PIPELINE", "RED HOT DEALS"] },
-  dewalt: { color: "#FFD700", textColor: "#1A1A1A", tabs: ["20V MAX", "12V MAX", "FLEXVOLT", "ATOMIC", "PROFORMANCE"] },
-  bosch: { color: "#005691", textColor: "#FFF", tabs: ["18V", "12V", "GREEN", "PROFESSIONAL"] },
-  makita: { color: "#0077C8", textColor: "#FFF", tabs: ["18V LXT", "12V CXT", "X2", "LXT 40V"] },
-  ego: { color: "#0d5c4a", textColor: "#FFF", tabs: ["56V", "POWER+", "TOOL ONLY"] },
-  stanley: { color: "#E35205", textColor: "#FFF", tabs: ["FATMAX", "STANLEY PRO"] },
-  "3m": { color: "#CC3300", textColor: "#FFF", tabs: ["SEGURIDAD", "INDUSTRIAL"] },
-  "metabo-hpt": { color: "#1b7a3a", textColor: "#FFF", tabs: ["MULTIVOLT", "AIR NAILER"] },
-  stihl: { color: "#E35205", textColor: "#FFF", tabs: ["BATERÍA", "GASOLINA"] },
-  fein: { color: "#666666", textColor: "#FFF", tabs: ["MULTIMASTER", "SLIPPER"] },
-  flex: { color: "#1A1A1A", textColor: "#FFF", tabs: ["24V", "40V MAX"] },
-  festool: { color: "#1A1A1A", textColor: "#00A651", tabs: ["SISTEMA", "TSC", "CT"] },
-  honda: { color: "#CC0000", textColor: "#FFF", tabs: ["GENERADORES", "MOTORES", "BOMBAS"] },
-  "klein-tools": { color: "#FFC220", textColor: "#1A1A1A", tabs: ["ELÉCTRICAS", "MANUALES"] },
-  toro: { color: "#1A1A1A", textColor: "#CC0000", tabs: ["CÉSPED", "SOPLORES"] },
-  skil: { color: "#CC0000", textColor: "#FFF", tabs: ["12V", "20V"] },
-  jet: { color: "#CC0000", textColor: "#FFF", tabs: ["SIERRAS", "TORNO"] },
-  knaack: { color: "#8B6914", textColor: "#FFF", tabs: ["ALMACENAMIENTO"] },
+export const brandThemes: Record<string, { color: string; textColor: string; secondColor: string; tabs?: string[] }> = {
+  milwaukee: { color: "#D1001C", textColor: "#FFF", secondColor: "#0A0A0A", tabs: ["M18", "M12", "MX FUEL", "PACKOUT", "FORGE", "PIPELINE", "RED HOT DEALS"] },
+  dewalt: { color: "#FFD700", textColor: "#1A1A1A", secondColor: "#1A1A1A", tabs: ["20V MAX", "12V MAX", "FLEXVOLT", "ATOMIC", "PROFORMANCE"] },
+  bosch: { color: "#005691", textColor: "#FFF", secondColor: "#0A0A0A", tabs: ["18V", "12V", "GREEN", "PROFESSIONAL"] },
+  makita: { color: "#0077C8", textColor: "#FFF", secondColor: "#0A0A0A", tabs: ["18V LXT", "12V CXT", "X2", "LXT 40V"] },
+  ego: { color: "#0d5c4a", textColor: "#FFF", secondColor: "#0A0A0A", tabs: ["56V", "POWER+", "TOOL ONLY"] },
+  stanley: { color: "#E35205", textColor: "#FFF", secondColor: "#0A0A0A", tabs: ["FATMAX", "STANLEY PRO"] },
+  "3m": { color: "#CC3300", textColor: "#FFF", secondColor: "#0A0A0A", tabs: ["SEGURIDAD", "INDUSTRIAL"] },
+  "metabo-hpt": { color: "#1b7a3a", textColor: "#FFF", secondColor: "#0A0A0A", tabs: ["MULTIVOLT", "AIR NAILER"] },
+  stihl: { color: "#E35205", textColor: "#FFF", secondColor: "#0A0A0A", tabs: ["BATERÍA", "GASOLINA"] },
+  fein: { color: "#666666", textColor: "#FFF", secondColor: "#0A0A0A", tabs: ["MULTIMASTER", "SLIPPER"] },
+  flex: { color: "#E35205", textColor: "#FFF", secondColor: "#0A0A0A", tabs: ["24V", "40V MAX"] },
+  festool: { color: "#00A651", textColor: "#FFF", secondColor: "#0A0A0A", tabs: ["SISTEMA", "TSC", "CT"] },
+  honda: { color: "#CC0000", textColor: "#FFF", secondColor: "#0A0A0A", tabs: ["GENERADORES", "MOTORES", "BOMBAS"] },
+  "klein-tools": { color: "#FFC220", textColor: "#1A1A1A", secondColor: "#1A1A1A", tabs: ["ELÉCTRICAS", "MANUALES"] },
+  toro: { color: "#CC0000", textColor: "#FFF", secondColor: "#0A0A0A", tabs: ["CÉSPED", "SOPLORES"] },
+  skil: { color: "#CC0000", textColor: "#FFF", secondColor: "#0A0A0A", tabs: ["12V", "20V"] },
+  jet: { color: "#CC0000", textColor: "#FFF", secondColor: "#0A0A0A", tabs: ["SIERRAS", "TORNO"] },
+  knaack: { color: "#8B6914", textColor: "#FFF", secondColor: "#0A0A0A", tabs: ["ALMACENAMIENTO"] },
 };
 
 export function getBrandBySlug(slug: string): Brand | undefined {
@@ -1386,5 +1386,5 @@ export function getProductsByBrandSlug(slug: string): Product[] {
 }
 
 export function getBrandTheme(slug: string) {
-  return brandThemes[slug] || { color: "#333", textColor: "#FFF", tabs: [] };
+  return brandThemes[slug] || { color: "#333", textColor: "#FFF", secondColor: "#0A0A0A", tabs: [] };
 }

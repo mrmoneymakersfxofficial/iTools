@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useCartStore } from "@/stores/cart-store";
 import { useWishlistStore } from "@/stores/wishlist-store";
+import { useQuickViewStore } from "@/stores/quickview-store";
 import type { Product } from "@/types";
 
 function formatPrice(price: number): string {
@@ -36,11 +37,16 @@ function StarRating({ rating, count }: { rating: number; count: number }) {
 interface ProductCardProps {
   product: Product;
   index?: number;
+  /** If provided, clicking the card opens the quick view panel instead of navigating */
+  quickView?: boolean;
+  /** Override the brand color used in quick view header */
+  quickViewColor?: string;
 }
 
-export function ProductCard({ product, index = 0 }: ProductCardProps) {
+export function ProductCard({ product, index = 0, quickView, quickViewColor }: ProductCardProps) {
   const addToCart = useCartStore((s) => s.addItem);
   const { toggleItem, isWishlisted } = useWishlistStore();
+  const openQuickView = useQuickViewStore((s) => s.openQuickView);
   const wishlisted = isWishlisted(product.id);
 
   const discount = product.comparePrice
@@ -56,11 +62,19 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
       className="group product-card-hover relative flex flex-col rounded-lg border border-border bg-white overflow-hidden"
     >
       {/* Clickable overlay for entire card */}
-      <Link
-        href={`/producto/${product.slug}`}
-        className="absolute inset-0 z-[5]"
-        aria-label={`Ver ${product.name}`}
-      />
+      {quickView ? (
+        <button
+          onClick={() => openQuickView(product, quickViewColor)}
+          className="absolute inset-0 z-[5] cursor-pointer"
+          aria-label={`Ver ${product.name}`}
+        />
+      ) : (
+        <Link
+          href={`/producto/${product.slug}`}
+          className="absolute inset-0 z-[5]"
+          aria-label={`Ver ${product.name}`}
+        />
+      )}
 
       {/* Badges */}
       <div className="absolute top-2 left-2 z-10 flex flex-col gap-1">

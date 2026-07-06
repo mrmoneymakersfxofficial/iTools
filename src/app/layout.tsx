@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
+import { ProductQuickView } from "@/components/product/ProductQuickView";
 import { CartDrawer } from "@/components/layout/CartDrawer";
 import { ClientLayoutEffects } from "@/components/layout/ClientLayoutEffects";
 import { ThemeProvider } from "next-themes";
@@ -99,6 +100,7 @@ export default function RootLayout({
         >
           <ClientLayoutEffects />
           {children}
+          <ProductQuickView />
           <CartDrawer />
           <BottomNav />
           <IToolsAssistant />

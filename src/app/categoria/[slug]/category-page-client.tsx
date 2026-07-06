@@ -1,17 +1,27 @@
 "use client";
 
 import Link from "next/link";
-import { ChevronRight, SlidersHorizontal } from "lucide-react";
+import { ChevronRight, SlidersHorizontal, Wrench, ArrowRight } from "lucide-react";
 import { ProductCard } from "@/components/product/ProductCard";
 import { useSectionDeepLinking, sectionId } from "@/hooks/useSectionDeepLinking";
+import { brands, getBrandTheme } from "@/lib/data";
 import type { Product, Category } from "@/types";
 
 const SECTION_PRODUCTS = "Productos";
 const SECTION_SUBCATEGORIES = "Subcategorías";
 const SECTION_FILTERS = "Filtros y Ordenamiento";
+const SECTION_BRANDS = "Marcas Disponibles";
 
 export function CategoryPageClient({ category, products }: { category: Category; products: Product[] }) {
   useSectionDeepLinking();
+
+  // Get unique brands from products in this category
+  const categoryBrands = products.reduce((acc, p) => {
+    if (p.brand && !acc.find((b) => b.id === p.brand.id)) {
+      acc.push(p.brand);
+    }
+    return acc;
+  }, [] as typeof products[0]["brand"][]).filter(Boolean);
 
   return (
     <main className="min-h-screen bg-background">
@@ -34,15 +44,50 @@ export function CategoryPageClient({ category, products }: { category: Category;
                 ? `${products.length} producto${products.length !== 1 ? "s" : ""} encontrado${products.length !== 1 ? "s" : ""}`
                 : "No hay productos en esta categoría aún"}
             </p>
-            <p className="text-white/40 mt-1 text-xs">
-              Comparte esta sección: {typeof window !== "undefined" && (
-                <span className="underline cursor-pointer" onClick={() => navigator.clipboard.writeText(window.location.href)}>
-                  Copiar enlace
-                </span>
-              )}
-            </p>
           </div>
         </section>
+
+        {/* Section: Brands in this category */}
+        {categoryBrands.length > 0 && (
+          <section data-section={SECTION_BRANDS} className="mb-8">
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="text-lg font-impact text-foreground">{SECTION_BRANDS}</h2>
+              <Link href="/" className="text-xs text-itools-blue hover:underline flex items-center gap-1">
+                Ver todas las marcas <ArrowRight className="h-3 w-3" />
+              </Link>
+            </div>
+            <div className="flex gap-2 overflow-x-auto pb-2" style={{ scrollbarWidth: "none" }}>
+              {categoryBrands.map((brand) => {
+                const theme = getBrandTheme(brand.slug);
+                const productCount = products.filter((p) => p.brandId === brand.id).length;
+                return (
+                  <Link
+                    key={brand.id}
+                    href={`/marca/${brand.slug}`}
+                    className="shrink-0 flex items-center gap-2.5 px-4 py-2.5 rounded-xl border border-border hover:border-transparent transition-all group"
+                    style={{
+                      backgroundColor: productCount > 0 ? `${theme.color}10` : undefined,
+                      borderColor: productCount > 0 ? `${theme.color}30` : undefined,
+                    }}
+                  >
+                    <div
+                      className="h-8 w-8 rounded-lg flex items-center justify-center text-white text-[10px] font-bold"
+                      style={{ backgroundColor: theme.color }}
+                    >
+                      {brand.name.charAt(0)}
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-foreground group-hover:text-itools-blue transition-colors">
+                        {brand.name}
+                      </p>
+                      <p className="text-[10px] text-muted-foreground">{productCount} productos</p>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          </section>
+        )}
 
         {/* Section: Subcategories */}
         {category.children && category.children.length > 0 && (
@@ -92,6 +137,7 @@ export function CategoryPageClient({ category, products }: { category: Category;
             </div>
           ) : (
             <div className="text-center py-20 bg-white dark:bg-[#1a1a1a] rounded-xl border border-border dark:border-[#333]">
+              <Wrench className="h-12 w-12 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
               <p className="text-muted-foreground mb-4">
                 No hay productos disponibles en esta categoría.
               </p>
@@ -104,6 +150,39 @@ export function CategoryPageClient({ category, products }: { category: Category;
             </div>
           )}
         </section>
+
+        {/* Bottom: Link back to all brands */}
+        <div className="mt-12 pt-8 border-t border-border">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-impact text-foreground">Explorar por Marca</h2>
+            <Link href="/" className="text-xs text-itools-blue hover:underline flex items-center gap-1">
+              Ver tienda completa <ArrowRight className="h-3 w-3" />
+            </Link>
+          </div>
+          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2">
+            {brands.filter(b => b.featured).map((brand) => {
+              const theme = getBrandTheme(brand.slug);
+              return (
+                <Link
+                  key={brand.id}
+                  href={`/marca/${brand.slug}`}
+                  className="flex items-center gap-2 px-3 py-2.5 rounded-lg border border-border hover:border-transparent transition-all group text-center justify-center"
+                  style={{ hoverBackgroundColor: `${theme.color}10` }}
+                >
+                  <div
+                    className="h-6 w-6 rounded-md flex items-center justify-center text-white text-[9px] font-bold shrink-0"
+                    style={{ backgroundColor: theme.color }}
+                  >
+                    {brand.name.charAt(0)}
+                  </div>
+                  <span className="text-xs text-foreground group-hover:text-itools-blue transition-colors truncate">
+                    {brand.name}
+                  </span>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
       </div>
     </main>
   );
