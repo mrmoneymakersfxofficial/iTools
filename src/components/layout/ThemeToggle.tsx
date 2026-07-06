@@ -1,55 +1,77 @@
 "use client";
 
+import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { Sun, Moon } from "lucide-react";
+import { cn } from "@/lib/utils";
 
-export function ThemeToggle({ className = "" }: { className?: string }) {
-  const [dark, setDark] = useState(false);
+export function ThemeToggle({ className }: { className?: string }) {
+  const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
-  useEffect(() => {
-    setMounted(true);
-    const stored = localStorage.getItem("itools-theme");
-    if (stored === "dark") {
-      setDark(true);
-      document.documentElement.classList.add("dark");
-    } else if (stored === "light") {
-      setDark(false);
-      document.documentElement.classList.remove("dark");
-    } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-      setDark(true);
-      document.documentElement.classList.add("dark");
-    }
-  }, []);
-
-  const toggle = () => {
-    const next = !dark;
-    setDark(next);
-    document.documentElement.classList.toggle("dark", next);
-    localStorage.setItem("itools-theme", next ? "dark" : "light");
-  };
+  useEffect(() => setMounted(true), []);
 
   if (!mounted) {
-    return <div className={`w-8 h-8 ${className}`} />;
+    return (
+      <div
+        className={cn(
+          "relative h-8 w-14 rounded-full bg-muted animate-pulse",
+          className
+        )}
+      />
+    );
   }
+
+  const isDark = theme === "dark";
 
   return (
     <button
-      onClick={toggle}
-      className={`relative w-8 h-8 rounded-lg flex items-center justify-center transition-all active:scale-90 hover:bg-accent ${className}`}
-      aria-label={dark ? "Modo claro" : "Modo oscuro"}
-      title={dark ? "Cambiar a modo claro" : "Cambiar a modo oscuro"}
+      type="button"
+      onClick={() => setTheme(isDark ? "light" : "dark")}
+      className={cn(
+        "relative flex items-center h-8 w-14 rounded-full p-1 transition-all duration-500 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-itools-blue/50",
+        isDark
+          ? "bg-gradient-to-r from-[#1a1a2e] to-[#2d2d44] shadow-[0_0_12px_rgba(99,102,241,0.3)]"
+          : "bg-gradient-to-r from-amber-300 to-orange-400 shadow-[0_0_12px_rgba(251,191,36,0.3)]",
+        className
+      )}
+      aria-label={isDark ? "Cambiar a modo claro" : "Cambiar a modo oscuro"}
     >
-      <Sun
-        className={`h-4 w-4 absolute transition-all duration-300 ${
-          dark ? "opacity-0 rotate-90 scale-0" : "opacity-100 rotate-0 scale-100 text-amber-500"
-        }`}
-      />
-      <Moon
-        className={`h-4 w-4 absolute transition-all duration-300 ${
-          dark ? "opacity-100 rotate-0 scale-100 text-blue-400" : "opacity-0 -rotate-90 scale-0 text-slate-600"
-        }`}
-      />
+      {/* Track icons (static, behind the thumb) */}
+      <span className="absolute left-2 top-1/2 -translate-y-1/2 z-0">
+        <Sun
+          className={cn(
+            "h-3.5 w-3.5 transition-opacity duration-300",
+            isDark ? "opacity-40" : "opacity-90"
+          )}
+          strokeWidth={2}
+        />
+      </span>
+      <span className="absolute right-2 top-1/2 -translate-y-1/2 z-0">
+        <Moon
+          className={cn(
+            "h-3.5 w-3.5 transition-opacity duration-300",
+            isDark ? "opacity-90" : "opacity-40"
+          )}
+          strokeWidth={2}
+        />
+      </span>
+
+      {/* Sliding thumb */}
+      <span
+        className={cn(
+          "relative z-10 flex items-center justify-center h-6 w-6 rounded-full shadow-lg transition-all duration-500 ease-in-out",
+          isDark
+            ? "translate-x-6 bg-gradient-to-br from-indigo-400 to-purple-500"
+            : "translate-x-0 bg-gradient-to-br from-yellow-300 to-amber-400"
+        )}
+      >
+        {isDark ? (
+          <Moon className="h-3.5 w-3.5 text-white" strokeWidth={2.5} />
+        ) : (
+          <Sun className="h-3.5 w-3.5 text-white" strokeWidth={2.5} />
+        )}
+      </span>
     </button>
   );
 }

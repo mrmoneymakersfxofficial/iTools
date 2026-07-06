@@ -4,7 +4,9 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { CartDrawer } from "@/components/layout/CartDrawer";
 import { ClientLayoutEffects } from "@/components/layout/ClientLayoutEffects";
+import { ThemeProvider } from "next-themes";
 import { BottomNav } from "@/components/layout/BottomNav";
+import { IToolsAssistant } from "@/components/layout/IToolsAssistant";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -89,11 +91,19 @@ export default function RootLayout({
   return (
     <html lang="es" suppressHydrationWarning>
       <body className={`${inter.variable} font-sans antialiased bg-background text-foreground`}>
-        <ClientLayoutEffects />
-        {children}
-        <CartDrawer />
-        <BottomNav />
-        <Toaster />
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="light"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <ClientLayoutEffects />
+          {children}
+          <CartDrawer />
+          <BottomNav />
+          <IToolsAssistant />
+          <Toaster />
+        </ThemeProvider>
       </body>
     </html>
   );

@@ -74,13 +74,13 @@ function CategoryNavItem({ category }: { category: Category }) {
       </button>
 
       {hasChildren && open && (
-        <div className="absolute left-0 top-full z-50 min-w-[220px] rounded-b-lg border-t-2 border-itools-blue bg-white shadow-lg animate-in fade-in-0 slide-in-from-top-2 duration-150">
+        <div className="absolute left-0 top-full z-50 min-w-[220px] rounded-b-lg border-t-2 border-itools-blue bg-white dark:bg-[#1a1a1a] shadow-lg animate-in fade-in-0 slide-in-from-top-2 duration-150">
           <div className="py-2">
             {category.children!.map((child) => (
               <a
                 key={child.id}
                 href={`/categoria/${child.slug}`}
-                className="block px-5 py-2.5 text-sm text-itools-dark hover:bg-surface hover:text-itools-blue transition-colors"
+                className="block px-5 py-2.5 text-sm text-itools-dark dark:text-white/90 hover:bg-surface dark:hover:bg-[#222] hover:text-itools-blue transition-colors"
               >
                 {child.name}
               </a>
@@ -131,7 +131,7 @@ function MobileSearchOverlay({
   }, [onClose]);
 
   return (
-    <div className="fixed inset-0 z-[60] bg-white flex flex-col">
+    <div className="fixed inset-0 z-[60] bg-white dark:bg-[#111111] flex flex-col">
       {/* Search header */}
       <div className="flex items-center gap-3 px-4 py-3 border-b border-border">
         <Input
@@ -252,7 +252,7 @@ function MobileMenuContent({ onClose }: { onClose: () => void }) {
                     ? toggleCategory(category.id)
                     : onClose()
                 }
-                className="flex items-center justify-between w-full px-4 py-3 text-sm font-medium text-itools-dark hover:bg-surface transition-colors"
+                className="flex items-center justify-between w-full px-4 py-3 text-sm font-medium text-itools-dark dark:text-white/90 hover:bg-surface dark:hover:bg-[#222] transition-colors"
               >
                 <a
                   href={`/categoria/${category.slug}`}
@@ -276,13 +276,13 @@ function MobileMenuContent({ onClose }: { onClose: () => void }) {
               </button>
 
               {hasChildren && isExpanded && (
-                <div className="bg-surface/60 border-l-2 border-itools-blue/20">
+                <div className="bg-surface/60 dark:bg-[#1a1a1a] border-l-2 border-itools-blue/20">
                   {category.children!.map((child) => (
                     <a
                       key={child.id}
                       href={`/categoria/${child.slug}`}
                       onClick={() => onClose()}
-                      className="block pl-8 pr-4 py-2.5 text-sm text-muted-foreground hover:text-itools-blue hover:bg-white transition-colors"
+                      className="block pl-8 pr-4 py-2.5 text-sm text-muted-foreground hover:text-itools-blue hover:bg-white dark:hover:bg-[#222] transition-colors"
                     >
                       {child.name}
                     </a>
@@ -298,7 +298,7 @@ function MobileMenuContent({ onClose }: { onClose: () => void }) {
         <a
           href="/cuenta"
           onClick={() => onClose()}
-          className="flex items-center gap-2 text-sm font-medium text-itools-dark hover:text-itools-blue transition-colors"
+          className="flex items-center gap-2 text-sm font-medium text-itools-dark dark:text-white/90 hover:text-itools-blue transition-colors"
         >
           <User className="h-4 w-4" />
           Mi Cuenta
@@ -397,12 +397,19 @@ export default function Header() {
                 <Truck className="h-3 w-3" />
                 <span>Envío a todo Perú</span>
               </span>
+              <span className="text-white/30">|</span>
+              <ThemeToggle />
             </div>
           </div>
         </div>
 
+        {/* ── Mobile theme toggle bar ── */}
+        <div className="md:hidden flex items-center justify-end px-3 py-1 bg-itools-dark">
+          <ThemeToggle />
+        </div>
+
         {/* ── Main Bar ── */}
-        <div className="bg-white border-b border-border shadow-sm">
+        <div className="bg-white dark:bg-[#111111] border-b border-border dark:border-[#222] shadow-sm">
           <div className="mx-auto max-w-7xl px-4 h-16 flex items-center gap-3 lg:gap-6">
             {/* Left: Mobile hamburger / Desktop logo */}
             <div className="flex items-center gap-3 shrink-0">
@@ -412,13 +419,13 @@ export default function Header() {
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="md:hidden -ml-1 text-itools-dark hover:text-itools-blue"
+                    className="md:hidden -ml-1 text-itools-dark dark:text-white/90 hover:text-itools-blue"
                     aria-label="Abrir menú"
                   >
                     <Menu className="h-5 w-5" />
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="left" className="w-[300px] sm:w-[360px] p-0">
+                <SheetContent side="left" className="w-[300px] sm:w-[360px] p-0 bg-white dark:bg-[#111111]">
                   <MobileMenuContent onClose={() => {}} />
                 </SheetContent>
               </Sheet>
@@ -446,7 +453,7 @@ export default function Header() {
                     if (desktopResults.length > 0) setDesktopResultsOpen(true);
                   }}
                   placeholder="Buscar herramientas, marcas, SKUs..."
-                  className="w-full h-10 pl-10 pr-4 bg-surface border-0 rounded-lg text-sm focus-visible:ring-itools-blue/30 focus-visible:border-itools-blue/50"
+                  className="w-full h-10 pl-10 pr-4 bg-surface dark:bg-[#1a1a1a] dark:text-white border-0 rounded-lg text-sm focus-visible:ring-itools-blue/30 focus-visible:border-itools-blue/50"
                   aria-label="Buscar productos"
                   aria-expanded={desktopResultsOpen}
                   role="combobox"
@@ -455,13 +462,13 @@ export default function Header() {
 
               {/* Desktop search dropdown */}
               {desktopResultsOpen && desktopResults.length > 0 && (
-                <div className="absolute top-full left-0 right-0 mt-1 z-50 bg-white rounded-lg border border-border shadow-xl max-h-96 overflow-y-auto">
+                <div className="absolute top-full left-0 right-0 mt-1 z-50 bg-white dark:bg-[#1a1a1a] rounded-lg border border-border dark:border-[#333] shadow-xl max-h-96 overflow-y-auto">
                   <div className="divide-y divide-border">
                     {desktopResults.slice(0, 8).map((product) => (
                       <a
                         key={product.id}
                         href={`/producto/${product.slug}`}
-                        className="flex items-start gap-3 px-4 py-3 hover:bg-surface transition-colors"
+                        className="flex items-start gap-3 px-4 py-3 hover:bg-surface dark:hover:bg-[#222] transition-colors"
                         onClick={() => {
                           setDesktopResultsOpen(false);
                           setDesktopQuery("");
@@ -510,7 +517,7 @@ export default function Header() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="md:hidden text-itools-dark hover:text-itools-blue"
+                className="md:hidden text-itools-dark dark:text-white/90 hover:text-itools-blue"
                 onClick={() => setMobileSearchOpen(true)}
                 aria-label="Buscar"
               >
@@ -521,7 +528,7 @@ export default function Header() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="relative text-itools-dark hover:text-itools-blue"
+                className="relative text-itools-dark dark:text-white/90 hover:text-itools-blue"
                 aria-label={`Lista de deseos (${wishlistCount} artículos)`}
               >
                 <Heart className="h-5 w-5" />
@@ -536,7 +543,7 @@ export default function Header() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="relative text-itools-dark hover:text-itools-blue"
+                className="relative text-itools-dark dark:text-white/90 hover:text-itools-blue"
                 onClick={openCart}
                 aria-label={`Carrito de compras (${cartItemCount} artículos)`}
               >
