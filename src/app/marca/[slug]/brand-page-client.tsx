@@ -288,15 +288,15 @@ export function BrandPageClient({
   const textCol = theme.textColor;
   const isDark = textCol === "#FFF" || textCol === "#00A651";
 
-  // Split background: brand color top ~40%, secondColor bottom ~60%, smooth gradient transition
+  // Split background: brand color top ~20% only, fast transition to black
   const pageBgStyle = {
     background: `
       linear-gradient(
         180deg,
         ${brandColor} 0%,
-        ${brandColor} 30%,
-        ${brandColor}cc 35%,
-        ${secondColor} 45%,
+        ${brandColor} 15%,
+        ${brandColor}88 20%,
+        ${secondColor} 28%,
         ${secondColor} 100%
       )
     `,
@@ -324,6 +324,52 @@ export function BrandPageClient({
       />
 
       <div className="relative z-10 mx-auto max-w-[1440px] px-2.5 lg:px-4 py-4 pb-28">
+        {/* ── 3D Brand Name Header ── */}
+        <div className="mb-5 flex justify-center">
+          <div
+            className="relative inline-flex items-center gap-3 px-8 py-4 rounded-2xl"
+            style={{
+              backgroundColor: brandColor,
+              color: textCol,
+              boxShadow: `
+                0 2px 0 ${brandColor}cc,
+                0 4px 0 ${brandColor}99,
+                0 8px 0 ${brandColor}66,
+                0 12px 0 ${brandColor}44,
+                0 16px 24px rgba(0,0,0,0.5),
+                inset 0 1px 0 rgba(255,255,255,0.15)
+              `,
+            }}
+          >
+            {/* Dark border outline */}
+            <div
+              className="absolute inset-0 rounded-2xl pointer-events-none"
+              style={{
+                border: `2px solid rgba(0,0,0,0.3)`,
+                boxShadow: `inset 0 1px 0 rgba(255,255,255,0.1), inset 0 -2px 0 rgba(0,0,0,0.2)`,
+              }}
+            />
+            <Wrench className="h-7 w-7" style={{ filter: "drop-shadow(0 2px 1px rgba(0,0,0,0.3))" }} />
+            <div className="flex flex-col">
+              <h1
+                className="text-3xl md:text-4xl font-black uppercase tracking-wider leading-none"
+                style={{
+                  textShadow: `0 2px 0 rgba(0,0,0,0.3), 0 4px 0 rgba(0,0,0,0.15)`,
+                  letterSpacing: "0.06em",
+                }}
+              >
+                {brand.name}
+              </h1>
+              <span
+                className="text-[10px] font-bold uppercase tracking-[0.2em] mt-0.5 opacity-80"
+                style={{ textShadow: "0 1px 0 rgba(0,0,0,0.3)" }}
+              >
+                Herramientas Profesionales
+              </span>
+            </div>
+          </div>
+        </div>
+
         {/* Breadcrumb */}
         <nav className="flex items-center gap-1.5 text-sm text-[#999] mb-4 flex-wrap">
           <Link
