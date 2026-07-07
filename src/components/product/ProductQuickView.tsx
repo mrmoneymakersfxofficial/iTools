@@ -97,12 +97,6 @@ export function ProductQuickView() {
     openCart();
   };
 
-  const handleCopyLink = () => {
-    navigator.clipboard.writeText(`${window.location.origin}/producto/${product.slug}`);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
   return (
     <AnimatePresence>
       {isOpen && (
