@@ -1,0 +1,913 @@
+     1→"use client";
+     2→
+     3→import Link from "next/link";
+     4→import { useState } from "react";
+     5→import {
+     6→  ChevronRight, CircleArrowRight, Wrench, Star, TrendingUp, Plus, Search,
+     7→  Home, ArrowLeft, MessageCircle, ShoppingCart, User,
+     8→} from "lucide-react";
+     9→import { ProductCard } from "@/components/product/ProductCard";
+    10→import { useQuickViewStore } from "@/stores/quickview-store";
+    11→import { useCartStore } from "@/stores/cart-store";
+    12→import type { Product, Brand } from "@/types";
+    13→
+    14→interface BrandTheme {
+    15→  color: string;
+    16→  textColor: string;
+    17→  secondColor: string;
+    18→  tabs?: string[];
+    19→}
+    20→
+    21→/* ── Per-brand category definitions ── */
+    22→const brandCategories: Record<string, { name: string; count: string; icon: string }[]> = {
+    23→  milwaukee: [
+    24→    { name: "Herramientas eléctricas M18", count: "28.1K", icon: "drill" },
+    25→    { name: "Herramientas manuales", count: "18.7K", icon: "wrench" },
+    26→    { name: "Herramientas eléctricas M12", count: "17.7K", icon: "drill" },
+    27→    { name: "Packout", count: "13.1K", icon: "box" },
+    28→    { name: "Baterías y cargadores", count: "7.2K", icon: "battery" },
+    29→    { name: "Tubería", count: "4.7K", icon: "wrench" },
+    30→    { name: "Taladros de percusión", count: "4.6K", icon: "drill" },
+    31→    { name: "Kits combinados", count: "4.6K", icon: "box" },
+    32→    { name: "Llaves de impacto", count: "4.5K", icon: "wrench" },
+    33→    { name: "EPI y seguridad", count: "4.3K", icon: "shield" },
+    34→    { name: "Sierras", count: "2.3K", icon: "saw" },
+    35→  ],
+    36→  dewalt: [
+    37→    { name: "Herramientas 20V MAX XR", count: "22.4K", icon: "drill" },
+    38→    { name: "Herramientas 12V MAX", count: "9.8K", icon: "drill" },
+    39→    { name: "Herramientas FLEXVOLT 60V", count: "8.2K", icon: "drill" },
+    40→    { name: "ATOMIC Compact Series", count: "6.5K", icon: "drill" },
+    41→    { name: "Baterías y cargadores", count: "11.3K", icon: "battery" },
+    42→    { name: "Taladros", count: "7.1K", icon: "drill" },
+    43→    { name: "Impactos", count: "5.9K", icon: "wrench" },
+    44→    { name: "Sierras", count: "4.8K", icon: "saw" },
+    45→    { name: "Esmeriladoras", count: "3.2K", icon: "saw" },
+    46→    { name: "Kits combinados", count: "5.4K", icon: "box" },
+    47→  ],
+    48→  bosch: [
+    49→    { name: "Herramientas 18V Professional", count: "19.6K", icon: "drill" },
+    50→    { name: "Herramientas 12V", count: "8.4K", icon: "drill" },
+    51→    { name: "Herramientas Green", count: "5.2K", icon: "drill" },
+    52→    { name: "Taladros y atornilladores", count: "9.7K", icon: "drill" },
+    53→    { name: "Sierras", count: "4.1K", icon: "saw" },
+    54→    { name: "Esmeriladoras", count: "3.8K", icon: "saw" },
+    55→    { name: "Medición láser", count: "2.9K", icon: "ruler" },
+    56→    { name: "Baterías ProCore", count: "6.3K", icon: "battery" },
+    57→    { name: "Detectores y sensores", count: "1.8K", icon: "shield" },
+    58→  ],
+    59→  makita: [
+    60→    { name: "Herramientas 18V LXT", count: "24.5K", icon: "drill" },
+    61→    { name: "Herramientas 12V CXT", count: "10.2K", icon: "drill" },
+    62→    { name: "Herramientas 40V X2", count: "5.8K", icon: "drill" },
+    63→    { name: "Taladros", count: "8.6K", icon: "drill" },
+    64→    { name: "Impactos", count: "6.4K", icon: "wrench" },
+    65→    { name: "Sierras", count: "5.1K", icon: "saw" },
+    66→    { name: "Rotomartillos", count: "3.9K", icon: "drill" },
+    67→    { name: "Baterías y cargadores", count: "9.8K", icon: "battery" },
+    68→    { name: "Radios y altavoces", count: "2.1K", icon: "box" },
+    69→    { name: "Jardín", count: "4.3K", icon: "saw" },
+    70→  ],
+    71→  stanley: [
+    72→    { name: "Herramientas manuales FATMAX", count: "15.8K", icon: "wrench" },
+    73→    { name: "Llaves", count: "8.2K", icon: "wrench" },
+    74→    { name: "Destornilladores", count: "7.4K", icon: "wrench" },
+    75→    { name: "Cintas métricas", count: "9.1K", icon: "ruler" },
+    76→    { name: "Niveles", count: "4.6K", icon: "ruler" },
+    77→    { name: "Cajas de herramientas", count: "5.3K", icon: "box" },
+    78→    { name: "Martillos", count: "3.7K", icon: "wrench" },
+    79→    { name: "Pinzas y alicates", count: "4.2K", icon: "wrench" },
+    80→    { name: "STANLEY PRO", count: "6.8K", icon: "wrench" },
+    81→  ],
+    82→  "3m": [
+    83→    { name: "Protección auditiva", count: "4.8K", icon: "shield" },
+    84→    { name: "Protección ocular", count: "6.2K", icon: "shield" },
+    85→    { name: "Protección respiratoria", count: "5.7K", icon: "shield" },
+    86→    { name: "Cintas adhesivas", count: "12.4K", icon: "box" },
+    87→    { name: "Discos abrasivos", count: "8.9K", icon: "saw" },
+    88→    { name: "Líquidos y limpieza", count: "3.4K", icon: "box" },
+    89→    { name: "Selladores y espumas", count: "4.1K", icon: "box" },
+    90→    { name: "EPP industrial", count: "7.3K", icon: "shield" },
+    91→  ],
+    92→  honda: [
+    93→    { name: "Generadores inverter", count: "3.2K", icon: "drill" },
+    94→    { name: "Generadores industriales", count: "2.8K", icon: "drill" },
+    95→    { name: "Motobombas de agua", count: "4.1K", icon: "box" },
+    96→    { name: "Motores stationary", count: "5.6K", icon: "drill" },
+    97→    { name: "Cortacéspedes", count: "2.4K", icon: "saw" },
+    98→    { name: "Motocompresores", count: "1.8K", icon: "drill" },
+    99→    { name: "Repuestos y accesorios", count: "8.9K", icon: "box" },
+   100→  ],
+   101→  "klein-tools": [
+   102→    { name: "Herramientas eléctricas", count: "14.2K", icon: "drill" },
+   103→    { name: "Multímetros y medición", count: "8.7K", icon: "ruler" },
+   104→    { name: "Pinzas y alicates", count: "6.3K", icon: "wrench" },
+   105→    { name: "Destornilladores", count: "5.8K", icon: "wrench" },
+   106→    { name: "Cintas métricas", count: "7.1K", icon: "ruler" },
+   107→    { name: "Niveles", count: "3.9K", icon: "ruler" },
+   108→    { name: "Pelacables y conectores", count: "4.5K", icon: "wrench" },
+   109→    { name: "Bolsas y organizadores", count: "3.2K", icon: "box" },
+   110→  ],
+   111→  toro: [
+   112→    { name: "Cortacéspedes", count: "5.4K", icon: "saw" },
+   113→    { name: "Sopladores de hojas", count: "3.8K", icon: "drill" },
+   114→    { name: "Podadoras de setos", count: "2.9K", icon: "saw" },
+   115→    { name: "Limpiadoras a presión", count: "2.1K", icon: "drill" },
+   116→    { name: "Sopladores inalámbricos", count: "1.6K", icon: "drill" },
+   117→    { name: "Cortadoras de césped", count: "3.2K", icon: "saw" },
+   118→    { name: "Repuestos", count: "4.8K", icon: "box" },
+   119→  ],
+   120→  ego: [
+   121→    { name: "Sopladores POWER+", count: "4.2K", icon: "drill" },
+   122→    { name: "Cortacéspedes", count: "3.1K", icon: "saw" },
+   123→    { name: "Sierras de cadena", count: "2.4K", icon: "saw" },
+   124→    { name: "Taladros", count: "1.8K", icon: "drill" },
+   125→    { name: "Recortabordes", count: "2.6K", icon: "saw" },
+   126→    { name: "Baterías 56V ARC Lithium", count: "5.7K", icon: "battery" },
+   127→    { name: "Cargadores", count: "3.4K", icon: "battery" },
+   128→    { name: "Accesorios de jardín", count: "4.1K", icon: "box" },
+   129→  ],
+   130→  "metabo-hpt": [
+   131→    { name: "Clavadoras neumáticas", count: "6.8K", icon: "drill" },
+   132→    { name: "Herramientas 18V", count: "9.4K", icon: "drill" },
+   133→    { name: "Herramientas 36V Multivolt", count: "4.2K", icon: "drill" },
+   134→    { name: "Taladros", count: "5.1K", icon: "drill" },
+   135→    { name: "Sierras circulares", count: "3.7K", icon: "saw" },
+   136→    { name: "Esmeriladoras", count: "3.2K", icon: "saw" },
+   137→    { name: "Aire comprimido", count: "4.8K", icon: "box" },
+   138→  ],
+   139→  flex: [
+   140→    { name: "Herramientas 24V", count: "12.6K", icon: "drill" },
+   141→    { name: "Herramientas 40V MAX", count: "5.8K", icon: "drill" },
+   142→    { name: "Taladros", count: "4.1K", icon: "drill" },
+   143→    { name: "Impactos", count: "3.8K", icon: "wrench" },
+   144→    { name: "Sierras circulares", count: "3.2K", icon: "saw" },
+   145→    { name: "Esmeriladoras", count: "2.9K", icon: "saw" },
+   146→    { name: "Rotomartillos", count: "2.4K", icon: "drill" },
+   147→    { name: "Baterías y cargadores", count: "6.7K", icon: "battery" },
+   148→  ],
+   149→  stihl: [
+   150→    { name: "Motosierras", count: "8.4K", icon: "saw" },
+   151→    { name: "Sopladores de hojas", count: "6.2K", icon: "drill" },
+   152→    { name: "Desbrozadoras", count: "5.1K", icon: "saw" },
+   153→    { name: "Hidrolimpiadoras", count: "3.4K", icon: "drill" },
+   154→    { name: "Motobombas", count: "2.8K", icon: "box" },
+   155→    { name: "Herramientas a batería", count: "4.5K", icon: "battery" },
+   156→    { name: "Cortacéspedes", count: "2.1K", icon: "saw" },
+   157→    { name: "Accesorios y repuestos", count: "7.3K", icon: "box" },
+   158→  ],
+   159→  fein: [
+   160→    { name: "Multiherramientas MultiMaster", count: "4.8K", icon: "drill" },
+   161→    { name: "Sierras de calar", count: "2.9K", icon: "saw" },
+   162→    { name: "Pulidoras", count: "2.4K", icon: "saw" },
+   163→    { name: "Taladros de columna", count: "1.6K", icon: "drill" },
+   164→    { name: "Aspiradoras industriales", count: "3.2K", icon: "box" },
+   165→    { name: "Accesorios MultiMaster", count: "5.7K", icon: "box" },
+   166→  ],
+   167→  skil: [
+   168→    { name: "Herramientas 20V", count: "8.4K", icon: "drill" },
+   169→    { name: "Herramientas 12V", count: "5.2K", icon: "drill" },
+   170→    { name: "Taladros", count: "3.8K", icon: "drill" },
+   171→    { name: "Sierras circulares", count: "3.1K", icon: "saw" },
+   172→    { name: "Esmeriladoras", count: "2.7K", icon: "saw" },
+   173→    { name: "Impactos", count: "2.9K", icon: "wrench" },
+   174→    { name: "Sierras caladoras", count: "2.4K", icon: "saw" },
+   175→    { name: "Kits combinados", count: "4.6K", icon: "box" },
+   176→  ],
+   177→  festool: [
+   178→    { name: "Sierras de corte", count: "4.2K", icon: "saw" },
+   179→    { name: "Sierras circulares", count: "3.8K", icon: "saw" },
+   180→    { name: "Aspiradoras CT", count: "3.4K", icon: "box" },
+   181→    { name: "Taladros", count: "2.9K", icon: "drill" },
+   182→    { name: "Enrutadores", count: "2.4K", icon: "drill" },
+   183→    { name: "Lijadoras", count: "3.1K", icon: "saw" },
+   184→    { name: "Sistema Systainer", count: "5.6K", icon: "box" },
+   185→    { name: "Accesorios y discos", count: "8.2K", icon: "box" },
+   186→  ],
+   187→  jet: [
+   188→    { name: "Sierras de cinta", count: "2.8K", icon: "saw" },
+   189→    { name: "Sierras de mesa", count: "2.4K", icon: "saw" },
+   190→    { name: "Tornos de banco", count: "1.9K", icon: "drill" },
+   191→    { name: "Taladros de columna", count: "2.1K", icon: "drill" },
+   192→    { name: "Esmeriladores de banco", count: "1.6K", icon: "saw" },
+   193→    { name: "Martillos neumáticos", count: "2.3K", icon: "wrench" },
+   194→    { name: "Prensas y sujetadores", count: "1.8K", icon: "box" },
+   195→  ],
+   196→  knaack: [
+   197→    { name: "Cajas de herramientas", count: "4.2K", icon: "box" },
+   198→    { name: "Bancos de trabajo", count: "2.8K", icon: "box" },
+   199→    { name: "Cestas y soportes", count: "3.1K", icon: "box" },
+   200→    { name: "Estantes de almacenamiento", count: "2.4K", icon: "box" },
+   201→    { name: "Carritos utilitarios", count: "1.9K", icon: "box" },
+   202→    { name: "Organizadores modulares", count: "2.6K", icon: "box" },
+   203→  ],
+   204→};
+   205→
+   206→const defaultBrandCategories = [
+   207→  { name: "Herramientas eléctricas", count: "15.2K", icon: "drill" },
+   208→  { name: "Herramientas manuales", count: "12.1K", icon: "wrench" },
+   209→  { name: "Baterías y cargadores", count: "8.4K", icon: "battery" },
+   210→  { name: "Kits combinados", count: "5.8K", icon: "box" },
+   211→  { name: "Accesorios", count: "9.3K", icon: "settings" },
+   212→  { name: "Almacenamiento", count: "6.1K", icon: "box" },
+   213→  { name: "Sierras", count: "3.7K", icon: "saw" },
+   214→  { name: "EPI y seguridad", count: "4.0K", icon: "shield" },
+   215→];
+   216→
+   217→function BrandCategoryIcon({ type, color }: { type: string; color: string }) {
+   218→  const cls = "h-4 w-4";
+   219→  switch (type) {
+   220→    case "drill":
+   221→      return (
+   222→        <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
+   223→          <path strokeLinecap="round" strokeLinejoin="round" d="M14.121 14.121L19 19m-7-7l7-7m-7 7l-2.879 2.879M12 12L9.121 9.121" />
+   224→        </svg>
+   225→      );
+   226→    case "battery":
+   227→      return (
+   228→        <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
+   229→          <rect x="6" y="4" width="12" height="18" rx="2" /><path d="M9 2h6" /><path d="M10 9h4M10 13h4M10 17h4" />
+   230→        </svg>
+   231→      );
+   232→    case "shield":
+   233→      return (
+   234→        <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
+   235→          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+   236→        </svg>
+   237→      );
+   238→    case "ruler":
+   239→      return (
+   240→        <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
+   241→          <path d="M21.3 15.3a2.4 2.4 0 0 1 0 3.4l-2.6 2.6a2.4 2.4 0 0 1-3.4 0L2.7 8.7a2.41 2.41 0 0 1 0-3.4l2.6-2.6a2.41 2.41 0 0 1 3.4 0Z" />
+   242→          <path d="m14.5 12.5 2-2" /><path d="m11.5 9.5 2-2" /><path d="m8.5 6.5 2-2" /><path d="m17.5 15.5 2-2" />
+   243→        </svg>
+   244→      );
+   245→    case "saw":
+   246→      return (
+   247→        <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
+   248→          <circle cx="6" cy="6" r="3" /><path d="M8.12 8.12 12 12" /><path d="M20 4 8.12 15.88" /><path d="M14.47 14.48 20 20" /><path d="M16 8 20 12" /><path d="M8 12 12 8" />
+   249→        </svg>
+   250→      );
+   251→    default:
+   252→      return <Wrench className={cls} />;
+   253→  }
+   254→}
+   255→
+   256→function formatPrice(price: number): string {
+   257→  return `S/ ${price.toLocaleString("es-PE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+   258→}
+   259→
+   260→/* ── Reusable section fade div ── */
+   261→function SectionFade({ color }: { color: string }) {
+   262→  return (
+   263→    <div
+   264→      className="h-8 w-full"
+   265→      style={{
+   266→        background: `linear-gradient(to bottom, ${color}15, transparent)`,
+   267→      }}
+   268→    />
+   269→  );
+   270→}
+   271→
+   272→export function BrandPageClient({
+   273→  brand,
+   274→  products,
+   275→  theme,
+   276→}: {
+   277→  brand: Brand;
+   278→  products: Product[];
+   279→  theme: BrandTheme;
+   280→}) {
+   281→  const [activeTab, setActiveTab] = useState<string | null>(null);
+   282→  const [sidebarOpen, setSidebarOpen] = useState(false);
+   283→  const openQuickView = useQuickViewStore((s) => s.openQuickView);
+   284→  const addToCart = useCartStore((s) => s.addItem);
+   285→  const cats = brandCategories[brand.slug] || defaultBrandCategories;
+   286→  const brandColor = theme.color;
+   287→  const secondColor = theme.secondColor;
+   288→  const textCol = theme.textColor;
+   289→  const isDark = textCol === "#FFF" || textCol === "#00A651";
+   290→
+   291→  // Split background: brand color top ~20% only, fast transition to black
+   292→  const pageBgStyle = {
+   293→    background: `
+   294→      linear-gradient(
+   295→        180deg,
+   296→        ${brandColor} 0%,
+   297→        ${brandColor} 15%,
+   298→        ${brandColor}88 20%,
+   299→        ${secondColor} 28%,
+   300→        ${secondColor} 100%
+   301→      )
+   302→    `,
+   303→    minHeight: "100vh",
+   304→  };
+   305→
+   306→  return (
+   307→    <main style={pageBgStyle} className="relative">
+   308→      {/* Subtle noise overlay for texture */}
+   309→      <div
+   310→        className="absolute inset-0 opacity-[0.03] pointer-events-none"
+   311→        style={{
+   312→          backgroundImage:
+   313→            "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")",
+   314→        }}
+   315→      />
+   316→
+   317→      {/* Top ambient glow line */}
+   318→      <div
+   319→        className="absolute top-0 left-0 right-0 h-1 pointer-events-none"
+   320→        style={{
+   321→          background: `linear-gradient(90deg, transparent, ${brandColor}, transparent)`,
+   322→          opacity: 0.6,
+   323→        }}
+   324→      />
+   325→
+   326→      <div className="relative z-10 mx-auto max-w-[1440px] px-2.5 lg:px-4 py-4 pb-28">
+   327→        {/* ── 3D Brand Name Header ── */}
+   328→        <div className="mb-5 flex justify-center">
+   329→          <div
+   330→            className="relative inline-flex items-center gap-3 px-8 py-4 rounded-2xl"
+   331→            style={{
+   332→              backgroundColor: brandColor,
+   333→              color: textCol,
+   334→              boxShadow: `
+   335→                0 2px 0 ${brandColor}cc,
+   336→                0 4px 0 ${brandColor}99,
+   337→                0 8px 0 ${brandColor}66,
+   338→                0 12px 0 ${brandColor}44,
+   339→                0 16px 24px rgba(0,0,0,0.5),
+   340→                inset 0 1px 0 rgba(255,255,255,0.15)
+   341→              `,
+   342→            }}
+   343→          >
+   344→            {/* Dark border outline */}
+   345→            <div
+   346→              className="absolute inset-0 rounded-2xl pointer-events-none"
+   347→              style={{
+   348→                border: `2px solid rgba(0,0,0,0.3)`,
+   349→                boxShadow: `inset 0 1px 0 rgba(255,255,255,0.1), inset 0 -2px 0 rgba(0,0,0,0.2)`,
+   350→              }}
+   351→            />
+   352→            <Wrench className="h-7 w-7" style={{ filter: "drop-shadow(0 2px 1px rgba(0,0,0,0.3))" }} />
+   353→            <div className="flex flex-col">
+   354→              <h1
+   355→                className="text-3xl md:text-4xl font-black uppercase tracking-wider leading-none"
+   356→                style={{
+   357→                  textShadow: `0 2px 0 rgba(0,0,0,0.3), 0 4px 0 rgba(0,0,0,0.15)`,
+   358→                  letterSpacing: "0.06em",
+   359→                }}
+   360→              >
+   361→                {brand.name}
+   362→              </h1>
+   363→              <span
+   364→                className="text-[10px] font-bold uppercase tracking-[0.2em] mt-0.5 opacity-80"
+   365→                style={{ textShadow: "0 1px 0 rgba(0,0,0,0.3)" }}
+   366→              >
+   367→                Herramientas Profesionales
+   368→              </span>
+   369→            </div>
+   370→          </div>
+   371→        </div>
+   372→
+   373→        {/* Breadcrumb */}
+   374→        <nav className="flex items-center gap-1.5 text-sm text-[#999] mb-4 flex-wrap">
+   375→          <Link
+   376→            href="/"
+   377→            className="hover:text-white transition-colors flex items-center gap-1"
+   378→          >
+   379→            <Home className="h-3.5 w-3.5" />
+   380→            Inicio
+   381→          </Link>
+   382→          <ChevronRight className="h-3.5 w-3.5 text-[#555]" />
+   383→          <span className="font-medium text-white">
+   384→            Herramientas {brand.name}
+   385→          </span>
+   386→        </nav>
+   387→
+   388→        {/* Mobile sidebar toggle */}
+   389→        <button
+   390→          onClick={() => setSidebarOpen(!sidebarOpen)}
+   391→          className="lg:hidden fixed bottom-20 left-4 z-50 flex items-center gap-2 px-4 py-2.5 rounded-full text-xs font-bold uppercase tracking-wide transition-all active:scale-95"
+   392→          style={{
+   393→            backgroundColor: brandColor,
+   394→            color: textCol,
+   395→            boxShadow: `0 4px 20px ${brandColor}66`,
+   396→          }}
+   397→        >
+   398→          <Wrench className="h-4 w-4" />
+   399→          Categorías
+   400→        </button>
+   401→
+   402→        {/* Mobile sidebar overlay */}
+   403→        {sidebarOpen && (
+   404→          <div
+   405→            className="lg:hidden fixed inset-0 z-40"
+   406→            onClick={() => setSidebarOpen(false)}
+   407→          >
+   408→            <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
+   409→            <div
+   410→              className="absolute left-0 top-0 bottom-0 w-[300px] overflow-y-auto rounded-r-2xl"
+   411→              onClick={(e) => e.stopPropagation()}
+   412→              style={{ boxShadow: "12px 0 50px rgba(0,0,0,0.9)" }}
+   413→            >
+   414→              <div className="bg-[#111] min-h-full rounded-r-2xl">
+   415→                <div
+   416→                  className="px-4 py-4 flex items-center justify-between rounded-t-r-2xl"
+   417→                  style={{ backgroundColor: brandColor }}
+   418→                >
+   419→                  <div className="flex items-center gap-2">
+   420→                    <Wrench className="h-5 w-5" style={{ color: textCol }} />
+   421→                    <h2
+   422→                      className="text-sm font-bold uppercase tracking-wide"
+   423→                      style={{ color: textCol }}
+   424→                    >
+   425→                      {brand.name} Tools
+   426→                    </h2>
+   427→                  </div>
+   428→                  <button
+   429→                    onClick={() => setSidebarOpen(false)}
+   430→                    style={{ color: textCol }}
+   431→                  >
+   432→                    <svg
+   433→                      className="h-5 w-5"
+   434→                      fill="none"
+   435→                      viewBox="0 0 24 24"
+   436→                      stroke="currentColor"
+   437→                    >
+   438→                      <path
+   439→                        strokeLinecap="round"
+   440→                        strokeLinejoin="round"
+   441→                        strokeWidth={2}
+   442→                        d="M6 18L18 6M6 6l12 12"
+   443→                      />
+   444→                    </svg>
+   445→                  </button>
+   446→                </div>
+   447→                <ul className="divide-y divide-[#222]">
+   448→                  {cats.map((cat, i) => (
+   449→                    <li key={i}>
+   450→                      <Link
+   451→                        href={`/marca/${brand.slug}`}
+   452→                        className="flex items-center justify-between px-4 py-3 hover:bg-[#1A1A1A] transition-colors"
+   453→                        onClick={() => setSidebarOpen(false)}
+   454→                      >
+   455→                        <div className="flex items-center gap-3">
+   456→                          <span style={{ color: brandColor }}>
+   457→                            <BrandCategoryIcon
+   458→                              type={cat.icon}
+   459→                              color={brandColor}
+   460→                            />
+   461→                          </span>
+   462→                          <span className="text-sm text-[#CCC]">
+   463→                            {cat.name}
+   464→                          </span>
+   465→                        </div>
+   466→                        <div className="flex items-center gap-2">
+   467→                          <span className="text-xs text-[#666] bg-[#222] px-2 py-0.5 rounded-full">
+   468→                            {cat.count}
+   469→                          </span>
+   470→                          <ChevronRight className="h-3 w-3 text-[#555]" />
+   471→                        </div>
+   472→                      </Link>
+   473→                    </li>
+   474→                  ))}
+   475→                </ul>
+   476→              </div>
+   477→            </div>
+   478→          </div>
+   479→        )}
+   480→
+   481→        {/* ── 3-Column Layout (desktop) ── */}
+   482→        <div className="flex gap-3">
+   483→          {/* LEFT SIDEBAR — Black bg + brand color accents */}
+   484→          <aside className="hidden lg:block w-[240px] xl:w-[260px] shrink-0">
+   485→            <div className="sticky top-[120px] bg-[#0A0A0A]/95 backdrop-blur-sm rounded-2xl overflow-hidden border border-[#1A1A1A]">
+   486→              {/* Header with brand color */}
+   487→              <div
+   488→                className="px-4 py-3 flex items-center gap-2"
+   489→                style={{ backgroundColor: brandColor, color: textCol }}
+   490→              >
+   491→                <Wrench className="h-4 w-4" />
+   492→                <h2 className="text-sm font-bold uppercase tracking-wide">
+   493→                  {brand.name} Tools
+   494→                </h2>
+   495→              </div>
+   496→              {/* Category list */}
+   497→              <ul className="divide-y divide-[#1A1A1A]">
+   498→                {cats.map((cat, i) => (
+   499→                  <li key={i}>
+   500→                    <Link
+   501→                      href={`/marca/${brand.slug}`}
+   502→                      className="flex items-center justify-between px-4 py-2.5 hover:bg-[#151515] transition-colors group"
+   503→                    >
+   504→                      <div className="flex items-center gap-2.5">
+   505→                        <span style={{ color: brandColor }}>
+   506→                          <BrandCategoryIcon
+   507→                            type={cat.icon}
+   508→                            color={brandColor}
+   509→                          />
+   510→                        </span>
+   511→                        <span className="text-sm text-[#BBB] group-hover:text-white transition-colors truncate">
+   512→                          {cat.name}
+   513→                        </span>
+   514→                      </div>
+   515→                      <div className="flex items-center gap-2 shrink-0">
+   516→                        <span className="text-xs text-[#666] bg-[#181818] px-1.5 py-0.5 rounded-full">
+   517→                          {cat.count}
+   518→                        </span>
+   519→                        <ChevronRight className="h-3 w-3 text-[#444] group-hover:text-white transition-colors" />
+   520→                      </div>
+   521→                    </Link>
+   522→                  </li>
+   523→                ))}
+   524→              </ul>
+   525→            </div>
+   526→          </aside>
+   527→
+   528→          {/* CENTER COLUMN */}
+   529→          <div className="flex-1 min-w-0">
+   530→            {/* Mobile horizontal scrolling category pills */}
+   531→            <div className="lg:hidden mb-3">
+   532→              <nav
+   533→                className="flex gap-2 overflow-x-auto pb-1 -mx-2.5 px-2.5 no-scrollbar"
+   534→                style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+   535→              >
+   536→                <button
+   537→                  onClick={() => {}}
+   538→                  className="shrink-0 flex items-center gap-1.5 px-3.5 py-2 rounded-full text-[10px] font-bold uppercase tracking-wider border transition-all"
+   539→                  style={{
+   540→                    backgroundColor: brandColor,
+   541→                    color: textCol,
+   542→                    borderColor: brandColor,
+   543→                    boxShadow: `0 0 8px ${brandColor}4D`,
+   544→                  }}
+   545→                >
+   546→                  Todos
+   547→                </button>
+   548→                {cats.map((cat, i) => (
+   549→                  <button
+   550→                    key={i}
+   551→                    className="shrink-0 flex items-center gap-1.5 px-3.5 py-2 rounded-full text-[10px] font-semibold uppercase tracking-wider border border-[#333] bg-[#111] text-[#CCC] hover:border-[#E35205] hover:text-[#E35205] transition-all"
+   552→                  >
+   553→                    <span style={{ color: brandColor }}>
+   554→                      <BrandCategoryIcon
+   555→                        type={cat.icon}
+   556→                        color={brandColor}
+   557→                      />
+   558→                    </span>
+   559→                    <span>{cat.name}</span>
+   560→                    <span className="text-[#555] ml-0.5">{cat.count}</span>
+   561→                  </button>
+   562→                ))}
+   563→              </nav>
+   564→            </div>
+   565→
+   566→            {/* ── Hero Banner ── */}
+   567→            <Link
+   568→              href={`/marca/${brand.slug}`}
+   569→              className="block relative overflow-hidden rounded-2xl group"
+   570→            >
+   571→              <div
+   572→                className="absolute inset-0"
+   573→                style={{ backgroundColor: brandColor }}
+   574→              />
+   575→              <div
+   576→                className="absolute inset-0"
+   577→                style={{
+   578→                  background: isDark
+   579→                    ? "linear-gradient(135deg, rgba(0,0,0,0.15) 0%, transparent 40%, rgba(0,0,0,0.3) 100%)"
+   580→                    : "linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 50%, rgba(255,255,255,0.15) 100%)",
+   581→                }}
+   582→              />
+   583→              {/* Diagonal stripe pattern */}
+   584→              <div
+   585→                className="absolute inset-0 opacity-[0.06]"
+   586→                style={{
+   587→                  backgroundImage: `repeating-linear-gradient(
+   588→                    135deg,
+   589→                    transparent,
+   590→                    transparent 20px,
+   591→                    ${textCol} 20px,
+   592→                    ${textCol} 21px
+   593→                  )`,
+   594→                }}
+   595→              />
+   596→              <div className="relative z-10 flex items-center justify-between px-6 py-8 md:py-12">
+   597→                <div className="max-w-md space-y-2">
+   598→                  <span
+   599→                    className="font-impact text-2xl md:text-3xl lg:text-4xl"
+   600→                    style={{ color: textCol }}
+   601→                  >
+   602→                    MÁS {brand.name.toUpperCase()}, MÁS AHORROS
+   603→                  </span>
+   604→                  <p
+   605→                    className="text-sm md:text-base"
+   606→                    style={{ color: textCol, opacity: 0.9 }}
+   607→                  >
+   608→                    Ofertas exclusivas en herramientas {brand.name}. Envío a
+   609→                    todo Perú.
+   610→                  </p>
+   611→                  <span
+   612→                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wide transition-all hover:scale-105"
+   613→                    style={{
+   614→                      backgroundColor: isDark ? "white" : "#1A1A1A",
+   615→                      color: isDark ? brandColor : textCol,
+   616→                    }}
+   617→                  >
+   618→                    COMPRAR AHORA
+   619→                    <CircleArrowRight className="h-3.5 w-3.5" />
+   620→                  </span>
+   621→                </div>
+   622→              </div>
+   623→            </Link>
+   624→
+   625→            {/* Fade between hero and promo cards */}
+   626→            <SectionFade color={brandColor} />
+   627→
+   628→            {/* ── Two smaller promo banners ── */}
+   629→            <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
+   630→              <Link
+   631→                href={`/marca/${brand.slug}`}
+   632→                className="block relative overflow-hidden rounded-xl"
+   633→              >
+   634→                <div
+   635→                  className="absolute inset-0"
+   636→                  style={{ backgroundColor: brandColor }}
+   637→                />
+   638→                <div
+   639→                  className="absolute inset-0"
+   640→                  style={{
+   641→                    background:
+   642→                      "linear-gradient(to bottom, transparent 30%, rgba(0,0,0,0.5) 100%)",
+   643→                  }}
+   644→                />
+   645→                <div className="relative z-10 flex flex-col justify-between h-[160px] md:h-[200px] p-4">
+   646→                  <span
+   647→                    className="text-[11px] font-bold tracking-[0.08em] uppercase"
+   648→                    style={{ color: textCol, opacity: 0.85 }}
+   649→                  >
+   650→                    {brand.name.toUpperCase()}
+   651→                  </span>
+   652→                  <div>
+   653→                    <p
+   654→                      className="font-impact text-sm leading-tight mb-1"
+   655→                      style={{ color: textCol }}
+   656→                    >
+   657→                      PRODUCTO GRATUITO A ELECCIÓN
+   658→                    </p>
+   659→                    <p
+   660→                      className="text-[10px] leading-relaxed mb-2"
+   661→                      style={{ color: textCol, opacity: 0.8 }}
+   662→                    >
+   663→                      Con un paquete de 2 baterías seleccionado.
+   664→                    </p>
+   665→                    <span
+   666→                      className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-[11px] font-bold"
+   667→                      style={{
+   668→                        backgroundColor: isDark ? "white" : "#1A1A1A",
+   669→                        color: isDark ? brandColor : textCol,
+   670→                      }}
+   671→                    >
+   672→                      COMPRAR AHORA <CircleArrowRight className="h-3 w-3" />
+   673→                    </span>
+   674→                  </div>
+   675→                </div>
+   676→              </Link>
+   677→              <Link
+   678→                href={`/marca/${brand.slug}`}
+   679→                className="block relative overflow-hidden rounded-xl"
+   680→              >
+   681→                <div
+   682→                  className="absolute inset-0"
+   683→                  style={{
+   684→                    backgroundColor: brandColor,
+   685→                    filter: "brightness(0.85)",
+   686→                  }}
+   687→                />
+   688→                <div
+   689→                  className="absolute inset-0"
+   690→                  style={{
+   691→                    background:
+   692→                      "linear-gradient(to bottom, transparent 30%, rgba(0,0,0,0.55) 100%)",
+   693→                  }}
+   694→                />
+   695→                <div className="relative z-10 flex flex-col justify-between h-[160px] md:h-[200px] p-4">
+   696→                  <span
+   697→                    className="text-[11px] font-bold tracking-[0.08em] uppercase"
+   698→                    style={{ color: textCol, opacity: 0.85 }}
+   699→                  >
+   700→                    {brand.name.toUpperCase()}
+   701→                  </span>
+   702→                  <div>
+   703→                    <p
+   704→                      className="font-impact text-sm leading-tight mb-1"
+   705→                      style={{ color: textCol }}
+   706→                    >
+   707→                      OFERTA DE BONIFICACIÓN POR BATERÍA
+   708→                    </p>
+   709→                    <p
+   710→                      className="text-[10px] leading-relaxed mb-2"
+   711→                      style={{ color: textCol, opacity: 0.8 }}
+   712→                    >
+   713→                      Elige un artículo GRATIS con tu compra.
+   714→                    </p>
+   715→                    <span
+   716→                      className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-[11px] font-bold"
+   717→                      style={{
+   718→                        backgroundColor: isDark ? "white" : "#1A1A1A",
+   719→                        color: isDark ? brandColor : textCol,
+   720→                      }}
+   721→                    >
+   722→                      COMPRAR AHORA <CircleArrowRight className="h-3 w-3" />
+   723→                    </span>
+   724→                  </div>
+   725→                </div>
+   726→              </Link>
+   727→            </div>
+   728→
+   729→            {/* Fade between promo cards and products grid */}
+   730→            <SectionFade color={brandColor} />
+   731→
+   732→            {/* ── Products grid — dark glass card ── */}
+   733→            <div>
+   734→              <div className="flex items-center gap-2 mb-3">
+   735→                <TrendingUp className="h-4 w-4" style={{ color: brandColor }} />
+   736→                <h2 className="text-sm font-bold text-white uppercase tracking-wide">
+   737→                  Productos {brand.name}
+   738→                </h2>
+   739→                <span className="text-xs text-[#666]">
+   740→                  ({products.length})
+   741→                </span>
+   742→              </div>
+   743→              {products.length > 0 ? (
+   744→                <div className="grid grid-cols-2 md:grid-cols-3 gap-2.5">
+   745→                  {products.map((product, i) => (
+   746→                    <div
+   747→                      key={product.id}
+   748→                      className="rounded-xl overflow-hidden bg-[#111]/80 backdrop-blur-sm border border-[#1A1A1A]"
+   749→                    >
+   750→                      <ProductCard product={product} index={i} quickView quickViewColor={brandColor} />
+   751→                    </div>
+   752→                  ))}
+   753→                </div>
+   754→              ) : (
+   755→                <div className="bg-[#111]/80 backdrop-blur-sm rounded-xl border border-[#1A1A1A] p-8 text-center">
+   756→                  <p className="text-[#666] text-sm">
+   757→                    No hay productos de {brand.name} disponibles aún.
+   758→                  </p>
+   759→                  <Link
+   760→                    href="/"
+   761→                    className="inline-block mt-3 text-sm font-semibold hover:underline"
+   762→                    style={{ color: brandColor }}
+   763→                  >
+   764→                    Volver al inicio
+   765→                  </Link>
+   766→                </div>
+   767→              )}
+   768→            </div>
+   769→
+   770→            {/* Fade between products grid and bottom tabs */}
+   771→            <SectionFade color={brandColor} />
+   772→
+   773→            {/* ── Bottom Tabs ── */}
+   774→            {theme.tabs && theme.tabs.length > 0 && (
+   775→              <div
+   776→                className="mt-4 flex gap-0 overflow-x-auto rounded-xl border border-[#222]"
+   777→                style={{ scrollbarWidth: "none" }}
+   778→              >
+   779→                {theme.tabs.map((tab) => (
+   780→                  <button
+   781→                    key={tab}
+   782→                    type="button"
+   783→                    onClick={() =>
+   784→                      setActiveTab(activeTab === tab ? null : tab)
+   785→                    }
+   786→                    className="shrink-0 px-4 py-3 text-xs font-bold uppercase tracking-wide transition-all border-r border-[#222] last:border-r-0"
+   787→                    style={{
+   788→                      backgroundColor:
+   789→                        activeTab === tab ? brandColor : "#0A0A0A",
+   790→                      color:
+   791→                        activeTab === tab
+   792→                          ? textCol
+   793→                          : brandColor === "#1A1A1A"
+   794→                            ? "#FFF"
+   795→                            : brandColor,
+   796→                    }}
+   797→                  >
+   798→                    {tab}
+   799→                  </button>
+   800→                ))}
+   801→              </div>
+   802→            )}
+   803→          </div>
+   804→
+   805→          {/* RIGHT SIDEBAR — Pipeline (dark bg) */}
+   806→          <aside className="hidden lg:block w-[280px] xl:w-[300px] shrink-0">
+   807→            <div className="sticky top-[120px] bg-[#0A0A0A]/95 backdrop-blur-sm rounded-2xl overflow-hidden border border-[#1A1A1A]">
+   808→              {/* Header */}
+   809→              <div
+   810→                className="px-4 py-3 flex items-center justify-between"
+   811→                style={{ backgroundColor: brandColor, color: textCol }}
+   812→              >
+   813→                <div className="flex items-center gap-2">
+   814→                  <Plus className="h-4 w-4" />
+   815→                  <h2 className="text-sm font-bold uppercase tracking-wide">
+   816→                    PIPELINE
+   817→                  </h2>
+   818→                </div>
+   819→                <Link
+   820→                  href={`/marca/${brand.slug}`}
+   821→                  className="text-xs underline opacity-80 hover:opacity-100"
+   822→                >
+   823→                  Ver más
+   824→                </Link>
+   825→              </div>
+   826→              {/* Product list */}
+   827→              <div>
+   828→                {products.slice(0, 8).map((product) => {
+   829→                  const discount = product.comparePrice
+   830→                    ? Math.round(
+   831→                        ((product.comparePrice - product.price) /
+   832→                          product.comparePrice) *
+   833→                          100
+   834→                      )
+   835→                    : 0;
+   836→                  return (
+   837→                    <div
+   838→                      key={product.id}
+   839→                      onClick={() => openQuickView(product, brandColor)}
+   840→                      className="group flex gap-3 p-3 hover:bg-[#151515] transition-colors border-b border-[#1A1A1A] last:border-b-0 cursor-pointer"
+   841→                    >
+   842→                      <div className="shrink-0 w-16 h-16 rounded-xl bg-[#151515] flex items-center justify-center border border-[#222]">
+   843→                        <Wrench className="h-7 w-7 text-[#444]" />
+   844→                      </div>
+   845→                      <div className="flex-1 min-w-0">
+   846→                        {discount > 0 && (
+   847→                          <span
+   848→                            className="inline-block text-[10px] font-bold px-1.5 py-0.5 rounded text-white mb-1"
+   849→                            style={{ backgroundColor: brandColor }}
+   850→                          >
+   851→                            -{discount}%
+   852→                          </span>
+   853→                        )}
+   854→                        <p className="text-xs leading-snug text-[#BBB] group-hover:text-white transition-colors line-clamp-2 mb-1">
+   855→                          {product.name}
+   856→                        </p>
+   857→                        <div className="flex items-center gap-1 mb-0.5">
+   858→                          <div className="flex items-center">
+   859→                            {[1, 2, 3, 4, 5].map((star) => (
+   860→                              <Star
+   861→                                key={star}
+   862→                                className={`h-2.5 w-2.5 ${
+   863→                                  star <= Math.round(product.rating)
+   864→                                    ? "fill-amber-400 text-amber-400"
+   865→                                    : "fill-[#333] text-[#333]"
+   866→                                }`}
+   867→                              />
+   868→                            ))}
+   869→                          </div>
+   870→                          <span className="text-[10px] text-[#555]">
+   871→                            ({product.reviewCount})
+   872→                          </span>
+   873→                        </div>
+   874→                        <div className="flex items-center gap-2">
+   875→                          {product.comparePrice && (
+   876→                            <span className="text-[11px] text-[#555] line-through">
+   877→                              {formatPrice(product.comparePrice)}
+   878→                            </span>
+   879→                          )}
+   880→                          <span
+   881→                            className="text-sm font-bold"
+   882→                            style={{ color: brandColor }}
+   883→                          >
+   884→                            {formatPrice(product.price)}
+   885→                          </span>
+   886→                        </div>
+   887→                      </div>
+   888→                      <div className="shrink-0 flex items-center">
+   889→                        <button
+   890→                          onClick={(e) => {
+   891→                            e.stopPropagation();
+   892→                            addToCart(product);
+   893→                          }}
+   894→                          className="w-8 h-8 rounded-xl flex items-center justify-center transition-all hover:scale-110"
+   895→                          style={{
+   896→                            backgroundColor: `${brandColor}22`,
+   897→                            color: brandColor,
+   898→                          }}
+   899→                        >
+   900→                          <Plus className="h-4 w-4" />
+   901→                        </button>
+   902→                      </div>
+   903→                    </div>
+   904→                  );
+   905→                })}
+   906→              </div>
+   907→            </div>
+   908→          </aside>
+   909→        </div>
+   910→      </div>
+   911→    </main>
+   912→  );
+   913→}
