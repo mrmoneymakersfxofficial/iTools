@@ -1,223 +1,504 @@
-"use client";
-
-import { useState } from "react";
+import { db } from "@/lib/db";
 import {
-  Package, ShoppingBag, Users, TrendingUp, DollarSign, Eye,
-  BarChart3, Settings, Bell, Search, Wrench, ArrowUpRight, ArrowDownRight,
+  DollarSign,
+  ShoppingBag,
+  Package,
+  Users,
+  TrendingUp,
+  ArrowUpRight,
+  ArrowDownRight,
+  AlertTriangle,
 } from "lucide-react";
 import Link from "next/link";
 
-const stats = [
-  { label: "Ventas Hoy", value: "S/ 24,580", change: "+12.5%", up: true, icon: DollarSign, color: "#E35205" },
-  { label: "Pedidos", value: "47", change: "+8.3%", up: true, icon: ShoppingBag, color: "#0077C8" },
-  { label: "Productos", value: "96", change: "+6", up: true, icon: Package, color: "#1b7a3a" },
-  { label: "Visitas Hoy", value: "1,284", change: "-2.1%", up: false, icon: Eye, color: "#8B6914" },
-];
+/* ── Helpers ─────────────────────────────────────────────────── */
 
-const recentOrders = [
-  { id: "#IT-2024-0847", customer: "Carlos M.", total: "S/ 2,899.00", status: "Completado", brand: "Milwaukee", time: "Hace 12 min" },
-  { id: "#IT-2024-0846", customer: "María L.", total: "S/ 549.00", status: "Enviado", brand: "Bosch", time: "Hace 34 min" },
-  { id: "#IT-2024-0845", customer: "Jorge R.", total: "S/ 4,299.00", status: "Procesando", brand: "Festool", time: "Hace 1h" },
-  { id: "#IT-2024-0844", customer: "Ana P.", total: "S/ 189.00", status: "Completado", brand: "3M", time: "Hace 2h" },
-  { id: "#IT-2024-0843", customer: "Luis F.", total: "S/ 1,599.00", status: "Enviado", brand: "DeWalt", time: "Hace 3h" },
-  { id: "#IT-2024-0842", customer: "Rosa G.", total: "S/ 329.00", status: "Completado", brand: "SKIL", time: "Hace 4h" },
-];
-
-const topProducts = [
-  { name: "Taladro Percutor M18 FUEL 1/2\"", brand: "Milwaukee", sales: 34, revenue: "S/ 98,566", trend: "+18%" },
-  { name: "Impacto Inalámbrico M18 1/4\" Hex", brand: "Milwaukee", sales: 28, revenue: "S/ 61,880", trend: "+12%" },
-  { name: "Taladro Percutor 18V Brushless", brand: "Bosch", sales: 22, revenue: "S/ 52,780", trend: "+9%" },
-  { name: "Kit 3 Herramientas SKIL 20V", brand: "SKIL", sales: 19, revenue: "S/ 30,381", trend: "+24%" },
-  { name: "Soplador de Mochila EGO 580 CFM", brand: "EGO", sales: 16, revenue: "S/ 35,184", trend: "+15%" },
-];
+function parseItems(itemsJson: string): Array<{ productId: string; name: string; quantity: number; price: number }> {
+  try {
+    const parsed = JSON.parse(itemsJson);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
 
 const statusColors: Record<string, string> = {
-  Completado: "bg-green-500/15 text-green-400 border-green-500/20",
-  Enviado: "bg-blue-500/15 text-blue-400 border-blue-500/20",
-  Procesando: "bg-amber-500/15 text-amber-400 border-amber-500/20",
-  Pendiente: "bg-red-500/15 text-red-400 border-red-500/20",
+  DELIVERED: "bg-green-500/15 text-green-400 border-green-500/20",
+  SHIPPED: "bg-blue-500/15 text-blue-400 border-blue-500/20",
+  PROCESSING: "bg-amber-500/15 text-amber-400 border-amber-500/20",
+  CONFIRMED: "bg-indigo-500/15 text-indigo-400 border-indigo-500/20",
+  PENDING: "bg-yellow-500/15 text-yellow-400 border-yellow-500/20",
+  CANCELLED: "bg-red-500/15 text-red-400 border-red-500/20",
+  REFUNDED: "bg-red-500/15 text-red-400 border-red-500/20",
 };
 
-const navItems = [
-  { name: "Dashboard", icon: BarChart3, active: true },
-  { name: "Productos", icon: Package, href: "/admin/productos" },
-  { name: "Pedidos", icon: ShoppingBag, href: "/admin/pedidos" },
-  { name: "Clientes", icon: Users, href: "/admin/clientes" },
-  { name: "Configuración", icon: Settings, href: "/admin/config" },
-];
+const statusLabels: Record<string, string> = {
+  PENDING: "Pendiente",
+  CONFIRMED: "Confirmado",
+  PROCESSING: "Procesando",
+  SHIPPED: "Enviado",
+  DELIVERED: "Entregado",
+  CANCELLED: "Cancelado",
+  REFUNDED: "Reembolsado",
+};
 
-export default function AdminPage() {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+function formatSoles(n: number) {
+  return `S/ ${n.toLocaleString("es-PE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+}
+
+function timeAgo(date: Date) {
+  const now = new Date();
+  const diffMs = now.getTime() - date.getTime();
+  const diffMin = Math.floor(diffMs / 60000);
+  if (diffMin < 1) return "Ahora";
+  if (diffMin < 60) return `Hace ${diffMin} min`;
+  const diffHrs = Math.floor(diffMin / 60);
+  if (diffHrs < 24) return `Hace ${diffHrs}h`;
+  const diffDays = Math.floor(diffHrs / 24);
+  return `Hace ${diffDays}d`;
+}
+
+/* ── Data Fetching ───────────────────────────────────────────── */
+
+const todayStart = new Date();
+todayStart.setHours(0, 0, 0, 0);
+
+const sevenDaysAgo = new Date();
+sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6);
+sevenDaysAgo.setHours(0, 0, 0, 0);
+
+async function getDashboardData() {
+  const [
+    salesToday,
+    totalOrders,
+    totalProducts,
+    totalCustomers,
+    recentOrders,
+    allOrders,
+    lowStockProducts,
+    revenueLast7Days,
+  ] = await Promise.all([
+    // Sales today (non-cancelled)
+    db.order.aggregate({
+      where: {
+        createdAt: { gte: todayStart },
+        status: { not: "CANCELLED" },
+      },
+      _sum: { total: true },
+    }),
+    // Total orders
+    db.order.count(),
+    // Total products
+    db.product.count(),
+    // Total customers
+    db.user.count({ where: { role: "CUSTOMER" } }),
+    // Recent 10 orders with user
+    db.order.findMany({
+      take: 10,
+      orderBy: { createdAt: "desc" },
+      include: { user: { select: { name: true } } },
+    }),
+    // All orders for status breakdown & top products
+    db.order.findMany({
+      where: { status: { not: "CANCELLED" } },
+      select: { items: true, status: true },
+    }),
+    // Low stock products
+    db.product.findMany({
+      where: {
+        isPublished: true,
+        stock: { lte: db.product.fields.lowStockAlert },
+      },
+      include: { brand: { select: { name: true } } },
+      orderBy: { stock: "asc" },
+      take: 8,
+    }),
+    // Revenue last 7 days
+    db.order.groupBy({
+      by: ["createdAt"],
+      where: {
+        createdAt: { gte: sevenDaysAgo },
+        status: { not: "CANCELLED" },
+      },
+      _sum: { total: true },
+    }),
+  ]);
+
+  // Status breakdown
+  const statusBreakdown: Record<string, number> = {};
+  for (const o of allOrders) {
+    statusBreakdown[o.status] = (statusBreakdown[o.status] || 0) + 1;
+  }
+
+  // Top 5 products by quantity sold
+  const productSales: Record<string, { name: string; quantity: number; revenue: number }> = {};
+  for (const o of allOrders) {
+    const items = parseItems(o.items);
+    for (const item of items) {
+      if (!productSales[item.productId]) {
+        productSales[item.productId] = { name: item.name, quantity: 0, revenue: 0 };
+      }
+      productSales[item.productId].quantity += item.quantity;
+      productSales[item.productId].revenue += item.price * item.quantity;
+    }
+  }
+  const topProducts = Object.values(productSales)
+    .sort((a, b) => b.revenue - a.revenue)
+    .slice(0, 5);
+
+  // Revenue by day (last 7 days)
+  const revenueByDay: { day: string; total: number }[] = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    d.setHours(0, 0, 0, 0);
+    const nextD = new Date(d);
+    nextD.setDate(nextD.getDate() + 1);
+    const dayTotal = revenueLast7Days
+      .filter((r) => {
+        const rd = new Date(r.createdAt);
+        return rd >= d && rd < nextD;
+      })
+      .reduce((sum, r) => sum + (r._sum.total || 0), 0);
+    revenueByDay.push({
+      day: d.toLocaleDateString("es-PE", { weekday: "short" }),
+      total: dayTotal,
+    });
+  }
+
+  const maxRevenue = Math.max(...revenueByDay.map((d) => d.total), 1);
+
+  return {
+    salesToday: salesToday._sum.total || 0,
+    totalOrders,
+    totalProducts,
+    totalCustomers,
+    recentOrders,
+    statusBreakdown,
+    topProducts,
+    lowStockProducts,
+    revenueByDay,
+    maxRevenue,
+  };
+}
+
+/* ── Page ────────────────────────────────────────────────────── */
+
+export default async function AdminDashboard() {
+  const data = await getDashboardData();
+
+  const todayLabel = new Date().toLocaleDateString("es-PE", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+
+  const stats = [
+    {
+      label: "Ventas Hoy",
+      value: formatSoles(data.salesToday),
+      icon: DollarSign,
+      color: "#E35205",
+    },
+    {
+      label: "Pedidos",
+      value: data.totalOrders.toLocaleString("es-PE"),
+      icon: ShoppingBag,
+      color: "#0077C8",
+    },
+    {
+      label: "Productos",
+      value: data.totalProducts.toLocaleString("es-PE"),
+      icon: Package,
+      color: "#1b7a3a",
+    },
+    {
+      label: "Clientes",
+      value: data.totalCustomers.toLocaleString("es-PE"),
+      icon: Users,
+      color: "#8B6914",
+    },
+  ];
+
+  const statusEntries = Object.entries(data.statusBreakdown).sort(
+    (a, b) => b[1] - a[1]
+  );
 
   return (
-    <div className="flex min-h-[calc(100vh-56px)]">
-      {/* Sidebar */}
-      <aside className={`${sidebarOpen ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0 fixed lg:static inset-y-0 left-0 z-40 w-[240px] bg-[#0D0D0D] border-r border-[#1A1A1A] pt-16 lg:pt-0 transition-transform lg:transition-none`}>
-        <nav className="p-3 space-y-1">
-          {navItems.map((item) => (
-            <Link
-              key={item.name}
-              href={item.href || "#"}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
-                item.active
-                  ? "bg-[#E35205]/10 text-[#E35205] border border-[#E35205]/20"
-                  : "text-[#888] hover:text-white hover:bg-[#1A1A1A]"
-              }`}
-              onClick={() => setSidebarOpen(false)}
-            >
-              <item.icon className="h-4 w-4" />
-              {item.name}
-            </Link>
-          ))}
-        </nav>
-      </aside>
+    <>
+      {/* Subheader */}
+      <div className="mb-6">
+        <p className="text-xs text-[#666]">
+          Resumen de la tienda — {todayLabel}
+        </p>
+      </div>
 
-      {/* Mobile sidebar overlay */}
-      {sidebarOpen && (
-        <div className="fixed inset-0 bg-black/50 z-30 lg:hidden" onClick={() => setSidebarOpen(false)} />
-      )}
-
-      {/* Main content */}
-      <main className="flex-1 p-4 lg:p-6 overflow-x-hidden">
-        {/* Mobile hamburger */}
-        <button
-          onClick={() => setSidebarOpen(true)}
-          className="lg:hidden mb-4 p-2 rounded-lg bg-[#1A1A1A] text-[#888]"
-        >
-          <BarChart3 className="h-5 w-5" />
-        </button>
-
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
-          <div>
-            <h2 className="text-xl font-bold">Dashboard</h2>
-            <p className="text-xs text-[#666] mt-0.5">Resumen de la tienda — Julio 6, 2026</p>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-[#555]" />
-              <input
-                type="text"
-                placeholder="Buscar..."
-                className="bg-[#1A1A1A] border border-[#222] rounded-lg pl-9 pr-3 py-2 text-xs text-white placeholder-[#555] focus:outline-none focus:border-[#E35205] w-48"
-              />
-            </div>
-            <button className="relative w-9 h-9 rounded-lg bg-[#1A1A1A] border border-[#222] flex items-center justify-center text-[#888] hover:text-white transition-colors">
-              <Bell className="h-4 w-4" />
-              <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-[#E35205] text-[8px] font-bold text-white flex items-center justify-center">3</div>
-            </button>
-          </div>
-        </div>
-
-        {/* Stats grid */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
-          {stats.map((stat) => (
-            <div key={stat.label} className="bg-[#111] rounded-xl border border-[#1A1A1A] p-4">
-              <div className="flex items-center justify-between mb-3">
-                <div className="w-9 h-9 rounded-lg flex items-center justify-center" style={{ backgroundColor: `${stat.color}15` }}>
-                  <stat.icon className="h-4 w-4" style={{ color: stat.color }} />
-                </div>
-                <div className={`flex items-center gap-0.5 text-[10px] font-bold ${stat.up ? "text-green-400" : "text-red-400"}`}>
-                  {stat.up ? <ArrowUpRight className="h-3 w-3" /> : <ArrowDownRight className="h-3 w-3" />}
-                  {stat.change}
-                </div>
+      {/* Stats grid */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
+        {stats.map((stat) => (
+          <div
+            key={stat.label}
+            className="bg-[#111] rounded-xl border border-[#1A1A1A] p-4"
+          >
+            <div className="flex items-center justify-between mb-3">
+              <div
+                className="w-9 h-9 rounded-lg flex items-center justify-center"
+                style={{ backgroundColor: `${stat.color}15` }}
+              >
+                <stat.icon
+                  className="h-4 w-4"
+                  style={{ color: stat.color }}
+                />
               </div>
-              <p className="text-lg font-bold text-white">{stat.value}</p>
-              <p className="text-[10px] text-[#666] mt-0.5">{stat.label}</p>
             </div>
-          ))}
-        </div>
+            <p className="text-lg font-bold text-white">{stat.value}</p>
+            <p className="text-[10px] text-[#666] mt-0.5">{stat.label}</p>
+          </div>
+        ))}
+      </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          {/* Recent Orders */}
-          <div className="lg:col-span-2 bg-[#111] rounded-xl border border-[#1A1A1A] overflow-hidden">
-            <div className="px-4 py-3 border-b border-[#1A1A1A] flex items-center justify-between">
-              <h3 className="text-sm font-bold">Pedidos Recientes</h3>
-              <span className="text-[10px] text-[#E35205] font-semibold">Ver todos →</span>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
+        {/* Recent Orders */}
+        <div className="lg:col-span-2 bg-[#111] rounded-xl border border-[#1A1A1A] overflow-hidden">
+          <div className="px-4 py-3 border-b border-[#1A1A1A] flex items-center justify-between">
+            <h3 className="text-sm font-bold">Pedidos Recientes</h3>
+            <Link
+              href="/admin/pedidos"
+              className="text-[10px] text-[#E35205] font-semibold hover:underline"
+            >
+              Ver todos →
+            </Link>
+          </div>
+          {data.recentOrders.length === 0 ? (
+            <div className="px-4 py-12 text-center text-sm text-[#666]">
+              No hay pedidos todavía
             </div>
+          ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-left">
                 <thead>
                   <tr className="text-[10px] text-[#555] uppercase tracking-wider border-b border-[#1A1A1A]">
                     <th className="px-4 py-2.5 font-semibold">Orden</th>
                     <th className="px-4 py-2.5 font-semibold">Cliente</th>
-                    <th className="px-4 py-2.5 font-semibold hidden sm:table-cell">Marca</th>
+                    <th className="px-4 py-2.5 font-semibold hidden sm:table-cell">
+                      Items
+                    </th>
                     <th className="px-4 py-2.5 font-semibold">Total</th>
                     <th className="px-4 py-2.5 font-semibold">Estado</th>
-                    <th className="px-4 py-2.5 font-semibold hidden sm:table-cell">Tiempo</th>
+                    <th className="px-4 py-2.5 font-semibold hidden sm:table-cell">
+                      Tiempo
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[#1A1A1A]">
-                  {recentOrders.map((order) => (
-                    <tr key={order.id} className="hover:bg-[#0D0D0D] transition-colors">
-                      <td className="px-4 py-3 text-xs font-mono text-[#E35205]">{order.id}</td>
-                      <td className="px-4 py-3 text-xs text-[#CCC]">{order.customer}</td>
-                      <td className="px-4 py-3 text-xs text-[#888] hidden sm:table-cell">{order.brand}</td>
-                      <td className="px-4 py-3 text-xs font-semibold text-white">{order.total}</td>
-                      <td className="px-4 py-3">
-                        <span className={`inline-block px-2 py-0.5 rounded-full text-[9px] font-bold border ${statusColors[order.status] || statusColors.Pendiente}`}>
-                          {order.status}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3 text-[10px] text-[#666] hidden sm:table-cell">{order.time}</td>
-                    </tr>
-                  ))}
+                  {data.recentOrders.map((order) => {
+                    const items = parseItems(order.items);
+                    return (
+                      <tr
+                        key={order.id}
+                        className="hover:bg-[#0D0D0D] transition-colors"
+                      >
+                        <td className="px-4 py-3 text-xs font-mono text-[#E35205]">
+                          {order.orderNumber}
+                        </td>
+                        <td className="px-4 py-3 text-xs text-[#CCC]">
+                          {order.user?.name || "Cliente"}
+                        </td>
+                        <td className="px-4 py-3 text-xs text-[#888] hidden sm:table-cell">
+                          {items.length} {items.length === 1 ? "item" : "items"}
+                        </td>
+                        <td className="px-4 py-3 text-xs font-semibold text-white">
+                          {formatSoles(order.total)}
+                        </td>
+                        <td className="px-4 py-3">
+                          <span
+                            className={`inline-block px-2 py-0.5 rounded-full text-[9px] font-bold border ${
+                              statusColors[order.status] ||
+                              statusColors.PENDING
+                            }`}
+                          >
+                            {statusLabels[order.status] || order.status}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3 text-[10px] text-[#666] hidden sm:table-cell">
+                          {timeAgo(order.createdAt)}
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
-          </div>
+          )}
+        </div>
 
-          {/* Top Products */}
-          <div className="bg-[#111] rounded-xl border border-[#1A1A1A] overflow-hidden">
-            <div className="px-4 py-3 border-b border-[#1A1A1A] flex items-center justify-between">
-              <h3 className="text-sm font-bold">Top Productos</h3>
-              <TrendingUp className="h-4 w-4 text-[#E35205]" />
+        {/* Top Products */}
+        <div className="bg-[#111] rounded-xl border border-[#1A1A1A] overflow-hidden">
+          <div className="px-4 py-3 border-b border-[#1A1A1A] flex items-center justify-between">
+            <h3 className="text-sm font-bold">Top Productos</h3>
+            <TrendingUp className="h-4 w-4 text-[#E35205]" />
+          </div>
+          {data.topProducts.length === 0 ? (
+            <div className="px-4 py-12 text-center text-sm text-[#666]">
+              Sin datos de ventas
             </div>
+          ) : (
             <div className="divide-y divide-[#1A1A1A]">
-              {topProducts.map((product, i) => (
+              {data.topProducts.map((product, i) => (
                 <div key={i} className="px-4 py-3 flex items-center gap-3">
                   <div className="w-7 h-7 rounded-lg bg-[#1A1A1A] flex items-center justify-center text-[10px] font-bold text-[#666]">
                     {i + 1}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-[11px] text-[#CCC] font-medium truncate">{product.name}</p>
-                    <p className="text-[9px] text-[#555]">{product.brand} · {product.sales} ventas</p>
+                    <p className="text-[11px] text-[#CCC] font-medium truncate">
+                      {product.name}
+                    </p>
+                    <p className="text-[9px] text-[#555]">
+                      {product.quantity} ventas
+                    </p>
                   </div>
                   <div className="text-right shrink-0">
-                    <p className="text-[11px] font-bold text-white">{product.revenue}</p>
-                    <p className="text-[9px] text-green-400 font-medium">{product.trend}</p>
+                    <p className="text-[11px] font-bold text-white">
+                      {formatSoles(product.revenue)}
+                    </p>
                   </div>
                 </div>
               ))}
             </div>
-          </div>
+          )}
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        {/* Revenue Chart Placeholder (7 days) */}
+        <div className="bg-[#111] rounded-xl border border-[#1A1A1A] p-4">
+          <h3 className="text-sm font-bold mb-4">Ingresos — Últimos 7 días</h3>
+          {data.revenueByDay.every((d) => d.total === 0) ? (
+            <div className="h-40 flex items-center justify-center text-sm text-[#666]">
+              Sin datos de ingresos
+            </div>
+          ) : (
+            <div className="flex items-end gap-2 h-40">
+              {data.revenueByDay.map((day, i) => (
+                <div
+                  key={i}
+                  className="flex-1 flex flex-col items-center gap-1"
+                >
+                  <span className="text-[9px] text-[#888] font-medium">
+                    {day.total > 0
+                      ? `${(day.total / 1000).toFixed(0)}k`
+                      : ""}
+                  </span>
+                  <div
+                    className="w-full rounded-t-md transition-all"
+                    style={{
+                      height: `${Math.max((day.total / data.maxRevenue) * 120, 2)}px`,
+                      background:
+                        "linear-gradient(to top, #E35205, #FF7A3D)",
+                    }}
+                  />
+                  <span className="text-[9px] text-[#666] capitalize">
+                    {day.day}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
-        {/* Brand performance */}
+        {/* Orders by Status */}
+        <div className="bg-[#111] rounded-xl border border-[#1A1A1A] p-4">
+          <h3 className="text-sm font-bold mb-4">Pedidos por Estado</h3>
+          {statusEntries.length === 0 ? (
+            <div className="h-40 flex items-center justify-center text-sm text-[#666]">
+              Sin pedidos
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {statusEntries.map(([status, count]) => {
+                const total = Object.values(data.statusBreakdown).reduce(
+                  (s, v) => s + v,
+                  0
+                );
+                const pct = total > 0 ? Math.round((count / total) * 100) : 0;
+                return (
+                  <div key={status} className="flex items-center gap-3">
+                    <span
+                      className={`inline-block px-2 py-0.5 rounded-full text-[9px] font-bold border w-24 text-center shrink-0 ${
+                        statusColors[status] || statusColors.PENDING
+                      }`}
+                    >
+                      {statusLabels[status] || status}
+                    </span>
+                    <div className="flex-1 h-2 rounded-full bg-[#1A1A1A] overflow-hidden">
+                      <div
+                        className="h-full rounded-full transition-all"
+                        style={{
+                          width: `${pct}%`,
+                          backgroundColor:
+                            status === "DELIVERED"
+                              ? "#22c55e"
+                              : status === "SHIPPED"
+                              ? "#3b82f6"
+                              : status === "PROCESSING"
+                              ? "#f59e0b"
+                              : status === "PENDING"
+                              ? "#eab308"
+                              : status === "CANCELLED"
+                              ? "#ef4444"
+                              : "#8b5cf6",
+                        }}
+                      />
+                    </div>
+                    <span className="text-xs font-bold text-[#CCC] w-8 text-right shrink-0">
+                      {count}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Low Stock Alerts */}
+      {data.lowStockProducts.length > 0 && (
         <div className="mt-4 bg-[#111] rounded-xl border border-[#1A1A1A] p-4">
-          <h3 className="text-sm font-bold mb-3">Rendimiento por Marca</h3>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
-            {[
-              { name: "Milwaukee", color: "#D1001C", pct: 85 },
-              { name: "DeWalt", color: "#FFD700", pct: 72 },
-              { name: "Bosch", color: "#005691", pct: 68 },
-              { name: "Makita", color: "#0077C8", pct: 61 },
-              { name: "STANLEY", color: "#E35205", pct: 45 },
-              { name: "3M", color: "#CC3300", pct: 38 },
-            ].map((b) => (
-              <div key={b.name} className="bg-[#0D0D0D] rounded-lg p-3">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-[10px] font-bold text-[#CCC]">{b.name}</span>
-                  <span className="text-[10px] font-bold" style={{ color: b.color }}>{b.pct}%</span>
+          <div className="flex items-center gap-2 mb-3">
+            <AlertTriangle className="h-4 w-4 text-amber-400" />
+            <h3 className="text-sm font-bold">Alertas de Stock Bajo</h3>
+            <span className="text-[10px] text-amber-400 font-semibold bg-amber-500/10 px-2 py-0.5 rounded-full">
+              {data.lowStockProducts.length}
+            </span>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
+            {data.lowStockProducts.map((p) => (
+              <Link
+                key={p.id}
+                href={`/producto/${p.slug}`}
+                className="bg-[#0D0D0D] rounded-lg p-3 hover:bg-[#151515] transition-colors"
+              >
+                <p className="text-[11px] text-[#CCC] font-medium truncate">
+                  {p.name}
+                </p>
+                <p className="text-[9px] text-[#555] mt-0.5">
+                  {p.brand?.name || "Sin marca"} · SKU: {p.sku}
+                </p>
+                <div className="flex items-center justify-between mt-2">
+                  <span
+                    className={`text-[10px] font-bold ${p.stock === 0 ? "text-red-400" : "text-amber-400"}`}
+                  >
+                    {p.stock === 0 ? "Agotado" : `${p.stock} en stock`}
+                  </span>
+                  <span className="text-[9px] text-[#555]">
+                    Alerta: ≤{p.lowStockAlert}
+                  </span>
                 </div>
-                <div className="w-full h-1.5 rounded-full bg-[#1A1A1A]">
-                  <div className="h-full rounded-full transition-all" style={{ width: `${b.pct}%`, backgroundColor: b.color }} />
-                </div>
-              </div>
+              </Link>
             ))}
           </div>
         </div>
-      </main>
-    </div>
+      )}
+    </>
   );
 }

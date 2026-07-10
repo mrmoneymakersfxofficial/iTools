@@ -6,6 +6,7 @@ import { ProductQuickView } from "@/components/product/ProductQuickView";
 import { CartDrawer } from "@/components/layout/CartDrawer";
 import { ClientLayoutEffects } from "@/components/layout/ClientLayoutEffects";
 import { ThemeProvider } from "next-themes";
+import { AuthProvider } from "@/components/providers/AuthProvider";
 import { BottomNav } from "@/components/layout/BottomNav";
 import { IToolsAssistant } from "@/components/layout/IToolsAssistant";
 
@@ -98,13 +99,15 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <ClientLayoutEffects />
-          {children}
-          <ProductQuickView />
-          <CartDrawer />
-          <BottomNav />
-          <IToolsAssistant />
-          <Toaster />
+          <AuthProvider>
+            <ClientLayoutEffects />
+            {children}
+            <ProductQuickView />
+            <CartDrawer />
+            <BottomNav />
+            <IToolsAssistant />
+            <Toaster />
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>

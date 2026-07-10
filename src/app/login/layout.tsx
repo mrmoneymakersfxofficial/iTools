@@ -3,6 +3,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
+import { registerUser } from "@/lib/actions/auth";
 import {
   Eye, EyeOff, Mail, Lock, User, ArrowRight, Wrench, ShieldCheck,
   ArrowLeft, CheckCircle2,
@@ -70,7 +72,7 @@ export function AuthForm({ mode }: { mode: "login" | "register" | "recover" }) {
   const isRegister = mode === "register";
   const isRecover = mode === "recover";
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setLoading(true);
@@ -84,8 +86,38 @@ export function AuthForm({ mode }: { mode: "login" | "register" | "recover" }) {
       setTimeout(() => { setSent(true); setLoading(false); }, 1200);
       return;
     }
-    if (isLogin || isRegister) {
-      setTimeout(() => { router.push("/"); setLoading(false); }, 1500);
+    if (isLogin) {
+      const result = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
+      });
+      if (result?.error) {
+        setError("Credenciales incorrectas. Verifica tu correo y contraseña.");
+        setLoading(false);
+      } else {
+        router.push("/");
+      }
+      return;
+    }
+    if (isRegister) {
+      const regResult = await registerUser(name, email, password);
+      if (!regResult.success) {
+        setError(regResult.error || "Error al crear la cuenta.");
+        setLoading(false);
+        return;
+      }
+      const signInResult = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
+      });
+      if (signInResult?.error) {
+        setError("Cuenta creada pero hubo un error al iniciar sesión. Intenta ingresar manualmente.");
+        setLoading(false);
+      } else {
+        router.push("/");
+      }
     }
   };
 
@@ -264,6 +296,7 @@ export function AuthForm({ mode }: { mode: "login" | "register" | "recover" }) {
 
                     <button
                       type="button"
+                      onClick={() => signIn("google", { callbackUrl: "/" })}
                       className="w-full h-11 rounded-xl border border-input bg-card hover:bg-muted/50 flex items-center justify-center gap-3 text-sm font-medium text-foreground transition-all active:scale-[0.98]"
                     >
                       <svg className="h-5 w-5" viewBox="0 0 24 24">
