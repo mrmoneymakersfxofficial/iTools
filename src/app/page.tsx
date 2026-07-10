@@ -4,7 +4,7 @@ import Footer from "@/components/layout/Footer";
 /* ── Desktop-only components ── */
 import { TrendingSidebar } from "@/components/home/TrendingSidebar";
 import { ToolCribSidebar } from "@/components/home/ToolCribSidebar";
-import { CenterHeroBanner } from "@/components/home/CenterHeroBanner";
+import { HeroCarousel } from "@/components/home/HeroCarousel";
 import { CenterSmallBanners } from "@/components/home/CenterSmallBanners";
 
 /* ── Shared components ── */
@@ -44,7 +44,7 @@ export default function Home() {
           <section className="container mx-auto max-w-7xl px-4 md:px-6 py-4 md:py-8">
             {/* 1. Hero banner — 100% width, h-[200/320/400px] */}
             <div className="mb-4 md:mb-6">
-              <CenterHeroBanner />
+              <HeroCarousel />
             </div>
 
             {/* 2. Two promo banners — grid-cols-2, tall vertical cards */}
@@ -94,7 +94,7 @@ export default function Home() {
 
               {/* CENTER COLUMN */}
               <div className="flex-1 min-w-0 space-y-2.5">
-                <CenterHeroBanner />
+                <HeroCarousel />
                 <CenterSmallBanners />
                 <CenterGiveawayBanner />
 
