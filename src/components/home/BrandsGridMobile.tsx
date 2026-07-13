@@ -1,33 +1,34 @@
 "use client";
 import Link from "next/link";
-import { ShoppingBag, ChevronRight, ImagePlus } from "lucide-react";
+import { ShoppingBag, ChevronRight } from "lucide-react";
 
+/* ── Brand data — matches real logos in /public/brands/ ── */
 const brands = [
-  { name: "Milwaukee", color: "#D1001C", textColor: "#FFF", slug: "milwaukee", products: "28.1K", fontStyle: "italic", logo: "/brands/milwaukee.svg" },
-  { name: "DEWALT", color: "#FFD700", textColor: "#1A1A1A", slug: "dewalt", products: "22.4K", logo: "/brands/dewalt.svg" },
-  { name: "BOSCH", color: "#005691", textColor: "#FFF", slug: "bosch", products: "19.6K", logo: "/brands/bosch.svg" },
-  { name: "MAKITA", color: "#0077C8", textColor: "#FFF", slug: "makita", products: "24.5K", logo: "/brands/makita.svg" },
-  { name: "STANLEY", color: "#E35205", textColor: "#FFF", slug: "stanley", products: "15.8K", logo: "/brands/stanley.svg" },
-  { name: "3M", color: "#CC3300", textColor: "#FFF", slug: "3m", products: "12.4K", logo: "/brands/3m.svg" },
-  { name: "HONDA", color: "#CC0000", textColor: "#FFF", slug: "honda", products: "8.9K", logo: "/brands/honda.svg" },
-  { name: "KLEIN TOOLS", color: "#FFC220", textColor: "#1A1A1A", slug: "klein-tools", products: "14.2K", logo: "/brands/klein-tools.svg" },
-  { name: "TORO", color: "#1A1A1A", textColor: "#CC0000", slug: "toro", products: "5.4K", logo: "/brands/toro.svg" },
-  { name: "EGO", color: "#0d5c4a", textColor: "#FFF", slug: "ego", products: "5.7K", logo: "/brands/ego.svg" },
-  { name: "metabo HPT", color: "#1b7a3a", textColor: "#FFF", slug: "metabo-hpt", products: "9.4K", logo: "/brands/metabo-hpt.svg" },
-  { name: "FLEX", color: "#1A1A1A", textColor: "#FFF", slug: "flex", products: "12.6K", logo: "/brands/flex.svg" },
-  { name: "STIHL", color: "#E35205", textColor: "#FFF", slug: "stihl", products: "8.4K", logo: "/brands/stihl.svg" },
-  { name: "FEIN", color: "#666666", textColor: "#FFF", slug: "fein", products: "5.7K", logo: "/brands/fein.svg" },
-  { name: "SKIL", color: "#CC0000", textColor: "#FFF", slug: "skil", products: "8.4K", logo: "/brands/skil.svg" },
-  { name: "FESTOOL", color: "#1A1A1A", textColor: "#00A651", slug: "festool", products: "8.2K", logo: "/brands/festool.svg" },
-  { name: "JET", color: "#CC0000", textColor: "#FFF", slug: "jet", products: "2.8K", logo: "/brands/jet.svg" },
-  { name: "KNAACK", color: "#8B6914", textColor: "#FFF", slug: "knaack", products: "4.2K", logo: "/brands/knaack.svg" },
+  { name: "Milwaukee",    color: "#D1001C", textColor: "#FFF",     slug: "milwaukee",    fontStyle: "italic",  logo: "/brands/milwaukee.webp",  products: "28.1K" },
+  { name: "DEWALT",       color: "#FFD700", textColor: "#1A1A1A",  slug: "dewalt",       fontStyle: "normal",  logo: "/brands/dewalt.webp",     products: "22.4K" },
+  { name: "BOSCH",        color: "#005691", textColor: "#FFF",     slug: "bosch",        fontStyle: "normal",  logo: "/brands/bosch.webp",      products: "19.6K" },
+  { name: "MAKITA",       color: "#0077C8", textColor: "#FFF",     slug: "makita",       fontStyle: "normal",  logo: "/brands/makita.webp",     products: "24.5K" },
+  { name: "STANLEY",      color: "#E35205", textColor: "#FFF",     slug: "stanley",      fontStyle: "normal",  logo: "/brands/stanley.webp",    products: "15.8K" },
+  { name: "INGCO",        color: "#E35205", textColor: "#FFF",     slug: "ingco",        fontStyle: "normal",  logo: "/brands/ingco.webp",      products: "18.2K" },
+  { name: "TRUPER",       color: "#CC0000", textColor: "#FFF",     slug: "truper",       fontStyle: "normal",  logo: "/brands/truper.webp",     products: "16.8K" },
+  { name: "TOTAL",        color: "#D1001C", textColor: "#FFF",     slug: "total",        fontStyle: "normal",  logo: "/brands/total.webp",      products: "14.3K" },
+  { name: "TOPTUL",       color: "#1A1A1A", textColor: "#E35205",  slug: "toptul",       fontStyle: "normal",  logo: "/brands/toptul.webp",     products: "8.9K" },
+  { name: "DONG CHENG",   color: "#CC0000", textColor: "#FFF",     slug: "dong-cheng",   fontStyle: "normal",  logo: "/brands/dong-cheng.webp", products: "12.1K" },
+  { name: "KAMASA",       color: "#D1001C", textColor: "#FFF",     slug: "kamasa",       fontStyle: "normal",  logo: "/brands/kamasa.webp",     products: "6.4K" },
+  { name: "BAHCO",        color: "#003366", textColor: "#FFF",     slug: "bahco",        fontStyle: "normal",  logo: "/brands/bahco.webp",      products: "9.7K" },
+  { name: "TRAMONTINA",   color: "#006633", textColor: "#FFF",     slug: "tramontina",   fontStyle: "normal",  logo: "/brands/tramontina.webp", products: "11.5K" },
+  { name: "WAGNER",       color: "#004B87", textColor: "#FFF",     slug: "wagner",       fontStyle: "normal",  logo: "/brands/wagner.webp",     products: "5.8K" },
+  { name: "SATA",         color: "#005BAC", textColor: "#FFF",     slug: "sata",         fontStyle: "normal",  logo: "/brands/sata.webp",       products: "7.3K" },
+  { name: "EMTOP",        color: "#1A5276", textColor: "#FFF",     slug: "emtop",        fontStyle: "normal",  logo: "/brands/emtop.webp",      products: "8.1K" },
+  { name: "DCA",          color: "#FF8C00", textColor: "#1A1A1A",  slug: "dca",          fontStyle: "normal",  logo: "/brands/dca.webp",        products: "10.6K" },
+  { name: "KAILI",        color: "#B22222", textColor: "#FFF",     slug: "kaili",        fontStyle: "normal",  logo: "/brands/kaili.webp",      products: "4.9K" },
 ];
 
 export function BrandsGridMobile() {
   return (
     <section className="bg-[#0A0A0A] py-3 lg:hidden" data-section="Comprar por Marca">
       <div className="mx-auto max-w-7xl px-2.5 sm:px-4">
-        {/* Header with "Ver Todo" link */}
+        {/* Header */}
         <div className="flex items-center justify-between mb-2.5">
           <div className="flex items-center gap-2">
             <ShoppingBag className="h-4 w-4 text-[#E35205]" />
@@ -35,7 +36,7 @@ export function BrandsGridMobile() {
               Comprar por Marca
             </h2>
           </div>
-          <span className="text-[11px] text-[#E35205] font-semibold">18 MARCAS →</span>
+          <span className="text-[11px] text-[#E35205] font-semibold">18 MARCAS &rarr;</span>
         </div>
 
         {/* Horizontal scrolling brand cards */}
@@ -49,7 +50,7 @@ export function BrandsGridMobile() {
               <Link
                 key={brand.slug}
                 href={`/marca/${brand.slug}`}
-                className="shrink-0 w-[155px] sm:w-[170px] group relative overflow-hidden rounded-xl transition-all active:scale-[0.97] hover:shadow-md border border-[#222]"
+                className="shrink-0 w-[150px] sm:w-[165px] group relative overflow-hidden rounded-xl transition-all active:scale-[0.97] hover:shadow-md border border-[#222]"
                 style={{ backgroundColor: brand.color }}
               >
                 {/* Subtle pattern overlay */}
@@ -67,25 +68,16 @@ export function BrandsGridMobile() {
                 />
 
                 {/* Card content */}
-                <div className="relative z-10 flex flex-col items-center justify-center px-3 pt-5 pb-3 min-h-[140px]">
-                  {/* Logo area */}
-                  <div className="flex items-center justify-center w-full h-[65px] mb-1.5">
+                <div className="relative z-10 flex flex-col items-center justify-center px-3 pt-4 pb-2.5 min-h-[110px]">
+                  {/* Logo area — ratio 2.6:1 preserved, auto-scales */}
+                  <div className="flex items-center justify-center w-full h-[42px] mb-1">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={brand.logo}
                       alt={brand.name}
-                      className="max-h-[55px] max-w-[120px] object-contain opacity-0"
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).style.display = "none";
-                        (e.target as HTMLImageElement).nextElementSibling?.classList.remove("hidden");
-                      }}
+                      className="max-h-[42px] w-auto object-contain"
+                      loading="lazy"
                     />
-                    <div className="hidden flex items-center justify-center">
-                      <ImagePlus
-                        className="h-5 w-5 opacity-25"
-                        style={{ color: brand.textColor }}
-                      />
-                    </div>
                   </div>
 
                   {/* Brand name */}
