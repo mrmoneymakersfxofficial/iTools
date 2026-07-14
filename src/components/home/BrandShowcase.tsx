@@ -26,7 +26,7 @@ const brands = [
 
 export function BrandShowcase() {
   return (
-    <section className="py-8 bg-white" data-section="Comprar por Marca">
+    <section className="py-8 bg-[#F5F5F5]" data-section="Comprar por Marca">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="flex items-center gap-2 mb-5">
@@ -36,19 +36,19 @@ export function BrandShowcase() {
           </h2>
         </div>
 
-        {/* Acme Tools style — minimal gap, logo fills card, rounded */}
-        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-1.5">
+        {/* No cards — just logos with rounded corners, tight grid */}
+        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2">
           {brands.map((brand) => (
             <Link
               key={brand.slug}
               href={`/marca/${brand.slug}`}
-              className="group flex items-center justify-center bg-white border border-[#E0E0E0] rounded-2xl h-[68px] px-2 transition-all hover:border-[#999] hover:shadow-sm overflow-hidden"
+              className="group flex items-center justify-center h-[56px] transition-opacity hover:opacity-80"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={brand.logo}
                 alt={brand.name}
-                className="h-[52px] w-auto max-w-full object-contain"
+                className="max-h-[52px] w-auto max-w-full object-contain rounded-lg"
                 loading="lazy"
               />
             </Link>
