@@ -36,19 +36,19 @@ export function BrandShowcase() {
           </h2>
         </div>
 
-        {/* Acme Tools style — white cards, gray border, logo only, no text */}
-        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
+        {/* Acme Tools style — minimal gap, logo fills card, rounded */}
+        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-1.5">
           {brands.map((brand) => (
             <Link
               key={brand.slug}
               href={`/marca/${brand.slug}`}
-              className="group flex items-center justify-center bg-white border border-[#E5E7EB] rounded-lg h-[72px] px-4 transition-all hover:border-[#999] hover:shadow-md"
+              className="group flex items-center justify-center bg-white border border-[#E0E0E0] rounded-2xl h-[68px] px-2 transition-all hover:border-[#999] hover:shadow-sm overflow-hidden"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={brand.logo}
                 alt={brand.name}
-                className="max-h-[36px] max-w-[80%] w-auto object-contain"
+                className="h-[52px] w-auto max-w-full object-contain"
                 loading="lazy"
               />
             </Link>
