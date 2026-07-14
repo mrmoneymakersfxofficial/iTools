@@ -46,20 +46,20 @@ export function BrandsGridMobile() {
 
         {/* Horizontal scroll — no cards, just logos */}
         <nav
-          className="flex gap-2 overflow-x-auto pb-1"
+          className="flex gap-1 overflow-x-auto pb-1"
           style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
         >
           {brands.map((brand) => (
             <Link
               key={brand.slug}
               href={`/marca/${brand.slug}`}
-              className="shrink-0 w-[120px] sm:w-[130px] flex items-center justify-center h-[52px] transition-opacity active:opacity-70"
+              className="shrink-0 w-[120px] sm:w-[130px] flex items-center justify-center h-[60px] transition-opacity active:opacity-70"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={brand.logo}
                 alt={brand.name}
-                className="max-h-[48px] w-auto max-w-full object-contain rounded-lg"
+                className="max-h-[56px] w-auto max-w-full object-contain rounded-lg"
                 loading="lazy"
               />
             </Link>

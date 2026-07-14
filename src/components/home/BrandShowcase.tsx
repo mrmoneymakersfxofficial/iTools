@@ -37,18 +37,18 @@ export function BrandShowcase() {
         </div>
 
         {/* No cards — just logos with rounded corners, tight grid */}
-        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2">
+        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-1">
           {brands.map((brand) => (
             <Link
               key={brand.slug}
               href={`/marca/${brand.slug}`}
-              className="group flex items-center justify-center h-[56px] transition-opacity hover:opacity-80"
+              className="group flex items-center justify-center h-[64px] transition-opacity hover:opacity-80"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={brand.logo}
                 alt={brand.name}
-                className="max-h-[52px] w-auto max-w-full object-contain rounded-lg"
+                className="max-h-[60px] w-auto max-w-full object-contain rounded-lg"
                 loading="lazy"
               />
             </Link>
