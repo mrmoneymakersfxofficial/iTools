@@ -282,7 +282,7 @@ function BrandHeroBanner({ slug, name }: { slug: string; name: string }) {
 
   if (images.length === 1) {
     return (
-      <div className="mb-4 rounded-xl overflow-hidden">
+      <div className="mb-2 rounded-xl overflow-hidden">
         <img
           src={images[0]}
           alt={`Hero ${name}`}
@@ -310,7 +310,7 @@ function BrandHeroMiniCarousel({ images, name }: { images: string[]; name: strin
 
   return (
     <div
-      className="relative mb-4 rounded-xl overflow-hidden group"
+      className="relative mb-2 rounded-xl overflow-hidden group"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
@@ -383,15 +383,26 @@ export function BrandPageClient({
   const textCol = theme.textColor;
   const isDark = textCol === "#FFF" || textCol === "#00A651";
 
-  // Split background: brand color top ~20% only, fast transition to black
+  // Thematic alternating gradient: brand color dominant, ultra-short transitions
+  // Pattern: brand → dark → brand accent → dark
+  const brandDark = brandColor + "33";      // brand color at ~20% opacity
+  const brandMid = brandColor + "AA";       // brand color at ~67% opacity
   const pageBgStyle = {
     background: `
       linear-gradient(
         180deg,
         ${brandColor} 0%,
-        ${brandColor} 15%,
-        ${brandColor}88 20%,
-        ${secondColor} 28%,
+        ${brandColor} 12%,
+        ${brandMid} 15%,
+        ${brandDark} 18%,
+        ${secondColor} 22%,
+        ${secondColor} 68%,
+        ${brandDark} 72%,
+        ${brandMid} 76%,
+        ${brandColor} 80%,
+        ${brandColor} 88%,
+        ${brandDark} 91%,
+        ${secondColor} 95%,
         ${secondColor} 100%
       )
     `,
@@ -426,7 +437,7 @@ export function BrandPageClient({
         {[
           "bosch", "dewalt", "dong-cheng", "kaili", "milwaukee"
         ].includes(brand.slug) && (
-          <div className="mb-4 rounded-xl overflow-hidden">
+          <div className="mb-2 rounded-xl overflow-hidden">
             <img
               src={`/banners/brands/${brand.slug}.webp`}
               alt={`Promoción ${brand.name}`}
