@@ -1,9 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
-  ChevronRight, CircleArrowRight, Wrench, Star, TrendingUp, Plus, Search,
+  ChevronLeft, ChevronRight, CircleArrowRight, Wrench, Star, TrendingUp, Plus, Search,
   Home, ArrowLeft, MessageCircle, ShoppingCart, User,
 } from "lucide-react";
 import { ProductCard } from "@/components/product/ProductCard";
@@ -269,6 +269,101 @@ function SectionFade({ color }: { color: string }) {
   );
 }
 
+/* ── Brand Hero Banner with mini carousel for Milwaukee ── */
+function BrandHeroBanner({ slug, name }: { slug: string; name: string }) {
+  const heroMap: Record<string, string[]> = {
+    bosch: ["/banners/hero/bosch-hero.webp"],
+    dewalt: ["/banners/hero/dewalt-hero.webp"],
+    milwaukee: ["/banners/hero/milwaukee-hero.webp", "/banners/hero/milwaukee-hero-2.webp"],
+  };
+
+  const images = heroMap[slug];
+  if (!images || images.length === 0) return null;
+
+  if (images.length === 1) {
+    return (
+      <div className="mb-4 rounded-xl overflow-hidden">
+        <img
+          src={images[0]}
+          alt={`Hero ${name}`}
+          className="w-full h-auto object-cover"
+          loading="eager"
+        />
+      </div>
+    );
+  }
+
+  // Mini carousel for multiple hero banners (e.g. Milwaukee)
+  return <BrandHeroMiniCarousel images={images} name={name} />;
+}
+
+function BrandHeroMiniCarousel({ images, name }: { images: string[]; name: string }) {
+  const [current, setCurrent] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const total = images.length;
+
+  useEffect(() => {
+    if (paused || total <= 1) return;
+    const timer = setInterval(() => setCurrent((i) => (i + 1) % total), 4000);
+    return () => clearInterval(timer);
+  }, [paused, total]);
+
+  return (
+    <div
+      className="relative mb-4 rounded-xl overflow-hidden group"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+    >
+      <div className="relative w-full" style={{ aspectRatio: "1920 / 500" }}>
+        {images.map((src, idx) => (
+          <div
+            key={idx}
+            className="absolute inset-0 transition-opacity duration-500"
+            style={{ opacity: idx === current ? 1 : 0 }}
+          >
+            <img
+              src={src}
+              alt={`Hero ${name} ${idx + 1}`}
+              className="w-full h-full object-cover"
+              loading={idx === 0 ? "eager" : "lazy"}
+            />
+          </div>
+        ))}
+      </div>
+      {total > 1 && (
+        <>
+          <button
+            onClick={() => setCurrent((i) => (i - 1 + total) % total)}
+            className="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-black/30 hover:bg-black/50 text-white rounded-full p-1.5 transition-colors"
+            aria-label="Anterior"
+          >
+            <ChevronLeft className="h-5 w-5" />
+          </button>
+          <button
+            onClick={() => setCurrent((i) => (i + 1) % total)}
+            className="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-black/30 hover:bg-black/50 text-white rounded-full p-1.5 transition-colors"
+            aria-label="Siguiente"
+          >
+            <ChevronRight className="h-5 w-5" />
+          </button>
+          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 z-10 flex gap-1.5">
+            {images.map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => setCurrent(idx)}
+                className={`rounded-full transition-all ${
+                  idx === current ? "w-6 h-2 bg-white" : "w-2 h-2 bg-white/50"
+                }`}
+                aria-label={`Banner ${idx + 1}`}
+              />
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
 export function BrandPageClient({
   brand,
   products,
@@ -324,7 +419,10 @@ export function BrandPageClient({
       />
 
       <div className="relative z-10 mx-auto max-w-[1440px] px-2.5 lg:px-4 py-4 pb-28">
-        {/* ── Brand Promotional Banner ── */}
+        {/* ── Brand Hero Banner (1920x500) ── */}
+        <BrandHeroBanner slug={brand.slug} name={brand.name} />
+
+        {/* ── Brand Promotional Banner (1920x320) ── */}
         {[
           "bosch", "dewalt", "dong-cheng", "kaili", "milwaukee"
         ].includes(brand.slug) && (

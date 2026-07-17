@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
-import { ChevronLeft, ChevronRight, CircleArrowRight, Sparkles, Percent, Tag, Gift } from "lucide-react";
+import { ChevronLeft, ChevronRight, CircleArrowRight, Sparkles, Percent, Tag, Gift, Wrench } from "lucide-react";
 import { CountdownTimer } from "@/components/home/CountdownTimer";
 
 /* ─── Types ─── */
@@ -46,6 +46,42 @@ const BANNERS: BannerData[] = [
     link: "/liquidacion",
     bg: "linear-gradient(135deg, #D1001C 0%, #a80016 50%, #7a0010 100%)",
     icon: <Tag className="h-3.5 w-3.5 text-white" />,
+  },
+  {
+    image: "/banners/hero/bosch-hero.webp",
+    title: "BOSCH",
+    subtitle: "Herramientas profesionales de alta rendimiento",
+    cta: "Ver productos Bosch",
+    link: "/marca/bosch",
+    bg: "linear-gradient(135deg, #1e4b8f 0%, #0d2e5c 100%)",
+    icon: <Wrench className="h-3.5 w-3.5 text-blue-300" />,
+  },
+  {
+    image: "/banners/hero/dewalt-hero.webp",
+    title: "DEWALT",
+    subtitle: "Garant\u00eda de potencia y durabilidad",
+    cta: "Ver productos DeWalt",
+    link: "/marca/dewalt",
+    bg: "linear-gradient(135deg, #e6a817 0%, #b8860b 100%)",
+    icon: <Wrench className="h-3.5 w-3.5 text-yellow-200" />,
+  },
+  {
+    image: "/banners/hero/milwaukee-hero.webp",
+    title: "MILWAUKEE",
+    subtitle: "Nada detiene a un Milwaukee",
+    cta: "Ver productos Milwaukee",
+    link: "/marca/milwaukee",
+    bg: "linear-gradient(135deg, #c61010 0%, #7a0a0a 100%)",
+    icon: <Wrench className="h-3.5 w-3.5 text-red-300" />,
+  },
+  {
+    image: "/banners/hero/milwaukee-hero-2.webp",
+    title: "MILWAUKEE M18 FUEL",
+    subtitle: "La l\u00ednea m\u00e1s potente del mercado",
+    cta: "Explorar M18 FUEL",
+    link: "/marca/milwaukee",
+    bg: "linear-gradient(135deg, #8B0000 0%, #500000 100%)",
+    icon: <Wrench className="h-3.5 w-3.5 text-red-200" />,
   },
 ];
 
