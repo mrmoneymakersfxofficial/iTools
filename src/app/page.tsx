@@ -23,6 +23,7 @@ import { ExploreProductsMobile } from "@/components/home/ExploreProductsMobile";
 /* ── Desktop full-width sections ── */
 import { FeaturedSection, NewArrivalsSection } from "@/components/home/ProductSections";
 import { BrandShowcase } from "@/components/home/BrandShowcase";
+import { BrandBannersCarousel } from "@/components/home/BrandBannersCarousel";
 
 export default function Home() {
   return (
@@ -47,7 +48,12 @@ export default function Home() {
               <HeroCarousel />
             </div>
 
-            {/* 2. Two promo banners — grid-cols-2, tall vertical cards */}
+            {/* 2. Brand promotional banners carousel */}
+            <div className="mb-4 md:mb-6">
+              <BrandBannersCarousel />
+            </div>
+
+            {/* 3. Two promo banners — grid-cols-2, tall vertical cards */}
             <CenterSmallBanners />
           </section>
 
@@ -95,6 +101,7 @@ export default function Home() {
               {/* CENTER COLUMN */}
               <div className="flex-1 min-w-0 space-y-2.5">
                 <HeroCarousel />
+                <BrandBannersCarousel />
                 <CenterSmallBanners />
                 <CenterGiveawayBanner />
 

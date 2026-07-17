@@ -324,6 +324,20 @@ export function BrandPageClient({
       />
 
       <div className="relative z-10 mx-auto max-w-[1440px] px-2.5 lg:px-4 py-4 pb-28">
+        {/* ── Brand Promotional Banner ── */}
+        {[
+          "bosch", "dewalt", "dong-cheng", "kaili", "milwaukee"
+        ].includes(brand.slug) && (
+          <div className="mb-4 rounded-xl overflow-hidden">
+            <img
+              src={`/banners/brands/${brand.slug}.webp`}
+              alt={`Promoción ${brand.name}`}
+              className="w-full h-auto object-cover"
+              loading="eager"
+            />
+          </div>
+        )}
+
         {/* ── 3D Brand Name Header ── */}
         <div className="mb-5 flex justify-center">
           <div
