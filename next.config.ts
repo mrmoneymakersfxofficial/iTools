@@ -1,7 +1,6 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
   typescript: {
     ignoreBuildErrors: true,
   },
@@ -12,6 +11,12 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "cdn.sanity.io" },
     ],
   },
+  transpilePackages: [
+    "sanity",
+    "next-sanity",
+    "@sanity/vision",
+    "@sanity/image-url",
+  ],
 };
 
 export default nextConfig;

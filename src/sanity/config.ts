@@ -1,4 +1,4 @@
-import { defineConfig } from "next-sanity/studio";
+import { defineConfig } from "sanity";
 import { apiVersion, dataset, projectId } from "./env";
 import { schemaTypes } from "./schemas";
 
