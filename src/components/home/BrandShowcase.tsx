@@ -26,10 +26,10 @@ const brands = [
 
 export function BrandShowcase() {
   return (
-    <section className="py-8 bg-[#F5F5F5]" data-section="Comprar por Marca">
+    <section className="py-3 bg-[#F5F5F5]" data-section="Comprar por Marca">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="flex items-center gap-2 mb-5">
+        <div className="flex items-center gap-2 mb-2">
           <ShoppingBag className="h-5 w-5 text-[#1A1A1A]" />
           <h2 className="text-base font-bold text-[#1A1A1A] uppercase tracking-wide">
             Comprar por Marca
@@ -37,18 +37,18 @@ export function BrandShowcase() {
         </div>
 
         {/* No cards — just logos with rounded corners, tight grid */}
-        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-1">
+        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-px">
           {brands.map((brand) => (
             <Link
               key={brand.slug}
               href={`/marca/${brand.slug}`}
-              className="group flex items-center justify-center h-[64px] transition-opacity hover:opacity-80"
+              className="group flex items-center justify-center h-[88px] transition-opacity hover:opacity-80"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={brand.logo}
                 alt={brand.name}
-                className="max-h-[60px] w-auto max-w-full object-contain rounded-lg"
+                className="max-h-[84px] w-auto max-w-full object-contain rounded-lg"
                 loading="lazy"
               />
             </Link>

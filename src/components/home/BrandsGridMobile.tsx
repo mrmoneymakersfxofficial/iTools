@@ -25,10 +25,10 @@ const brands = [
 
 export function BrandsGridMobile() {
   return (
-    <section className="bg-[#F5F5F5] py-4 lg:hidden" data-section="Comprar por Marca">
+    <section className="bg-[#F5F5F5] py-2 lg:hidden" data-section="Comprar por Marca">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         {/* Header */}
-        <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center justify-between mb-1.5">
           <div className="flex items-center gap-2">
             <ShoppingBag className="h-4 w-4 text-[#1A1A1A]" />
             <h2 className="text-sm font-bold text-[#1A1A1A] uppercase tracking-wide">
@@ -46,20 +46,20 @@ export function BrandsGridMobile() {
 
         {/* Horizontal scroll — no cards, just logos */}
         <nav
-          className="flex gap-1 overflow-x-auto pb-1"
+          className="flex gap-px overflow-x-auto pb-0.5"
           style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
         >
           {brands.map((brand) => (
             <Link
               key={brand.slug}
               href={`/marca/${brand.slug}`}
-              className="shrink-0 w-[120px] sm:w-[130px] flex items-center justify-center h-[60px] transition-opacity active:opacity-70"
+              className="shrink-0 w-[110px] sm:w-[120px] flex items-center justify-center h-[72px] transition-opacity active:opacity-70"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={brand.logo}
                 alt={brand.name}
-                className="max-h-[56px] w-auto max-w-full object-contain rounded-lg"
+                className="max-h-[68px] w-auto max-w-full object-contain rounded-lg"
                 loading="lazy"
               />
             </Link>
