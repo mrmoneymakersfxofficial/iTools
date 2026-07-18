@@ -2,8 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
-import { ChevronLeft, ChevronRight, CircleArrowRight, Sparkles, Percent, Tag, Gift, Wrench } from "lucide-react";
-import { CountdownTimer } from "@/components/home/CountdownTimer";
+import { ChevronLeft, ChevronRight, CircleArrowRight, Wrench } from "lucide-react";
 
 /* ─── Types ─── */
 interface BannerData {
@@ -12,41 +11,12 @@ interface BannerData {
   subtitle: string;
   cta: string;
   link: string;
-  countdown?: { targetDate: string; message: string };
-  bg: string;            // fallback gradient while image loads
+  bg: string;
   icon?: React.ReactNode;
 }
 
 /* ─── Banner data ─── */
 const BANNERS: BannerData[] = [
-  {
-    image: "/banners/oferta-julio-4july.jpg",
-    title: "4 d\u00edas para ahorrar",
-    subtitle: "Obt\u00e9n un 10% de descuento con el c\u00f3digo: 4JULY",
-    cta: "Compra ahora",
-    link: "/ofertas/julio",
-    countdown: { targetDate: "2026-07-15T23:59:59", message: "Termina en" },
-    bg: "linear-gradient(135deg, #0A2A44 0%, #0d3355 30%, #143d5e 60%, #1a4a6e 100%)",
-    icon: <Sparkles className="h-3.5 w-3.5 text-amber-400" />,
-  },
-  {
-    image: "/banners/ego-descuento.jpg",
-    title: "EGO \u2014 Compra m\u00e1s, por menos",
-    subtitle: "Hasta S/ 400 de descuento en pedidos mayores a S/ 1,200",
-    cta: "Ver productos EGO",
-    link: "/marcas/ego",
-    bg: "linear-gradient(135deg, #1a1a2e 0%, #16213e 40%, #0f3460 100%)",
-    icon: <Percent className="h-3.5 w-3.5 text-emerald-400" />,
-  },
-  {
-    image: "/banners/liquidacion-extra20.jpg",
-    title: "LIQUIDACI\u00d3N",
-    subtitle: "20% de descuento adicional con c\u00f3digo: EXTRA20",
-    cta: "Aprovechar ahora",
-    link: "/liquidacion",
-    bg: "linear-gradient(135deg, #D1001C 0%, #a80016 50%, #7a0010 100%)",
-    icon: <Tag className="h-3.5 w-3.5 text-white" />,
-  },
   {
     image: "/banners/hero/bosch-hero.webp",
     title: "BOSCH",
@@ -164,7 +134,7 @@ export function HeroCarousel() {
                     <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 backdrop-blur-sm border border-white/15">
                       {b.icon}
                       <span className="text-white/80 text-[10px] md:text-xs font-semibold uppercase tracking-[0.15em]">
-                        {b.countdown ? "Oferta Limitada" : "Promoción"}
+                        Promoción
                       </span>
                     </span>
                   </div>
@@ -177,17 +147,6 @@ export function HeroCarousel() {
                 <p className="text-white/85 text-sm md:text-base lg:text-lg leading-relaxed mt-1.5 md:mt-2 max-w-lg">
                   {b.subtitle}
                 </p>
-
-                {/* Countdown (only on banner 0) */}
-                {b.countdown && (
-                  <div className="mt-3 md:mt-4">
-                    <CountdownTimer
-                      targetDate={b.countdown.targetDate}
-                      message={b.countdown.message}
-                      style="modern"
-                    />
-                  </div>
-                )}
 
                 {/* CTA */}
                 <div className="mt-3 md:mt-4">
