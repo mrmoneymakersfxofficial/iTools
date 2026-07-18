@@ -259,14 +259,7 @@ function formatPrice(price: number): string {
 
 /* ── Reusable section fade div ── */
 function SectionFade({ color }: { color: string }) {
-  return (
-    <div
-      className="h-8 w-full"
-      style={{
-        background: `linear-gradient(to bottom, ${color}15, transparent)`,
-      }}
-    />
-  );
+  return null;
 }
 
 /* ── Brand Hero Banner with mini carousel for Milwaukee ── */
@@ -383,26 +376,25 @@ export function BrandPageClient({
   const textCol = theme.textColor;
   const isDark = textCol === "#FFF" || textCol === "#00A651";
 
-  // Thematic alternating gradient: brand color dominant, ultra-short transitions
-  // Pattern: brand → dark → brand accent → dark
-  const brandDark = brandColor + "33";      // brand color at ~20% opacity
-  const brandMid = brandColor + "AA";       // brand color at ~67% opacity
+  // Thematic alternating gradient: brand color dominant, 1% ultra-short transitions
+  const brandDark = brandColor + "33";
+  const brandMid = brandColor + "AA";
   const pageBgStyle = {
     background: `
       linear-gradient(
         180deg,
         ${brandColor} 0%,
         ${brandColor} 12%,
-        ${brandMid} 15%,
-        ${brandDark} 18%,
-        ${secondColor} 22%,
+        ${brandMid} 12.5%,
+        ${brandDark} 13%,
+        ${secondColor} 13.5%,
         ${secondColor} 68%,
-        ${brandDark} 72%,
-        ${brandMid} 76%,
-        ${brandColor} 80%,
+        ${brandDark} 68.5%,
+        ${brandMid} 69%,
+        ${brandColor} 69.5%,
         ${brandColor} 88%,
-        ${brandDark} 91%,
-        ${secondColor} 95%,
+        ${brandDark} 88.5%,
+        ${secondColor} 89%,
         ${secondColor} 100%
       )
     `,
