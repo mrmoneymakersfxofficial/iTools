@@ -8,6 +8,9 @@ const nextConfig: NextConfig = {
   reactStrictMode: false,
   images: {
     unoptimized: false,
+    remotePatterns: [
+      { protocol: "https", hostname: "cdn.sanity.io" },
+    ],
   },
 };
 

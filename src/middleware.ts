@@ -51,9 +51,17 @@ export async function middleware(request: NextRequest) {
     }
   }
 
+  // Protect studio routes
+  if (pathname.startsWith("/studio") && !pathname.startsWith("/studio/login")) {
+    const studioAuth = request.cookies.get("SANITY_STUDIO_AUTH");
+    if (!studioAuth?.value) {
+      return NextResponse.redirect(new URL("/studio/login", request.url));
+    }
+  }
+
   return NextResponse.next()
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/cuenta/:path*", "/checkout/:path*"],
+  matcher: ["/admin/:path*", "/cuenta/:path*", "/checkout/:path*", "/studio/:path*"],
 }
