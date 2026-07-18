@@ -376,25 +376,18 @@ export function BrandPageClient({
   const textCol = theme.textColor;
   const isDark = textCol === "#FFF" || textCol === "#00A651";
 
-  // Thematic alternating gradient: brand color dominant, 1% ultra-short transitions
-  const brandDark = brandColor + "33";
-  const brandMid = brandColor + "AA";
+  // Thematic gradient: brand color → dark → brand color → dark, direct transitions
   const pageBgStyle = {
     background: `
       linear-gradient(
         180deg,
         ${brandColor} 0%,
         ${brandColor} 12%,
-        ${brandMid} 12.5%,
-        ${brandDark} 13%,
-        ${secondColor} 13.5%,
+        ${secondColor} 12%,
         ${secondColor} 68%,
-        ${brandDark} 68.5%,
-        ${brandMid} 69%,
-        ${brandColor} 69.5%,
+        ${brandColor} 68%,
         ${brandColor} 88%,
-        ${brandDark} 88.5%,
-        ${secondColor} 89%,
+        ${secondColor} 88%,
         ${secondColor} 100%
       )
     `,
