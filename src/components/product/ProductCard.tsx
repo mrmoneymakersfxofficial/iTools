@@ -59,7 +59,7 @@ export function ProductCard({ product, index = 0, quickView, quickViewColor }: P
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-50px" }}
       transition={{ duration: 0.4, delay: Math.min(index * 0.05, 0.3) }}
-      className="group product-card-hover relative flex flex-col rounded-lg border border-border bg-white overflow-hidden"
+      className="group product-card-hover relative flex flex-col rounded-lg border border-border bg-white dark:bg-[#1a1a1a] overflow-hidden h-full"
     >
       {/* Clickable overlay for entire card */}
       {quickView ? (
@@ -105,8 +105,8 @@ export function ProductCard({ product, index = 0, quickView, quickViewColor }: P
       </button>
 
       {/* Image area */}
-      <div className="relative aspect-square bg-surface flex items-center justify-center p-6 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-gray-100/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      <div className="relative aspect-square bg-surface flex items-center justify-center p-6 overflow-hidden shrink-0">
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-gray-100/50 dark:to-gray-800/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         <Wrench className="h-16 w-16 text-gray-300 dark:text-gray-500 group-hover:scale-110 transition-transform duration-300" />
 
         {/* Brand label */}
@@ -136,11 +136,11 @@ export function ProductCard({ product, index = 0, quickView, quickViewColor }: P
 
       {/* Content */}
       <div className="flex flex-col flex-1 p-3 sm:p-4">
-        <h3 className="text-sm font-medium text-foreground leading-snug line-clamp-2 mb-1.5 group-hover:text-itools-blue transition-colors min-h-[2.5rem]">
+        <h3 className="text-sm font-medium text-foreground leading-snug line-clamp-2 mb-1.5 group-hover:text-itools-blue dark:group-hover:text-[#3399FF] transition-colors min-h-[2.5rem]">
           {product.name}
         </h3>
 
-        <p className="text-xs text-muted-foreground line-clamp-1 mb-2 hidden sm:block">
+        <p className="text-xs text-muted-foreground dark:text-gray-400 line-clamp-1 mb-2 hidden sm:block">
           {product.shortDescription}
         </p>
 

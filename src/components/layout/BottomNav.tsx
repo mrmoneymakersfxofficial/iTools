@@ -115,7 +115,7 @@ export function BottomNav() {
           <Link
             href="/"
             className={`flex flex-col items-center gap-0.5 py-2 px-2.5 rounded-xl transition-all ${
-              pathname === "/" ? "text-[#E35205]" : "text-[#555] hover:text-[#AAA]"
+              pathname === "/" ? "text-[#E35205]" : "text-gray-400 hover:text-gray-200"
             }`}
           >
             <Home className="h-5 w-5" />
@@ -126,7 +126,7 @@ export function BottomNav() {
           <button
             onClick={() => { setShowChat(false); setShowBrands(false); setShowCategories(!showCategories); }}
             className={`flex flex-col items-center gap-0.5 py-2 px-2.5 rounded-xl transition-all ${
-              isCategoryPage || showCategories ? "text-[#E35205]" : "text-[#555] hover:text-[#AAA]"
+              isCategoryPage || showCategories ? "text-[#E35205]" : "text-gray-400 hover:text-gray-200"
             }`}
           >
             <Search className="h-5 w-5" />
@@ -157,7 +157,7 @@ export function BottomNav() {
           <button
             onClick={() => { setShowChat(false); setShowCategories(false); setShowBrands(!showBrands); }}
             className={`flex flex-col items-center gap-0.5 py-2 px-2.5 rounded-xl transition-all ${
-              isBrandPage || showBrands ? "text-[#E35205]" : "text-[#555] hover:text-[#AAA]"
+              isBrandPage || showBrands ? "text-[#E35205]" : "text-gray-400 hover:text-gray-200"
             }`}
           >
             <ShoppingBag className="h-5 w-5" />
@@ -166,8 +166,8 @@ export function BottomNav() {
           </button>
 
           <Link
-            href="#"
-            className="flex flex-col items-center gap-0.5 py-2 px-2.5 rounded-xl text-[#555] hover:text-[#AAA] transition-all"
+            href="/login"
+            className="flex flex-col items-center gap-0.5 py-2 px-2.5 rounded-xl text-gray-400 hover:text-gray-200 transition-all"
           >
             <User className="h-5 w-5" />
             <span className="text-[8px] font-bold uppercase tracking-wider">Cuenta</span>

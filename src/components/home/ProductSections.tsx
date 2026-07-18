@@ -9,7 +9,7 @@ export function DealsSection() {
   const deals = getOnSaleProducts().slice(0, 8);
 
   return (
-    <section className="py-10 md:py-14 bg-surface" aria-labelledby="deals-heading">
+    <section className="py-10 md:py-14 bg-white dark:bg-[#111111]" aria-labelledby="deals-heading">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="flex items-center justify-between mb-6 md:mb-8">
@@ -91,7 +91,7 @@ export function NewArrivalsSection() {
   const arrivals = getNewArrivals();
 
   return (
-    <section className="py-10 md:py-14 bg-surface" aria-labelledby="new-arrivals-heading">
+    <section className="py-10 md:py-14 bg-white dark:bg-[#111111]" aria-labelledby="new-arrivals-heading">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between mb-6 md:mb-8">
           <div>

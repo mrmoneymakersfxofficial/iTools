@@ -59,7 +59,7 @@ export function TrendingSection() {
 
   return (
     <section
-      className="bg-white py-6 md:py-8"
+      className="bg-white dark:bg-[#111111] py-6 md:py-8"
       data-section="Tendencias"
       aria-label="Categorías de tendencia y productos de moda"
     >
@@ -69,7 +69,7 @@ export function TrendingSection() {
           <div className="lg:col-span-5">
             <div className="flex items-center gap-2 mb-4">
               <TrendingUp className="h-5 w-5 text-[#E35205]" />
-              <h2 className="text-lg md:text-xl font-impact text-[#1A1A1A]">
+              <h2 className="text-lg md:text-xl font-impact text-[#1A1A1A] dark:text-white">
                 Categor&iacute;as de Tendencia
               </h2>
             </div>
@@ -79,16 +79,16 @@ export function TrendingSection() {
                 <Link
                   key={cat.slug}
                   href={`/categoria/${cat.slug}`}
-                  className="group flex items-center gap-2.5 bg-[#F5F6F8] hover:bg-[#E8EDF2] rounded-lg px-3.5 py-3 transition-colors"
+                  className="group flex items-center gap-2.5 bg-[#F5F6F8] dark:bg-[#1a1a1a] hover:bg-[#E8EDF2] dark:hover:bg-[#222] rounded-lg px-3.5 py-3 transition-colors"
                 >
                   <div className="flex-shrink-0 w-8 h-8 rounded bg-[#0A2A44] flex items-center justify-center text-white">
                     {iconMap[cat.icon] || <Wrench className="h-4 w-4" />}
                   </div>
                   <div className="min-w-0">
-                    <p className="text-sm font-medium text-[#1A1A1A] group-hover:text-[#E35205] transition-colors truncate">
+                    <p className="text-sm font-medium text-[#1A1A1A] dark:text-gray-200 group-hover:text-[#E35205] transition-colors truncate">
                       {cat.name}
                     </p>
-                    <p className="text-[11px] text-[#999]">{cat.count} productos</p>
+                    <p className="text-[11px] text-[#999] dark:text-gray-500">{cat.count} productos</p>
                   </div>
                 </Link>
               ))}
@@ -106,7 +106,7 @@ export function TrendingSection() {
           <div className="lg:col-span-7">
             <div className="flex items-center gap-2 mb-4">
               <Flame className="h-5 w-5 text-[#CC3300]" />
-              <h2 className="text-lg md:text-xl font-impact text-[#1A1A1A]">
+              <h2 className="text-lg md:text-xl font-impact text-[#1A1A1A] dark:text-white">
                 Productos de Moda
               </h2>
             </div>

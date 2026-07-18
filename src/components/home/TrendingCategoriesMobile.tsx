@@ -16,7 +16,7 @@ const trendingCategories = [
 
 /** Simple SVG icons for categories */
 function CategoryIcon({ type }: { type: string }) {
-  const iconClass = "h-5 w-5 text-[#555]";
+  const iconClass = "h-5 w-5 text-[#555] dark:text-gray-300";
   switch (type) {
     case "drill":
       return (

@@ -26,12 +26,12 @@ const brands = [
 
 export function BrandShowcase() {
   return (
-    <section className="py-3 bg-[#F5F5F5]" data-section="Comprar por Marca">
+    <section className="py-3 bg-[#F5F5F5] dark:bg-[#111111]" data-section="Comprar por Marca">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="flex items-center gap-2 mb-2">
-          <ShoppingBag className="h-5 w-5 text-[#1A1A1A]" />
-          <h2 className="text-base font-bold text-[#1A1A1A] uppercase tracking-wide">
+          <ShoppingBag className="h-5 w-5 text-[#1A1A1A] dark:text-white" />
+          <h2 className="text-base font-bold text-[#1A1A1A] dark:text-white uppercase tracking-wide">
             Comprar por Marca
           </h2>
         </div>
