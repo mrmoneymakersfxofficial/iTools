@@ -52,10 +52,10 @@ export function TrendingCategoriesMobile() {
             <Link
               key={cat.slug + cat.name}
               href={`/categoria/${cat.slug}`}
-              className="group flex items-center gap-2.5 p-3 bg-white border border-[#E0E0E0] dark:border-[#333] rounded-lg hover:shadow-md hover:border-[#ccc] transition-all"
+              className="group flex items-center gap-2.5 p-3 bg-white dark:bg-[#1a1a1a] border border-[#E0E0E0] dark:border-[#333] rounded-lg hover:shadow-md hover:border-[#ccc] dark:hover:border-[#444] transition-all"
             >
               {/* Icon circle */}
-              <div className="shrink-0 w-10 h-10 rounded-full bg-[#F5F6F8] dark:bg-[#1a1a1a] flex items-center justify-center group-hover:bg-[#E8EDF2] transition-colors">
+              <div className="shrink-0 w-10 h-10 rounded-full bg-[#F5F6F8] dark:bg-[#2a2a2a] flex items-center justify-center group-hover:bg-[#E8EDF2] dark:group-hover:bg-[#333] transition-colors">
                 <CategoryIcon type={cat.icon} />
               </div>
 
@@ -65,7 +65,7 @@ export function TrendingCategoriesMobile() {
                   {cat.name}
                 </p>
                 <span className="inline-flex items-center gap-0.5 mt-0.5">
-                  <span className="text-[10px] text-[#0071C5] dark:text-[#3399FF] font-bold bg-[#E8F4FD] px-1.5 py-0.5 rounded-full">
+                  <span className="text-[10px] text-[#0071C5] dark:text-[#3399FF] font-bold bg-[#E8F4FD] dark:bg-[#0a2a44] px-1.5 py-0.5 rounded-full">
                     {cat.views}
                   </span>
                 </span>
