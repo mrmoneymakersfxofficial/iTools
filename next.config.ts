@@ -16,6 +16,7 @@ const nextConfig: NextConfig = {
     "next-sanity",
     "@sanity/vision",
     "@sanity/image-url",
+    "@sanity/presentation",
   ],
   async redirects() {
     return [
