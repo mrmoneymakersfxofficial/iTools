@@ -17,6 +17,15 @@ const nextConfig: NextConfig = {
     "@sanity/vision",
     "@sanity/image-url",
   ],
+  async redirects() {
+    return [
+      {
+        source: "/CMS",
+        destination: "/studio",
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;
