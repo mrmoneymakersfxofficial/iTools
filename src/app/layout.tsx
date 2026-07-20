@@ -9,6 +9,8 @@ import { ThemeProvider } from "next-themes";
 import { AuthProvider } from "@/components/providers/AuthProvider";
 import { BottomNav } from "@/components/layout/BottomNav";
 import { IToolsAssistant } from "@/components/layout/IToolsAssistant";
+import { draftMode } from "next/headers";
+import { SanityVisualEditing } from "@/components/sanity/SanityVisualEditing";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -85,11 +87,13 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const draft = await draftMode();
+
   return (
     <html lang="es" suppressHydrationWarning>
       <body className={`${inter.variable} font-sans antialiased bg-background text-foreground`}>
@@ -107,6 +111,7 @@ export default function RootLayout({
             <BottomNav />
             <IToolsAssistant />
             <Toaster />
+            {draft.isEnabled && <SanityVisualEditing />}
           </AuthProvider>
         </ThemeProvider>
       </body>

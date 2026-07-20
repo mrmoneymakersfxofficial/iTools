@@ -17,6 +17,8 @@ const nextConfig: NextConfig = {
     "@sanity/vision",
     "@sanity/image-url",
     "@sanity/presentation",
+    "@sanity/visual-editing",
+    "styled-components",
   ],
   async redirects() {
     return [
