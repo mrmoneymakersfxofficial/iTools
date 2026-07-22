@@ -61,7 +61,7 @@ export default defineConfig({
   projectId,
   dataset,
   apiVersion,
-  basePath: "/studio",
+  basePath: "/cms",
   plugins: [
     structureTool({ structure }),
     visionTool(),

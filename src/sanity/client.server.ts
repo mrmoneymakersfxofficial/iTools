@@ -8,6 +8,6 @@ export const serverClient = createClient({
   useCdn: false,
   token: process.env.SANITY_API_READ_TOKEN,
   stega: {
-    studioUrl: '/studio',
+    studioUrl: '/cms',
   },
 });
