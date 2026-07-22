@@ -1,5 +1,6 @@
 import { defineConfig } from "sanity";
 import { structureTool } from "sanity/structure";
+import { structure } from "./structure";
 import { visionTool } from "@sanity/vision";
 import { presentationTool, defineLocations } from "sanity/presentation";
 import { apiVersion, dataset, projectId } from "./env";
@@ -62,7 +63,7 @@ export default defineConfig({
   apiVersion,
   basePath: "/studio",
   plugins: [
-    structureTool(),
+    structureTool({ structure }),
     visionTool(),
     presentationTool({
       previewUrl: {

@@ -1,4 +1,4 @@
-import { client } from "@/sanity/client";
+import { sanityFetch } from "@/sanity/lib/sanityFetch";
 import {
   heroBannersQuery,
   brandPromoBannersQuery,
@@ -12,36 +12,36 @@ import {
 
 export async function fetchHomePageData() {
   try {
-    return await client.fetch(homePageQuery);
+    return await sanityFetch({ query: homePageQuery });
   } catch {
     return null;
   }
 }
 
 export async function fetchHeroBanners() {
-  try { return await client.fetch(heroBannersQuery); } catch { return []; }
+  try { return await sanityFetch({ query: heroBannersQuery }); } catch { return []; }
 }
 
 export async function fetchBrandPromoBanners() {
-  try { return await client.fetch(brandPromoBannersQuery); } catch { return []; }
+  try { return await sanityFetch({ query: brandPromoBannersQuery }); } catch { return []; }
 }
 
 export async function fetchBrandShowcase() {
-  try { return await client.fetch(brandShowcaseQuery); } catch { return []; }
+  try { return await sanityFetch({ query: brandShowcaseQuery }); } catch { return []; }
 }
 
 export async function fetchTrendingCategories() {
-  try { return await client.fetch(trendingCategoriesQuery); } catch { return []; }
+  try { return await sanityFetch({ query: trendingCategoriesQuery }); } catch { return []; }
 }
 
 export async function fetchGiveawayBanner() {
-  try { return await client.fetch(giveawayBannerQuery); } catch { return null; }
+  try { return await sanityFetch({ query: giveawayBannerQuery }); } catch { return null; }
 }
 
 export async function fetchPromoBanners() {
-  try { return await client.fetch(promoBannersQuery); } catch { return []; }
+  try { return await sanityFetch({ query: promoBannersQuery }); } catch { return []; }
 }
 
 export async function fetchSectionHeaders() {
-  try { return await client.fetch(sectionHeadersQuery); } catch { return []; }
+  try { return await sanityFetch({ query: sectionHeadersQuery }); } catch { return []; }
 }

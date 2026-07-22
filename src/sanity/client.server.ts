@@ -7,4 +7,7 @@ export const serverClient = createClient({
   apiVersion,
   useCdn: false,
   token: process.env.SANITY_API_READ_TOKEN,
+  stega: {
+    studioUrl: '/studio',
+  },
 });
