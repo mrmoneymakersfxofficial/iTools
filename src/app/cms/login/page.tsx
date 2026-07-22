@@ -22,7 +22,7 @@ export default function StudioLoginPage() {
       });
 
       if (res.ok) {
-        router.push("/studio");
+        router.push("/cms");
       } else {
         setError("Contraseña incorrecta");
       }
