@@ -23,10 +23,15 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       {
-        source: "/CMS",
-        destination: "/studio",
+        source: "/studio/:path*",
+        destination: "/cms/:path*",
         permanent: true,
       },
+      {
+        source: "/studio",
+        destination: "/cms",
+        permanent: true,
+      }
     ];
   },
 };
