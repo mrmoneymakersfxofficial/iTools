@@ -1,5 +1,6 @@
 import { draftMode } from "next/headers";
 import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -7,7 +8,10 @@ export async function GET(request: Request) {
 
   const envSecret = process.env.SANITY_REVALIDATE_SECRET || "itools2024";
 
-  if (secret !== envSecret) {
+  const cookieStore = await cookies();
+  const hasAuthCookie = cookieStore.get("SANITY_STUDIO_AUTH")?.value === "1";
+
+  if (secret !== envSecret && !hasAuthCookie) {
     return new Response("Invalid secret", { status: 401 });
   }
 
