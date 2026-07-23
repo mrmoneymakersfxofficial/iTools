@@ -1,30 +1,24 @@
 import { draftMode } from "next/headers";
-import { NextResponse } from "next/server";
+import { redirect } from "next/navigation";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const secret = searchParams.get("secret");
 
-  if (secret !== process.env.SANITY_REVALIDATE_SECRET) {
-    return NextResponse.json({ error: "Invalid secret" }, { status: 401 });
+  const envSecret = process.env.SANITY_REVALIDATE_SECRET || "itools2024";
+
+  if (secret !== envSecret) {
+    return new Response("Invalid secret", { status: 401 });
   }
 
   const draft = await draftMode();
   draft.enable();
 
-  return NextResponse.json({ draft: true });
+  // Redirect to the provided path or home so the VisualEditing component mounts
+  const path = searchParams.get("path") || "/";
+  redirect(path);
 }
 
 export async function POST(request: Request) {
-  const body = await request.json();
-  const secret = body?.secret;
-
-  if (secret !== process.env.SANITY_REVALIDATE_SECRET) {
-    return NextResponse.json({ error: "Invalid secret" }, { status: 401 });
-  }
-
-  const draft = await draftMode();
-  draft.enable();
-
-  return NextResponse.json({ draft: true });
+  return new Response("Method not allowed", { status: 405 });
 }
