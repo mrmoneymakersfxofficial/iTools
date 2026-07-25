@@ -53,6 +53,27 @@ export const homeLocations = {
       locations: [{ title: "Inicio", href: locationUrl("/") }],
     }),
   }),
+  homeSettings: defineLocations({
+    message: "Configuración de la página de inicio",
+    resolve: (doc) => ({
+      locations: [{ title: "Inicio", href: locationUrl("/") }],
+    }),
+  }),
+  product: defineLocations({
+    message: "Este producto aparece en la página de inicio o en su página individual",
+    resolve: (doc) => ({
+      locations: [
+        { title: "Inicio", href: locationUrl("/") },
+        { title: "Ver Producto", href: locationUrl(`/producto/${doc?.slug?.current || ""}`) }
+      ],
+    }),
+  }),
+  category: defineLocations({
+    message: "Esta categoría aparece en la página de inicio",
+    resolve: (doc) => ({
+      locations: [{ title: "Inicio", href: locationUrl("/") }],
+    }),
+  }),
 };
 
 export default defineConfig({
