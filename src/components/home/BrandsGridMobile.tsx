@@ -2,28 +2,11 @@
 import Link from "next/link";
 import { ShoppingBag, ChevronRight } from "lucide-react";
 
-const brands = [
-  { name: "Milwaukee",  slug: "milwaukee",  logo: "/brands/milwaukee.webp" },
-  { name: "BOSCH",      slug: "bosch",      logo: "/brands/bosch.webp" },
-  { name: "DEWALT",     slug: "dewalt",     logo: "/brands/dewalt.webp" },
-  { name: "MAKITA",     slug: "makita",     logo: "/brands/makita.webp" },
-  { name: "STANLEY",    slug: "stanley",    logo: "/brands/stanley.webp" },
-  { name: "INGCO",      slug: "ingco",      logo: "/brands/ingco.webp" },
-  { name: "TRUPER",     slug: "truper",     logo: "/brands/truper.webp" },
-  { name: "TOTAL",      slug: "total",      logo: "/brands/total.webp" },
-  { name: "TOPTUL",     slug: "toptul",     logo: "/brands/toptul.webp" },
-  { name: "DONG CHENG", slug: "dong-cheng", logo: "/brands/dong-cheng.webp" },
-  { name: "KAMASA",     slug: "kamasa",     logo: "/brands/kamasa.webp" },
-  { name: "BAHCO",      slug: "bahco",      logo: "/brands/bahco.webp" },
-  { name: "TRAMONTINA", slug: "tramontina", logo: "/brands/tramontina.webp" },
-  { name: "WAGNER",     slug: "wagner",     logo: "/brands/wagner.webp" },
-  { name: "SATA",       slug: "sata",       logo: "/brands/sata.webp" },
-  { name: "EMTOP",      slug: "emtop",      logo: "/brands/emtop.webp" },
-  { name: "DCA",        slug: "dca",        logo: "/brands/dca.webp" },
-  { name: "KAILI",      slug: "kaili",      logo: "/brands/kaili.webp" },
-];
+export function BrandsGridMobile({ brands }: { brands: any[] }) {
+  const safeBrands = brands || [];
 
-export function BrandsGridMobile() {
+  if (safeBrands.length === 0) return null;
+
   return (
     <section className="bg-[#F5F5F5] dark:bg-[#111111] py-2 lg:hidden" data-section="Comprar por Marca">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
@@ -49,19 +32,23 @@ export function BrandsGridMobile() {
           className="flex gap-px overflow-x-auto pb-0.5"
           style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
         >
-          {brands.map((brand) => (
+          {safeBrands.map((brand) => (
             <Link
-              key={brand.slug}
-              href={`/marca/${brand.slug}`}
+              key={brand._id || brand.slug}
+              href={`/marca/${brand.slug || "#"}`}
               className="shrink-0 w-[110px] sm:w-[120px] flex items-center justify-center h-[72px] transition-opacity active:opacity-70"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={brand.logo}
-                alt={brand.name}
-                className="max-h-[68px] w-auto max-w-full object-contain rounded-lg"
-                loading="lazy"
-              />
+              {brand.logo?.asset?.url ? (
+                <img
+                  src={brand.logo.asset.url}
+                  alt={brand.name}
+                  className="max-h-[68px] w-auto max-w-full object-contain rounded-lg"
+                  loading="lazy"
+                />
+              ) : (
+                <span className="text-xs font-bold text-gray-500">{brand.name}</span>
+              )}
             </Link>
           ))}
         </nav>

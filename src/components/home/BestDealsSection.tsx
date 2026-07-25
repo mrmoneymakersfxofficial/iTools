@@ -2,24 +2,18 @@
 import { Flame, CircleArrowRight } from "lucide-react";
 import { HorizontalScroll } from "@/components/home/HorizontalScroll";
 
-const dealTiles = [
-  { brand: "BOSCH", brandColor: "#1e4b8f", title: "Batería de 18 V de regalo", subtitle: "Consigue una batería GRATIS con la compra de determinados kits de herramientas BOSCH.", href: "/marca/bosch" },
-  { brand: "MILWAUKEE", brandColor: "#c61010", title: "Herramienta gratuita de elección", subtitle: "Con la compra de kits Milwaukee M18 seleccionados.", href: "/marca/milwaukee" },
-  { brand: "DEWALT", brandColor: "#e6a817", textColor: "#1A1A1A", title: "Herramienta gratuita por nuestra cuenta", subtitle: "Con kit de batería DEWALT 20V MAX XR seleccionado.", href: "/marca/dewalt" },
-  { brand: "MAKITA", brandColor: "#0077C8", title: "18V LXT — 15% adicional", subtitle: "15% extra en herramientas Makita 18V.", href: "/marca/makita" },
-  { brand: "STANLEY", brandColor: "#E35205", title: "Envío Gratis en Manuales", subtitle: "Herramientas manuales Stanley envío gratis.", href: "/categoria/herramientas-manuales" },
-  { brand: "3M", brandColor: "#CC3300", title: "Seguridad — 10% extra", subtitle: "EPP 3M con 10% de descuento adicional.", href: "/categoria/equipos-de-proteccion" },
-];
-
-function DealCard({ tile }: { tile: typeof dealTiles[0] }) {
+function DealCard({ tile }: { tile: any }) {
   const textCol = tile.textColor || "#FFFFFF";
   return (
     <a
-      href={tile.href}
+      href={tile.href || "#"}
       className="group relative flex-shrink-0 w-[200px] sm:w-[260px] h-[260px] sm:h-[300px] overflow-hidden rounded-lg snap-start transition-shadow hover:shadow-lg"
     >
       {/* Brand color background */}
-      <div className="absolute inset-0" style={{ backgroundColor: tile.brandColor }} />
+      <div className="absolute inset-0" style={{ backgroundColor: tile.brandColor || "#000" }} />
+      {tile.image?.asset?.url && (
+        <img src={tile.image.asset.url} alt="" className="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:scale-105 transition-transform duration-500" />
+      )}
 
       {/* Dark gradient at bottom */}
       <div
@@ -68,7 +62,11 @@ function DealCard({ tile }: { tile: typeof dealTiles[0] }) {
   );
 }
 
-export function BestDealsSection() {
+export function BestDealsSection({ tiles }: { tiles: any[] }) {
+  const safeTiles = tiles || [];
+
+  if (safeTiles.length === 0) return null;
+
   return (
     <section className="bg-white dark:bg-[#111111] py-2.5 md:py-3" data-section="Las Mejores Ofertas de Hoy">
       <div className="mx-auto max-w-7xl px-2.5 sm:px-4 lg:px-8">
@@ -82,21 +80,24 @@ export function BestDealsSection() {
         {/* Mobile: horizontal scroll tall cards */}
         <div className="lg:hidden">
           <HorizontalScroll>
-            {dealTiles.map((tile) => (
-              <DealCard key={tile.brand} tile={tile} />
+            {safeTiles.map((tile) => (
+              <DealCard key={tile._id} tile={tile} />
             ))}
           </HorizontalScroll>
         </div>
 
         {/* Desktop: 3-col grid */}
         <div className="hidden lg:grid lg:grid-cols-3 gap-2.5">
-          {dealTiles.slice(0, 6).map((tile) => (
+          {safeTiles.slice(0, 6).map((tile) => (
             <a
-              key={tile.brand}
-              href={tile.href}
+              key={tile._id}
+              href={tile.href || "#"}
               className="group relative overflow-hidden rounded-lg h-[200px] transition-shadow hover:shadow-lg"
             >
-              <div className="absolute inset-0" style={{ backgroundColor: tile.brandColor }} />
+              <div className="absolute inset-0" style={{ backgroundColor: tile.brandColor || "#000" }} />
+              {tile.image?.asset?.url && (
+                <img src={tile.image.asset.url} alt="" className="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:scale-105 transition-transform duration-500" />
+              )}
               <div
                 className="absolute inset-0"
                 style={{
