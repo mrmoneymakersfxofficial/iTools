@@ -8,7 +8,6 @@ import { Badge } from "@/components/ui/badge";
 import { useCartStore } from "@/stores/cart-store";
 import { useWishlistStore } from "@/stores/wishlist-store";
 import { useQuickViewStore } from "@/stores/quickview-store";
-import type { Product } from "@/types";
 
 function formatPrice(price: number): string {
   return `S/ ${price.toLocaleString("es-PE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
@@ -22,20 +21,20 @@ function StarRating({ rating, count }: { rating: number; count: number }) {
           <Star
             key={star}
             className={`h-3.5 w-3.5 ${
-              star <= Math.round(rating)
+              star <= Math.round(rating || 0)
                 ? "fill-amber-400 text-amber-400"
                 : "fill-gray-200 text-gray-200 dark:fill-gray-600 dark:text-gray-600"
             }`}
           />
         ))}
       </div>
-      <span className="text-xs text-muted-foreground">({count})</span>
+      <span className="text-xs text-muted-foreground">({count || 0})</span>
     </div>
   );
 }
 
 interface ProductCardProps {
-  product: Product;
+  product: any;
   index?: number;
   /** If provided, clicking the card opens the quick view panel instead of navigating */
   quickView?: boolean;
@@ -47,11 +46,25 @@ export function ProductCard({ product, index = 0, quickView, quickViewColor }: P
   const addToCart = useCartStore((s) => s.addItem);
   const { toggleItem, isWishlisted } = useWishlistStore();
   const openQuickView = useQuickViewStore((s) => s.openQuickView);
-  const wishlisted = isWishlisted(product.id);
+  
+  const id = product._id || product.id;
+  const wishlisted = isWishlisted(id);
 
-  const discount = product.comparePrice
-    ? Math.round(((product.comparePrice - product.price) / product.comparePrice) * 100)
+  const price = product.price || 0;
+  const comparePrice = product.salePrice ? product.price : (product.comparePrice || null);
+  const displayPrice = product.salePrice || product.price || 0;
+
+  const discount = comparePrice
+    ? Math.round(((comparePrice - displayPrice) / comparePrice) * 100)
     : 0;
+
+  // Adapt for useCartStore which expects id, price, name, etc.
+  const storeProduct = {
+    ...product,
+    id,
+    price: displayPrice,
+    comparePrice,
+  };
 
   return (
     <motion.article
@@ -64,7 +77,7 @@ export function ProductCard({ product, index = 0, quickView, quickViewColor }: P
       {/* Clickable overlay for entire card */}
       {quickView ? (
         <button
-          onClick={() => openQuickView(product, quickViewColor)}
+          onClick={() => openQuickView(storeProduct, quickViewColor)}
           className="absolute inset-0 z-[5] cursor-pointer"
           aria-label={`Ver ${product.name}`}
         />
@@ -83,6 +96,11 @@ export function ProductCard({ product, index = 0, quickView, quickViewColor }: P
             -{discount}%
           </Badge>
         )}
+        {product.discountBadge && (
+          <Badge className="bg-itools-dark text-white border-0 text-[10px] px-2 py-0.5">
+            {product.discountBadge}
+          </Badge>
+        )}
         {product.isNewArrival && (
           <Badge className="bg-itools-dark text-white border-0 text-[10px] px-2 py-0.5">
             NUEVO
@@ -93,7 +111,7 @@ export function ProductCard({ product, index = 0, quickView, quickViewColor }: P
       {/* Wishlist button */}
       <button
         type="button"
-        onClick={() => toggleItem(product.id)}
+        onClick={() => toggleItem(id)}
         className="absolute top-2 right-2 z-[10] h-8 w-8 rounded-full bg-white/90 dark:bg-[#1a1a1a]/90 backdrop-blur-sm flex items-center justify-center shadow-sm hover:bg-white transition-colors"
         aria-label={wishlisted ? "Quitar de favoritos" : "Añadir a favoritos"}
       >
@@ -107,28 +125,20 @@ export function ProductCard({ product, index = 0, quickView, quickViewColor }: P
       {/* Image area */}
       <div className="relative aspect-square bg-[#F9FAFB] dark:bg-[#222] flex items-center justify-center p-6 overflow-hidden shrink-0">
         <div className="absolute inset-0 bg-gradient-to-b from-transparent to-gray-100/50 dark:to-gray-800/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-        <Wrench className="h-16 w-16 text-gray-300 dark:text-gray-500 group-hover:scale-110 transition-transform duration-300" />
+        
+        {product.images?.[0] || product.image?.asset?.url ? (
+          <img src={product.images?.[0] || product.image?.asset?.url} alt={product.name} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+        ) : (
+          <Wrench className="h-16 w-16 text-gray-300 dark:text-gray-500 group-hover:scale-110 transition-transform duration-300" />
+        )}
 
         {/* Brand label */}
         {product.brand && (
           <div className="absolute bottom-2 left-2">
             <span
-              className="text-[10px] px-2 py-0.5 rounded-sm text-white"
-              style={{
-                backgroundColor:
-                  product.brand.slug === "milwaukee"
-                    ? "#D1001C"
-                    : product.brand.slug === "dewalt"
-                    ? "#FFD700"
-                    : product.brand.slug === "bosch"
-                    ? "#005691"
-                    : product.brand.slug === "makita"
-                    ? "#0077C8"
-                    : "#555",
-                color: product.brand.slug === "dewalt" ? "#1A1A2E" : "#FFFFFF",
-              }}
+              className="text-[10px] px-2 py-0.5 rounded-sm text-white bg-[#555]"
             >
-              {product.brand.name}
+              {typeof product.brand === "string" ? product.brand : product.brand.name}
             </span>
           </div>
         )}
@@ -140,27 +150,29 @@ export function ProductCard({ product, index = 0, quickView, quickViewColor }: P
           {product.name}
         </h3>
 
-        <p className="text-xs text-muted-foreground dark:text-gray-400 line-clamp-1 mb-2 hidden sm:block">
-          {product.shortDescription}
-        </p>
+        {product.shortDescription && (
+          <p className="text-xs text-muted-foreground dark:text-gray-400 line-clamp-1 mb-2 hidden sm:block">
+            {product.shortDescription}
+          </p>
+        )}
 
-        <StarRating rating={product.rating} count={product.reviewCount} />
+        <StarRating rating={product.rating || 0} count={product.reviewCount || product.reviews || 0} />
 
         {/* Price + Add to Cart */}
         <div className="mt-auto pt-3 flex items-end justify-between gap-2">
           <div className="flex flex-col">
-            {product.comparePrice && (
+            {comparePrice && (
               <span className="text-xs text-muted-foreground line-through">
-                {formatPrice(product.comparePrice)}
+                {formatPrice(comparePrice)}
               </span>
             )}
             <span className="text-base sm:text-lg font-impact text-itools-red">
-              {formatPrice(product.price)}
+              {formatPrice(displayPrice)}
             </span>
           </div>
           <Button
             size="sm"
-            onClick={() => addToCart(product)}
+            onClick={() => addToCart(storeProduct)}
             className="bg-itools-red hover:bg-itools-red-dark text-white h-9 px-3 text-xs font-impact shrink-0 transition-colors relative z-[10]"
           >
             <ShoppingCart className="h-3.5 w-3.5 mr-1.5" />

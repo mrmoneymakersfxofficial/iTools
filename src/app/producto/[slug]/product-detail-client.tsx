@@ -179,10 +179,10 @@ export function ProductDetailClient({ product, relatedProducts }: { product: Pro
               </div>
 
               {/* Stock */}
-              {product.stock > 0 ? (
+              {(product.stock ?? 10) > 0 ? (
                 <div className="flex items-center gap-2">
                   <div className="h-2.5 w-2.5 rounded-full bg-green-500" />
-                  <span className="text-sm text-green-700 dark:text-green-400 font-medium">En Stock — {product.stock} unidades disponibles</span>
+                  <span className="text-sm text-green-700 dark:text-green-400 font-medium">En Stock — {product.stock ?? 10} unidades disponibles</span>
                 </div>
               ) : (
                 <Badge variant="destructive" className="w-fit">Agotado</Badge>
@@ -321,9 +321,9 @@ export function ProductDetailClient({ product, relatedProducts }: { product: Pro
             className="bg-white dark:bg-[#111111] rounded-b-xl border border-t-0 dark:border-[#333] p-6"
           >
             {activeTab === "specs" && (
-              Object.keys(product.specs).length > 0 ? (
+              Object.keys(product.specs || {}).length > 0 ? (
                 <div className="divide-y divide-border">
-                  {Object.entries(product.specs).map(([key, value]) => (
+                  {Object.entries(product.specs || {}).map(([key, value]) => (
                     <div key={key} className="flex justify-between py-3">
                       <span className="text-sm text-muted-foreground">{key}</span>
                       <span className="text-sm font-medium text-foreground">{value}</span>

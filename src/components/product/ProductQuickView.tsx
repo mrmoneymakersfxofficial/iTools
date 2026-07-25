@@ -220,10 +220,10 @@ export function ProductQuickView() {
                   <span className="text-[#666]">
                     SKU: <span className="font-mono text-[#999]">{product.sku}</span>
                   </span>
-                  {product.stock > 0 ? (
+                  {(product.stock ?? 10) > 0 ? (
                     <span className="flex items-center gap-1 text-emerald-400">
                       <div className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-                      En Stock ({product.stock})
+                      En Stock ({product.stock ?? 10})
                     </span>
                   ) : (
                     <span className="text-red-400 font-medium">Agotado</span>
@@ -288,9 +288,9 @@ export function ProductQuickView() {
 
                 {activeSection === "specs" && (
                   <div className="py-2">
-                    {Object.keys(product.specs).length > 0 ? (
+                    {Object.keys(product.specs || {}).length > 0 ? (
                       <div className="space-y-0 divide-y divide-[#1A1A1A]">
-                        {Object.entries(product.specs).map(([key, value]) => (
+                        {Object.entries(product.specs || {}).map(([key, value]) => (
                           <div key={key} className="flex justify-between py-2.5">
                             <span className="text-xs text-[#888]">{key}</span>
                             <span className="text-xs text-[#CCC] font-medium">{value}</span>
