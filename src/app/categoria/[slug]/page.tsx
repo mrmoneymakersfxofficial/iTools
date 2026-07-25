@@ -1,21 +1,17 @@
 import { notFound } from "next/navigation";
-import { getCategoryBySlug, getProductsByCategorySlug, categories } from "@/lib/data";
 import { CategoryPageClient } from "./category-page-client";
+import { fetchCategoryBySlug, fetchProductsByCategorySlug, fetchAllCategorySlugs } from "@/lib/sanity/fetch-category";
 
 const SITE_URL = "https://itools.pe";
 
 export async function generateStaticParams() {
-  const allSlugs: { slug: string }[] = [];
-  for (const cat of categories) {
-    allSlugs.push({ slug: cat.slug });
-    cat.children?.forEach((child) => allSlugs.push({ slug: child.slug }));
-  }
-  return allSlugs;
+  const categories = await fetchAllCategorySlugs();
+  return categories.map((cat: any) => ({ slug: cat.slug }));
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const category = getCategoryBySlug(slug);
+  const category = await fetchCategoryBySlug(slug);
   if (!category) return { title: "Categoría no encontrada | iTools Perú" };
 
   return {
@@ -49,11 +45,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function CategoryPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const category = getCategoryBySlug(slug);
+  const category = await fetchCategoryBySlug(slug);
 
   if (!category) notFound();
 
-  const products = getProductsByCategorySlug(slug);
+  const products = await fetchProductsByCategorySlug(slug);
 
   return <CategoryPageClient category={category} products={products} />;
 }

@@ -1,16 +1,18 @@
 import { notFound } from "next/navigation";
-import { getBrandBySlug, getProductsByBrandSlug, getBrandTheme, brands } from "@/lib/data";
+import { getBrandTheme } from "@/lib/data";
+import { fetchBrandBySlug, fetchProductsByBrandSlug, fetchAllBrandSlugs } from "@/lib/sanity/fetch-brand";
 import { BrandPageClient } from "./brand-page-client";
 
 const SITE_URL = "https://itools.pe";
 
 export async function generateStaticParams() {
-  return brands.map((b) => ({ slug: b.slug }));
+  const brands = await fetchAllBrandSlugs();
+  return brands.map((b: any) => ({ slug: b.slug }));
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const brand = getBrandBySlug(slug);
+  const brand = await fetchBrandBySlug(slug);
   if (!brand) return { title: "Marca no encontrada | iTools Perú" };
 
   return {
@@ -30,10 +32,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function BrandPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const brand = getBrandBySlug(slug);
+  const brand = await fetchBrandBySlug(slug);
   if (!brand) notFound();
 
-  const products = getProductsByBrandSlug(slug);
+  const products = await fetchProductsByBrandSlug(slug);
   const theme = getBrandTheme(slug);
 
   return <BrandPageClient brand={brand} products={products} theme={theme} />;
