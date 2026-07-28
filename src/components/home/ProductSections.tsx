@@ -1,12 +1,11 @@
 "use client";
 
 import { ProductCard } from "@/components/product/ProductCard";
-import { getOnSaleProducts, getFeaturedProducts, getNewArrivals } from "@/lib/data";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-export function DealsSection() {
-  const deals = getOnSaleProducts().slice(0, 8);
+export function DealsSection({ products }: { products: any[] }) {
+  const deals = products || [];
 
   return (
     <section className="py-10 md:py-14 bg-white dark:bg-[#111111]" aria-labelledby="deals-heading">
@@ -39,7 +38,7 @@ export function DealsSection() {
         {/* Product Grid */}
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 md:gap-4 lg:gap-5">
           {deals.map((product, i) => (
-            <ProductCard key={product.id} product={product} index={i} />
+            <ProductCard key={product._id} product={product} index={i} />
           ))}
         </div>
       </div>
@@ -47,8 +46,8 @@ export function DealsSection() {
   );
 }
 
-export function FeaturedSection() {
-  const featured = getFeaturedProducts().slice(0, 8);
+export function FeaturedSection({ products }: { products: any[] }) {
+  const featured = products || [];
 
   return (
     <section className="py-10 md:py-14 bg-white dark:bg-[#111111]" aria-labelledby="featured-heading">
@@ -79,7 +78,7 @@ export function FeaturedSection() {
 
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 md:gap-4 lg:gap-5">
           {featured.map((product, i) => (
-            <ProductCard key={product.id} product={product} index={i} />
+            <ProductCard key={product._id} product={product} index={i} />
           ))}
         </div>
       </div>
@@ -87,8 +86,8 @@ export function FeaturedSection() {
   );
 }
 
-export function NewArrivalsSection() {
-  const arrivals = getNewArrivals();
+export function NewArrivalsSection({ products }: { products: any[] }) {
+  const arrivals = products || [];
 
   return (
     <section className="py-10 md:py-14 bg-white dark:bg-[#111111]" aria-labelledby="new-arrivals-heading">
@@ -119,7 +118,7 @@ export function NewArrivalsSection() {
 
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-4 lg:gap-5">
           {arrivals.map((product, i) => (
-            <ProductCard key={product.id} product={product} index={i} />
+            <ProductCard key={product._id} product={product} index={i} />
           ))}
         </div>
       </div>

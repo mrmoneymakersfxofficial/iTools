@@ -14,6 +14,7 @@ export default defineType({
       options: { hotspot: true },
       validation: (r) => r.required(),
     }),
+    defineField({ name: "showInGrid", title: "Mostrar en Grid Principal Móvil", type: "boolean", initialValue: false }),
     defineField({ name: "order", title: "Orden", type: "number", validation: (r) => r.required().min(0) }),
     defineField({ name: "isActive", title: "Activo", type: "boolean", initialValue: true }),
   ],

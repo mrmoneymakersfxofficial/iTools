@@ -74,6 +74,24 @@ export const homeLocations = {
       locations: [{ title: "Inicio", href: locationUrl("/") }],
     }),
   }),
+  dealTile: defineLocations({
+    message: "Esta oferta aparece en la página de inicio",
+    resolve: (doc) => ({
+      locations: [{ title: "Inicio", href: locationUrl("/") }],
+    }),
+  }),
+  headerConfig: defineLocations({
+    message: "Configuración global del Header",
+    resolve: (doc) => ({
+      locations: [{ title: "Inicio", href: locationUrl("/") }],
+    }),
+  }),
+  footerConfig: defineLocations({
+    message: "Configuración global del Footer",
+    resolve: (doc) => ({
+      locations: [{ title: "Inicio", href: locationUrl("/") }],
+    }),
+  }),
 };
 
 export default defineConfig({

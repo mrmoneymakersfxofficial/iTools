@@ -3,7 +3,7 @@ import Link from "next/link";
 import { trendingProducts } from "@/app/data/mock";
 
 function formatPrice(n: number): string {
-  return `S/ ${n.toLocaleString("es-PE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  return `S/ ${n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
 // Pick the 4 products that have discounts or are most deal-worthy

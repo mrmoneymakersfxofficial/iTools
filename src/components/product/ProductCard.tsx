@@ -10,7 +10,7 @@ import { useWishlistStore } from "@/stores/wishlist-store";
 import { useQuickViewStore } from "@/stores/quickview-store";
 
 function formatPrice(price: number): string {
-  return `S/ ${price.toLocaleString("es-PE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  return `S/ ${price.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
 function StarRating({ rating, count }: { rating: number; count: number }) {

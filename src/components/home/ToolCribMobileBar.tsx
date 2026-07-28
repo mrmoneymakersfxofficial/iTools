@@ -3,15 +3,12 @@
 import Link from "next/link";
 import { Wrench, ChevronRight } from "lucide-react";
 
-/**
- * Mobile: Thin horizontal "Tool Crib of the North" banner card.
- * Matches Acme's mobile Tool Crib bar (image 2).
- * Clickable to products page.
- */
-export function ToolCribMobileBar() {
+export function ToolCribMobileBar({ settings }: { settings: any }) {
+  if (!settings) return null;
+
   return (
     <Link
-      href="/categoria/herramientas-electricas"
+      href={settings.toolCribLink || "/categoria/herramientas-electricas"}
       className="block mx-2.5 my-2.5 bg-white dark:bg-[#111111] border border-[#E0E0E0] dark:border-[#333] rounded-lg overflow-hidden hover:shadow-md transition-shadow"
       data-section="Tool Crib Móvil"
     >
@@ -23,7 +20,7 @@ export function ToolCribMobileBar() {
           </div>
           <div>
             <h3 className="text-sm font-bold text-[#1A1A1A] dark:text-white uppercase tracking-wide leading-tight">
-              Tool Crib
+              {settings.toolCribTitle || "Tool Crib"}
             </h3>
             <p className="text-[10px] text-[#999] dark:text-gray-400 uppercase tracking-wider">
               of the North

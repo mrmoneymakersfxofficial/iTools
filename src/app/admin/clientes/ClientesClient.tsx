@@ -24,7 +24,7 @@ interface CustomerAddress {
 }
 
 export function formatSoles(n: number) {
-  return `S/ ${n.toLocaleString("es-PE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  return `S/ ${n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
 const STATUS_LABELS: Record<string, string> = {

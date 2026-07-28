@@ -1,21 +1,25 @@
 "use client";
 import Link from "next/link";
 import { Wrench, Star, TrendingUp } from "lucide-react";
-import { products } from "@/lib/data";
-import type { Product } from "@/types";
 
 function formatPrice(price: number): string {
-  return `S/ ${price.toLocaleString("es-PE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  return `S/ ${price.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
-function SidebarProductCard({ product }: { product: Product }) {
-  const discount = product.comparePrice
-    ? Math.round(((product.comparePrice - product.price) / product.comparePrice) * 100)
-    : 0;
+function SidebarProductCard({ product }: { product: any }) {
+  const price = product.price || 0;
+  const comparePrice = product.salePrice ? product.price : (product.comparePrice || null);
+  const displayPrice = product.salePrice || product.price || 0;
+  const discount = comparePrice ? Math.round(((comparePrice - displayPrice) / comparePrice) * 100) : 0;
+  
   return (
     <Link href={`/producto/${product.slug}`} className="group flex gap-3 p-3 hover:bg-[#F5F6F8] dark:bg-[#1a1a1a] transition-colors border-b border-[#F0F0F0] last:border-b-0">
-      <div className="shrink-0 w-16 h-16 rounded bg-[#F5F5F5] dark:bg-[#1a1a1a] flex items-center justify-center border border-[#E8E8E8] dark:border-[#333]">
-        <Wrench className="h-7 w-7 text-gray-300 dark:text-gray-500" />
+      <div className="relative shrink-0 w-16 h-16 rounded bg-[#F5F5F5] dark:bg-[#1a1a1a] flex items-center justify-center border border-[#E8E8E8] dark:border-[#333]">
+        {product.image?.asset?.url ? (
+          <img src={product.image.asset.url} alt={product.name} className="absolute inset-0 w-full h-full object-cover rounded" />
+        ) : (
+          <Wrench className="h-7 w-7 text-gray-300 dark:text-gray-500" />
+        )}
       </div>
       <div className="flex-1 min-w-0">
         {discount > 0 && (
@@ -25,22 +29,23 @@ function SidebarProductCard({ product }: { product: Product }) {
         <div className="flex items-center gap-1 mb-0.5">
           <div className="flex items-center">
             {[1, 2, 3, 4, 5].map((star) => (
-              <Star key={star} className={`h-2.5 w-2.5 ${star <= Math.round(product.rating) ? "fill-amber-400 text-amber-400" : "fill-gray-200 text-gray-200 dark:fill-gray-600 dark:text-gray-600"}`} />
+              <Star key={star} className={`h-2.5 w-2.5 ${star <= Math.round(product.rating || 0) ? "fill-amber-400 text-amber-400" : "fill-gray-200 text-gray-200 dark:fill-gray-600 dark:text-gray-600"}`} />
             ))}
           </div>
-          <span className="text-[10px] text-[#999] dark:text-gray-400">({product.reviewCount})</span>
+          <span className="text-[10px] text-[#999] dark:text-gray-400">({product.reviewCount || product.reviews || 0})</span>
         </div>
         <div className="flex items-center gap-2">
-          {product.comparePrice && <span className="text-[11px] text-[#999] dark:text-gray-400 line-through">{formatPrice(product.comparePrice)}</span>}
-          <span className="text-sm font-bold text-[#E60000]">{formatPrice(product.price)}</span>
+          {comparePrice && <span className="text-[11px] text-[#999] dark:text-gray-400 line-through">{formatPrice(comparePrice)}</span>}
+          <span className="text-sm font-bold text-[#E60000]">{formatPrice(displayPrice)}</span>
         </div>
       </div>
     </Link>
   );
 }
 
-export function ToolCribSidebar() {
-  const trendingProducts = products.filter((p) => p.isOnSale || p.isFeatured).slice(0, 7);
+export function ToolCribSidebar({ products }: { products: any[] }) {
+  const trendingProducts = (products || []).slice(0, 7);
+  if (trendingProducts.length === 0) return null;
   return (
     <aside className="bg-white dark:bg-[#111111] border border-[#E0E0E0] dark:border-[#333] rounded-lg overflow-hidden" data-section="Productos de Moda">
       <div className="px-4 py-3 border-b border-[#E0E0E0] dark:border-[#333]">
@@ -58,7 +63,7 @@ export function ToolCribSidebar() {
           <span className="text-xs font-bold text-[#00A651] uppercase tracking-wide">Productos de Moda</span>
         </div>
       </div>
-      <div>{trendingProducts.map((product) => (<SidebarProductCard key={product.id} product={product} />))}</div>
+      <div>{trendingProducts.map((product) => (<SidebarProductCard key={product._id} product={product} />))}</div>
     </aside>
   );
 }

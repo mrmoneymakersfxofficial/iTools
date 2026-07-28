@@ -15,56 +15,16 @@ interface BannerData {
   icon?: React.ReactNode;
 }
 
-/* ─── Banner data ─── */
-const BANNERS: BannerData[] = [
-  {
-    image: "/banners/hero/bosch-hero.webp",
-    title: "BOSCH",
-    subtitle: "Herramientas profesionales de alta rendimiento",
-    cta: "Ver productos Bosch",
-    link: "/marca/bosch",
-    bg: "linear-gradient(135deg, #1e4b8f 0%, #0d2e5c 100%)",
-    icon: <Wrench className="h-3.5 w-3.5 text-blue-300" />,
-  },
-  {
-    image: "/banners/hero/dewalt-hero.webp",
-    title: "DEWALT",
-    subtitle: "Garant\u00eda de potencia y durabilidad",
-    cta: "Ver productos DeWalt",
-    link: "/marca/dewalt",
-    bg: "linear-gradient(135deg, #e6a817 0%, #b8860b 100%)",
-    icon: <Wrench className="h-3.5 w-3.5 text-yellow-200" />,
-  },
-  {
-    image: "/banners/hero/milwaukee-hero.webp",
-    title: "MILWAUKEE",
-    subtitle: "Nada detiene a un Milwaukee",
-    cta: "Ver productos Milwaukee",
-    link: "/marca/milwaukee",
-    bg: "linear-gradient(135deg, #c61010 0%, #7a0a0a 100%)",
-    icon: <Wrench className="h-3.5 w-3.5 text-red-300" />,
-  },
-  {
-    image: "/banners/hero/milwaukee-hero-2.webp",
-    title: "MILWAUKEE M18 FUEL",
-    subtitle: "La l\u00ednea m\u00e1s potente del mercado",
-    cta: "Explorar M18 FUEL",
-    link: "/marca/milwaukee",
-    bg: "linear-gradient(135deg, #8B0000 0%, #500000 100%)",
-    icon: <Wrench className="h-3.5 w-3.5 text-red-200" />,
-  },
-];
-
-const INTERVAL_MS = 5000;
-
-/* ─── Component ─── */
-export function HeroCarousel() {
+export function HeroCarousel({ banners }: { banners: any[] }) {
   const [current, setCurrent] = useState(0);
   const [paused, setPaused] = useState(false);
   const [imgErrors, setImgErrors] = useState<Set<number>>(new Set());
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  const total = BANNERS.length;
+  const safeBanners = banners || [];
+  const total = safeBanners.length;
+
+  if (total === 0) return null;
 
   const go = useCallback(
     (dir: "prev" | "next") =>
@@ -92,7 +52,7 @@ export function HeroCarousel() {
     >
       {/* ── Slides ── */}
       <div className="relative h-[200px] md:h-[320px] lg:h-[400px]">
-        {BANNERS.map((b, i) => {
+        {safeBanners.map((b, i) => {
           const active = i === current;
           return (
             <Link
@@ -104,12 +64,12 @@ export function HeroCarousel() {
               aria-hidden={!active}
             >
               {/* Background image or gradient fallback */}
-              <div className="absolute inset-0" style={{ background: b.bg }} />
+              <div className="absolute inset-0" style={{ background: b.bgGradient || "#000" }} />
 
-              {!imgErrors.has(i) && (
+              {!imgErrors.has(i) && b.image?.asset?.url && (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
-                  src={b.image}
+                  src={b.image.asset.url}
                   alt={b.title}
                   className="absolute inset-0 w-full h-full object-cover"
                   loading={i === 0 ? "eager" : "lazy"}
@@ -179,7 +139,7 @@ export function HeroCarousel() {
 
       {/* ── Dot indicators ── */}
       <div className="absolute bottom-3 md:bottom-4 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2">
-        {BANNERS.map((_, i) => (
+        {safeBanners.map((_, i) => (
           <button
             key={i}
             onClick={() => setCurrent(i)}

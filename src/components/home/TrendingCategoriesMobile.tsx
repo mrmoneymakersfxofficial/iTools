@@ -2,39 +2,13 @@
 
 import Link from "next/link";
 import { Wrench, ChevronRight, TrendingUp } from "lucide-react";
+import * as LucideIcons from "lucide-react";
 
-const trendingCategories = [
-  { name: "Taladros", views: "18.8K", slug: "taladros", icon: "drill" },
-  { name: "Impactos y Atornilladores", views: "17.3K", slug: "atornilladores", icon: "impact" },
-  { name: "Herramientas Manuales", views: "16.0K", slug: "herramientas-manuales", icon: "wrench" },
-  { name: "Sierras", views: "12.0K", slug: "sierras", icon: "saw" },
-  { name: "Kits Combinados", views: "10.0K", slug: "herramientas-electricas", icon: "kit" },
-  { name: "Milwaukee M18", views: "8.6K", slug: "herramientas-electricas", icon: "m18" },
-  { name: "Milwaukee M12", views: "8.2K", slug: "herramientas-electricas", icon: "m12" },
-  { name: "Baterías y Cargadores", views: "7.0K", slug: "accesorios-herramientas", icon: "battery" },
-];
+export function TrendingCategoriesMobile({ categories }: { categories: any[] }) {
+  const safeCategories = categories || [];
 
-/** Simple SVG icons for categories */
-function CategoryIcon({ type }: { type: string }) {
-  const iconClass = "h-5 w-5 text-[#555] dark:text-gray-300";
-  switch (type) {
-    case "drill":
-      return (
-        <svg className={iconClass} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M14.121 14.121L19 19m-7-7l7-7m-7 7l-2.879 2.879M12 12L9.121 9.121m0 5.758a3 3 0 10-4.243 4.243 3 3 0 004.243-4.243zm0-5.758a3 3 0 10-4.243-4.243 3 3 0 004.243 4.243z" />
-        </svg>
-      );
-    default:
-      return <Wrench className={iconClass} />;
-  }
-}
+  if (safeCategories.length === 0) return null;
 
-/**
- * Mobile: "Categorías de Tendencia" in a 2-column grid.
- * Each card shows icon, category name, and view count.
- * Matches Acme's mobile trending categories layout (image 2).
- */
-export function TrendingCategoriesMobile() {
   return (
     <section className="bg-white dark:bg-[#111111] py-2.5 lg:hidden" data-section="Categorías de Tendencia Móvil">
       <div className="px-2.5">
@@ -48,33 +22,49 @@ export function TrendingCategoriesMobile() {
 
         {/* 2-column grid of category cards */}
         <div className="grid grid-cols-2 gap-2">
-          {trendingCategories.map((cat) => (
-            <Link
-              key={cat.slug + cat.name}
-              href={`/categoria/${cat.slug}`}
-              className="group flex items-center gap-2.5 p-3 bg-white dark:bg-[#1a1a1a] border border-[#E0E0E0] dark:border-[#333] rounded-lg hover:shadow-md hover:border-[#ccc] dark:hover:border-[#444] transition-all"
-            >
-              {/* Icon circle */}
-              <div className="shrink-0 w-10 h-10 rounded-full bg-[#F5F6F8] dark:bg-[#2a2a2a] flex items-center justify-center group-hover:bg-[#E8EDF2] dark:group-hover:bg-[#333] transition-colors">
-                <CategoryIcon type={cat.icon} />
-              </div>
+          {safeCategories.map((cat) => {
+            // Support both old iconType logic and new iconName (Lucide) logic
+            let Icon = Wrench;
+            if (cat.iconName && (LucideIcons as any)[cat.iconName]) {
+              Icon = (LucideIcons as any)[cat.iconName];
+            } else if (cat.iconType === "drill") {
+              Icon = (LucideIcons as any)["Drill"] || Wrench;
+            } else if (cat.iconType === "saw") {
+              Icon = (LucideIcons as any)["Disc"] || Wrench;
+            } else if (cat.iconType) {
+              Icon = (LucideIcons as any)["Settings"] || Wrench;
+            }
 
-              {/* Text */}
-              <div className="flex-1 min-w-0">
-                <p className="text-xs font-semibold text-[#333] dark:text-gray-200 group-hover:text-[#E35205] transition-colors leading-tight line-clamp-2">
-                  {cat.name}
-                </p>
-                <span className="inline-flex items-center gap-0.5 mt-0.5">
-                  <span className="text-[10px] text-[#0071C5] dark:text-[#3399FF] font-bold bg-[#E8F4FD] dark:bg-[#0a2a44] px-1.5 py-0.5 rounded-full">
-                    {cat.views}
-                  </span>
-                </span>
-              </div>
+            return (
+              <Link
+                key={cat._id}
+                href={`/categoria/${cat.slug}`}
+                className="group flex items-center gap-2.5 p-3 bg-white dark:bg-[#1a1a1a] border border-[#E0E0E0] dark:border-[#333] rounded-lg hover:shadow-md hover:border-[#ccc] dark:hover:border-[#444] transition-all"
+              >
+                {/* Icon circle */}
+                <div className="shrink-0 w-10 h-10 rounded-full bg-[#F5F6F8] dark:bg-[#2a2a2a] flex items-center justify-center group-hover:bg-[#E8EDF2] dark:group-hover:bg-[#333] transition-colors">
+                  <Icon className="h-5 w-5 text-[#555] dark:text-gray-300" />
+                </div>
 
-              {/* Arrow */}
-              <ChevronRight className="h-3.5 w-3.5 text-[#ccc] dark:text-gray-500 group-hover:text-[#E35205] shrink-0 transition-colors" />
-            </Link>
-          ))}
+                {/* Text */}
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs font-semibold text-[#333] dark:text-gray-200 group-hover:text-[#E35205] transition-colors leading-tight line-clamp-2">
+                    {cat.name}
+                  </p>
+                  {cat.viewCount && (
+                    <span className="inline-flex items-center gap-0.5 mt-0.5">
+                      <span className="text-[10px] text-[#0071C5] dark:text-[#3399FF] font-bold bg-[#E8F4FD] dark:bg-[#0a2a44] px-1.5 py-0.5 rounded-full">
+                        {cat.viewCount}
+                      </span>
+                    </span>
+                  )}
+                </div>
+
+                {/* Arrow */}
+                <ChevronRight className="h-3.5 w-3.5 text-[#ccc] dark:text-gray-500 group-hover:text-[#E35205] shrink-0 transition-colors" />
+              </Link>
+            );
+          })}
         </div>
       </div>
     </section>

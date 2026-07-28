@@ -5,7 +5,7 @@ import { Plus, Search, ChevronLeft, ChevronRight, Edit2, Trash2, ImageIcon } fro
 const PER_PAGE = 20;
 
 function formatSoles(n: number) {
-  return `S/ ${n.toLocaleString("es-PE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  return `S/ ${n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
 function parseImages(imagesJson: string): string[] {

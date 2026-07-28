@@ -5,108 +5,58 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { CircleArrowRight, Star } from "lucide-react";
 
-/**
- * Center column: Two small promo banners in a 2-column grid.
- * Uses shadcn Card + CardContent + Button.
- * Mobile: always grid-cols-2 (side-by-side, never stacked).
- * Tall vertical cards (portrait): h-[280px] mobile, h-[200px] tablet, h-[240px] desktop.
- * Each is a full clickable Link wrapping the Card.
- */
-export function CenterSmallBanners() {
+export function CenterSmallBanners({ banners }: { banners: any[] }) {
+  const safeBanners = banners || [];
+  
+  if (safeBanners.length === 0) return null;
+
   return (
     <div className="grid grid-cols-2 gap-2.5 md:gap-6">
-      {/* ─── EGO Banner (Teal) ─── */}
-      <Link href="/categoria/herramientas-electricas" className="block">
-        <Card className="relative overflow-hidden border-0 shadow-sm gap-0 py-0 rounded-xl h-full">
-          {/* Teal gradient background */}
-          <div
-            className="absolute inset-0"
-            style={{
-              background:
-                "linear-gradient(135deg, #0a4a3a 0%, #0d5c4a 40%, #11735a 100%)",
-            }}
-          />
-          <div className="absolute -bottom-8 -right-8 w-32 h-32 rounded-full bg-white/5" />
+      {safeBanners.map((banner, index) => (
+        <Link key={banner._id || index} href={banner.link || "#"} className="block">
+          <Card className="relative overflow-hidden border-0 shadow-sm gap-0 py-0 rounded-xl h-full">
+            {/* Gradient background */}
+            <div
+              className="absolute inset-0"
+              style={{ background: banner.bgGradient || "#000" }}
+            />
+            <div className="absolute -bottom-8 -right-8 w-32 h-32 rounded-full bg-white/5" />
+            
+            {/* Optional glow for second style */}
+            {index === 1 && (
+              <div className="absolute top-0 right-0 w-24 h-24 bg-amber-400/10 rounded-full blur-2xl" />
+            )}
 
-          <CardContent
-            className="relative z-10 flex h-[280px] flex-col justify-end items-start p-4 text-white md:h-[200px] lg:h-[240px]"
-          >
-            <div className="space-y-2 md:space-y-2 w-full">
-              <span className="font-impact text-2xl md:text-2xl lg:text-3xl tracking-wider opacity-90 block">
-                EGO
-              </span>
-              <p className="text-sm md:text-sm font-semibold leading-tight">
-                Compra m&aacute;s, por menos
-              </p>
-              <p className="text-xs md:text-xs leading-relaxed text-white/70">
-                Obt&eacute;n{" "}
-                <strong className="text-white">
-                  entre S/ 200 y S/ 400 de descuento
-                </strong>{" "}
-                en pedidos EGO de S/ 1,200 o m&aacute;s.
-              </p>
-              <Button
-                variant="secondary"
-                size="sm"
-                className="mt-2 md:mt-2 rounded-full text-[11px] md:text-xs font-semibold bg-white/15 hover:bg-white/25 text-white border border-white/20 shadow-sm transition-all hover:scale-105"
-                asChild
-              >
-                <span className="inline-flex items-center gap-1.5">
-                  Compra ahora
-                  <CircleArrowRight className="h-3 w-3" />
+            <CardContent
+              className="relative z-10 flex h-[280px] flex-col justify-end items-start p-4 text-white md:h-[200px] lg:h-[240px]"
+            >
+              <div className="space-y-2 md:space-y-2 w-full">
+                <span className="font-impact text-2xl md:text-2xl lg:text-3xl tracking-wider opacity-90 flex items-center gap-1.5 block">
+                  {index === 1 && <Star className="h-5 w-5 text-amber-300" />}
+                  {banner.title}
                 </span>
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      </Link>
-
-      {/* ─── FIRECRACKER / EXTRA20 Banner (Red-Orange) ─── */}
-      <Link href="/categoria/herramientas-electricas" className="block">
-        <Card className="relative overflow-hidden border-0 shadow-sm gap-0 py-0 rounded-xl h-full">
-          {/* Red-orange gradient background */}
-          <div
-            className="absolute inset-0"
-            style={{
-              background:
-                "linear-gradient(135deg, #8B1A00 0%, #A52000 30%, #CC3300 70%, #E35205 100%)",
-            }}
-          />
-          <div className="absolute -bottom-8 -right-8 w-32 h-32 rounded-full bg-white/5" />
-          <div className="absolute top-0 right-0 w-24 h-24 bg-amber-400/10 rounded-full blur-2xl" />
-
-          <CardContent
-            className="relative z-10 flex h-[280px] flex-col justify-end items-start p-4 text-white md:h-[200px] lg:h-[240px]"
-          >
-            <div className="space-y-2 md:space-y-2 w-full">
-              <span className="font-impact text-2xl md:text-2xl lg:text-3xl tracking-wider opacity-90 flex items-center gap-1.5">
-                <Star className="h-5 w-5 text-amber-300" />
-                LIQUIDACI&Oacute;N
-              </span>
-              <p className="text-sm md:text-sm font-semibold leading-tight">
-                20% de descuento adicional
-              </p>
-              <p className="text-xs md:text-xs leading-relaxed text-white/75">
-                Seleccione herramientas con el c&oacute;digo:{" "}
-                <strong className="text-amber-300 text-sm md:text-sm tracking-wider">
-                  EXTRA20
-                </strong>
-              </p>
-              <Button
-                variant="secondary"
-                size="sm"
-                className="mt-2 md:mt-2 rounded-full text-[11px] md:text-xs font-semibold bg-white/15 hover:bg-white/25 text-white border border-white/20 shadow-sm transition-all hover:scale-105"
-                asChild
-              >
-                <span className="inline-flex items-center gap-1.5">
-                  Compra ahora
-                  <CircleArrowRight className="h-3 w-3" />
-                </span>
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      </Link>
+                <p className="text-sm md:text-sm font-semibold leading-tight">
+                  {banner.headline}
+                </p>
+                <p className="text-xs md:text-xs leading-relaxed text-white/70">
+                  {banner.description}
+                </p>
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  className="mt-2 md:mt-2 rounded-full text-[11px] md:text-xs font-semibold bg-white/15 hover:bg-white/25 text-white border border-white/20 shadow-sm transition-all hover:scale-105"
+                  asChild
+                >
+                  <span className="inline-flex items-center gap-1.5">
+                    {banner.ctaText || "Compra ahora"}
+                    <CircleArrowRight className="h-3 w-3" />
+                  </span>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </Link>
+      ))}
     </div>
   );
 }

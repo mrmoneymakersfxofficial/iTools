@@ -10,12 +10,19 @@ export const structure: StructureResolver = (S) =>
           S.list()
             .title("Secciones del Inicio")
             .items([
+              S.listItem()
+                .title("Ajustes Generales")
+                .child(
+                  S.document().schemaType("homeSettings").documentId("homeSettings")
+                ),
               S.documentTypeListItem("heroSlide").title("Hero Banners"),
               S.documentTypeListItem("promoBanner").title("Promo Banners"),
               S.documentTypeListItem("giveawayBanner").title("Sorteos (Giveaway)"),
               S.documentTypeListItem("brandPromoSlide").title("Banners de Marcas"),
-              S.documentTypeListItem("brandShowcaseItem").title("Showcase de Marcas"),
-              S.documentTypeListItem("trendingCategory").title("Categorías en Tendencia"),
+              S.documentTypeListItem("brandShowcaseItem").title("Marcas"),
+              S.documentTypeListItem("category").title("Categorías"),
+              S.documentTypeListItem("dealTile").title("Ofertas Especiales"),
+              S.documentTypeListItem("product").title("Productos"),
               S.documentTypeListItem("sectionHeader").title("Encabezados de Sección"),
             ])
         ),
@@ -23,12 +30,16 @@ export const structure: StructureResolver = (S) =>
       ...S.documentTypeListItems().filter(
         (listItem) =>
           ![
+            "homeSettings",
             "heroSlide",
             "promoBanner",
             "giveawayBanner",
             "brandPromoSlide",
             "brandShowcaseItem",
-            "trendingCategory",
+            "category",
+            "dealTile",
+            "product",
+            "trendingCategory", // Deprecated, left here so it's not shown in the main list
             "sectionHeader",
           ].includes(listItem.getId() as string)
       ),

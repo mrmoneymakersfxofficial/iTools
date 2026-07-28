@@ -3,27 +3,22 @@
 import { useState, useEffect, useCallback } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-const brandBanners = [
-  { slug: "milwaukee", name: "Milwaukee" },
-  { slug: "dewalt", name: "DeWalt" },
-  { slug: "bosch", name: "Bosch" },
-  { slug: "dong-cheng", name: "DongCheng" },
-  { slug: "kaili", name: "Kaili" },
-];
-
-export function BrandBannersCarousel() {
+export function BrandBannersCarousel({ banners }: { banners: any[] }) {
   const [current, setCurrent] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
-  const total = brandBanners.length;
+  const safeBanners = banners || [];
+  const total = safeBanners.length;
 
   const next = useCallback(() => setCurrent((i) => (i + 1) % total), [total]);
   const prev = useCallback(() => setCurrent((i) => (i - 1 + total) % total), [total]);
 
   useEffect(() => {
-    if (isPaused) return;
+    if (isPaused || total === 0) return;
     const timer = setInterval(next, 3000);
     return () => clearInterval(timer);
-  }, [next, isPaused]);
+  }, [next, isPaused, total]);
+
+  if (total === 0) return null;
 
   return (
     <div
@@ -33,19 +28,21 @@ export function BrandBannersCarousel() {
     >
       {/* Slides */}
       <div className="relative w-full" style={{ aspectRatio: "1920 / 320" }}>
-        {brandBanners.map((banner, idx) => (
+        {safeBanners.map((banner, idx) => (
           <a
-            key={banner.slug}
-            href={`/marca/${banner.slug}`}
+            key={banner._id}
+            href={`/marca/${banner.brandSlug}`}
             className="absolute inset-0 transition-opacity duration-500 ease-in-out"
             style={{ opacity: idx === current ? 1 : 0, pointerEvents: idx === current ? "auto" : "none" }}
           >
-            <img
-              src={`/banners/brands/${banner.slug}.webp`}
-              alt={`Promoción ${banner.name}`}
-              className="w-full h-full object-cover"
-              loading={idx === 0 ? "eager" : "lazy"}
-            />
+            {banner.image?.asset?.url && (
+              <img
+                src={banner.image.asset.url}
+                alt={`Promoción ${banner.brandName}`}
+                className="w-full h-full object-cover"
+                loading={idx === 0 ? "eager" : "lazy"}
+              />
+            )}
           </a>
         ))}
       </div>
@@ -70,7 +67,7 @@ export function BrandBannersCarousel() {
 
       {/* Dots */}
       <div className="absolute bottom-2 left-1/2 -translate-x-1/2 z-10 flex gap-1.5">
-        {brandBanners.map((_, idx) => (
+        {safeBanners.map((_, idx) => (
           <button
             key={idx}
             onClick={() => setCurrent(idx)}
