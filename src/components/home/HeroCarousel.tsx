@@ -67,10 +67,10 @@ export function HeroCarousel({ banners }: { banners: any[] }) {
               {/* Background image or gradient fallback */}
               <div className="absolute inset-0" style={{ background: b.bgGradient || "#000" }} />
 
-              {!imgErrors.has(i) && b.image?.asset?.url && (
+              {!imgErrors.has(i) && (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
-                  src={b.image.asset.url}
+                  src={b.image?.asset?.url || (i === 0 ? "/banners/hero/milwaukee-hero.webp" : i === 1 ? "/banners/hero/dewalt-hero.webp" : "/banners/hero/bosch-hero.webp")}
                   alt={b.title}
                   className="absolute inset-0 w-full h-full object-cover"
                   loading={i === 0 ? "eager" : "lazy"}

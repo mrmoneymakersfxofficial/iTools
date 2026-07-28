@@ -35,14 +35,13 @@ export function BrandBannersCarousel({ banners }: { banners: any[] }) {
             className="absolute inset-0 transition-opacity duration-500 ease-in-out"
             style={{ opacity: idx === current ? 1 : 0, pointerEvents: idx === current ? "auto" : "none" }}
           >
-            {banner.image?.asset?.url && (
-              <img
-                src={banner.image.asset.url}
-                alt={`Promoción ${banner.brandName}`}
-                className="w-full h-full object-cover"
-                loading={idx === 0 ? "eager" : "lazy"}
-              />
-            )}
+            <img
+              src={banner.image?.asset?.url || `/banners/brands/${banner.brandSlug || banner.brandName.toLowerCase()}.webp`}
+              alt={`Promoción ${banner.brandName}`}
+              className="w-full h-full object-cover"
+              loading={idx === 0 ? "eager" : "lazy"}
+              onError={(e) => { e.currentTarget.style.display = 'none'; }}
+            />
           </a>
         ))}
       </div>

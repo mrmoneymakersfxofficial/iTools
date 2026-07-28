@@ -28,16 +28,18 @@ export function BrandShowcase({ brands }: { brands: any[] }) {
               className="group flex items-center justify-center h-[88px] transition-opacity hover:opacity-80 bg-white dark:bg-[#1a1a1a] rounded-lg"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              {brand.logo?.asset?.url ? (
-                <img
-                  src={brand.logo.asset.url}
-                  alt={brand.name}
-                  className="max-h-[84px] w-auto max-w-full object-contain rounded-lg p-2"
-                  loading="lazy"
-                />
-              ) : (
-                <span className="text-sm font-bold text-gray-500">{brand.name}</span>
-              )}
+              <img
+                src={brand.logo?.asset?.url || `/brands/${brand.slug || brand.name.toLowerCase()}.png`}
+                alt={brand.name}
+                className="max-h-[84px] w-auto max-w-full object-contain rounded-lg p-2"
+                loading="lazy"
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none';
+                  const next = e.currentTarget.nextElementSibling as HTMLElement;
+                  if (next) next.style.display = 'block';
+                }}
+              />
+              <span className="text-sm font-bold text-gray-500 hidden">{brand.name}</span>
             </Link>
           ))}
         </div>
