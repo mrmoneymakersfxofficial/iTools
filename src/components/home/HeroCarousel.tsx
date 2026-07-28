@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ChevronLeft, ChevronRight, CircleArrowRight, Wrench } from "lucide-react";
 
 /* ─── Types ─── */
+const INTERVAL_MS = 5000;
 interface BannerData {
   image: string;
   title: string;
