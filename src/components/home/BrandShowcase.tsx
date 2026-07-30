@@ -29,7 +29,7 @@ export function BrandShowcase({ brands }: { brands: any[] }) {
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src={brand.logo?.asset?.url || `/brands/${brand.slug || brand.name.toLowerCase()}.png`}
+                src={brand.logo?.asset?.url || `/brands/${brand.slug || brand.name.toLowerCase()}.webp`}
                 alt={brand.name}
                 className="max-h-[84px] w-auto max-w-full object-contain rounded-lg p-2"
                 loading="lazy"
