@@ -25,7 +25,7 @@ import { FeaturedSection, NewArrivalsSection } from "@/components/home/ProductSe
 import { BrandShowcase } from "@/components/home/BrandShowcase";
 import { BrandBannersCarousel } from "@/components/home/BrandBannersCarousel";
 
-const VALID_LOCAL_BRANDS = ['bahco', 'bosch', 'dca', 'dewalt', 'dong-cheng', 'emtop', 'ingco', 'kaili', 'kamasa', 'makita', 'milwaukee', 'sata', 'stanley', 'toptul', 'total', 'tramontina', 'truper', 'wagner'];
+
 
 import { fetchHomePageData } from "@/lib/sanity/fetch-home";
 
@@ -139,6 +139,7 @@ const fallbackDealTiles = [
 
 function DesktopDealTiles({ dealTiles }: { dealTiles: any[] }) {
   const safeTiles = (dealTiles && dealTiles.length > 0) ? dealTiles : fallbackDealTiles;
+  const VALID_LOCAL_BRANDS = ['bahco', 'bosch', 'dca', 'dewalt', 'dong-cheng', 'emtop', 'ingco', 'kaili', 'kamasa', 'makita', 'milwaukee', 'sata', 'stanley', 'toptul', 'total', 'tramontina', 'truper', 'wagner'];
 
   return (
     <>
