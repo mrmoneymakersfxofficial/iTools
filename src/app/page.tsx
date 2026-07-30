@@ -157,7 +157,6 @@ function DesktopDealTiles({ dealTiles }: { dealTiles: any[] }) {
                   src={tile.image?.asset?.url || `/brands/${tile.brand.toLowerCase()}.webp`} 
                   alt="" 
                   className="absolute inset-0 w-full h-full object-cover opacity-50 transition-transform duration-500" 
-                  onError={(e) => { e.currentTarget.style.display = 'none'; }}
                 />
               )}
               <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.45) 100%)" }} />
