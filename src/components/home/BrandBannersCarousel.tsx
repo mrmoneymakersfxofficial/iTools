@@ -3,6 +3,8 @@
 import { useState, useEffect, useCallback } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
+const VALID_LOCAL_BRANDS = ['bahco', 'bosch', 'dca', 'dewalt', 'dong-cheng', 'emtop', 'ingco', 'kaili', 'kamasa', 'makita', 'milwaukee', 'sata', 'stanley', 'toptul', 'total', 'tramontina', 'truper', 'wagner'];
+
 export function BrandBannersCarousel({ banners }: { banners: any[] }) {
   const [current, setCurrent] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
@@ -35,13 +37,15 @@ export function BrandBannersCarousel({ banners }: { banners: any[] }) {
             className="absolute inset-0 transition-opacity duration-500 ease-in-out"
             style={{ opacity: idx === current ? 1 : 0, pointerEvents: idx === current ? "auto" : "none" }}
           >
-            <img
-              src={banner.image?.asset?.url || `/banners/brands/${banner.brandSlug || banner.brandName.toLowerCase()}.webp`}
-              alt={`Promoción ${banner.brandName}`}
-              className="w-full h-full object-cover"
-              loading={idx === 0 ? "eager" : "lazy"}
-              onError={(e) => { e.currentTarget.style.display = 'none'; }}
-            />
+            {(banner.image?.asset?.url || VALID_LOCAL_BRANDS.includes(banner.brandSlug || banner.brandName.toLowerCase())) && (
+              <img
+                src={banner.image?.asset?.url || `/banners/brands/${banner.brandSlug || banner.brandName.toLowerCase()}.webp`}
+                alt={`Promoción ${banner.brandName}`}
+                className="w-full h-full object-cover"
+                loading={idx === 0 ? "eager" : "lazy"}
+                onError={(e) => { e.currentTarget.style.display = 'none'; }}
+              />
+            )}
           </a>
         ))}
       </div>

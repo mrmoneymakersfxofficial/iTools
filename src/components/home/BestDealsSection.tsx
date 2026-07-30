@@ -11,12 +11,14 @@ function DealCard({ tile }: { tile: any }) {
     >
       {/* Brand color background */}
       <div className="absolute inset-0" style={{ backgroundColor: tile.brandColor || "#000" }} />
-      <img 
-        src={tile.image?.asset?.url || `/brands/${tile.brand.toLowerCase()}.png`} 
-        alt="" 
-        className="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:scale-105 transition-transform duration-500" 
-        onError={(e) => { e.currentTarget.style.display = 'none'; }}
-      />
+      {(tile.image?.asset?.url || VALID_LOCAL_BRANDS.includes(tile.brand.toLowerCase())) && (
+        <img 
+          src={tile.image?.asset?.url || `/brands/${tile.brand.toLowerCase()}.webp`} 
+          alt="" 
+          className="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:scale-105 transition-transform duration-500" 
+          onError={(e) => { e.currentTarget.style.display = 'none'; }}
+        />
+      )}
 
       {/* Dark gradient at bottom */}
       <div
@@ -98,12 +100,14 @@ export function BestDealsSection({ tiles }: { tiles: any[] }) {
               className="group relative overflow-hidden rounded-lg h-[200px] transition-shadow hover:shadow-lg"
             >
               <div className="absolute inset-0" style={{ backgroundColor: tile.brandColor || "#000" }} />
-              <img 
-                src={tile.image?.asset?.url || `/brands/${tile.brand.toLowerCase()}.png`} 
-                alt="" 
-                className="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:scale-105 transition-transform duration-500" 
-                onError={(e) => { e.currentTarget.style.display = 'none'; }}
-              />
+              {(tile.image?.asset?.url || VALID_LOCAL_BRANDS.includes(tile.brand.toLowerCase())) && (
+                <img 
+                  src={tile.image?.asset?.url || `/brands/${tile.brand.toLowerCase()}.webp`} 
+                  alt="" 
+                  className="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:scale-105 transition-transform duration-500" 
+                  onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                />
+              )}
               <div
                 className="absolute inset-0"
                 style={{

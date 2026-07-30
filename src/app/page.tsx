@@ -25,6 +25,8 @@ import { FeaturedSection, NewArrivalsSection } from "@/components/home/ProductSe
 import { BrandShowcase } from "@/components/home/BrandShowcase";
 import { BrandBannersCarousel } from "@/components/home/BrandBannersCarousel";
 
+const VALID_LOCAL_BRANDS = ['bahco', 'bosch', 'dca', 'dewalt', 'dong-cheng', 'emtop', 'ingco', 'kaili', 'kamasa', 'makita', 'milwaukee', 'sata', 'stanley', 'toptul', 'total', 'tramontina', 'truper', 'wagner'];
+
 import { fetchHomePageData } from "@/lib/sanity/fetch-home";
 
 export default async function Home() {
@@ -141,12 +143,14 @@ function DesktopDealTiles({ tiles }: { tiles: any[] }) {
               className="group relative overflow-hidden rounded-lg h-[200px] transition-shadow hover:shadow-lg"
             >
               <div className="absolute inset-0" style={{ backgroundColor: tile.brandColor || "#000" }} />
-              <img 
-                src={tile.image?.asset?.url || `/brands/${tile.brand.toLowerCase()}.webp`} 
-                alt="" 
-                className="absolute inset-0 w-full h-full object-cover opacity-50 transition-transform duration-500" 
-                onError={(e) => { e.currentTarget.style.display = 'none'; }}
-              />
+              {(tile.image?.asset?.url || VALID_LOCAL_BRANDS.includes(tile.brand.toLowerCase())) && (
+                <img 
+                  src={tile.image?.asset?.url || `/brands/${tile.brand.toLowerCase()}.webp`} 
+                  alt="" 
+                  className="absolute inset-0 w-full h-full object-cover opacity-50 transition-transform duration-500" 
+                  onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                />
+              )}
               <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.45) 100%)" }} />
               <div className="relative z-10 flex flex-col justify-between h-full p-4">
                 <span className="text-[11px] font-bold tracking-[0.08em] uppercase" style={{ color: textCol, opacity: 0.85 }}>{tile.brand}</span>
