@@ -16,13 +16,34 @@ interface BannerData {
   icon?: React.ReactNode;
 }
 
+const fallbackHeroBanners = [
+  {
+    image: "/banners/hero/milwaukee-hero.webp",
+    title: "Nuevos Rotomartillos",
+    subtitle: "Perfora más rápido con SDS-Plus",
+    cta: "Comprar Ahora",
+    link: "/marca/milwaukee",
+    bgGradient: "linear-gradient(to right, #c61010, #8b0000)",
+    icon: <Wrench className="h-3 w-3 text-white/90" />
+  },
+  {
+    image: "/banners/hero/dewalt-hero.webp",
+    title: "El Poder de DeWalt",
+    subtitle: "Rendimiento Garantizado",
+    cta: "Ver Ofertas",
+    link: "/marca/dewalt",
+    bgGradient: "linear-gradient(to right, #e6a817, #c48b00)",
+    icon: <Wrench className="h-3 w-3 text-white/90" />
+  }
+];
+
 export function HeroCarousel({ banners }: { banners: any[] }) {
   const [current, setCurrent] = useState(0);
   const [paused, setPaused] = useState(false);
   const [imgErrors, setImgErrors] = useState<Set<number>>(new Set());
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  const safeBanners = banners || [];
+  const safeBanners = (banners && banners.length > 0) ? banners : fallbackHeroBanners;
   const total = safeBanners.length;
 
   if (total === 0) return null;

@@ -5,10 +5,19 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const VALID_LOCAL_BRANDS = ['bahco', 'bosch', 'dca', 'dewalt', 'dong-cheng', 'emtop', 'ingco', 'kaili', 'kamasa', 'makita', 'milwaukee', 'sata', 'stanley', 'toptul', 'total', 'tramontina', 'truper', 'wagner'];
 
+const fallbackBanners = [
+  { _id: "bb1", brandSlug: "milwaukee", brandName: "Milwaukee", image: { asset: { url: "/banners/brands/milwaukee.webp" } } },
+  { _id: "bb2", brandSlug: "dewalt", brandName: "DeWalt", image: { asset: { url: "/banners/brands/dewalt.webp" } } },
+  { _id: "bb3", brandSlug: "bosch", brandName: "Bosch", image: { asset: { url: "/banners/brands/bosch.webp" } } },
+  { _id: "bb4", brandSlug: "makita", brandName: "Makita", image: { asset: { url: "/banners/brands/makita.webp" } } },
+  { _id: "bb5", brandSlug: "stanley", brandName: "Stanley", image: { asset: { url: "/banners/brands/stanley.webp" } } }
+];
+
 export function BrandBannersCarousel({ banners }: { banners: any[] }) {
+  const safeBanners = (banners && banners.length > 0) ? banners : fallbackBanners;
   const [current, setCurrent] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
-  const safeBanners = banners || [];
+
   const total = safeBanners.length;
 
   const next = useCallback(() => setCurrent((i) => (i + 1) % total), [total]);

@@ -128,13 +128,22 @@ export default async function Home() {
 }
 
 /* ── Desktop deal tiles — brand-colored cards with dark bottom gradient ── */
-function DesktopDealTiles({ tiles }: { tiles: any[] }) {
-  if (!tiles || tiles.length === 0) return null;
+const fallbackDealTiles = [
+  { _id: "dt1", brand: "BOSCH", brandColor: "#1e4b8f", title: "Batería de 18 V de regalo", subtitle: "Consigue una batería GRATIS con kits BOSCH.", href: "/marca/bosch" },
+  { _id: "dt2", brand: "MILWAUKEE", brandColor: "#c61010", title: "Herramienta gratuita de elección", subtitle: "Con la compra de kits Milwaukee M18 seleccionados.", href: "/marca/milwaukee" },
+  { _id: "dt3", brand: "DEWALT", brandColor: "#e6a817", textColor: "#1A1A1A", title: "Herramienta gratuita por nuestra cuenta", subtitle: "Con kit de batería DEWALT 20V MAX XR seleccionado.", href: "/marca/dewalt" },
+  { _id: "dt4", brand: "MAKITA", brandColor: "#0077C8", title: "18V LXT — 15% adicional", subtitle: "15% extra en herramientas Makita 18V.", href: "/marca/makita" },
+  { _id: "dt5", brand: "STANLEY", brandColor: "#E35205", title: "Envío Gratis en Manuales", subtitle: "Herramientas manuales Stanley envío gratis.", href: "/categoria/herramientas-manuales" },
+  { _id: "dt6", brand: "3M", brandColor: "#CC3300", title: "Seguridad — 10% extra", subtitle: "EPP 3M con 10% de descuento adicional.", href: "/categoria/equipos-de-proteccion" },
+];
+
+function DesktopDealTiles({ dealTiles }: { dealTiles: any[] }) {
+  const safeTiles = (dealTiles && dealTiles.length > 0) ? dealTiles : fallbackDealTiles;
 
   return (
     <>
       <div className="grid grid-cols-3 gap-2.5 mb-2.5">
-        {tiles.map((tile) => {
+        {safeTiles.map((tile) => {
           const textCol = tile.textColor || "#FFFFFF";
           return (
             <a

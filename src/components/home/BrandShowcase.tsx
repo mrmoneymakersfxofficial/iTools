@@ -5,8 +5,14 @@ import { ShoppingBag } from "lucide-react";
 
 const VALID_LOCAL_BRANDS = ['bahco', 'bosch', 'dca', 'dewalt', 'dong-cheng', 'emtop', 'ingco', 'kaili', 'kamasa', 'makita', 'milwaukee', 'sata', 'stanley', 'toptul', 'total', 'tramontina', 'truper', 'wagner'];
 
+const fallbackBrands = VALID_LOCAL_BRANDS.map(slug => ({
+  _id: slug,
+  slug,
+  name: slug.charAt(0).toUpperCase() + slug.slice(1)
+}));
+
 export function BrandShowcase({ brands }: { brands: any[] }) {
-  const safeBrands = brands || [];
+  const safeBrands = (brands && brands.length > 0) ? brands : fallbackBrands;
 
   if (safeBrands.length === 0) return null;
 

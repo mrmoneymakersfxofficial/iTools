@@ -2,8 +2,16 @@
 import Link from "next/link";
 import { ShoppingBag, ChevronRight } from "lucide-react";
 
+const VALID_LOCAL_BRANDS = ['bahco', 'bosch', 'dca', 'dewalt', 'dong-cheng', 'emtop', 'ingco', 'kaili', 'kamasa', 'makita', 'milwaukee', 'sata', 'stanley', 'toptul', 'total', 'tramontina', 'truper', 'wagner'];
+
+const fallbackBrands = VALID_LOCAL_BRANDS.map(slug => ({
+  _id: slug,
+  slug,
+  name: slug.charAt(0).toUpperCase() + slug.slice(1)
+}));
+
 export function BrandsGridMobile({ brands }: { brands: any[] }) {
-  const safeBrands = brands || [];
+  const safeBrands = (brands && brands.length > 0) ? brands : fallbackBrands;
 
   if (safeBrands.length === 0) return null;
 
@@ -32,25 +40,35 @@ export function BrandsGridMobile({ brands }: { brands: any[] }) {
           className="flex gap-px overflow-x-auto pb-0.5"
           style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
         >
-          {safeBrands.map((brand) => (
-            <Link
-              key={brand._id || brand.slug}
-              href={`/marca/${brand.slug || "#"}`}
-              className="shrink-0 w-[110px] sm:w-[120px] flex items-center justify-center h-[72px] transition-opacity active:opacity-70"
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              {brand.logo?.asset?.url ? (
-                <img
-                  src={brand.logo.asset.url}
-                  alt={brand.name}
-                  className="max-h-[68px] w-auto max-w-full object-contain rounded-lg"
-                  loading="lazy"
-                />
-              ) : (
-                <span className="text-xs font-bold text-gray-500">{brand.name}</span>
-              )}
-            </Link>
-          ))}
+          {safeBrands.map((brand) => {
+            const slug = brand.slug || brand.name.toLowerCase();
+            const hasLocalImg = VALID_LOCAL_BRANDS.includes(slug);
+            const showImg = brand.logo?.asset?.url || hasLocalImg;
+
+            return (
+              <Link
+                key={brand._id || brand.slug}
+                href={`/marca/${brand.slug || "#"}`}
+                className="shrink-0 w-[110px] sm:w-[120px] flex items-center justify-center h-[72px] transition-opacity active:opacity-70"
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                {showImg ? (
+                  <img
+                    src={brand.logo?.asset?.url || `/brands/${slug}.webp`}
+                    alt={brand.name}
+                    className="max-h-[68px] w-auto max-w-full object-contain rounded-lg"
+                    loading="lazy"
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none';
+                      const next = e.currentTarget.nextElementSibling as HTMLElement;
+                      if (next) next.style.display = 'block';
+                    }}
+                  />
+                ) : null}
+                <span className={`text-xs font-bold text-gray-500 ${showImg ? 'hidden' : 'block'}`}>{brand.name}</span>
+              </Link>
+            );
+          })}
         </nav>
       </div>
     </section>
