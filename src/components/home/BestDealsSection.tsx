@@ -1,4 +1,5 @@
 "use client";
+import { VALID_LOCAL_BRANDS } from "@/lib/constants/brands";
 import { Flame, CircleArrowRight } from "lucide-react";
 import { HorizontalScroll } from "@/components/home/HorizontalScroll";
 

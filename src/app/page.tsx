@@ -28,6 +28,7 @@ import { BrandBannersCarousel } from "@/components/home/BrandBannersCarousel";
 
 
 import { fetchHomePageData } from "@/lib/sanity/fetch-home";
+import { VALID_LOCAL_BRANDS } from "@/lib/constants/brands";
 
 export default async function Home() {
   const data = await fetchHomePageData();
@@ -67,7 +68,7 @@ export default async function Home() {
 
           <TrendingProductsMobile products={data.products?.filter(p => p.showInTrending)} />
 
-          <BestDealsSection tiles={data.dealTiles} />
+          <BestDealsSection dealTiles={data.dealTiles} />
 
           <CategoriesGridMobile categories={data.categories} />
 
@@ -103,7 +104,7 @@ export default async function Home() {
                       Las Mejores Ofertas
                     </h2>
                   </div>
-                  <DesktopDealTiles tiles={data.dealTiles} />
+                  <DesktopDealTiles dealTiles={data.dealTiles} />
                 </div>
               </div>
 
@@ -139,7 +140,7 @@ const fallbackDealTiles = [
 
 function DesktopDealTiles({ dealTiles }: { dealTiles: any[] }) {
   const safeTiles = (dealTiles && dealTiles.length > 0) ? dealTiles : fallbackDealTiles;
-  const VALID_LOCAL_BRANDS = ['bahco', 'bosch', 'dca', 'dewalt', 'dong-cheng', 'emtop', 'ingco', 'kaili', 'kamasa', 'makita', 'milwaukee', 'sata', 'stanley', 'toptul', 'total', 'tramontina', 'truper', 'wagner'];
+
 
   return (
     <>

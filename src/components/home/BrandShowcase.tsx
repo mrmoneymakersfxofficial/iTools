@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { ShoppingBag } from "lucide-react";
 
-const VALID_LOCAL_BRANDS = ['bahco', 'bosch', 'dca', 'dewalt', 'dong-cheng', 'emtop', 'ingco', 'kaili', 'kamasa', 'makita', 'milwaukee', 'sata', 'stanley', 'toptul', 'total', 'tramontina', 'truper', 'wagner'];
+import { VALID_LOCAL_BRANDS } from "@/lib/constants/brands";
 
 const fallbackBrands = VALID_LOCAL_BRANDS.map(slug => ({
   _id: slug,
