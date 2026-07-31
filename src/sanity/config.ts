@@ -6,9 +6,9 @@ import { presentationTool, defineLocations } from "sanity/presentation";
 import { apiVersion, dataset, projectId } from "./env";
 import { schemaTypes } from "./schemas";
 
-const PREVIEW_ORIGIN = "https://i-tools-steel.vercel.app";
+const PREVIEW_ORIGIN = typeof window === "undefined" ? "https://i-tools-steel.vercel.app" : window.location.origin;
 
-export const locationUrl = (href: string) => `${PREVIEW_ORIGIN}${href}`;
+export const locationUrl = (href: string) => href;
 
 export const homeLocations = {
   heroSlide: defineLocations({

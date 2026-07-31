@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { ShoppingBag, ChevronRight } from "lucide-react";
 
-import { VALID_LOCAL_BRANDS } from "@/lib/constants/brands";
+import { VALID_LOCAL_BRANDS, BRAND_CONFIGS } from "@/lib/constants/brands";
 
 const fallbackBrands = VALID_LOCAL_BRANDS.map(slug => ({
   _id: slug,
@@ -16,10 +16,10 @@ export function BrandsGridMobile({ brands }: { brands: any[] }) {
   if (safeBrands.length === 0) return null;
 
   return (
-    <section className="bg-[#F5F5F5] dark:bg-[#111111] py-2 lg:hidden" data-section="Comprar por Marca">
+    <section className="bg-[#F5F5F5] dark:bg-[#111111] py-3 lg:hidden" data-section="Comprar por Marca">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         {/* Header */}
-        <div className="flex items-center justify-between mb-1.5">
+        <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2">
             <ShoppingBag className="h-4 w-4 text-[#1A1A1A] dark:text-white" />
             <h2 className="text-sm font-bold text-[#1A1A1A] dark:text-white uppercase tracking-wide">
@@ -35,28 +35,34 @@ export function BrandsGridMobile({ brands }: { brands: any[] }) {
           </Link>
         </div>
 
-        {/* Horizontal scroll — no cards, just logos */}
+        {/* Horizontal scroll with cards */}
         <nav
-          className="flex gap-px overflow-x-auto pb-0.5"
+          className="flex gap-1.5 overflow-x-auto pb-1"
           style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
         >
           {safeBrands.map((brand) => {
             const slug = brand.slug || brand.name.toLowerCase();
-            const hasLocalImg = VALID_LOCAL_BRANDS.includes(slug);
-            const showImg = brand.logo?.asset?.url || hasLocalImg;
+            const config = BRAND_CONFIGS[slug];
+            const hasLocalImg = !!config;
+            const bgColor = config ? config.bg : "#ffffff";
+            
+            const fallbackExt = config ? config.logoExt : "webp";
+            const imgSrc = hasLocalImg ? `/brands/${slug}.${fallbackExt}` : (brand.logo?.asset?.url || null);
+            const showImg = !!imgSrc;
 
             return (
               <Link
                 key={brand._id || brand.slug}
                 href={`/marca/${brand.slug || "#"}`}
-                className="shrink-0 w-[110px] sm:w-[120px] flex items-center justify-center h-[72px] transition-opacity active:opacity-70"
+                className="shrink-0 w-[110px] sm:w-[120px] flex items-center justify-center h-[72px] transition-opacity active:opacity-70 rounded-md overflow-hidden"
+                style={{ backgroundColor: bgColor }}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 {showImg ? (
                   <img
-                    src={brand.logo?.asset?.url || `/brands/${slug}.webp`}
+                    src={imgSrc}
                     alt={brand.name}
-                    className="max-h-[68px] w-auto max-w-full object-contain rounded-lg"
+                    className="max-h-[40px] w-auto max-w-[80%] object-contain drop-shadow-sm"
                     loading="lazy"
                     onError={(e) => {
                       e.currentTarget.style.display = 'none';
@@ -65,7 +71,9 @@ export function BrandsGridMobile({ brands }: { brands: any[] }) {
                     }}
                   />
                 ) : null}
-                <span className={`text-xs font-bold text-gray-500 ${showImg ? 'hidden' : 'block'}`}>{brand.name}</span>
+                <span className={`text-xs font-bold ${config ? 'text-white' : 'text-gray-800'} ${showImg ? 'hidden' : 'block'}`}>
+                  {brand.name}
+                </span>
               </Link>
             );
           })}

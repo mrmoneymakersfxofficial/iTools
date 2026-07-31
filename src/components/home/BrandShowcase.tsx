@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { ShoppingBag } from "lucide-react";
 
-import { VALID_LOCAL_BRANDS } from "@/lib/constants/brands";
+import { VALID_LOCAL_BRANDS, BRAND_CONFIGS } from "@/lib/constants/brands";
 
 const fallbackBrands = VALID_LOCAL_BRANDS.map(slug => ({
   _id: slug,
@@ -17,35 +17,43 @@ export function BrandShowcase({ brands }: { brands: any[] }) {
   if (safeBrands.length === 0) return null;
 
   return (
-    <section className="py-3 bg-[#F5F5F5] dark:bg-[#111111]" data-section="Comprar por Marca">
+    <section className="py-4 bg-[#F5F5F5] dark:bg-[#111111]" data-section="Comprar por Marca">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="flex items-center gap-2 mb-2">
+        <div className="flex items-center gap-2 mb-3">
           <ShoppingBag className="h-5 w-5 text-[#1A1A1A] dark:text-white" />
           <h2 className="text-base font-bold text-[#1A1A1A] dark:text-white uppercase tracking-wide">
             Comprar por Marca
           </h2>
         </div>
 
-        {/* No cards — just logos with rounded corners, tight grid */}
-        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-px">
+        {/* 6-col grid with exact brand colors */}
+        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-1.5 md:gap-2">
           {safeBrands.map((brand) => {
             const slug = brand.slug || brand.name.toLowerCase();
-            const hasLocalImg = VALID_LOCAL_BRANDS.includes(slug);
-            const showImg = brand.logo?.asset?.url || hasLocalImg;
+            const config = BRAND_CONFIGS[slug];
+            const hasLocalImg = !!config;
+            const bgColor = config ? config.bg : "#ffffff";
+            
+            // Force our local SVGs for valid brands to ensure perfect design, 
+            // fallback to Sanity only for other brands.
+            const fallbackExt = config ? config.logoExt : "webp";
+            const imgSrc = hasLocalImg ? `/brands/${slug}.${fallbackExt}` : (brand.logo?.asset?.url || null);
+            const showImg = !!imgSrc;
 
             return (
               <Link
                 key={brand._id || brand.slug}
                 href={`/marca/${brand.slug || "#"}`}
-                className="group flex items-center justify-center h-[88px] transition-opacity hover:opacity-80 bg-white dark:bg-[#1a1a1a] rounded-lg"
+                className="group flex items-center justify-center h-[88px] transition-opacity hover:opacity-80 rounded-md overflow-hidden"
+                style={{ backgroundColor: bgColor }}
               >
                 {showImg ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
-                    src={brand.logo?.asset?.url || `/brands/${slug}.webp`}
+                    src={imgSrc}
                     alt={brand.name}
-                    className="max-h-[84px] w-auto max-w-full object-contain rounded-lg p-2"
+                    className="max-h-[50px] w-auto max-w-[80%] object-contain drop-shadow-sm"
                     loading="lazy"
                     onError={(e) => {
                       e.currentTarget.style.display = 'none';
@@ -54,7 +62,9 @@ export function BrandShowcase({ brands }: { brands: any[] }) {
                     }}
                   />
                 ) : null}
-                <span className={`text-sm font-bold text-gray-500 ${showImg ? 'hidden' : 'block'}`}>{brand.name}</span>
+                <span className={`text-sm font-bold ${config ? 'text-white' : 'text-gray-800'} ${showImg ? 'hidden' : 'block'}`}>
+                  {brand.name}
+                </span>
               </Link>
             );
           })}
