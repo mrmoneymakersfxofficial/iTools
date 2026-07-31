@@ -25,6 +25,7 @@ import { useWishlistStore } from "@/stores/wishlist-store";
 import { useQuickViewStore } from "@/stores/quickview-store";
 import { getProductsByBrand, getBrandTheme } from "@/lib/data";
 import type { Product } from "@/types";
+import { urlFor } from "@/sanity/image";
 
 function formatPrice(n: number): string {
   return `S/ ${n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
@@ -46,6 +47,7 @@ export function ProductQuickView() {
   const [quantity, setQuantity] = useState(1);
   const [activeSection, setActiveSection] = useState<"details" | "specs" | "shipping">("details");
   const [copied, setCopied] = useState(false);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
 
   const wishlisted = product ? isWishlisted(product.id) : false;
 
@@ -148,7 +150,15 @@ export function ProductQuickView() {
             <div className="flex-1 overflow-y-auto custom-scrollbar">
               {/* Product Image Area */}
               <div className="relative aspect-[4/3] bg-[#1A1A1A] flex items-center justify-center">
-                <Wrench className="h-28 w-28 text-[#333]" />
+                {(product?.images?.[activeImageIndex] || product?.images?.[0] || product?.image) ? (
+                  <img 
+                    src={urlFor(product.images?.[activeImageIndex] || product.images?.[0] || product.image).width(800).format("webp").url()} 
+                    alt={product.name} 
+                    className="absolute inset-0 w-full h-full object-contain" 
+                  />
+                ) : (
+                  <Wrench className="h-28 w-28 text-[#333]" />
+                )}
 
                 {/* Badges */}
                 <div className="absolute top-3 left-3 flex flex-col gap-1.5">
@@ -176,6 +186,27 @@ export function ProductQuickView() {
                   />
                 </button>
               </div>
+
+              {/* Image Thumbnails */}
+              {product?.images && product.images.length > 1 && (
+                <div className="flex gap-2 overflow-x-auto p-4 bg-[#111] scrollbar-hide">
+                  {product.images.map((img: any, idx: number) => (
+                    <button
+                      key={idx}
+                      onClick={() => setActiveImageIndex(idx)}
+                      className={`relative w-16 h-16 shrink-0 rounded-md overflow-hidden border-2 transition-colors ${
+                        activeImageIndex === idx ? "border-white" : "border-transparent hover:border-gray-600"
+                      }`}
+                    >
+                      <img 
+                        src={urlFor(img).width(150).format("webp").url()} 
+                        alt={`${product.name} - Imagen ${idx + 1}`} 
+                        className="w-full h-full object-cover" 
+                      />
+                    </button>
+                  ))}
+                </div>
+              )}
 
               {/* Product Info */}
               <div className="px-5 py-4 space-y-3">
@@ -405,23 +436,31 @@ export function ProductQuickView() {
                     Productos Relacionados
                   </h4>
                   <div className="grid grid-cols-2 gap-2">
-                    {relatedProducts.slice(0, 4).map((rp) => {
-                      const rpDiscount = rp.comparePrice
-                        ? Math.round(((rp.comparePrice - rp.price) / rp.comparePrice) * 100)
+                    {relatedProducts.slice(0, 4).map((related) => {
+                      const rpDiscount = related.comparePrice
+                        ? Math.round(((related.comparePrice - related.price) / related.comparePrice) * 100)
                         : 0;
                       return (
                         <Link
-                          key={rp.id}
-                          href={`/marca/${rp.brand?.slug || ""}`}
+                          key={related.id}
+                          href={`/producto/${related.slug}`}
                           onClick={closeQuickView}
                           className="group bg-[#1A1A1A] rounded-xl p-3 hover:bg-[#222] transition-colors"
                         >
-                          <div className="relative aspect-square bg-[#222] rounded-lg flex items-center justify-center mb-2">
-                            <Wrench className="h-10 w-10 text-[#444]" />
+                          <div className="relative aspect-square bg-[#1A1A1A] flex items-center justify-center overflow-hidden mb-2 rounded-lg">
+                            {(related.images?.[0] || related.image) ? (
+                              <img 
+                                src={urlFor(related.images?.[0] || related.image).width(200).format("webp").url()} 
+                                alt={related.name} 
+                                className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" 
+                              />
+                            ) : (
+                              <Wrench className="h-10 w-10 text-[#444]" />
+                            )}
                             {rpDiscount > 0 && (
                               <span
                                 className="absolute top-1 left-1 text-[9px] font-bold px-1.5 py-0.5 rounded text-white"
-                                style={{ backgroundColor: getBrandColorForProduct(rp) }}
+                                style={{ backgroundColor: getBrandColorForProduct(related) }}
                               >
                                 -{rpDiscount}%
                               </span>

@@ -25,6 +25,7 @@ import { useWishlistStore } from "@/stores/wishlist-store";
 import type { Product } from "@/types";
 import { useSectionDeepLinking } from "@/hooks/useSectionDeepLinking";
 import { sectionId } from "@/hooks/useSectionDeepLinking";
+import { urlFor } from "@/sanity/image";
 
 function formatPrice(n: number): string {
   return `S/ ${n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
@@ -59,6 +60,7 @@ const SECTION_RELATED = "Productos Relacionados";
 export function ProductDetailClient({ product, relatedProducts }: { product: Product; relatedProducts: Product[] }) {
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState<"specs" | "description" | "reviews">("specs");
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const addToCart = useCartStore((s) => s.addItem);
   const openCart = useCartStore((s) => s.openCart);
   const { toggleItem, isWishlisted } = useWishlistStore();
@@ -108,27 +110,56 @@ export function ProductDetailClient({ product, relatedProducts }: { product: Pro
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
             {/* LEFT: Image */}
             <div className="bg-white dark:bg-[#111111] rounded-xl border border-border dark:border-[#333] p-4 lg:p-6">
-              <div className="relative aspect-square bg-surface rounded-lg flex items-center justify-center overflow-hidden">
-                <Wrench className="h-32 w-32 text-gray-200 dark:text-gray-600" />
-                <div className="absolute top-3 left-3 flex flex-col gap-1.5 z-10">
-                  {discount > 0 && (
-                    <Badge className="bg-itools-red text-white border-0 text-sm px-2.5 py-1">
-                      -{discount}% OFF
-                    </Badge>
+              <div className="flex flex-col gap-4">
+                <div className="relative aspect-square bg-surface rounded-lg flex items-center justify-center overflow-hidden">
+                  {(product.images?.[activeImageIndex] || product.images?.[0] || product.image) ? (
+                    <img 
+                      src={urlFor(product.images?.[activeImageIndex] || product.images?.[0] || product.image).width(800).format("webp").url()} 
+                      alt={product.name} 
+                      className="absolute inset-0 w-full h-full object-contain" 
+                    />
+                  ) : (
+                    <Wrench className="h-32 w-32 text-gray-200 dark:text-gray-600" />
                   )}
-                  {product.isNewArrival && (
-                    <Badge className="bg-itools-blue text-white border-0 text-sm px-2.5 py-1">
-                      NUEVO
-                    </Badge>
-                  )}
+                  <div className="absolute top-3 left-3 flex flex-col gap-1.5 z-10">
+                    {discount > 0 && (
+                      <Badge className="bg-itools-red text-white border-0 text-sm px-2.5 py-1">
+                        -{discount}% OFF
+                      </Badge>
+                    )}
+                    {product.isNewArrival && (
+                      <Badge className="bg-itools-blue text-white border-0 text-sm px-2.5 py-1">
+                        NUEVO
+                      </Badge>
+                    )}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => toggleItem(product.id)}
+                    className="absolute top-3 right-3 z-10 h-10 w-10 rounded-full bg-white/90 dark:bg-[#1a1a1a]/90 backdrop-blur-sm flex items-center justify-center shadow-sm hover:bg-white dark:hover:bg-[#222] transition-colors"
+                  >
+                    <Heart className={`h-5 w-5 transition-colors ${wishlisted ? "fill-itools-red text-itools-red" : "text-gray-400"}`} />
+                  </button>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => toggleItem(product.id)}
-                  className="absolute top-3 right-3 z-10 h-10 w-10 rounded-full bg-white/90 dark:bg-[#1a1a1a]/90 backdrop-blur-sm flex items-center justify-center shadow-sm hover:bg-white dark:hover:bg-[#222] transition-colors"
-                >
-                  <Heart className={`h-5 w-5 transition-colors ${wishlisted ? "fill-itools-red text-itools-red" : "text-gray-400"}`} />
-                </button>
+                {product.images && product.images.length > 1 && (
+                  <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+                    {product.images.map((img: any, idx: number) => (
+                      <button
+                        key={idx}
+                        onClick={() => setActiveImageIndex(idx)}
+                        className={`relative w-20 h-20 shrink-0 rounded-md overflow-hidden border-2 transition-colors ${
+                          activeImageIndex === idx ? "border-itools-blue" : "border-transparent hover:border-gray-300 dark:hover:border-gray-600"
+                        }`}
+                      >
+                        <img 
+                          src={urlFor(img).width(150).format("webp").url()} 
+                          alt={`${product.name} - Imagen ${idx + 1}`} 
+                          className="w-full h-full object-cover" 
+                        />
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
 

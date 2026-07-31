@@ -61,7 +61,8 @@ export const productsQuery = `*[_type == "product" && isActive == true] | order(
   showInToolCrib,
   showInFeatured,
   showInNewArrivals,
-  image { asset-> { url, metadata { dimensions { width, height }, lqip } } }
+  images,
+  image
 }`;
 
 export const dealTilesQuery = `*[_type == "dealTile" && isActive == true] | order(order asc) {

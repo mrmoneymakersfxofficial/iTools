@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { ProductDetailClient } from "./product-detail-client";
 import { fetchProductBySlug, fetchRelatedProducts, fetchAllProductSlugs } from "@/lib/sanity/fetch-product";
+import { urlFor } from "@/sanity/image";
 
 const SITE_URL = "https://itools.pe";
 
@@ -39,8 +40,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       locale: "es_PE",
       siteName: "iTools Perú",
       url: `${SITE_URL}/producto/${product.slug}`,
-      images: product.images?.[0]
-        ? [{ url: product.images[0], width: 800, height: 800, alt: product.name }]
+      images: (product.images?.[0] || product.image)
+        ? [{ url: urlFor(product.images?.[0] || product.image).width(800).height(800).url(), width: 800, height: 800, alt: product.name }]
         : [{ url: "/og-image.png", width: 1200, height: 630, alt: "iTools Perú" }],
     },
     twitter: {

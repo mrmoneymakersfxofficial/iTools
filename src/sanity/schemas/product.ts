@@ -8,7 +8,13 @@ export default defineType({
     defineField({ name: "name", title: "Nombre", type: "string", validation: (r) => r.required() }),
     defineField({ name: "slug", title: "Slug", type: "string", validation: (r) => r.required() }),
     defineField({ name: "brand", title: "Marca", type: "string" }),
-    defineField({ name: "image", title: "Imagen", type: "image", options: { hotspot: true } }),
+    defineField({ 
+      name: "images", 
+      title: "Imágenes", 
+      type: "array", 
+      of: [{ type: "image", options: { hotspot: true } }],
+      validation: (r) => r.max(10).error("Puedes subir hasta un máximo de 10 imágenes.")
+    }),
     defineField({ name: "price", title: "Precio Original (Opcional)", type: "number" }),
     defineField({ name: "salePrice", title: "Precio Oferta (Opcional)", type: "number" }),
     defineField({ name: "discountBadge", title: "Badge de Descuento (ej: -17%)", type: "string" }),

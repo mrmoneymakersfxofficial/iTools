@@ -13,7 +13,7 @@ export const productBySlugQuery = `*[_type == "product" && slug.current == $slug
     _id,
     name,
     "slug": slug.current,
-    logo { asset-> { url } }
+    logo
   },
   category-> {
     _id,
@@ -22,7 +22,8 @@ export const productBySlugQuery = `*[_type == "product" && slug.current == $slug
   },
   rating,
   "reviewCount": reviews,
-  "images": [image.asset->url]
+  images,
+  image
 }`;
 
 export const relatedProductsQuery = `*[_type == "product" && category->slug.current == $categorySlug && slug.current != $currentSlug] | order(_createdAt desc)[0...4] {
@@ -35,5 +36,6 @@ export const relatedProductsQuery = `*[_type == "product" && category->slug.curr
   "comparePrice": salePrice,
   rating,
   "reviewCount": reviews,
-  "images": [image.asset->url]
+  images,
+  image
 }`;
