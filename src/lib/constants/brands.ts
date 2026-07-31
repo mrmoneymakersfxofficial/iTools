@@ -4,6 +4,12 @@ export const VALID_LOCAL_BRANDS = [
   "stanley", "toptul", "total", "tramontina", "truper", "wagner"
 ];
 
+export const BRAND_SHOWCASE_ORDER = [
+  "milwaukee", "bosch", "dewalt", "makita", "stanley", "ingco", 
+  "truper", "total", "toptul", "dong-cheng", "kamasa", "bahco", 
+  "tramontina", "wagner", "sata", "emtop", "dca", "kaili"
+];
+
 export const BRAND_CONFIGS: Record<string, { bg: string; logoExt: string }> = {
   "milwaukee": { bg: "#DB001A", logoExt: "svg" },
   "bosch": { bg: "#002A54", logoExt: "svg" },

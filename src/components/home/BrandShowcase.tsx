@@ -3,16 +3,17 @@
 import Link from "next/link";
 import { ShoppingBag } from "lucide-react";
 
-import { VALID_LOCAL_BRANDS, BRAND_CONFIGS } from "@/lib/constants/brands";
+import { BRAND_SHOWCASE_ORDER, BRAND_CONFIGS } from "@/lib/constants/brands";
 
-const fallbackBrands = VALID_LOCAL_BRANDS.map(slug => ({
+const hardcodedBrands = BRAND_SHOWCASE_ORDER.map(slug => ({
   _id: slug,
   slug,
   name: slug.charAt(0).toUpperCase() + slug.slice(1)
 }));
 
 export function BrandShowcase({ brands }: { brands: any[] }) {
-  const safeBrands = (brands && brands.length > 0) ? brands : fallbackBrands;
+  // Ignoramos la data de Sanity temporalmente para forzar el diseño exacto solicitado
+  const safeBrands = hardcodedBrands;
 
   if (safeBrands.length === 0) return null;
 
