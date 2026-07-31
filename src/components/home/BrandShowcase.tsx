@@ -47,14 +47,13 @@ export function BrandShowcase({ brands }: { brands: any[] }) {
                 key={brand._id || brand.slug}
                 href={`/marca/${brand.slug || "#"}`}
                 className="group flex items-center justify-center h-[88px] transition-opacity hover:opacity-80 rounded-md overflow-hidden"
-                style={{ backgroundColor: bgColor }}
               >
                 {showImg ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={imgSrc}
                     alt={brand.name}
-                    className="max-h-[50px] w-auto max-w-[80%] object-contain drop-shadow-sm"
+                    className="w-full h-full object-cover"
                     loading="lazy"
                     onError={(e) => {
                       e.currentTarget.style.display = 'none';
