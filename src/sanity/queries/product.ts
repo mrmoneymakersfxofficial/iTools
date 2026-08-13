@@ -39,3 +39,13 @@ export const relatedProductsQuery = `*[_type == "product" && category->slug.curr
   images,
   image
 }`;
+
+export const productReviewsQuery = `*[_type == "productReview" && isActive == true && productName == $productSlug] | order(order asc){
+  productName,
+  author,
+  rating,
+  title,
+  comment,
+  isVerified,
+  source
+}`;

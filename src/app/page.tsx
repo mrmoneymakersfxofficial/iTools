@@ -24,6 +24,9 @@ import { ExploreProductsMobile } from "@/components/home/ExploreProductsMobile";
 import { FeaturedSection, NewArrivalsSection } from "@/components/home/ProductSections";
 import { BrandShowcase } from "@/components/home/BrandShowcase";
 import { BrandBannersCarousel } from "@/components/home/BrandBannersCarousel";
+import { VideoSection } from "@/components/home/VideoSection";
+import { PromoPopup } from "@/components/layout/PromoPopup";
+import { CompareDrawer } from "@/components/product/CompareDrawer";
 
 
 
@@ -120,10 +123,17 @@ export default async function Home() {
           <BrandShowcase brands={data.brandShowcase} />
           <FeaturedSection products={data.products?.filter(p => p.showInFeatured)} />
           <NewArrivalsSection products={data.products?.filter(p => p.showInNewArrivals)} />
+
+          {/* Video Section */}
+          <VideoSection data={data.videoSection} />
         </div>
       </main>
 
       <Footer />
+
+      {/* Global: Promo Popup & Compare Drawer */}
+      <PromoPopup data={data.promoPopup} />
+      <CompareDrawer />
     </div>
   );
 }

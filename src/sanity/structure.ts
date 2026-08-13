@@ -24,6 +24,10 @@ export const structure: StructureResolver = (S) =>
               S.documentTypeListItem("dealTile").title("Ofertas Especiales"),
               S.documentTypeListItem("product").title("Productos"),
               S.documentTypeListItem("sectionHeader").title("Encabezados de Sección"),
+              S.documentTypeListItem("promoPopup").title("Popup Emergente"),
+              S.documentTypeListItem("videoSection").title("Videos"),
+              S.documentTypeListItem("packoutComponent").title("PACKOUT Builder"),
+              S.documentTypeListItem("productReview").title("Reseñas"),
             ])
         ),
       // Here you could add more categories or document types that don't belong to the Homepage in the future
@@ -41,6 +45,10 @@ export const structure: StructureResolver = (S) =>
             "product",
             "trendingCategory", // Deprecated, left here so it's not shown in the main list
             "sectionHeader",
+            "promoPopup",
+            "videoSection",
+            "packoutComponent",
+            "productReview",
           ].includes(listItem.getId() as string)
       ),
     ]);

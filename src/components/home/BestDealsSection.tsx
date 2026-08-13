@@ -2,6 +2,7 @@
 import { VALID_LOCAL_BRANDS } from "@/lib/constants/brands";
 import { Flame, CircleArrowRight } from "lucide-react";
 import { HorizontalScroll } from "@/components/home/HorizontalScroll";
+import { CountdownTimer } from "@/components/home/CountdownTimer";
 
 function DealCard({ tile }: { tile: any }) {
   const textCol = tile.textColor || "#FFFFFF";
@@ -53,6 +54,11 @@ function DealCard({ tile }: { tile: any }) {
           >
             {tile.subtitle}
           </p>
+          {tile.countdownEnd && (
+            <div className="mb-2">
+              <CountdownTimer targetDate={tile.countdownEnd} style="minimal" />
+            </div>
+          )}
           <span
             className="inline-flex items-center justify-center w-7 h-7 rounded-full transition-all"
             style={{

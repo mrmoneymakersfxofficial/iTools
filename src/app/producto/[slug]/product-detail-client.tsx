@@ -15,13 +15,18 @@ import {
   Star,
   Wrench,
   Share2,
+  FileDown,
+  GitCompare,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { ProductCard } from "@/components/product/ProductCard";
+import { ShareDialog } from "@/components/product/ShareDialog";
+import { ProductReviews } from "@/components/product/ProductReviews";
 import { useCartStore } from "@/stores/cart-store";
 import { useWishlistStore } from "@/stores/wishlist-store";
+import { useCompareStore } from "@/stores/compare-store";
 import type { Product } from "@/types";
 import { useSectionDeepLinking } from "@/hooks/useSectionDeepLinking";
 import { sectionId } from "@/hooks/useSectionDeepLinking";
@@ -54,7 +59,7 @@ const SECTION_REVIEWS = "Reseñas";
 const SECTION_BENEFITS = "Beneficios de Compra";
 const SECTION_RELATED = "Productos Relacionados";
 
-export function ProductDetailClient({ product, relatedProducts }: { product: Product; relatedProducts: Product[] }) {
+export function ProductDetailClient({ product, relatedProducts, reviews }: { product: Product; relatedProducts: Product[]; reviews?: any[] }) {
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState<"specs" | "description" | "reviews">("specs");
   const [activeImageIndex, setActiveImageIndex] = useState(0);
@@ -62,6 +67,8 @@ export function ProductDetailClient({ product, relatedProducts }: { product: Pro
   const openCart = useCartStore((s) => s.openCart);
   const { toggleItem, isWishlisted } = useWishlistStore();
   const wishlisted = isWishlisted(product.id);
+  const { addItem: addToCompare, isInCompare } = useCompareStore();
+  const inCompare = isInCompare(product.slug || product.id);
 
   // Enable section deep linking on this page
   useSectionDeepLinking();
@@ -263,15 +270,37 @@ export function ProductDetailClient({ product, relatedProducts }: { product: Pro
                 </Button>
               </div>
 
-              {/* Share */}
-              <button
-                type="button"
-                onClick={handleCopyLink}
-                className="flex items-center gap-2 text-sm text-muted-foreground hover:text-itools-blue transition-colors self-start"
-              >
-                <Share2 className="h-4 w-4" />
-                Copiar enlace para compartir
-              </button>
+              {/* Share, Compare & Technical Sheet */}
+              <div className="flex items-center gap-2 flex-wrap">
+                <ShareDialog productName={product.name} productUrl={`/producto/${product.slug}`} />
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className={inCompare ? "text-primary" : "text-muted-foreground hover:text-primary"}
+                  onClick={() =>
+                    addToCompare({
+                      slug: product.slug || product.id,
+                      name: product.name,
+                      price: product.price,
+                      salePrice: product.comparePrice,
+                      image: product.image ? urlFor(product.image).width(100).height(100).format("webp").url() : undefined,
+                      brand: product.brand?.name,
+                      specs: product.specs,
+                    })
+                  }
+                  title={inCompare ? "Ya en comparación" : "Comparar producto"}
+                >
+                  <GitCompare className="h-5 w-5" />
+                </Button>
+                {(product as any).technicalSheetUrl && (
+                  <Link href={(product as any).technicalSheetUrl} target="_blank">
+                    <Button variant="outline" size="sm" className="gap-1.5">
+                      <FileDown className="h-4 w-4" />
+                      Ficha Técnica
+                    </Button>
+                  </Link>
+                )}
+              </div>
             </div>
           </div>
         </section>
@@ -397,15 +426,10 @@ export function ProductDetailClient({ product, relatedProducts }: { product: Pro
             className="bg-white rounded-b-xl border border-t-0 p-6 mt-px"
           >
             {activeTab === "reviews" && (
-              <div className="text-center py-12">
-                <Star className="h-12 w-12 text-gray-200 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-foreground mb-2">
-                  Aún no hay reseñas
-                </h3>
-                <p className="text-sm text-muted-foreground max-w-md mx-auto">
-                  Sé el primero en dejar tu reseña sobre este producto y comparte tu experiencia con otros profesionales.
-                </p>
-              </div>
+              <ProductReviews
+                reviews={reviews || []}
+                productSlug={product.slug || product.id}
+              />
             )}
           </section>
         </div>

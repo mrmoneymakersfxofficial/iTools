@@ -11,6 +11,12 @@ export default defineType({
     defineField({ name: "title", title: "Título (ej: Batería de 18 V de regalo)", type: "string", validation: (r) => r.required() }),
     defineField({ name: "subtitle", title: "Subtítulo", type: "string" }),
     defineField({ name: "href", title: "Link destino", type: "string", validation: (r) => r.required() }),
+    defineField({
+      name: "countdownEnd",
+      title: "Fecha de Expiración (Countdown)",
+      type: "datetime",
+      description: "Si se establece, muestra una cuenta regresiva en la oferta",
+    }),
     defineField({ name: "image", title: "Imagen de fondo (Opcional)", type: "image", options: { hotspot: true } }),
     defineField({ name: "order", title: "Orden", type: "number", validation: (r) => r.required().min(0) }),
     defineField({ name: "isActive", title: "Activo", type: "boolean", initialValue: true }),

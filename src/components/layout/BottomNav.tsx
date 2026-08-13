@@ -6,7 +6,7 @@ import { useState, useRef, useEffect } from "react";
 import {
   Home, ShoppingBag, MessageCircle, User, ChevronLeft, ChevronRight,
   X, Send, Wrench, Search, Sparkles, ArrowLeft, Zap, Shield, Trees,
-  Settings, Package, HardHat, Ruler,
+  Settings, Package, HardHat, Ruler, Layers,
 } from "lucide-react";
 import { getProductsByBrandSlug, categories, brands } from "@/lib/data";
 import type { Product } from "@/types";
@@ -161,6 +161,17 @@ export function BottomNav() {
             <span className="text-[8px] font-bold uppercase tracking-wider">Marcas</span>
             {(isBrandPage || showBrands) && <div className="w-4 h-0.5 rounded-full bg-[#E35205]" />}
           </button>
+
+          <Link
+            href="/packout-builder"
+            className={`flex flex-col items-center gap-0.5 py-2 px-2.5 rounded-xl transition-all ${
+              pathname === "/packout-builder" ? "text-[#E35205]" : "text-gray-400 hover:text-gray-200"
+            }`}
+          >
+            <Layers className="h-5 w-5" />
+            <span className="text-[8px] font-bold uppercase tracking-wider">PACKOUT</span>
+            {pathname === "/packout-builder" && <div className="w-4 h-0.5 rounded-full bg-[#E35205]" />}
+          </Link>
 
           <Link
             href="/login"

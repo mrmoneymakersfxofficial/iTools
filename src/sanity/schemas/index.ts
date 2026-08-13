@@ -11,6 +11,10 @@ import promoBanner from "./promoBanner";
 import sectionHeader from "./sectionHeader";
 import headerConfig from "./headerConfig";
 import footerConfig from "./footer";
+import promoPopup from "./promoPopup";
+import videoSection from "./videoSection";
+import packoutComponent from "./packoutComponent";
+import productReview from "./productReview";
 
 export const schemaTypes = [
   homeSettings,
@@ -26,4 +30,8 @@ export const schemaTypes = [
   giveawayBanner,
   promoBanner,
   sectionHeader,
+  promoPopup,
+  videoSection,
+  packoutComponent,
+  productReview,
 ];

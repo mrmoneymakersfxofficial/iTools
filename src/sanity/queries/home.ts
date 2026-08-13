@@ -6,6 +6,7 @@ export const heroBannersQuery = `*[_type == "heroSlide" && isActive == true] | o
   link,
   image { asset-> { url, metadata { dimensions { width, height }, lqip } } },
   bgGradient,
+  countdownEnd,
   order
 }`;
 
@@ -73,6 +74,7 @@ export const dealTilesQuery = `*[_type == "dealTile" && isActive == true] | orde
   title,
   subtitle,
   href,
+  countdownEnd,
   image { asset-> { url, metadata { dimensions { width, height }, lqip } } }
 }`;
 
@@ -118,6 +120,53 @@ export const sectionHeadersQuery = `*[_type == "sectionHeader"] {
   ctaLink
 }`;
 
+// Promo Popup
+export const promoPopupQuery = `*[_type == "promoPopup" && isActive == true][0]{
+  title,
+  subtitle,
+  "image": image { asset-> { url, metadata { dimensions { width, height }, lqip } } },
+  ctaText,
+  ctaLink,
+  countdownEnd
+}`;
+
+// Video Section
+export const videoSectionQuery = `*[_type == "videoSection" && isActive == true][0]{
+  sectionTitle,
+  sectionSubtitle,
+  videos[] {
+    title,
+    googleDriveUrl,
+    "thumbnail": thumbnail { asset-> { url, metadata { dimensions { width, height }, lqip } } },
+    order
+  }
+}`;
+
+// Packout Components
+export const packoutComponentsQuery = `*[_type == "packoutComponent" && isActive == true] | order(order asc){
+  name,
+  "slug": slug.current,
+  componentType,
+  "image": image { asset-> { url, metadata { dimensions { width, height }, lqip } } },
+  price,
+  salePrice,
+  compatibleBases,
+  dimensions,
+  productId,
+  order
+}`;
+
+// Product Reviews (for homepage display)
+export const featuredReviewsQuery = `*[_type == "productReview" && isActive == true] | order(order asc)[0..5]{
+  productName,
+  author,
+  rating,
+  title,
+  comment,
+  isVerified,
+  source
+}`;
+
 export const homePageQuery = `{
   "homeSettings": ${homeSettingsQuery},
   "heroBanners": ${heroBannersQuery},
@@ -129,5 +178,9 @@ export const homePageQuery = `{
   "dealTiles": ${dealTilesQuery},
   "giveawayBanner": ${giveawayBannerQuery},
   "promoBanners": ${promoBannersQuery},
-  "sectionHeaders": ${sectionHeadersQuery}
+  "sectionHeaders": ${sectionHeadersQuery},
+  "promoPopup": ${promoPopupQuery},
+  "videoSection": ${videoSectionQuery},
+  "packoutComponents": ${packoutComponentsQuery},
+  "featuredReviews": ${featuredReviewsQuery}
 }`;

@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import { AccountMenu, AccountMenuDesktop } from "@/components/layout/AccountMenu";
 import { ThemeToggle } from "@/components/layout/ThemeToggle";
+import { BrandMarquee } from "@/components/layout/BrandMarquee";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -634,6 +635,9 @@ export default function Header() {
             ))}
           </div>
         </nav>
+
+        {/* ── Brand Marquee Bar ── */}
+        <BrandMarquee />
       </header>
 
       {mobileSearchOpen && (

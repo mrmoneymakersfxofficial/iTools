@@ -5,6 +5,7 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { CartDrawer } from "@/components/layout/CartDrawer";
 import { ClientLayoutEffects } from "@/components/layout/ClientLayoutEffects";
+import { CompareDrawer } from "@/components/product/CompareDrawer";
 import { ThemeProvider } from "next-themes";
 import { AuthProvider } from "@/components/providers/AuthProvider";
 import { BottomNav } from "@/components/layout/BottomNav";
@@ -119,6 +120,7 @@ export default async function RootLayout({
             <CartDrawer />
             <BottomNav />
             <IToolsAssistant />
+            <CompareDrawer />
             <Toaster />
             {draft.isEnabled && <SanityVisualEditing />}
           </AuthProvider>
