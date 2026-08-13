@@ -40,16 +40,16 @@ export const authOptions: NextAuthOptions = {
         }
       },
     }),
-    GoogleProvider({
-      clientId: (() => {
-        if (!process.env.GOOGLE_CLIENT_ID) throw new Error("Missing GOOGLE_CLIENT_ID env var");
-        return process.env.GOOGLE_CLIENT_ID;
-      })(),
-      clientSecret: (() => {
-        if (!process.env.GOOGLE_CLIENT_SECRET) throw new Error("Missing GOOGLE_CLIENT_SECRET env var");
-        return process.env.GOOGLE_CLIENT_SECRET;
-      })(),
-    }),
+    // Google OAuth: only add provider if credentials are configured
+    // If env vars are missing, Google login is simply unavailable (no build crash)
+    ...(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET
+      ? [
+          GoogleProvider({
+            clientId: process.env.GOOGLE_CLIENT_ID,
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+          }),
+        ]
+      : []),
   ],
   session: {
     strategy: "jwt",
