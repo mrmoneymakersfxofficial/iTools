@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import dynamic from "next/dynamic";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { CartDrawer } from "@/components/layout/CartDrawer";
@@ -11,16 +10,7 @@ import { AuthProvider } from "@/components/providers/AuthProvider";
 import { BottomNav } from "@/components/layout/BottomNav";
 import { draftMode } from "next/headers";
 import { SanityVisualEditing } from "@/components/sanity/SanityVisualEditing";
-
-const ProductQuickView = dynamic(
-  () => import("@/components/product/ProductQuickView").then((m) => ({ default: m.ProductQuickView })),
-  { ssr: false }
-);
-
-const IToolsAssistant = dynamic(
-  () => import("@/components/layout/IToolsAssistant").then((m) => ({ default: m.IToolsAssistant })),
-  { ssr: false }
-);
+import { DynamicClientWidgets } from "@/components/layout/DynamicClientWidgets";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -116,10 +106,9 @@ export default async function RootLayout({
           <AuthProvider>
             <ClientLayoutEffects />
             {children}
-            <ProductQuickView />
+            <DynamicClientWidgets />
             <CartDrawer />
             <BottomNav />
-            <IToolsAssistant />
             <CompareDrawer />
             <Toaster />
             {draft.isEnabled && <SanityVisualEditing />}
