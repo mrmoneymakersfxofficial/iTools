@@ -4,7 +4,7 @@ import { brands, categories, products } from "@/lib/data";
 
 const projectId = "kytfgk41";
 const dataset = "production";
-const token = "sk3TVifNMJi9ejiLQAy21tNpb1yvd2G517OP8TLjFn8hT388sfLeHbQKQU1E1lOm1tHdsWU5MLfSorsMQHoeAVGq5GhQ9jvrnXUsTaCi23MiBHkTZ73iv6rQdr5jfNdKsi5AgUUA5lkI5roaO66SojhlQpNdDnGM37qXWHlQq0nCWRdma9x6";
+const token = process.env.SANITY_API_WRITE_TOKEN;
 
 const client = createClient({
   projectId,
@@ -15,6 +15,10 @@ const client = createClient({
 });
 
 export async function GET() {
+  if (process.env.NODE_ENV === 'production') {
+    return NextResponse.json({ error: 'Seed endpoint not available in production' }, { status: 403 });
+  }
+
   console.log("Seeding Sanity...");
 
   try {

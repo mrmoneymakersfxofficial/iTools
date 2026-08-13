@@ -6,7 +6,11 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const secret = searchParams.get("secret");
 
-  const envSecret = process.env.SANITY_REVALIDATE_SECRET || "itools2024";
+  const envSecret = process.env.SANITY_REVALIDATE_SECRET;
+
+  if (!envSecret) {
+    return new Response("Missing SANITY_REVALIDATE_SECRET env var", { status: 500 });
+  }
 
   const cookieStore = await cookies();
   const hasAuthCookie = cookieStore.get("SANITY_STUDIO_AUTH")?.value === "1";

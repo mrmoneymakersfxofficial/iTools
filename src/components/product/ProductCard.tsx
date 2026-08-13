@@ -10,9 +10,7 @@ import { useWishlistStore } from "@/stores/wishlist-store";
 import { urlFor } from "@/sanity/image";
 import { useQuickViewStore } from "@/stores/quickview-store";
 
-function formatPrice(price: number): string {
-  return `S/ ${price.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-}
+import { formatPrice } from "@/lib/format";
 
 function StarRating({ rating, count }: { rating: number; count: number }) {
   return (

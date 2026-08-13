@@ -7,10 +7,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter } from "@/com
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useCartStore } from "@/stores/cart-store";
 import type { CartItem } from "@/types";
-
-function formatPrice(price: number): string {
-  return `S/ ${price.toFixed(2)}`;
-}
+import { formatPrice } from "@/lib/format";
 
 export function CartDrawer() {
   const { isOpen, closeCart, items, updateQuantity, removeItem, getItemCount, getSubtotal } =

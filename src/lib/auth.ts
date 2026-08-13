@@ -41,8 +41,14 @@ export const authOptions: NextAuthOptions = {
       },
     }),
     GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID ?? "placeholder-client-id",
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "placeholder-client-secret",
+      clientId: (() => {
+        if (!process.env.GOOGLE_CLIENT_ID) throw new Error("Missing GOOGLE_CLIENT_ID env var");
+        return process.env.GOOGLE_CLIENT_ID;
+      })(),
+      clientSecret: (() => {
+        if (!process.env.GOOGLE_CLIENT_SECRET) throw new Error("Missing GOOGLE_CLIENT_SECRET env var");
+        return process.env.GOOGLE_CLIENT_SECRET;
+      })(),
     }),
   ],
   session: {

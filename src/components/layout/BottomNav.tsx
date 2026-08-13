@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { getProductsByBrandSlug, categories, brands } from "@/lib/data";
 import type { Product } from "@/types";
+import { formatPrice } from "@/lib/format";
 
 const brandLinks = [
   { name: "Milwaukee", slug: "milwaukee", color: "#D1001C" },
@@ -42,10 +43,6 @@ const categoryIcons: Record<string, React.ReactNode> = {
   "HardHat": <HardHat className="h-5 w-5" />,
   "Ruler": <Ruler className="h-5 w-5" />,
 };
-
-function formatPrice(price: number): string {
-  return `S/ ${price.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-}
 
 export function BottomNav() {
   const pathname = usePathname();

@@ -38,11 +38,9 @@ import { categories, searchProducts } from "@/lib/data";
 import type { Product, Category } from "@/types";
 import { cn } from "@/lib/utils";
 
-/* ───────────────────────── helpers ───────────────────────── */
+import { formatPrice } from "@/lib/format";
 
-function formatPrice(n: number): string {
-  return `S/ ${n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-}
+/* ───────────────────────── helpers ───────────────────────── */
 
 function getTopLevelCategories(): Category[] {
   return categories.filter((c) => c.parentId === null);

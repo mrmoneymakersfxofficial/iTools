@@ -5,13 +5,17 @@ import { getToken } from "next-auth/jwt";
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
+  // Compute token once for all auth-protected routes
+  const needsAuth = pathname.startsWith("/admin") || pathname.startsWith("/cuenta") || pathname.startsWith("/checkout");
+  const token = needsAuth
+    ? await getToken({
+        req: request,
+        secret: process.env.NEXTAUTH_SECRET,
+      })
+    : null;
+
   // Protect admin routes
   if (pathname.startsWith("/admin")) {
-    const token = await getToken({
-      req: request,
-      secret: process.env.NEXTAUTH_SECRET,
-    });
-
     if (!token) {
       const loginUrl = new URL("/login", request.url);
       loginUrl.searchParams.set("callbackUrl", pathname);
@@ -26,11 +30,6 @@ export async function middleware(request: NextRequest) {
 
   // Protect account routes
   if (pathname.startsWith("/cuenta")) {
-    const token = await getToken({
-      req: request,
-      secret: process.env.NEXTAUTH_SECRET,
-    });
-
     if (!token) {
       const loginUrl = new URL("/login", request.url);
       loginUrl.searchParams.set("callbackUrl", pathname);
@@ -40,11 +39,6 @@ export async function middleware(request: NextRequest) {
 
   // Protect checkout
   if (pathname.startsWith("/checkout")) {
-    const token = await getToken({
-      req: request,
-      secret: process.env.NEXTAUTH_SECRET,
-    });
-
     if (!token) {
       const loginUrl = new URL("/login", request.url);
       loginUrl.searchParams.set("callbackUrl", pathname);

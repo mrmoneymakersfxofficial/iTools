@@ -1,10 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { trendingProducts } from "@/app/data/mock";
-
-function formatPrice(n: number): string {
-  return `S/ ${n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-}
+import { formatPrice } from "@/lib/format";
 
 export function TrendingProducts() {
   return (

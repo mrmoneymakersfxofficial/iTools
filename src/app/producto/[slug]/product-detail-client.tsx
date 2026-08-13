@@ -26,10 +26,7 @@ import type { Product } from "@/types";
 import { useSectionDeepLinking } from "@/hooks/useSectionDeepLinking";
 import { sectionId } from "@/hooks/useSectionDeepLinking";
 import { urlFor } from "@/sanity/image";
-
-function formatPrice(n: number): string {
-  return `S/ ${n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-}
+import { formatPrice } from "@/lib/format";
 
 function StarRating({ rating, count }: { rating: number; count: number }) {
   return (

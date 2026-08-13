@@ -108,7 +108,7 @@ export default defineConfig({
       previewUrl: {
         origin: PREVIEW_ORIGIN,
         previewMode: {
-          enable: "/api/draft?secret=itools2024",
+          enable: `/api/draft?secret=${process.env.SANITY_REVALIDATE_SECRET || ''}`,
         },
       },
       document: homeLocations,

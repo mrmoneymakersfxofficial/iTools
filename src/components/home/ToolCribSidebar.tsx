@@ -1,10 +1,7 @@
 "use client";
 import Link from "next/link";
 import { Wrench, Star, TrendingUp } from "lucide-react";
-
-function formatPrice(price: number): string {
-  return `S/ ${price.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-}
+import { formatPrice } from "@/lib/format";
 
 function SidebarProductCard({ product }: { product: any }) {
   const price = product.price || 0;
