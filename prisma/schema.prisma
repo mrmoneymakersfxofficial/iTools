@@ -3,8 +3,9 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model User {
@@ -20,6 +21,9 @@ model User {
   orders       Order[]
   wishlists    Wishlist[]
   addresses    Address[]
+
+  @@index([email])
+  @@index([googleId])
 }
 
 model Address {
@@ -35,6 +39,8 @@ model Address {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
   user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 model Brand {
@@ -46,6 +52,8 @@ model Brand {
   products  Product[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+
+  @@index([slug])
 }
 
 model Category {
@@ -61,6 +69,9 @@ model Category {
   products  Product[]
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
+
+  @@index([slug])
+  @@index([parentId])
 }
 
 model Product {
@@ -79,8 +90,8 @@ model Product {
   category         Category? @relation(fields: [categoryId], references: [id])
   stock            Int       @default(0)
   lowStockAlert    Int       @default(5)
-  images           String    @default("[]")
-  specs            String    @default("{}")
+  images           Json      @default("[]")
+  specs            Json      @default("{}")
   rating           Float     @default(0)
   reviewCount      Int       @default(0)
   technicalSheetUrl String?
@@ -100,6 +111,8 @@ model Product {
   @@index([categoryId])
   @@index([sku])
   @@index([brandId])
+  @@index([isFeatured])
+  @@index([isOnSale])
 }
 
 model Order {
@@ -107,7 +120,7 @@ model Order {
   orderNumber     String   @unique
   userId          String?
   user            User?    @relation(fields: [userId], references: [id])
-  items           String   @default("[]")
+  items           Json     @default("[]")
   subtotal        Float
   shippingCost    Float    @default(0)
   discount        Float    @default(0)
@@ -123,6 +136,7 @@ model Order {
 
   @@index([userId])
   @@index([status])
+  @@index([orderNumber])
 }
 
 model Wishlist {
@@ -134,15 +148,20 @@ model Wishlist {
   createdAt DateTime @default(now())
 
   @@unique([userId, productId])
+  @@index([userId])
+  @@index([productId])
 }
 
 model Cart {
   id        String   @id @default(cuid())
-  userId    String?
-  sessionId String?
-  items     String   @default("[]")
+  userId    String?  @unique
+  sessionId String?  @unique
+  items     Json     @default("[]")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([sessionId])
 }
 
 model Coupon {
@@ -157,6 +176,9 @@ model Coupon {
   isActive  Boolean   @default(true)
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+
+  @@index([code])
+  @@index([isActive])
 }
 
 model Review {
@@ -170,4 +192,5 @@ model Review {
   product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   @@index([productId])
+  @@index([userId])
 }
