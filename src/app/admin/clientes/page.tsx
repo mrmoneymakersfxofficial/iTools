@@ -2,6 +2,9 @@ import { db } from "@/lib/db";
 import { Search, ChevronLeft, ChevronRight } from "lucide-react";
 import { CustomerDetailRow, formatSoles } from "./ClientesClient";
 
+// Force dynamic rendering — this page queries the DB and must not be prerendered at build time
+export const dynamic = "force-dynamic";
+
 const PER_PAGE = 20;
 
 interface CustomerRow {

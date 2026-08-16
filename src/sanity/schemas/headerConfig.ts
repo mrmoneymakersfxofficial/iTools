@@ -41,5 +41,38 @@ export default defineType({
       type: "string",
       description: "Mensaje promocional en la parte superior.",
     }),
+    defineField({
+      name: "showBrandLogos",
+      title: "Mostrar Logos de Marcas en Cabecera",
+      type: "boolean",
+      initialValue: () => true,
+      description: "Si está activo, se muestran los logos de marcas (en lugar de pestañas) en la barra de navegación",
+    }),
+    defineField({
+      name: "brandLogos",
+      title: "Logos de Marcas en Cabecera",
+      type: "array",
+      of: [
+        {
+          type: "object",
+          fields: [
+            { name: "name", title: "Nombre de Marca", type: "string" },
+            { name: "slug", title: "Slug (link)", type: "string", description: "Ej: milwaukee → /marca/milwaukee" },
+            {
+              name: "logo",
+              title: "Logo",
+              type: "image",
+              options: { hotspot: true },
+            },
+            { name: "order", title: "Orden", type: "number", initialValue: () => 0 },
+          ],
+          preview: {
+            select: { title: "name", media: "logo" },
+            prepare: ({ title, media }: { title?: string; media?: any }) => ({ title, media }),
+          },
+        },
+      ],
+      description: "Logos de marcas que se muestran en la cabecera. Al hacer clic llevan a /marca/[slug]. Deben ser visibles, ordenados y clickeables.",
+    }),
   ],
 });

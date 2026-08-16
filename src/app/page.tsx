@@ -42,7 +42,7 @@ export default async function Home() {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <Header />
+      <Header sanityConfig={data.headerConfig} />
 
       <main className="flex-1">
         {/* ═══════════════════════════════════════════════════

@@ -17,13 +17,26 @@ export default defineType({
       type: "string",
     }),
     defineField({
+      name: "videoSourceType",
+      title: "Tipo de Videos",
+      type: "string",
+      options: {
+        list: [
+          { title: "Google Drive", value: "googleDrive" },
+          { title: "YouTube / YouTube Shorts", value: "youtube" },
+          { title: "TikTok", value: "tiktok" },
+          { title: "Mixto (URLs variadas)", value: "mixed" },
+        ],
+      },
+      initialValue: () => "googleDrive",
+      description: "Selecciona el tipo de videos que se mostrarán.",
+    }),
+    defineField({
       name: "videos",
       title: "Videos",
       type: "array",
       of: [
-        defineType({
-          name: "videoItem",
-          title: "Video",
+        {
           type: "object",
           fields: [
             defineField({
@@ -33,17 +46,36 @@ export default defineType({
               validation: (r) => r.required(),
             }),
             defineField({
-              name: "googleDriveUrl",
-              title: "URL de Google Drive (embed)",
+              name: "videoUrl",
+              title: "URL del Video",
               type: "url",
-              description: "URL del video en Google Drive. Formato: https://drive.google.com/file/d/FILE_ID/preview",
+              description: "URL del video. Google Drive, YouTube, YouTube Shorts, TikTok, Vimeo.",
               validation: (r) => r.required(),
+            }),
+            defineField({
+              name: "googleDriveUrl",
+              title: "URL de Google Drive (legacy)",
+              type: "url",
+              description: "Campo legacy. Usar videoUrl en su lugar.",
             }),
             defineField({
               name: "thumbnail",
               title: "Miniatura",
               type: "image",
               options: { hotspot: true },
+            }),
+            defineField({
+              name: "isVertical",
+              title: "Video Vertical (Shorts/TikTok)",
+              type: "boolean",
+              initialValue: () => false,
+              description: "Marcar si el video es formato vertical (9:16)",
+            }),
+            defineField({
+              name: "productSlug",
+              title: "Slug del Producto Relacionado",
+              type: "string",
+              description: "Slug del producto relacionado con este video",
             }),
             defineField({
               name: "order",
@@ -54,10 +86,21 @@ export default defineType({
           ],
           preview: {
             select: { title: "title", media: "thumbnail" },
-            prepare: ({ title, media }) => ({ title, media }),
+            prepare: ({ title, media }: { title?: string; media?: any }) => ({ title, media }),
           },
-        }),
+        },
       ],
+    }),
+    defineField({
+      name: "ctaText",
+      title: "Texto del Botón CTA",
+      type: "string",
+      description: "Ej: 'Ver más productos', 'Ver todos los videos'",
+    }),
+    defineField({
+      name: "ctaLink",
+      title: "Enlace del Botón CTA",
+      type: "string",
     }),
     defineField({
       name: "order",
@@ -75,6 +118,6 @@ export default defineType({
   ],
   preview: {
     select: { title: "sectionTitle" },
-    prepare: ({ title }) => ({ title }),
+    prepare: ({ title }: { title?: string }) => ({ title }),
   },
 });

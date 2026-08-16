@@ -5,7 +5,14 @@ export const headerConfigQuery = `*[_type == "headerConfig"][0] {
   location,
   badge1,
   badge2,
-  announcementBar
+  announcementBar,
+  showBrandLogos,
+  brandLogos[] {
+    name,
+    slug,
+    "logo": logo { asset-> { url, metadata { dimensions { width, height } } } },
+    order
+  }
 }`;
 
 export const footerConfigQuery = `*[_type == "footerConfig"][0] {

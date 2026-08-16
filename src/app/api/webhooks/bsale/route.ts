@@ -4,10 +4,10 @@ import { syncVariantStock } from "@/lib/bsale/sync";
 
 /**
  * POST /api/webhooks/bsale
- *
+ * 
  * Receives webhook notifications from Bsale ERP.
  * Handles: product, variant, price, stock, document, payment events.
- *
+ * 
  * Webhook payload format:
  * {
  *   "cpnId": 2,
@@ -19,12 +19,6 @@ import { syncVariantStock } from "@/lib/bsale/sync";
  *   "priceListId": "2",     // price only
  *   "send": 1503500856
  * }
- *
- * Design principles:
- * - Return 200 OK immediately to prevent Bsale retries
- * - Process events asynchronously (fire-and-forget for heavy work)
- * - Dedup events to avoid double processing
- * - Log all events for audit/debugging
  */
 
 interface BsaleWebhookPayload {
@@ -39,282 +33,137 @@ interface BsaleWebhookPayload {
 }
 
 // Track processed webhooks to prevent duplicates (in-memory, resets on redeploy)
-const processedWebhooks = new Map<string, number>();
-const WEBHOOK_DEDUP_TTL = 300_000; // 5 minutes
-
-// Clean up old dedup entries periodically
-function cleanDedupCache() {
-  const now = Date.now();
-  for (const [key, timestamp] of processedWebhooks) {
-    if (now - timestamp > WEBHOOK_DEDUP_TTL) {
-      processedWebhooks.delete(key);
-    }
-  }
-}
+const processedWebhooks = new Set<string>();
+const WEBHOOK_DEDUP_TTL = 300000; // 5 minutes
 
 export async function POST(request: NextRequest) {
-  // ─── Verify webhook signature ──────────────────────────────────
+  // Validate webhook secret (if configured)
   const webhookSecret = process.env.BSALE_WEBHOOK_SECRET;
   if (webhookSecret) {
-    const signature =
-      request.headers.get("x-bsale-signature") ||
-      request.headers.get("authorization");
-
-    if (
-      signature !== webhookSecret &&
-      signature !== `Bearer ${webhookSecret}`
-    ) {
-      console.warn("[Bsale Webhook] Invalid signature attempt");
-      return NextResponse.json(
-        { error: "Invalid webhook signature" },
-        { status: 401 }
-      );
+    const signature = request.headers.get("x-bsale-signature") || 
+                      request.headers.get("authorization");
+    if (signature !== webhookSecret && signature !== `Bearer ${webhookSecret}`) {
+      return NextResponse.json({ error: "Invalid webhook signature" }, { status: 401 });
     }
   }
 
-  let payload: BsaleWebhookPayload;
-
   try {
-    payload = await request.json();
-  } catch {
-    console.error("[Bsale Webhook] Invalid JSON payload");
-    return NextResponse.json(
-      { status: "error", message: "Invalid JSON" },
-      { status: 400 }
-    );
-  }
+    const payload: BsaleWebhookPayload = await request.json();
 
-  // ─── Dedup check ───────────────────────────────────────────────
-  const dedupKey = `${payload.topic}-${payload.resourceId}-${payload.action}-${payload.send}`;
-  const lastProcessed = processedWebhooks.get(dedupKey);
-  if (lastProcessed && Date.now() - lastProcessed < WEBHOOK_DEDUP_TTL) {
-    console.log(`[Bsale Webhook] Duplicate: ${dedupKey}`);
-    return NextResponse.json({ status: "duplicate", topic: payload.topic });
-  }
-  processedWebhooks.set(dedupKey, Date.now());
+    // Dedup check
+    const dedupKey = `${payload.topic}-${payload.resourceId}-${payload.action}-${payload.send}`;
+    if (processedWebhooks.has(dedupKey)) {
+      return NextResponse.json({ status: "duplicate", topic: payload.topic });
+    }
+    processedWebhooks.add(dedupKey);
 
-  // Clean old entries periodically
-  if (processedWebhooks.size > 500) {
-    cleanDedupCache();
-  }
+    // Clean old entries periodically
+    if (processedWebhooks.size > 1000) {
+      processedWebhooks.clear();
+    }
 
-  // ─── Log the event ─────────────────────────────────────────────
-  const timestamp = new Date().toISOString();
-  console.log(
-    `[Bsale Webhook] ${timestamp} | ${payload.action.toUpperCase()} ${payload.topic} | id=${payload.resourceId}` +
-      (payload.officeId ? ` | office=${payload.officeId}` : "") +
-      (payload.priceListId ? ` | priceList=${payload.priceListId}` : "")
-  );
+    console.log(`[Bsale Webhook] ${payload.action} ${payload.topic} id=${payload.resourceId}`);
 
-  // ─── Return 200 OK immediately, process asynchronously ─────────
-  // This prevents Bsale from retrying if our processing takes long.
-  // We use .catch() to ensure unhandled rejections don't crash.
+    // Process based on topic
+    switch (payload.topic) {
+      case "product":
+        await handleProductWebhook(payload);
+        break;
+      case "variant":
+        await handleVariantWebhook(payload);
+        break;
+      case "price":
+        await handlePriceWebhook(payload);
+        break;
+      case "stock":
+        await handleStockWebhook(payload);
+        break;
+      case "document":
+        await handleDocumentWebhook(payload);
+        break;
+      case "payment":
+        await handlePaymentWebhook(payload);
+        break;
+      default:
+        console.log(`[Bsale Webhook] Unknown topic: ${payload.topic}`);
+    }
 
-  processWebhookEvent(payload).catch((err) => {
-    console.error(
-      `[Bsale Webhook] Async processing error for ${payload.topic}/${payload.resourceId}:`,
-      err
-    );
-  });
-
-  return NextResponse.json({
-    status: "received",
-    topic: payload.topic,
-    action: payload.action,
-    resourceId: payload.resourceId,
-    timestamp,
-  });
-}
-
-// ─── Async Event Processor ───────────────────────────────────────
-
-async function processWebhookEvent(payload: BsaleWebhookPayload) {
-  switch (payload.topic) {
-    case "product":
-      await handleProductWebhook(payload);
-      break;
-    case "variant":
-      await handleVariantWebhook(payload);
-      break;
-    case "price":
-      await handlePriceWebhook(payload);
-      break;
-    case "stock":
-      await handleStockWebhook(payload);
-      break;
-    case "document":
-      await handleDocumentWebhook(payload);
-      break;
-    case "payment":
-      await handlePaymentWebhook(payload);
-      break;
-    default:
-      console.warn(
-        `[Bsale Webhook] Unhandled topic: ${payload.topic}`,
-        payload
-      );
+    // Always return 200 OK to acknowledge receipt
+    return NextResponse.json({
+      status: "processed",
+      topic: payload.topic,
+      action: payload.action,
+      resourceId: payload.resourceId,
+    });
+  } catch (error) {
+    console.error("[Bsale Webhook] Error:", error);
+    // Still return 200 to prevent Bsale from retrying
+    return NextResponse.json({ status: "error", message: "Internal error" });
   }
 }
 
-// ─── Webhook Handlers ─────────────────────────────────────────────
+// ─── Webhook Handlers ───────────────────────────────────────────
 
 async function handleProductWebhook(payload: BsaleWebhookPayload) {
+  // Fetch the full product data from Bsale
   const productId = Number(payload.resourceId);
-  const action = payload.action === "post" ? "created" : "updated";
+  const bsaleProduct = await bsale.getProduct(productId, ["product_type"]);
 
-  try {
-    // Fetch the full product data from Bsale
-    const bsaleProduct = await bsale.getProduct(productId, ["product_type"]);
-    console.log(
-      `[Bsale Webhook] Product ${action}: "${bsaleProduct.name}" (state=${bsaleProduct.state})`
-    );
+  // Update the corresponding product in iTools DB
+  const { db } = await import("@/lib/db");
+  
+  const existing = await db.product.findFirst({
+    where: { specs: { path: ["bsaleId"], equals: productId } },
+  });
 
-    // Update the corresponding product in iTools DB
-    const { db } = await import("@/lib/db");
-
-    const existing = await db.product.findFirst({
-      where: { specs: { path: ["bsaleId"], equals: productId } },
+  if (existing) {
+    await db.product.update({
+      where: { id: existing.id },
+      data: {
+        name: bsaleProduct.name,
+        description: bsaleProduct.description || undefined,
+        isPublished: bsaleProduct.state === 0,
+      },
     });
+    console.log(`[Bsale] Updated product: ${bsaleProduct.name}`);
+  } else {
+    // New product from Bsale - create in iTools
+    const sku = `BSALE-${bsaleProduct.id}`;
+    const slug = bsaleProduct.name
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/(^-|-$)/g, "");
 
-    if (existing) {
-      // Product exists - update it
-      await db.product.update({
-        where: { id: existing.id },
-        data: {
-          name: bsaleProduct.name,
-          description: bsaleProduct.description || undefined,
-          isPublished: bsaleProduct.state === 0,
-        },
-      });
-      console.log(
-        `[Bsale Webhook] Updated product in DB: ${bsaleProduct.name} (id=${existing.id})`
-      );
-    } else {
-      // New product from Bsale - create in iTools
-      const sku = `BSALE-${bsaleProduct.id}`;
-      const slug = bsaleProduct.name
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/(^-|-$)/g, "");
-
-      const created = await db.product.create({
-        data: {
-          sku,
-          name: bsaleProduct.name,
-          slug,
-          description: bsaleProduct.description || undefined,
-          price: 0,
-          stock: 0,
-          images: [],
-          specs: { bsaleId: bsaleProduct.id },
-          isPublished: bsaleProduct.state === 0,
-        },
-      });
-      console.log(
-        `[Bsale Webhook] Created product in DB: ${bsaleProduct.name} (id=${created.id})`
-      );
-    }
-
-    // Also sync variants if the product has them
-    try {
-      const variantsResponse = await bsale.getProductVariants(productId);
-      const variants = variantsResponse.items || [];
-      if (variants.length > 0) {
-        // Update the product specs with variant IDs
-        const { db } = await import("@/lib/db");
-        const product = await db.product.findFirst({
-          where: { specs: { path: ["bsaleId"], equals: productId } },
-        });
-        if (product) {
-          const currentSpecs = (product.specs as Record<string, unknown>) || {};
-          await db.product.update({
-            where: { id: product.id },
-            data: {
-              specs: {
-                ...currentSpecs,
-                bsaleVariants: variants.map((v) => v.id),
-              },
-            },
-          });
-        }
-        console.log(
-          `[Bsale Webhook] Synced ${variants.length} variants for product ${productId}`
-        );
-      }
-    } catch (variantErr) {
-      console.warn(
-        `[Bsale Webhook] Could not sync variants for product ${productId}:`,
-        variantErr
-      );
-    }
-  } catch (error) {
-    console.error(
-      `[Bsale Webhook] Product ${action} handler failed for id=${productId}:`,
-      error
-    );
+    await db.product.create({
+      data: {
+        sku,
+        name: bsaleProduct.name,
+        slug,
+        description: bsaleProduct.description || undefined,
+        price: 0,
+        stock: 0,
+        images: [],
+        specs: { bsaleId: bsaleProduct.id },
+        isPublished: bsaleProduct.state === 0,
+      },
+    });
+    console.log(`[Bsale] Created new product: ${bsaleProduct.name}`);
   }
 }
 
 async function handleVariantWebhook(payload: BsaleWebhookPayload) {
-  const variantId = Number(payload.resourceId);
-  const action = payload.action === "post" ? "created" : "updated";
-
-  console.log(
-    `[Bsale Webhook] Variant ${action}: id=${variantId}, resource=${payload.resource}`
-  );
-
-  // Extract product ID from resource path: "/v2/products/952/variants/123.json"
-  const productMatch = payload.resource.match(/\/products\/(\d+)\//);
-  if (productMatch) {
-    const productId = Number(productMatch[1]);
-    try {
-      // Refresh the product's variant list in the DB
-      const variantsResponse = await bsale.getProductVariants(productId);
-      const variants = variantsResponse.items || [];
-
-      const { db } = await import("@/lib/db");
-      const product = await db.product.findFirst({
-        where: { specs: { path: ["bsaleId"], equals: productId } },
-      });
-
-      if (product) {
-        const currentSpecs = (product.specs as Record<string, unknown>) || {};
-        await db.product.update({
-          where: { id: product.id },
-          data: {
-            specs: {
-              ...currentSpecs,
-              bsaleVariants: variants.map((v) => v.id),
-            },
-          },
-        });
-        console.log(
-          `[Bsale Webhook] Updated variant list for product ${product.name}`
-        );
-      }
-    } catch (error) {
-      console.error(
-        `[Bsale Webhook] Variant ${action} handler failed:`,
-        error
-      );
-    }
-  }
+  // Variant created or updated - refresh product data
+  console.log(`[Bsale] Variant ${payload.action}: ${payload.resourceId}`);
+  // The product webhook will handle the full update
 }
 
 async function handlePriceWebhook(payload: BsaleWebhookPayload) {
   const variantId = Number(payload.resourceId);
-  const priceListId = Number(
-    payload.priceListId || process.env.BSALE_PRICE_LIST_ID || 1
-  );
+  const priceListId = Number(payload.priceListId || process.env.BSALE_PRICE_LIST_ID || 1);
 
   try {
     const priceData = await bsale.getPriceListDetails(priceListId, variantId);
-    if (!priceData.items?.length) {
-      console.log(
-        `[Bsale Webhook] No price data for variant=${variantId}, priceList=${priceListId}`
-      );
-      return;
-    }
+    if (!priceData.items?.length) return;
 
     const price = priceData.items[0].priceWithTax / 100; // Cents to soles
     const comparePrice = priceData.items[0].basePrice / 100;
@@ -322,133 +171,123 @@ async function handlePriceWebhook(payload: BsaleWebhookPayload) {
     // Update price in iTools DB
     const { db } = await import("@/lib/db");
     const product = await db.product.findFirst({
-      where: {
-        specs: { path: ["bsaleVariants"], array_contains: variantId },
-      },
+      where: { specs: { path: ["bsaleVariants"], array_contains: variantId } },
     });
 
     if (product) {
       await db.product.update({
         where: { id: product.id },
-        data: {
-          price,
-          comparePrice: comparePrice !== price ? comparePrice : null,
-        },
+        data: { price, comparePrice: comparePrice !== price ? comparePrice : null },
       });
-      console.log(
-        `[Bsale Webhook] Updated price for "${product.name}": S/${price.toFixed(2)}`
-      );
-    } else {
-      console.log(
-        `[Bsale Webhook] No product found for variant=${variantId} to update price`
-      );
+      console.log(`[Bsale] Updated price for ${product.name}: S/${price}`);
     }
   } catch (error) {
-    console.error(
-      `[Bsale Webhook] Price update failed for variant=${variantId}:`,
-      error
-    );
+    console.error(`[Bsale] Price update error:`, error);
   }
 }
 
 async function handleStockWebhook(payload: BsaleWebhookPayload) {
   const variantId = Number(payload.resourceId);
-  const officeId = Number(
-    payload.officeId || process.env.BSALE_OFFICE_ID || 1
-  );
+  const officeId = Number(payload.officeId || process.env.BSALE_OFFICE_ID || 1);
 
-  try {
-    const result = await syncVariantStock(variantId, officeId);
-    if (result) {
-      console.log(
-        `[Bsale Webhook] Stock updated: SKU=${result.sku} → ${result.stock} units`
-      );
-    } else {
-      console.log(
-        `[Bsale Webhook] No stock sync result for variant=${variantId}, office=${officeId}`
-      );
-    }
-  } catch (error) {
-    console.error(
-      `[Bsale Webhook] Stock update failed for variant=${variantId}:`,
-      error
-    );
+  const result = await syncVariantStock(variantId, officeId);
+  if (result) {
+    console.log(`[Bsale] Stock updated: ${result.sku} → ${result.stock} units`);
   }
 }
 
 async function handleDocumentWebhook(payload: BsaleWebhookPayload) {
-  const docId = Number(payload.resourceId);
-  const action = payload.action === "post" ? "created" : "updated";
-
-  console.log(
-    `[Bsale Webhook] Document ${action}: id=${docId}`
-  );
+  // Document created/updated in Bsale (e.g., refund, credit note, SUNAT response)
+  const documentId = Number(payload.resourceId);
+  console.log(`[Bsale] Document ${payload.action}: ${documentId}`);
 
   try {
-    // Fetch the document details for logging
-    const doc = await bsale.getDocument(docId);
-    console.log(
-      `[Bsale Webhook] Document details: number=${doc.number}, total=${doc.totalAmount}, state=${doc.state}, urlPdf=${doc.urlPdf || "N/A"}`
-    );
-
-    // Update corresponding order in iTools DB if it has a salesId mapping
     const { db } = await import("@/lib/db");
+    const docData = await bsale.getDocument(documentId);
+
+    if (!docData) return;
+
+    // Find the iTools order linked to this Bsale document
     const order = await db.order.findFirst({
-      where: { orderNumber: String(docId) },
+      where: { notes: { contains: `bsale-doc:${documentId}` } },
     });
 
     if (order) {
-      // Map Bsale document state to order status
-      // Bsale states: 0=normal, 1=informing SUNAT, 2=accepted, 3=rejected, 4=canceled
-      const stateMapping: Record<number, string> = {
-        0: "PROCESSING",
-        1: "PROCESSING",
-        2: "CONFIRMED",
-        3: "REJECTED",
-        4: "CANCELLED",
+      // Map Bsale document state to iTools order status
+      // Bsale states: 0=active, 1=closed, 2=cancelled
+      const statusMap: Record<number, string> = {
+        0: "PENDING",    // Active - not yet finalized
+        1: "CONFIRMED",  // Closed - finalized/paid
+        2: "CANCELLED",  // Cancelled
       };
+      const newStatus = statusMap[docData.state] ?? order.status;
+
+      // Map Bsale payment state to iTools payment status
+      // Bsale payment states: 0=unpaid, 1=paid, 2=partial
+      const paymentMap: Record<number, string> = {
+        0: "PENDING",
+        1: "PAID",
+        2: "PARTIAL",
+      };
+      const newPaymentStatus = docData.paymentStatus !== undefined
+        ? (paymentMap[docData.paymentStatus] ?? order.paymentStatus)
+        : order.paymentStatus;
 
       await db.order.update({
         where: { id: order.id },
         data: {
-          status: stateMapping[doc.state] || order.status,
-          notes: `Bsale doc #${doc.number} | state=${doc.state}`,
+          status: newStatus,
+          paymentStatus: newPaymentStatus,
         },
       });
-      console.log(
-        `[Bsale Webhook] Updated order ${order.orderNumber} from Bsale document`
-      );
+      console.log(`[Bsale] Updated order ${order.orderNumber}: status=${newStatus}, payment=${newPaymentStatus}`);
     }
   } catch (error) {
-    console.error(
-      `[Bsale Webhook] Document ${action} handler failed for id=${docId}:`,
-      error
-    );
+    console.error(`[Bsale] Document webhook error:`, error);
   }
 }
 
 async function handlePaymentWebhook(payload: BsaleWebhookPayload) {
+  // Payment registered or updated in Bsale
   const paymentId = Number(payload.resourceId);
-
-  console.log(
-    `[Bsale Webhook] Payment ${payload.action === "post" ? "created" : "updated"}: id=${paymentId}`
-  );
+  console.log(`[Bsale] Payment ${payload.action}: ${paymentId}`);
 
   try {
-    // If we can correlate a payment to an order, update payment status
     const { db } = await import("@/lib/db");
+    // Bsale payment webhook resourceId is the payment ID
+    // We need to find the associated document, then the order
+    const paymentData = await bsale.getPayment(paymentId);
 
-    // Look for orders that might match this payment
-    // Payment webhooks don't always include a direct order reference,
-    // so we log it for manual reconciliation if needed
-    console.log(
-      `[Bsale Webhook] Payment event recorded for id=${paymentId}. Manual reconciliation may be needed.`
-    );
+    if (!paymentData || !paymentData.documentId) return;
+
+    // Find order linked to this Bsale document
+    const order = await db.order.findFirst({
+      where: { notes: { contains: `bsale-doc:${paymentData.documentId}` } },
+    });
+
+    if (order) {
+      // Bsale payment states: 0=unpaid, 1=paid, 2=partial
+      const paymentStatusMap: Record<number, string> = {
+        0: "PENDING",
+        1: "PAID",
+        2: "PARTIAL",
+      };
+      const newPaymentStatus = paymentStatusMap[paymentData.state] ?? order.paymentStatus;
+
+      const updateData: Record<string, string> = { paymentStatus: newPaymentStatus };
+      // If fully paid, also set order status to CONFIRMED
+      if (newPaymentStatus === "PAID" && order.status === "PENDING") {
+        updateData.status = "CONFIRMED";
+      }
+
+      await db.order.update({
+        where: { id: order.id },
+        data: updateData,
+      });
+      console.log(`[Bsale] Payment updated for order ${order.orderNumber}: payment=${newPaymentStatus}`);
+    }
   } catch (error) {
-    console.error(
-      `[Bsale Webhook] Payment handler failed for id=${paymentId}:`,
-      error
-    );
+    console.error(`[Bsale] Payment webhook error:`, error);
   }
 }
 
@@ -459,8 +298,6 @@ export async function GET() {
     endpoint: "/api/webhooks/bsale",
     status: "active",
     topics: ["product", "variant", "price", "stock", "document", "payment"],
-    actions: ["post", "put"],
     info: "Configure this URL in Bsale Dashboard → Configuration → Webhooks",
-    secretConfigured: !!process.env.BSALE_WEBHOOK_SECRET,
   });
 }

@@ -11,6 +11,9 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 
+// Force dynamic rendering — this page queries the DB and must not be prerendered at build time
+export const dynamic = "force-dynamic";
+
 /* ── Helpers ─────────────────────────────────────────────────── */
 
 function parseItems(itemsJson: string): Array<{ productId: string; name: string; quantity: number; price: number }> {
