@@ -1,6 +1,8 @@
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 
+export const dynamic = 'force-dynamic';
+
 /* ── Desktop-only components ── */
 import { TrendingSidebar } from "@/components/home/TrendingSidebar";
 import { ToolCribSidebar } from "@/components/home/ToolCribSidebar";
@@ -164,9 +166,9 @@ function DesktopDealTiles({ dealTiles }: { dealTiles: any[] }) {
               className="group relative overflow-hidden rounded-lg h-[200px] transition-shadow hover:shadow-lg"
             >
               <div className="absolute inset-0" style={{ backgroundColor: tile.brandColor || "#000" }} />
-              {(tile.image?.asset?.url || VALID_LOCAL_BRANDS.includes(tile.brand.toLowerCase())) && (
+              {(tile.image?.asset?.url || (tile.brand && VALID_LOCAL_BRANDS.includes(tile.brand.toLowerCase()))) && (
                 <img 
-                  src={tile.image?.asset?.url || `/brands/${tile.brand.toLowerCase()}.webp`} 
+                  src={tile.image?.asset?.url || `/brands/${tile.brand?.toLowerCase()}.webp`} 
                   alt="" 
                   className="absolute inset-0 w-full h-full object-cover opacity-50 transition-transform duration-500" 
                 />

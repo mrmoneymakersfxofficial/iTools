@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { ProductDetailClient } from "./product-detail-client";
-import { fetchProductBySlug, fetchRelatedProducts, fetchAllProductSlugs } from "@/lib/sanity/fetch-product";
+import { fetchProductBySlug, fetchRelatedProducts, fetchAllProductSlugs, fetchProductReviews } from "@/lib/sanity/fetch-product";
 import { urlFor } from "@/sanity/image";
 
 const SITE_URL = "https://itools.pe";
@@ -62,5 +62,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     ? await fetchRelatedProducts(product.category.slug, product.slug)
     : [];
 
-  return <ProductDetailClient product={product} relatedProducts={relatedProducts} />;
+  const reviews = await fetchProductReviews(slug);
+
+  return <ProductDetailClient product={product} relatedProducts={relatedProducts} reviews={reviews} />;
 }

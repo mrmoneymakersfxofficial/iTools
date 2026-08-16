@@ -24,6 +24,7 @@ import { Separator } from "@/components/ui/separator";
 import { ProductCard } from "@/components/product/ProductCard";
 import { ShareDialog } from "@/components/product/ShareDialog";
 import { ProductReviews } from "@/components/product/ProductReviews";
+import { PdfDownloadButton } from "@/components/product/PdfDownloadButton";
 import { useCartStore } from "@/stores/cart-store";
 import { useWishlistStore } from "@/stores/wishlist-store";
 import { useCompareStore } from "@/stores/compare-store";
@@ -299,6 +300,21 @@ export function ProductDetailClient({ product, relatedProducts, reviews }: { pro
                       Ficha Técnica
                     </Button>
                   </Link>
+                )}
+                {!(product as any).technicalSheetUrl && (
+                  <PdfDownloadButton
+                    product={{
+                      name: product.name,
+                      slug: product.slug || product.id,
+                      sku: product.sku,
+                      brand: product.brand?.name,
+                      price: product.price,
+                      description: product.description || product.shortDescription,
+                      specs: (product as any).specs,
+                    }}
+                    variant="outline"
+                    size="sm"
+                  />
                 )}
               </div>
             </div>

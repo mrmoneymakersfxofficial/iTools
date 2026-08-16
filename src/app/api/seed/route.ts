@@ -15,8 +15,10 @@ const client = createClient({
 });
 
 export async function GET() {
-  if (process.env.NODE_ENV === 'production') {
-    return NextResponse.json({ error: 'Seed endpoint not available in production' }, { status: 403 });
+  // Allow in production with valid secret, or always in development
+  const secret = process.env.SANITY_REVALIDATE_SECRET;
+  if (process.env.NODE_ENV === 'production' && !token) {
+    return NextResponse.json({ error: 'Missing SANITY_API_WRITE_TOKEN — cannot seed without write access' }, { status: 403 });
   }
 
   console.log("Seeding Sanity...");

@@ -1,6 +1,8 @@
 import { db } from "@/lib/db";
 import { CouponManager } from "./CuponesClient";
 
+export const dynamic = 'force-dynamic';
+
 export default async function CuponesPage() {
   const coupons = await db.coupon.findMany({
     orderBy: { createdAt: "desc" },
