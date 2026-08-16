@@ -292,6 +292,21 @@ export async function getDocument(docId: number): Promise<BsaleDocument> {
   return bsaleRequest<BsaleDocument>("GET", `/documents/${docId}.json`);
 }
 
+// ─── Payments ──────────────────────────────────────────────────
+
+export interface BsalePayment {
+  id: number;
+  documentId: number;
+  amount: number;
+  state: number; // 0=unpaid, 1=paid, 2=partial
+  paymentTypeId: number;
+  checkDate: string | null;
+}
+
+export async function getPayment(paymentId: number): Promise<BsalePayment> {
+  return bsaleRequest<BsalePayment>("GET", `/payments/${paymentId}.json`);
+}
+
 // ─── Document Types ─────────────────────────────────────────────
 
 export interface BsaleDocumentType {

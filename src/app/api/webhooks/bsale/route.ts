@@ -197,15 +197,98 @@ async function handleStockWebhook(payload: BsaleWebhookPayload) {
 }
 
 async function handleDocumentWebhook(payload: BsaleWebhookPayload) {
-  // Document created/updated in Bsale - could be a refund, credit note, etc.
-  console.log(`[Bsale] Document ${payload.action}: ${payload.resourceId}`);
-  // TODO: Handle document status changes (e.g., payment confirmed, invoice rejected by SUNAT)
+  // Document created/updated in Bsale (e.g., refund, credit note, SUNAT response)
+  const documentId = Number(payload.resourceId);
+  console.log(`[Bsale] Document ${payload.action}: ${documentId}`);
+
+  try {
+    const { db } = await import("@/lib/db");
+    const docData = await bsale.getDocument(documentId);
+
+    if (!docData) return;
+
+    // Find the iTools order linked to this Bsale document
+    const order = await db.order.findFirst({
+      where: { notes: { contains: `bsale-doc:${documentId}` } },
+    });
+
+    if (order) {
+      // Map Bsale document state to iTools order status
+      // Bsale states: 0=active, 1=closed, 2=cancelled
+      const statusMap: Record<number, string> = {
+        0: "PENDING",    // Active - not yet finalized
+        1: "CONFIRMED",  // Closed - finalized/paid
+        2: "CANCELLED",  // Cancelled
+      };
+      const newStatus = statusMap[docData.state] ?? order.status;
+
+      // Map Bsale payment state to iTools payment status
+      // Bsale payment states: 0=unpaid, 1=paid, 2=partial
+      const paymentMap: Record<number, string> = {
+        0: "PENDING",
+        1: "PAID",
+        2: "PARTIAL",
+      };
+      const newPaymentStatus = docData.paymentStatus !== undefined
+        ? (paymentMap[docData.paymentStatus] ?? order.paymentStatus)
+        : order.paymentStatus;
+
+      await db.order.update({
+        where: { id: order.id },
+        data: {
+          status: newStatus,
+          paymentStatus: newPaymentStatus,
+        },
+      });
+      console.log(`[Bsale] Updated order ${order.orderNumber}: status=${newStatus}, payment=${newPaymentStatus}`);
+    }
+  } catch (error) {
+    console.error(`[Bsale] Document webhook error:`, error);
+  }
 }
 
 async function handlePaymentWebhook(payload: BsaleWebhookPayload) {
-  // Payment registered in Bsale
-  console.log(`[Bsale] Payment ${payload.action}: ${payload.resourceId}`);
-  // TODO: Update order payment status in iTools
+  // Payment registered or updated in Bsale
+  const paymentId = Number(payload.resourceId);
+  console.log(`[Bsale] Payment ${payload.action}: ${paymentId}`);
+
+  try {
+    const { db } = await import("@/lib/db");
+    // Bsale payment webhook resourceId is the payment ID
+    // We need to find the associated document, then the order
+    const paymentData = await bsale.getPayment(paymentId);
+
+    if (!paymentData || !paymentData.documentId) return;
+
+    // Find order linked to this Bsale document
+    const order = await db.order.findFirst({
+      where: { notes: { contains: `bsale-doc:${paymentData.documentId}` } },
+    });
+
+    if (order) {
+      // Bsale payment states: 0=unpaid, 1=paid, 2=partial
+      const paymentStatusMap: Record<number, string> = {
+        0: "PENDING",
+        1: "PAID",
+        2: "PARTIAL",
+      };
+      const newPaymentStatus = paymentStatusMap[paymentData.state] ?? order.paymentStatus;
+
+      const updateData: Record<string, string> = { paymentStatus: newPaymentStatus };
+      // If fully paid, also set order status to CONFIRMED
+      if (newPaymentStatus === "PAID" && order.status === "PENDING") {
+        updateData.status = "CONFIRMED";
+      }
+
+      await db.order.update({
+        where: { id: order.id },
+        data: updateData,
+      });
+      console.log(`[Bsale] Payment updated for order ${order.orderNumber}: payment=${newPaymentStatus}`);
+    }
+  } catch (error) {
+    console.error(`[Bsale] Payment webhook error:`, error);
+  }
 }
 
 // ─── GET endpoint for webhook verification ──────────────────────

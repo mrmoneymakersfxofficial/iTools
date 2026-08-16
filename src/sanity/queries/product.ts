@@ -23,7 +23,9 @@ export const productBySlugQuery = `*[_type == "product" && slug.current == $slug
   rating,
   "reviewCount": reviews,
   images,
-  image
+  image,
+  technicalSheetUrl,
+  videoUrl
 }`;
 
 export const relatedProductsQuery = `*[_type == "product" && category->slug.current == $categorySlug && slug.current != $currentSlug] | order(_createdAt desc)[0...4] {

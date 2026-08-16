@@ -26,6 +26,18 @@ export default defineType({
     defineField({ name: "showInNewArrivals", title: "Mostrar en Nuevos Ingresos", type: "boolean", initialValue: false }),
     defineField({ name: "order", title: "Orden", type: "number", validation: (r) => r.required().min(0) }),
     defineField({ name: "isActive", title: "Activo", type: "boolean", initialValue: true }),
+    defineField({
+      name: "technicalSheetUrl",
+      title: "Ficha Técnica (PDF URL)",
+      type: "url",
+      description: "URL del PDF de ficha técnica. Puede ser un enlace externo o generado automáticamente.",
+    }),
+    defineField({
+      name: "videoUrl",
+      title: "Video URL (YouTube/TikTok)",
+      type: "url",
+      description: "URL del video del producto (YouTube, TikTok, etc.)",
+    }),
   ],
   orderings: [{ title: "Orden", name: "orderAsc", by: [{ field: "order", direction: "asc" }] }],
   preview: { select: { title: "name", subtitle: "brand", media: "image" } },
