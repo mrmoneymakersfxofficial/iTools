@@ -6,6 +6,9 @@ import { updateProfile } from '@/lib/actions/auth'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import ProfileForm from './ProfileForm'
+
+// Force dynamic rendering — uses getServerSession which queries DB
+export const dynamic = 'force-dynamic'
 import {
   User,
   Package,

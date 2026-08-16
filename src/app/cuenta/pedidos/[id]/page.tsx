@@ -2,6 +2,9 @@ import { getServerSession } from '@/lib/auth'
 import { getOrderById } from '@/lib/actions/orders'
 import { redirect, notFound } from 'next/navigation'
 import Link from 'next/link'
+
+// Force dynamic rendering — uses getServerSession which queries DB
+export const dynamic = 'force-dynamic'
 import {
   ArrowLeft,
   Package,
