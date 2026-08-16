@@ -2,18 +2,20 @@
 
 import Link from "next/link";
 import { ShoppingBag } from "lucide-react";
+import { urlFor } from "@/sanity/image";
+import Image from "next/image";
 
 import { BRAND_SHOWCASE_ORDER, BRAND_CONFIGS } from "@/lib/constants/brands";
 
-const hardcodedBrands = BRAND_SHOWCASE_ORDER.map(slug => ({
-  _id: slug,
-  slug,
-  name: slug.charAt(0).toUpperCase() + slug.slice(1)
-}));
-
 export function BrandShowcase({ brands }: { brands: any[] }) {
-  // Ignoramos la data de Sanity temporalmente para forzar el diseño exacto solicitado
-  const safeBrands = hardcodedBrands;
+  // Use Sanity data when available, fallback to hardcoded brands
+  const safeBrands = (brands && brands.length > 0)
+    ? brands
+    : BRAND_SHOWCASE_ORDER.map(slug => ({
+        _id: slug,
+        slug,
+        name: slug.charAt(0).toUpperCase() + slug.slice(1)
+      }));
 
   if (safeBrands.length === 0) return null;
 
@@ -30,16 +32,19 @@ export function BrandShowcase({ brands }: { brands: any[] }) {
 
         {/* 6-col grid with exact brand colors */}
         <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-1.5 md:gap-2">
-          {safeBrands.map((brand) => {
-            const slug = brand.slug || brand.name.toLowerCase();
+          {safeBrands.map((brand: any) => {
+            const slug = brand.slug || brand.name?.toLowerCase() || "";
             const config = BRAND_CONFIGS[slug];
             const hasLocalImg = !!config;
             const bgColor = config ? config.bg : "#ffffff";
             
-            // Force our local SVGs for valid brands to ensure perfect design, 
-            // fallback to Sanity only for other brands.
+            // Prefer local SVGs for known brands, use Sanity logo for others
             const fallbackExt = config ? config.logoExt : "webp";
-            const imgSrc = hasLocalImg ? `/brands/${slug}.${fallbackExt}` : (brand.logo?.asset?.url || null);
+            const localImgSrc = hasLocalImg ? `/brands/${slug}.${fallbackExt}` : null;
+            const sanityImgSrc = brand.logo?.asset?.url
+              ? urlFor(brand.logo).width(200).height(100).format("webp").url()
+              : null;
+            const imgSrc = localImgSrc || sanityImgSrc;
             const showImg = !!imgSrc;
 
             return (

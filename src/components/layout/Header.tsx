@@ -38,8 +38,29 @@ import { useWishlistStore } from "@/stores/wishlist-store";
 import { categories, searchProducts } from "@/lib/data";
 import type { Product, Category } from "@/types";
 import { cn } from "@/lib/utils";
-
+import { urlFor } from "@/sanity/image";
+import Image from "next/image";
 import { formatPrice } from "@/lib/format";
+
+/* ───────────────────────── Types ───────────────────────── */
+
+interface BrandLogoItem {
+  name: string;
+  slug: string;
+  logo?: { asset?: { url?: string; metadata?: { dimensions?: { width?: number; height?: number } } } };
+  order?: number;
+}
+
+interface HeaderConfigData {
+  phone?: string;
+  phoneUrl?: string;
+  location?: string;
+  badge1?: string;
+  badge2?: string;
+  announcementBar?: string;
+  showBrandLogos?: boolean;
+  brandLogos?: BrandLogoItem[];
+}
 
 /* ───────────────────────── helpers ───────────────────────── */
 
@@ -94,6 +115,42 @@ function CategoryNavItem({ category }: { category: Category }) {
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+/** Brand Logo Bar - clickable logos instead of text tabs */
+function BrandLogoBar({ brands }: { brands: BrandLogoItem[] }) {
+  if (!brands || brands.length === 0) return null;
+
+  return (
+    <div className="hidden md:block bg-white dark:bg-[#111111] border-b border-border dark:border-[#222]">
+      <div className="mx-auto max-w-7xl px-4 flex items-center gap-3 py-2 overflow-x-auto scrollbar-hide">
+        {brands
+          .sort((a, b) => (a.order || 0) - (b.order || 0))
+          .map((brand) => (
+            <a
+              key={brand.slug}
+              href={`/marca/${brand.slug}`}
+              className="shrink-0 flex items-center justify-center h-8 px-3 rounded-lg hover:bg-surface dark:hover:bg-[#222] transition-all group"
+              title={brand.name}
+            >
+              {brand.logo?.asset?.url ? (
+                <Image
+                  src={urlFor(brand.logo).width(80).height(32).format("webp").url()!}
+                  alt={brand.name}
+                  width={80}
+                  height={32}
+                  className="h-6 w-auto object-contain opacity-80 group-hover:opacity-100 transition-opacity"
+                />
+              ) : (
+                <span className="text-xs font-semibold text-muted-foreground group-hover:text-itools-blue transition-colors whitespace-nowrap">
+                  {brand.name}
+                </span>
+              )}
+            </a>
+          ))}
+      </div>
     </div>
   );
 }
@@ -228,7 +285,6 @@ function MobileMenuContent({ onClose }: { onClose: () => void }) {
 
   return (
     <div className="flex flex-col h-full bg-gradient-to-b from-[#0d0d1a] to-[#111128] text-white">
-      {/* ── Modern Header with rounded profile area ── */}
       <div className="px-5 pt-6 pb-5">
         <div className="flex items-center justify-between mb-5">
           <div className="flex items-center gap-3">
@@ -242,7 +298,6 @@ function MobileMenuContent({ onClose }: { onClose: () => void }) {
           </div>
         </div>
 
-        {/* Quick actions row */}
         <div className="grid grid-cols-3 gap-2">
           <a
             href="/cuenta"
@@ -277,7 +332,6 @@ function MobileMenuContent({ onClose }: { onClose: () => void }) {
         </div>
       </div>
 
-      {/* ── Categories List ── */}
       <nav className="flex-1 overflow-y-auto px-3" aria-label="Menú de navegación">
         <p className="px-3 pb-2 pt-2 text-[10px] font-semibold uppercase tracking-widest text-white/30">
           Categorías
@@ -343,7 +397,6 @@ function MobileMenuContent({ onClose }: { onClose: () => void }) {
         </div>
       </nav>
 
-      {/* ── Bottom section: theme toggle ── */}
       <div className="px-4 py-4 border-t border-white/5">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2.5">
@@ -361,7 +414,7 @@ function MobileMenuContent({ onClose }: { onClose: () => void }) {
 
 /* ───────────────────────── main Header ───────────────────────── */
 
-export default function Header() {
+export default function Header({ sanityConfig }: { sanityConfig?: HeaderConfigData | null }) {
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const [desktopQuery, setDesktopQuery] = useState("");
   const [desktopResults, setDesktopResults] = useState<Product[]>([]);
@@ -372,6 +425,16 @@ export default function Header() {
   const cartItemCount = useCartStore((s) => s.getItemCount());
   const wishlistCount = useWishlistStore((s) => s.getCount());
   const openCart = useCartStore((s) => s.openCart);
+
+  // Sanity config with fallbacks
+  const config = sanityConfig || {};
+  const phone = config.phone || "01 234 5678";
+  const phoneUrl = config.phoneUrl || "tel:+5112345678";
+  const location = config.location || "Lima, Perú";
+  const badge1 = config.badge1 || "Servicio Técnico Oficial Milwaukee";
+  const badge2 = config.badge2 || "Envío a todo Perú";
+  const showBrandLogos = config.showBrandLogos !== false; // default true
+  const brandLogos = config.brandLogos || [];
 
   const handleDesktopSearch = useCallback((value: string) => {
     setDesktopQuery(value);
@@ -419,28 +482,35 @@ export default function Header() {
           <div className="mx-auto max-w-7xl px-4 flex items-center justify-between h-8 text-xs">
             <div className="flex items-center gap-4">
               <a
-                href="tel:+5112345678"
+                href={phoneUrl}
                 className="flex items-center gap-1.5 text-white/80 hover:text-white transition-colors"
               >
                 <Phone className="h-3 w-3" />
-                <span>01 234 5678</span>
+                <span>{phone}</span>
               </a>
               <span className="text-white/30">|</span>
               <span className="flex items-center gap-1.5 text-white/80">
                 <MapPin className="h-3 w-3" />
-                <span>Lima, Perú</span>
+                <span>{location}</span>
               </span>
             </div>
+
+            {/* Announcement bar */}
+            {config.announcementBar && (
+              <div className="hidden lg:flex items-center text-itools-yellow font-medium animate-pulse">
+                {config.announcementBar}
+              </div>
+            )}
 
             <div className="flex items-center gap-3">
               <span className="flex items-center gap-1.5 text-white/80">
                 <Shield className="h-3 w-3 text-gold" />
-                <span>Servicio Técnico Oficial Milwaukee</span>
+                <span>{badge1}</span>
               </span>
               <span className="text-white/30">|</span>
               <span className="flex items-center gap-1.5 text-white/80">
                 <Truck className="h-3 w-3" />
-                <span>Envío a todo Perú</span>
+                <span>{badge2}</span>
               </span>
             </div>
           </div>
@@ -554,7 +624,6 @@ export default function Header() {
 
             {/* Right: Action icons */}
             <div className="flex items-center gap-0.5 sm:gap-1 ml-auto shrink-0">
-              {/* Mobile search trigger */}
               <Button
                 variant="ghost"
                 size="icon"
@@ -565,23 +634,15 @@ export default function Header() {
                 <Search className="h-5 w-5" />
               </Button>
 
-              {/* Theme toggle (desktop: left of heart) */}
               <div className="hidden md:block">
                 <ThemeToggle />
               </div>
 
-              {/* Wishlist — fully functional */}
               <Button
                 variant="ghost"
                 size="icon"
                 className="relative text-itools-dark dark:text-white/90 hover:text-itools-red dark:hover:text-itools-red transition-colors"
                 aria-label={`Lista de deseos (${wishlistCount} artículos)`}
-                onClick={() => {
-                  // If items exist, navigate to wishlist page; otherwise just visual feedback
-                  if (typeof window !== "undefined" && wishlistCount > 0) {
-                    // Toggle a quick pulse animation on the button
-                  }
-                }}
               >
                 <Heart
                   className={cn(
@@ -596,7 +657,6 @@ export default function Header() {
                 )}
               </Button>
 
-              {/* Cart */}
               <Button
                 variant="ghost"
                 size="icon"
@@ -612,11 +672,9 @@ export default function Header() {
                 )}
               </Button>
 
-              {/* Account Menu: desktop with text */}
               <div className="hidden md:block">
                 <AccountMenuDesktop />
               </div>
-              {/* Account Menu: mobile icon */}
               <div className="md:hidden">
                 <AccountMenu />
               </div>
@@ -624,17 +682,21 @@ export default function Header() {
           </div>
         </div>
 
-        {/* ── Category Nav (desktop only) ── */}
-        <nav
-          className="hidden md:block bg-itools-dark"
-          aria-label="Categorías de productos"
-        >
-          <div className="mx-auto max-w-7xl px-4 flex items-center">
-            {topLevelCategories.map((cat) => (
-              <CategoryNavItem key={cat.id} category={cat} />
-            ))}
-          </div>
-        </nav>
+        {/* ── Brand Logo Bar (from Sanity) or Category Nav ── */}
+        {showBrandLogos && brandLogos.length > 0 ? (
+          <BrandLogoBar brands={brandLogos} />
+        ) : (
+          <nav
+            className="hidden md:block bg-itools-dark"
+            aria-label="Categorías de productos"
+          >
+            <div className="mx-auto max-w-7xl px-4 flex items-center">
+              {topLevelCategories.map((cat) => (
+                <CategoryNavItem key={cat.id} category={cat} />
+              ))}
+            </div>
+          </nav>
+        )}
 
         {/* ── Brand Marquee Bar ── */}
         <BrandMarquee />

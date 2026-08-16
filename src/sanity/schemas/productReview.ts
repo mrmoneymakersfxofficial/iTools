@@ -7,9 +7,9 @@ export default defineType({
   fields: [
     defineField({
       name: "productName",
-      title: "Producto",
+      title: "Producto (Slug)",
       type: "string",
-      description: "Nombre o slug del producto al que pertenece esta reseña",
+      description: "Slug del producto al que pertenece esta reseña",
       validation: (r) => r.required(),
     }),
     defineField({
@@ -17,6 +17,13 @@ export default defineType({
       title: "Autor",
       type: "string",
       validation: (r) => r.required(),
+    }),
+    defineField({
+      name: "authorAvatar",
+      title: "Avatar del Autor",
+      type: "image",
+      options: { hotspot: true },
+      description: "Foto de perfil del revisor (opcional)",
     }),
     defineField({
       name: "rating",
@@ -43,6 +50,25 @@ export default defineType({
       initialValue: () => false,
     }),
     defineField({
+      name: "isLocalGuide",
+      title: "Local Guide (Google)",
+      type: "boolean",
+      initialValue: () => false,
+      description: "Marcar si el revisor es un Google Local Guide",
+    }),
+    defineField({
+      name: "reviewCount",
+      title: "Nro. Reseñas del Autor",
+      type: "number",
+      description: "Cantidad de reseñas que tiene este autor en Google (solo para reseñas de Google)",
+    }),
+    defineField({
+      name: "datePublished",
+      title: "Fecha de Publicación",
+      type: "datetime",
+      description: "Fecha original de la reseña (para reseñas importadas de Google)",
+    }),
+    defineField({
       name: "source",
       title: "Fuente",
       type: "string",
@@ -53,6 +79,12 @@ export default defineType({
         ],
       },
       initialValue: () => "website",
+    }),
+    defineField({
+      name: "googlePlaceId",
+      title: "Google Place ID",
+      type: "string",
+      description: "ID del lugar de Google para reseñas importadas (ej: ChIJ...)",
     }),
     defineField({
       name: "order",
@@ -69,7 +101,7 @@ export default defineType({
     }),
   ],
   preview: {
-    select: { title: "title", subtitle: "author", media: "rating" },
-    prepare: ({ title, subtitle }) => ({ title: title || "Sin título", subtitle }),
+    select: { title: "title", subtitle: "author" },
+    prepare: ({ title, subtitle }: { title?: string; subtitle?: string }) => ({ title: title || "Sin título", subtitle }),
   },
 });

@@ -270,35 +270,79 @@ export function ProductDetailClient({ product, relatedProducts, reviews }: { pro
                 </Button>
               </div>
 
-              {/* Share, Compare & Technical Sheet */}
-              <div className="flex items-center gap-2 flex-wrap">
-                <ShareDialog productName={product.name} productUrl={`/producto/${product.slug}`} />
+              {/* Buy Now + Wishlist actions */}
+              <div className="flex gap-2 mt-1">
                 <Button
-                  variant="ghost"
-                  size="icon"
-                  className={inCompare ? "text-primary" : "text-muted-foreground hover:text-primary"}
-                  onClick={() =>
-                    addToCompare({
-                      slug: product.slug || product.id,
-                      name: product.name,
-                      price: product.price,
-                      salePrice: product.comparePrice,
-                      image: product.image ? urlFor(product.image).width(100).height(100).format("webp").url() : undefined,
-                      brand: product.brand?.name,
-                      specs: product.specs,
-                    })
-                  }
-                  title={inCompare ? "Ya en comparación" : "Comparar producto"}
+                  onClick={() => {
+                    for (let i = 0; i < quantity; i++) addToCart(product);
+                    window.location.href = "/checkout";
+                  }}
+                  disabled={product.stock === 0}
+                  className="flex-1 bg-itools-dark hover:bg-gray-800 text-white font-impact h-12 text-base tracking-wide transition-colors"
                 >
-                  <GitCompare className="h-5 w-5" />
+                  Comprar Ahora
                 </Button>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className={cn(
+                    "h-12 w-12 border-2 transition-colors",
+                    wishlisted ? "border-itools-red text-itools-red" : "border-gray-300 dark:border-gray-600 text-gray-400 hover:text-itools-red hover:border-itools-red"
+                  )}
+                  onClick={() => toggleItem(product.id)}
+                  title={wishlisted ? "En tu lista de deseos" : "Agregar a lista de deseos"}
+                >
+                  <Heart className={cn("h-5 w-5", wishlisted && "fill-itools-red")} />
+                </Button>
+              </div>
+
+              {/* Share, Compare & Downloadable Resources */}
+              <div className="space-y-3 mt-2">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <ShareDialog productName={product.name} productUrl={`/producto/${product.slug}`} />
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className={cn("gap-1.5", inCompare ? "text-primary" : "text-muted-foreground hover:text-primary")}
+                    onClick={() =>
+                      addToCompare({
+                        slug: product.slug || product.id,
+                        name: product.name,
+                        price: product.price,
+                        salePrice: product.comparePrice,
+                        image: product.image ? urlFor(product.image).width(100).height(100).format("webp").url() : undefined,
+                        brand: product.brand?.name,
+                        specs: product.specs,
+                      })
+                    }
+                    title={inCompare ? "Ya en comparación" : "Comparar producto"}
+                  >
+                    <GitCompare className="h-4 w-4" />
+                    Comparar
+                  </Button>
+                </div>
+
+                {/* Downloadable Resources Section */}
                 {(product as any).technicalSheetUrl && (
-                  <Link href={(product as any).technicalSheetUrl} target="_blank">
-                    <Button variant="outline" size="sm" className="gap-1.5">
-                      <FileDown className="h-4 w-4" />
-                      Ficha Técnica
-                    </Button>
-                  </Link>
+                  <div className="border-t border-border pt-3">
+                    <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">
+                      Archivos descargables
+                    </p>
+                    <div className="flex gap-2 flex-wrap">
+                      <Link href={(product as any).technicalSheetUrl} target="_blank">
+                        <Button variant="outline" size="sm" className="gap-1.5 bg-red-50 dark:bg-red-950/20 border-red-200 dark:border-red-900 text-red-700 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-950/30">
+                          <FileDown className="h-4 w-4" />
+                          Ficha Técnica (PDF)
+                        </Button>
+                      </Link>
+                      <Link href={`/api/pdf/ficha-tecnica?sku=${product.sku}`} target="_blank">
+                        <Button variant="outline" size="sm" className="gap-1.5">
+                          <FileDown className="h-4 w-4" />
+                          Imprimir Ficha
+                        </Button>
+                      </Link>
+                    </div>
+                  </div>
                 )}
               </div>
             </div>

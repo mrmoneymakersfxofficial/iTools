@@ -21,7 +21,7 @@ export const brandPromoBannersQuery = `*[_type == "brandPromoSlide" && isActive 
 export const brandShowcaseQuery = `*[_type == "brandShowcaseItem" && isActive == true] | order(order asc) {
   _id,
   name,
-  "slug": slug.current,
+  slug,
   showInGrid,
   logo { asset-> { url, metadata { dimensions { width, height } } } },
   order
@@ -52,18 +52,27 @@ export const productsQuery = `*[_type == "product" && isActive == true] | order(
   _id,
   name,
   "slug": slug.current,
-  brand,
+  sku,
+  brand-> { _id, name, slug, logo { asset-> { url } } },
+  category-> { _id, name, "slug": slug.current },
+  shortDescription,
+  description,
+  image { asset-> { url, metadata { dimensions { width, height }, lqip } } },
+  images[] { asset-> { url, metadata { dimensions { width, height }, lqip } } },
   price,
   salePrice,
   discountBadge,
+  stock,
   rating,
   reviews,
+  isNewArrival,
+  specs[] { key, value },
   showInTrending,
   showInToolCrib,
   showInFeatured,
   showInNewArrivals,
-  images,
-  image
+  technicalSheetUrl,
+  videoUrl
 }`;
 
 export const dealTilesQuery = `*[_type == "dealTile" && isActive == true] | order(order asc) {
@@ -75,6 +84,10 @@ export const dealTilesQuery = `*[_type == "dealTile" && isActive == true] | orde
   subtitle,
   href,
   countdownEnd,
+  discountPercentage,
+  originalPrice,
+  promoPrice,
+  productSlug,
   image { asset-> { url, metadata { dimensions { width, height }, lqip } } }
 }`;
 
@@ -120,25 +133,79 @@ export const sectionHeadersQuery = `*[_type == "sectionHeader"] {
   ctaLink
 }`;
 
-// Promo Popup
+// Promo Popup - enhanced with new fields
 export const promoPopupQuery = `*[_type == "promoPopup" && isActive == true][0]{
   title,
   subtitle,
   "image": image { asset-> { url, metadata { dimensions { width, height }, lqip } } },
+  originalPrice,
+  promoPrice,
+  discountText,
   ctaText,
   ctaLink,
-  countdownEnd
+  countdownEnd,
+  showOnEntry,
+  delaySeconds
 }`;
 
-// Video Section
+// Video Section - enhanced with TikTok/social support
 export const videoSectionQuery = `*[_type == "videoSection" && isActive == true][0]{
   sectionTitle,
   sectionSubtitle,
+  videoSourceType,
+  ctaText,
+  ctaLink,
   videos[] {
     title,
+    videoUrl,
     googleDriveUrl,
     "thumbnail": thumbnail { asset-> { url, metadata { dimensions { width, height }, lqip } } },
+    isVertical,
+    productSlug,
     order
+  }
+}`;
+
+// Header Config
+export const headerConfigQuery = `*[_type == "headerConfig"][0]{
+  phone,
+  phoneUrl,
+  location,
+  badge1,
+  badge2,
+  announcementBar,
+  showBrandLogos,
+  brandLogos[] {
+    name,
+    slug,
+    "logo": logo { asset-> { url, metadata { dimensions { width, height } } } },
+    order
+  }
+}`;
+
+// Footer Config
+export const footerConfigQuery = `*[_type == "footerConfig"][0]{
+  aboutText,
+  contactInfo {
+    address,
+    phone,
+    email,
+    hours
+  },
+  columns[] {
+    title,
+    links[] {
+      label,
+      href
+    }
+  },
+  socialLinks[] {
+    platform,
+    url
+  },
+  bottomLinks[] {
+    label,
+    href
   }
 }`;
 
@@ -160,10 +227,14 @@ export const packoutComponentsQuery = `*[_type == "packoutComponent" && isActive
 export const featuredReviewsQuery = `*[_type == "productReview" && isActive == true] | order(order asc)[0..5]{
   productName,
   author,
+  "authorAvatar": authorAvatar { asset-> { url } },
   rating,
   title,
   comment,
   isVerified,
+  isLocalGuide,
+  reviewCount,
+  datePublished,
   source
 }`;
 
@@ -181,6 +252,8 @@ export const homePageQuery = `{
   "sectionHeaders": ${sectionHeadersQuery},
   "promoPopup": ${promoPopupQuery},
   "videoSection": ${videoSectionQuery},
+  "headerConfig": ${headerConfigQuery},
+  "footerConfig": ${footerConfigQuery},
   "packoutComponents": ${packoutComponentsQuery},
   "featuredReviews": ${featuredReviewsQuery}
 }`;
