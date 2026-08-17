@@ -151,7 +151,8 @@ const fallbackDealTiles = [
 ];
 
 function DesktopDealTiles({ dealTiles }: { dealTiles: any[] }) {
-  const safeTiles = (dealTiles && dealTiles.length > 0) ? dealTiles : fallbackDealTiles;
+  const rawTiles = (dealTiles && dealTiles.length > 0) ? dealTiles : fallbackDealTiles;
+  const safeTiles = rawTiles.filter(t => t && t.brand);
 
 
   return (

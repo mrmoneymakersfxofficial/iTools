@@ -84,7 +84,8 @@ const fallbackDealTiles = [
 ];
 
 export function BestDealsSection({ dealTiles }: { dealTiles: any[] }) {
-  const safeTiles = (dealTiles && dealTiles.length > 0) ? dealTiles : fallbackDealTiles;
+  const rawTiles = (dealTiles && dealTiles.length > 0) ? dealTiles : fallbackDealTiles;
+  const safeTiles = rawTiles.filter(t => t && t.brand);
 
   return (
     <section className="bg-white dark:bg-[#111111] py-2.5 md:py-3" data-section="Las Mejores Ofertas de Hoy">
