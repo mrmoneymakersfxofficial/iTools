@@ -123,7 +123,7 @@ function renderGrid(brands: Array<{ _id: string; name: string; slug: string; loc
                   <img
                     src={imgSrc}
                     alt={brand.name}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-contain p-2"
                     loading="lazy"
                     onError={(e) => {
                       e.currentTarget.style.display = "none";

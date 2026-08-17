@@ -43,6 +43,8 @@ const STATUS_TABS = [
   { value: "CANCELLED", label: "Cancelados" },
 ];
 
+export const dynamic = "force-dynamic";
+
 export default async function PedidosPage({
   searchParams,
 }: {
