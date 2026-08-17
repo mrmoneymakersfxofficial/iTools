@@ -8,7 +8,7 @@ import Image from "next/image";
 
 interface VideoItem {
   title: string;
-  googleDriveUrl: string;
+  googleDriveUrl: string | null;
   thumbnail?: { asset?: { url?: string; metadata?: { dimensions?: { width?: number; height?: number }; lqip?: string } } };
   order?: number;
 }
@@ -19,7 +19,7 @@ interface VideoSectionData {
   videos?: VideoItem[];
 }
 
-function getEmbedUrl(url: string): string {
+function getEmbedUrl(url: string | null | undefined): string {
   if (!url) return "";
   const driveMatch = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
   if (driveMatch) return `https://drive.google.com/file/d/${driveMatch[1]}/preview`;
@@ -37,7 +37,8 @@ function getEmbedUrl(url: string): string {
   return url;
 }
 
-function getVideoPlatform(url: string): { name: string; color: string } | null {
+function getVideoPlatform(url: string | null | undefined): { name: string; color: string } | null {
+  if (!url) return null;
   if (url.includes("youtube.com") || url.includes("youtu.be")) return { name: "YouTube", color: "#FF0000" };
   if (url.includes("tiktok.com")) return { name: "TikTok", color: "#00f2ea" };
   if (url.includes("vimeo.com")) return { name: "Vimeo", color: "#1ab7ea" };

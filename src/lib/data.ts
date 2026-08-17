@@ -1349,7 +1349,7 @@ export function searchProducts(query: string): Product[] {
       p.name.toLowerCase().includes(q) ||
       p.sku.toLowerCase().includes(q) ||
       p.shortDescription.toLowerCase().includes(q) ||
-      p.brand?.name.toLowerCase().includes(q)
+      p.brand?.name?.toLowerCase().includes(q)
   );
 }
 

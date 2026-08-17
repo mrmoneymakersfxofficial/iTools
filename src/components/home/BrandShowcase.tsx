@@ -52,7 +52,7 @@ function mergeBrands(sanityBrands: SanityBrand[]): Array<SanityBrand & { localCo
   }
 
   for (const b of sanityBrands) {
-    if (!VALID_LOCAL_BRANDS.includes(b.slug) && b.isActive !== false) {
+    if (b.slug && !VALID_LOCAL_BRANDS.includes(b.slug) && b.isActive !== false) {
       merged.push({
         ...b,
         localConfig: undefined,
