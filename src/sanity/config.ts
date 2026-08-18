@@ -92,6 +92,24 @@ export const homeLocations = {
       locations: [{ title: "Inicio", href: locationUrl("/") }],
     }),
   }),
+  uiConfig: defineLocations({
+    message: "Configuración de Textos y UI Global",
+    resolve: (doc) => ({
+      locations: [{ title: "Inicio", href: locationUrl("/") }],
+    }),
+  }),
+  brandShowcaseSettings: defineLocations({
+    message: "Configuración de Showcase de Marcas",
+    resolve: (doc) => ({
+      locations: [{ title: "Inicio", href: locationUrl("/") }],
+    }),
+  }),
+  page: defineLocations({
+    message: "Página genérica estática",
+    resolve: (doc) => ({
+      locations: [{ title: "Ver Página", href: locationUrl(`/${doc?.slug?.current || ""}`) }],
+    }),
+  }),
 };
 
 export default defineConfig({

@@ -5,6 +5,23 @@ export const structure: StructureResolver = (S) =>
     .title("Contenido")
     .items([
       S.listItem()
+        .title("Configuración Global")
+        .child(
+          S.list()
+            .title("Configuración Global")
+            .items([
+              S.listItem()
+                .title("Header")
+                .child(S.document().schemaType("headerConfig").documentId("headerConfig")),
+              S.listItem()
+                .title("Footer")
+                .child(S.document().schemaType("footerConfig").documentId("footerConfig")),
+              S.listItem()
+                .title("Textos y UI Global")
+                .child(S.document().schemaType("uiConfig").documentId("uiConfig")),
+            ])
+        ),
+      S.listItem()
         .title("Homepage")
         .child(
           S.list()
@@ -12,9 +29,10 @@ export const structure: StructureResolver = (S) =>
             .items([
               S.listItem()
                 .title("Ajustes Generales")
-                .child(
-                  S.document().schemaType("homeSettings").documentId("homeSettings")
-                ),
+                .child(S.document().schemaType("homeSettings").documentId("homeSettings")),
+              S.listItem()
+                .title("Cuadrícula de Marcas (Orden Fijo)")
+                .child(S.document().schemaType("brandShowcaseSettings").documentId("brandShowcaseSettings")),
               S.documentTypeListItem("heroSlide").title("Hero Banners"),
               S.documentTypeListItem("promoBanner").title("Promo Banners"),
               S.documentTypeListItem("giveawayBanner").title("Sorteos (Giveaway)"),
@@ -26,21 +44,5 @@ export const structure: StructureResolver = (S) =>
               S.documentTypeListItem("sectionHeader").title("Encabezados de Sección"),
             ])
         ),
-      // Here you could add more categories or document types that don't belong to the Homepage in the future
-      ...S.documentTypeListItems().filter(
-        (listItem) =>
-          ![
-            "homeSettings",
-            "heroSlide",
-            "promoBanner",
-            "giveawayBanner",
-            "brandPromoSlide",
-            "brandShowcaseItem",
-            "category",
-            "dealTile",
-            "product",
-            "trendingCategory", // Deprecated, left here so it's not shown in the main list
-            "sectionHeader",
-          ].includes(listItem.getId() as string)
-      ),
+      S.documentTypeListItem("page").title("Páginas Estáticas"),
     ]);

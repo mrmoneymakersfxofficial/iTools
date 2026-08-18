@@ -1,5 +1,3 @@
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
 
 /* ── Desktop-only components ── */
 import { TrendingSidebar } from "@/components/home/TrendingSidebar";
@@ -37,8 +35,6 @@ export default async function Home() {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <Header />
-
       <main className="flex-1">
         {/* ═══════════════════════════════════════════════════
             MOBILE LAYOUT (below lg)
@@ -122,8 +118,6 @@ export default async function Home() {
           <NewArrivalsSection products={data.products?.filter(p => p.showInNewArrivals)} />
         </div>
       </main>
-
-      <Footer />
     </div>
   );
 }

@@ -17,7 +17,29 @@ export const footerConfigQuery = `*[_type == "footerConfig"][0] {
   bottomLinks
 }`;
 
+export const uiConfigQuery = `*[_type == "uiConfig"][0] {
+  addToCartText,
+  viewDetailsText,
+  outOfStockText,
+  searchPlaceholder,
+  shippingBadgeText,
+  securePaymentText,
+  warrantyText,
+  returnsText
+}`;
+
+export const categoriesQuery = `*[_type == "category" && isActive == true] | order(order asc) {
+  _id,
+  name,
+  "slug": slug,
+  iconName,
+  "parentId": parent->_id,
+  "id": _id
+}`;
+
 export const layoutQuery = `{
   "header": ${headerConfigQuery},
-  "footer": ${footerConfigQuery}
+  "footer": ${footerConfigQuery},
+  "uiConfig": ${uiConfigQuery},
+  "categories": ${categoriesQuery}
 }`;

@@ -11,11 +11,16 @@ import promoBanner from "./promoBanner";
 import sectionHeader from "./sectionHeader";
 import headerConfig from "./headerConfig";
 import footerConfig from "./footer";
+import uiConfig from "./uiConfig";
+import page from "./page";
+import brandShowcaseSettings from "./brandShowcaseSettings";
 
 export const schemaTypes = [
   homeSettings,
   headerConfig,
   footerConfig,
+  uiConfig,
+  brandShowcaseSettings,
   heroSlide,
   brandPromoSlide,
   brandShowcaseItem,
@@ -26,4 +31,5 @@ export const schemaTypes = [
   giveawayBanner,
   promoBanner,
   sectionHeader,
+  page,
 ];

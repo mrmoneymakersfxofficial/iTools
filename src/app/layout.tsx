@@ -11,6 +11,10 @@ import { BottomNav } from "@/components/layout/BottomNav";
 import { IToolsAssistant } from "@/components/layout/IToolsAssistant";
 import { draftMode } from "next/headers";
 import { SanityVisualEditing } from "@/components/sanity/SanityVisualEditing";
+import { Header } from "@/components/layout/Header";
+import { Footer } from "@/components/layout/Footer";
+import { fetchLayoutData } from "@/lib/sanity/fetch-layout";
+import { GlobalSettingsProvider } from "@/stores/global-settings-context";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -92,27 +96,44 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const draft = await draftMode();
+  const mode = await draftMode();
+  const layoutData = await fetchLayoutData();
+
+  // Fallback defaults if Sanity is empty
+  const settings = {
+    headerConfig: layoutData?.header || {},
+    footerConfig: layoutData?.footer || {},
+    uiConfig: layoutData?.uiConfig || {
+      addToCartText: "Añadir al Carrito",
+      viewDetailsText: "Ver Detalles",
+      outOfStockText: "Agotado",
+      searchPlaceholder: "Buscar herramientas...",
+      shippingBadgeText: "Envío a todo Perú",
+      securePaymentText: "Pago Seguro",
+      warrantyText: "Garantía Oficial",
+      returnsText: "Devolución en 30 días",
+    },
+    categories: layoutData?.categories || [],
+  };
 
   return (
     <html lang="es" suppressHydrationWarning>
-      <body className={`${inter.variable} font-sans antialiased bg-background text-foreground`}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="light"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <AuthProvider>
-            <ClientLayoutEffects />
-            {children}
-            <ProductQuickView />
-            <CartDrawer />
-            <BottomNav />
-            <IToolsAssistant />
-            <Toaster />
-            {draft.isEnabled && <SanityVisualEditing />}
-          </AuthProvider>
+      <body className={`${inter.variable} font-sans min-h-screen bg-background text-foreground flex flex-col`}>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <GlobalSettingsProvider settings={settings}>
+            <AuthProvider>
+              <Header />
+              <main className="flex-1 mt-[112px] md:mt-[136px]">{children}</main>
+              <Footer />
+              <BottomNav />
+              <CartDrawer />
+              <ProductQuickView />
+              <IToolsAssistant />
+              <Toaster />
+              <ClientLayoutEffects />
+              {mode.isEnabled && <SanityVisualEditing />}
+            </AuthProvider>
+          </GlobalSettingsProvider>
         </ThemeProvider>
       </body>
     </html>

@@ -17,6 +17,16 @@ export const brandPromoBannersQuery = `*[_type == "brandPromoSlide" && isActive 
   order
 }`;
 
+export const brandShowcaseSettingsQuery = `*[_type == "brandShowcaseSettings"][0] {
+  brands[]->{
+    _id,
+    name,
+    "slug": slug.current,
+    showInGrid,
+    logo { asset-> { url, metadata { dimensions { width, height } } } }
+  }
+}`;
+
 export const brandShowcaseQuery = `*[_type == "brandShowcaseItem" && isActive == true] | order(order asc) {
   _id,
   name,
@@ -122,7 +132,7 @@ export const homePageQuery = `{
   "homeSettings": ${homeSettingsQuery},
   "heroBanners": ${heroBannersQuery},
   "brandPromoBanners": ${brandPromoBannersQuery},
-  "brandShowcase": ${brandShowcaseQuery},
+  "brandShowcase": ${brandShowcaseSettingsQuery},
   "trendingCategories": ${trendingCategoriesQuery},
   "categories": ${categoriesQuery},
   "products": ${productsQuery},

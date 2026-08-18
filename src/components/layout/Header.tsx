@@ -34,9 +34,10 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { useCartStore } from "@/stores/cart-store";
 import { useWishlistStore } from "@/stores/wishlist-store";
-import { categories, searchProducts } from "@/lib/data";
+import { searchProducts } from "@/lib/data";
 import type { Product, Category } from "@/types";
 import { cn } from "@/lib/utils";
+import { useGlobalSettings } from "@/stores/global-settings-context";
 
 /* ───────────────────────── helpers ───────────────────────── */
 
@@ -44,8 +45,8 @@ function formatPrice(n: number): string {
   return `S/ ${n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
-function getTopLevelCategories(): Category[] {
-  return categories.filter((c) => c.parentId === null);
+function formatPrice(n: number): string {
+  return `S/ ${n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
 /* ───────────────────────── sub-components ───────────────────────── */
@@ -99,12 +100,12 @@ function CategoryNavItem({ category }: { category: Category }) {
   );
 }
 
-/** Mobile search overlay */
 function MobileSearchOverlay({
   onClose,
 }: {
   onClose: () => void;
 }) {
+  const { uiConfig } = useGlobalSettings();
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<Product[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -140,10 +141,11 @@ function MobileSearchOverlay({
       <div className="flex items-center gap-3 px-4 py-3 border-b border-border dark:border-[#222]">
         <Input
           ref={inputRef}
+          type="search"
+          placeholder={uiConfig.searchPlaceholder || "Buscar herramientas..."}
+          className="flex-1 bg-transparent border-0 h-10 px-0 text-base focus-visible:ring-0 placeholder:text-muted-foreground shadow-none"
           value={query}
           onChange={(e) => handleChange(e.target.value)}
-          placeholder="Buscar herramientas, marcas, SKUs..."
-          className="flex-1 h-11 text-base bg-transparent dark:text-white focus-visible:ring-itools-blue/30 focus-visible:border-itools-blue/50"
         />
         <Button
           variant="ghost"
@@ -214,6 +216,7 @@ function MobileSearchOverlay({
 /* ───────────────────────── Modern Hamburger Menu ───────────────────────── */
 
 function MobileMenuContent({ onClose }: { onClose: () => void }) {
+  const { categories } = useGlobalSettings();
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
 
   const toggleCategory = (id: string) => {
@@ -225,7 +228,7 @@ function MobileMenuContent({ onClose }: { onClose: () => void }) {
     });
   };
 
-  const topLevelCategories = getTopLevelCategories();
+  const topLevelCategories = categories.filter((c) => !c.parentId);
 
   return (
     <div className="flex flex-col h-full bg-gradient-to-b from-[#0d0d1a] to-[#111128] text-white">
@@ -360,9 +363,10 @@ function MobileMenuContent({ onClose }: { onClose: () => void }) {
   );
 }
 
-/* ───────────────────────── main Header ───────────────────────── */
+/* ───────────────────────── Main Header Component ───────────────────────── */
 
-export default function Header() {
+export function Header() {
+  const { uiConfig, headerConfig, categories } = useGlobalSettings();
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const [desktopQuery, setDesktopQuery] = useState("");
   const [desktopResults, setDesktopResults] = useState<Product[]>([]);
@@ -410,7 +414,7 @@ export default function Header() {
     return () => document.removeEventListener("keydown", handler);
   }, []);
 
-  const topLevelCategories = getTopLevelCategories();
+  const topLevelCategories = categories.filter((c) => !c.parentId);
 
   return (
     <>
@@ -420,28 +424,28 @@ export default function Header() {
           <div className="mx-auto max-w-7xl px-4 flex items-center justify-between h-8 text-xs">
             <div className="flex items-center gap-4">
               <a
-                href="tel:+5112345678"
+                href={headerConfig?.phoneUrl || "tel:+5112345678"}
                 className="flex items-center gap-1.5 text-white/80 hover:text-white transition-colors"
               >
                 <Phone className="h-3 w-3" />
-                <span>01 234 5678</span>
+                <span>{headerConfig?.phone || "01 234 5678"}</span>
               </a>
               <span className="text-white/30">|</span>
               <span className="flex items-center gap-1.5 text-white/80">
                 <MapPin className="h-3 w-3" />
-                <span>Lima, Perú</span>
+                <span>{headerConfig?.location || "Lima, Perú"}</span>
               </span>
             </div>
 
             <div className="flex items-center gap-3">
               <span className="flex items-center gap-1.5 text-white/80">
                 <Shield className="h-3 w-3 text-gold" />
-                <span>Servicio Técnico Oficial Milwaukee</span>
+                <span>{headerConfig?.badge1 || "Servicio Técnico Oficial Milwaukee"}</span>
               </span>
               <span className="text-white/30">|</span>
               <span className="flex items-center gap-1.5 text-white/80">
                 <Truck className="h-3 w-3" />
-                <span>Envío a todo Perú</span>
+                <span>{headerConfig?.badge2 || uiConfig?.shippingBadgeText || "Envío a todo Perú"}</span>
               </span>
             </div>
           </div>
@@ -490,13 +494,14 @@ export default function Header() {
               <div className="relative w-full">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
                 <Input
+                  type="search"
+                  placeholder={uiConfig?.searchPlaceholder || "Buscar herramientas..."}
+                  className="w-full h-10 pl-10 pr-4 bg-surface dark:bg-[#1a1a1a] dark:text-white border-0 rounded-xl text-sm focus-visible:ring-itools-blue/30 focus-visible:border-itools-blue/50"
                   value={desktopQuery}
                   onChange={(e) => handleDesktopSearch(e.target.value)}
                   onFocus={() => {
                     if (desktopResults.length > 0) setDesktopResultsOpen(true);
                   }}
-                  placeholder="Buscar herramientas, marcas, SKUs..."
-                  className="w-full h-10 pl-10 pr-4 bg-surface dark:bg-[#1a1a1a] dark:text-white border-0 rounded-xl text-sm focus-visible:ring-itools-blue/30 focus-visible:border-itools-blue/50"
                   aria-label="Buscar productos"
                   aria-expanded={desktopResultsOpen}
                   role="combobox"

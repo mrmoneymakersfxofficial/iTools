@@ -2,6 +2,7 @@ import { sanityFetch } from "@/sanity/lib/sanityFetch";
 import {
   heroBannersQuery,
   brandPromoBannersQuery,
+  brandShowcaseSettingsQuery,
   brandShowcaseQuery,
   trendingCategoriesQuery,
   giveawayBannerQuery,
@@ -28,6 +29,10 @@ export async function fetchBrandPromoBanners() {
 
 export async function fetchBrandShowcase() {
   try { return await sanityFetch({ query: brandShowcaseQuery }); } catch { return []; }
+}
+
+export async function fetchBrandShowcaseSettings() {
+  try { return await sanityFetch({ query: brandShowcaseSettingsQuery }); } catch { return null; }
 }
 
 export async function fetchTrendingCategories() {

@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Mail,
   Phone,
@@ -15,7 +17,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
-import { categories } from "@/lib/data";
+import { cn } from "@/lib/utils";
+import { useGlobalSettings } from "@/stores/global-settings-context";
 
 const trustFeatures: {
   icon: React.ComponentType<React.SVGProps<SVGSVGElement> & { strokeWidth?: number }>;
@@ -50,17 +53,25 @@ const infoLinks = [
   { label: "Contacto", href: "/contacto" },
 ];
 
-const topCategories = categories
-  .filter((c) => !c.parentId)
-  .slice(0, 8);
-
-const socialLinks = [
-  { icon: Facebook, href: "https://facebook.com/itoolsperu", label: "Facebook" },
-  { icon: Instagram, href: "https://instagram.com/itoolsperu", label: "Instagram" },
-  { icon: Youtube, href: "https://youtube.com/@itoolsperu", label: "YouTube" },
-];
-
 export default function Footer() {
+  const { footerConfig, categories, headerConfig } = useGlobalSettings();
+
+  const topCategories = categories
+    .filter((c) => !c.parentId)
+    .slice(0, 8);
+
+  const socialLinks = footerConfig?.socialLinks?.map((s) => ({
+    icon: s.platform.toLowerCase() === "facebook" ? Facebook : 
+          s.platform.toLowerCase() === "instagram" ? Instagram :
+          s.platform.toLowerCase() === "youtube" ? Youtube : Facebook,
+    href: s.url,
+    label: s.platform,
+  })) || [
+    { icon: Facebook, href: "https://facebook.com/itoolsperu", label: "Facebook" },
+    { icon: Instagram, href: "https://instagram.com/itoolsperu", label: "Instagram" },
+    { icon: Youtube, href: "https://youtube.com/@itoolsperu", label: "YouTube" },
+  ];
+
   return (
     <footer className="mt-auto">
       {/* ── Trust / Features Bar ──────────────────────────────── */}
@@ -104,8 +115,8 @@ export default function Footer() {
                 />
               </div>
               <p className="mb-6 text-sm leading-relaxed text-gray-400">
-                Distribuidor autorizado de herramientas Milwaukee en Perú. Más
-                de 10 años de experiencia en el mercado industrial.
+                {footerConfig?.aboutText || 
+                  "Distribuidor autorizado de herramientas Milwaukee en Perú. Más de 10 años de experiencia en el mercado industrial."}
               </p>
               {/* Social Media */}
               <nav aria-label="Redes sociales">
@@ -180,32 +191,23 @@ export default function Footer() {
               </h3>
               <address className="not-italic space-y-4">
                 <a
-                  href="tel:+5112345678"
-                  className="flex items-start gap-3 text-sm text-gray-400 transition-colors duration-200 hover:text-itools-blue-light"
-                >
-                  <Phone
-                    className="mt-0.5 h-4 w-4 shrink-0 text-gray-500"
-                    aria-hidden="true"
-                  />
-                  <span>01 234 5678</span>
-                </a>
-                <a
-                  href="mailto:ventas@itoolsperu.com"
+                  href={`mailto:${footerConfig?.email || "ventas@itoolsperu.com"}`}
                   className="flex items-start gap-3 text-sm text-gray-400 transition-colors duration-200 hover:text-itools-blue-light"
                 >
                   <Mail
                     className="mt-0.5 h-4 w-4 shrink-0 text-gray-500"
                     aria-hidden="true"
                   />
-                  <span>ventas@itoolsperu.com</span>
+                  <span>{footerConfig?.email || "ventas@itoolsperu.com"}</span>
                 </a>
-                <div className="flex items-start gap-3 text-sm text-gray-400">
-                  <MapPin
-                    className="mt-0.5 h-4 w-4 shrink-0 text-gray-500"
-                    aria-hidden="true"
-                  />
-                  <span>Av. Industrial 1234, Ate, Lima, Perú</span>
-                </div>
+                <li className="flex items-start gap-3 text-sm text-gray-400">
+                  <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-itools-blue" />
+                  <span>{headerConfig?.location || "Av. Industrial 123, Lima - Perú"}</span>
+                </li>
+                <li className="flex items-center gap-3 text-sm text-gray-400">
+                  <Phone className="h-4 w-4 shrink-0 text-itools-blue" />
+                  <span>{headerConfig?.phone || "(01) 123-4567"}</span>
+                </li>
               </address>
             </div>
           </div>
