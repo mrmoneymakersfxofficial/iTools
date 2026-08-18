@@ -15,7 +15,7 @@ interface CustomerRow {
   createdAt: Date;
   _count: { orders: number };
   _sum: { total: number | null };
-}}
+}
 
 export default async function ClientesPage({
   searchParams,

@@ -65,10 +65,6 @@ interface HeaderConfigData {
 
 /* ───────────────────────── helpers ───────────────────────── */
 
-function getTopLevelCategories(): Category[] {
-  return categories.filter((c) => c.parentId === null);
->>>>>>> ef591a68b2ca5e9c9ac258da6f8746f4925a9a92
-}
 
 /* ───────────────────────── sub-components ───────────────────────── */
 
@@ -487,7 +483,6 @@ export function Header() {
         <div className="hidden md:block bg-itools-dark text-white">
           <div className="mx-auto max-w-7xl px-4 flex items-center justify-between h-8 text-xs">
             <div className="flex items-center gap-4">
-              <a
               <a
                 href={phoneUrl}
                 className="flex items-center gap-1.5 text-white/80 hover:text-white transition-colors"

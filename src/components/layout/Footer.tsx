@@ -17,7 +17,6 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
-import { cn } from "@/lib/utils";
 import { useGlobalSettings } from "@/stores/global-settings-context";
 
 const trustFeatures: {
