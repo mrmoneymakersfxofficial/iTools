@@ -40,10 +40,16 @@ export const authOptions: NextAuthOptions = {
         }
       },
     }),
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID ?? "placeholder-client-id",
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "placeholder-client-secret",
-    }),
+    // Google OAuth: only add provider if credentials are configured
+    // If env vars are missing, Google login is simply unavailable (no build crash)
+    ...(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET
+      ? [
+          GoogleProvider({
+            clientId: process.env.GOOGLE_CLIENT_ID,
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+          }),
+        ]
+      : []),
   ],
   session: {
     strategy: "jwt",

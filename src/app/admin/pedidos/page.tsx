@@ -7,6 +7,9 @@ import {
   OrderStatusSelect,
 } from "./OrderStatusClient";
 
+// Force dynamic rendering — this page queries the DB and must not be prerendered at build time
+export const dynamic = "force-dynamic";
+
 const PER_PAGE = 20;
 
 function formatSoles(n: number) {
@@ -39,6 +42,7 @@ const STATUS_TABS = [
   { value: "DELIVERED", label: "Entregados" },
   { value: "CANCELLED", label: "Cancelados" },
 ];
+
 
 export default async function PedidosPage({
   searchParams,

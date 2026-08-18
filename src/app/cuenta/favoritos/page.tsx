@@ -16,10 +16,7 @@ import {
   Check,
 } from 'lucide-react'
 import type { WishlistItem } from '@/lib/actions/wishlist'
-
-function formatPrice(price: number) {
-  return `S/ ${price.toFixed(2)}`
-}
+import { formatPrice } from '@/lib/format'
 
 function StarRating({ rating }: { rating: number }) {
   return (

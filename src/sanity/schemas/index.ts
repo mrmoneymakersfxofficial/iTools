@@ -14,6 +14,10 @@ import footerConfig from "./footer";
 import uiConfig from "./uiConfig";
 import page from "./page";
 import brandShowcaseSettings from "./brandShowcaseSettings";
+import promoPopup from "./promoPopup";
+import videoSection from "./videoSection";
+import packoutComponent from "./packoutComponent";
+import productReview from "./productReview";
 
 export const schemaTypes = [
   homeSettings,
@@ -32,4 +36,8 @@ export const schemaTypes = [
   promoBanner,
   sectionHeader,
   page,
+  promoPopup,
+  videoSection,
+  packoutComponent,
+  productReview,
 ];

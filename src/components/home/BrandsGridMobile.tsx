@@ -55,13 +55,14 @@ export function BrandsGridMobile({ brands }: { brands: any[] }) {
                 key={brand._id || brand.slug}
                 href={`/marca/${brand.slug || "#"}`}
                 className="shrink-0 w-[110px] sm:w-[120px] flex items-center justify-center h-[72px] transition-opacity active:opacity-70 rounded-md overflow-hidden"
+                style={config ? { backgroundColor: config.bg } : undefined}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 {showImg ? (
                   <img
                     src={imgSrc}
                     alt={brand.name}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-contain p-2"
                     loading="lazy"
                     onError={(e) => {
                       e.currentTarget.style.display = 'none';

@@ -1,5 +1,5 @@
 import { sanityFetch } from "@/sanity/lib/sanityFetch";
-import { productBySlugQuery, relatedProductsQuery } from "@/sanity/queries/product";
+import { productBySlugQuery, relatedProductsQuery, productReviewsQuery } from "@/sanity/queries/product";
 
 export async function fetchProductBySlug(slug: string) {
   try {
@@ -26,6 +26,15 @@ export async function fetchAllProductSlugs() {
   try {
     return await sanityFetch({ query: `*[_type == "product" && isActive == true] { "slug": slug.current }` });
   } catch (error) {
+    return [];
+  }
+}
+
+export async function fetchProductReviews(productSlug: string) {
+  try {
+    return await sanityFetch({ query: productReviewsQuery, params: { productSlug } });
+  } catch (error) {
+    console.error("Error fetching product reviews:", error);
     return [];
   }
 }

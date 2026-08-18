@@ -98,8 +98,20 @@ export const homeLocations = {
       locations: [{ title: "Inicio", href: locationUrl("/") }],
     }),
   }),
+  promoPopup: defineLocations({
+    message: "Este popup aparece en la página de inicio",
+    resolve: (doc) => ({
+      locations: [{ title: "Inicio", href: locationUrl("/") }],
+    }),
+  }),
   brandShowcaseSettings: defineLocations({
     message: "Configuración de Showcase de Marcas",
+    resolve: (doc) => ({
+      locations: [{ title: "Inicio", href: locationUrl("/") }],
+    }),
+  }),
+  videoSection: defineLocations({
+    message: "Esta sección de videos aparece en la página de inicio",
     resolve: (doc) => ({
       locations: [{ title: "Inicio", href: locationUrl("/") }],
     }),
@@ -108,6 +120,18 @@ export const homeLocations = {
     message: "Página genérica estática",
     resolve: (doc) => ({
       locations: [{ title: "Ver Página", href: locationUrl(`/${doc?.slug?.current || ""}`) }],
+    }),
+  }),
+  packoutComponent: defineLocations({
+    message: "Este componente aparece en el PACKOUT Builder",
+    resolve: (doc) => ({
+      locations: [{ title: "PACKOUT Builder", href: locationUrl("/packout-builder") }],
+    }),
+  }),
+  productReview: defineLocations({
+    message: "Esta reseña aparece en la página de inicio o en la del producto",
+    resolve: (doc) => ({
+      locations: [{ title: "Inicio", href: locationUrl("/") }],
     }),
   }),
 };
@@ -126,7 +150,7 @@ export default defineConfig({
       previewUrl: {
         origin: PREVIEW_ORIGIN,
         previewMode: {
-          enable: "/api/draft?secret=itools2024",
+          enable: `/api/draft?secret=${process.env.SANITY_REVALIDATE_SECRET || ''}`,
         },
       },
       document: homeLocations,

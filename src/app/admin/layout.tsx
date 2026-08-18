@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import { getServerSession } from "@/lib/auth";
 import AdminShell from "./AdminShell";
 
+// Force dynamic rendering — admin pages query the DB and must not be prerendered at build time
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Panel de Administración | iTools Perú",
   robots: { index: false, follow: false },

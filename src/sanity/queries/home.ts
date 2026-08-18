@@ -6,6 +6,7 @@ export const heroBannersQuery = `*[_type == "heroSlide" && isActive == true] | o
   link,
   image { asset-> { url, metadata { dimensions { width, height }, lqip } } },
   bgGradient,
+  countdownEnd,
   order
 }`;
 
@@ -30,7 +31,7 @@ export const brandShowcaseSettingsQuery = `*[_type == "brandShowcaseSettings"][0
 export const brandShowcaseQuery = `*[_type == "brandShowcaseItem" && isActive == true] | order(order asc) {
   _id,
   name,
-  "slug": slug.current,
+  slug,
   showInGrid,
   logo { asset-> { url, metadata { dimensions { width, height } } } },
   order
@@ -61,18 +62,27 @@ export const productsQuery = `*[_type == "product" && isActive == true] | order(
   _id,
   name,
   "slug": slug.current,
-  brand,
+  sku,
+  brand-> { _id, name, slug, logo { asset-> { url } } },
+  category-> { _id, name, "slug": slug.current },
+  shortDescription,
+  description,
+  image { asset-> { url, metadata { dimensions { width, height }, lqip } } },
+  images[] { asset-> { url, metadata { dimensions { width, height }, lqip } } },
   price,
   salePrice,
   discountBadge,
+  stock,
   rating,
   reviews,
+  isNewArrival,
+  specs[] { key, value },
   showInTrending,
   showInToolCrib,
   showInFeatured,
   showInNewArrivals,
-  images,
-  image
+  technicalSheetUrl,
+  videoUrl
 }`;
 
 export const dealTilesQuery = `*[_type == "dealTile" && isActive == true] | order(order asc) {
@@ -83,6 +93,11 @@ export const dealTilesQuery = `*[_type == "dealTile" && isActive == true] | orde
   title,
   subtitle,
   href,
+  countdownEnd,
+  discountPercentage,
+  originalPrice,
+  promoPrice,
+  productSlug,
   image { asset-> { url, metadata { dimensions { width, height }, lqip } } }
 }`;
 
@@ -128,6 +143,111 @@ export const sectionHeadersQuery = `*[_type == "sectionHeader"] {
   ctaLink
 }`;
 
+// Promo Popup - enhanced with new fields
+export const promoPopupQuery = `*[_type == "promoPopup" && isActive == true][0]{
+  title,
+  subtitle,
+  "image": image { asset-> { url, metadata { dimensions { width, height }, lqip } } },
+  originalPrice,
+  promoPrice,
+  discountText,
+  ctaText,
+  ctaLink,
+  countdownEnd,
+  showOnEntry,
+  delaySeconds
+}`;
+
+// Video Section - enhanced with TikTok/social support
+export const videoSectionQuery = `*[_type == "videoSection" && isActive == true][0]{
+  sectionTitle,
+  sectionSubtitle,
+  videoSourceType,
+  ctaText,
+  ctaLink,
+  videos[] {
+    title,
+    videoUrl,
+    googleDriveUrl,
+    "thumbnail": thumbnail { asset-> { url, metadata { dimensions { width, height }, lqip } } },
+    isVertical,
+    productSlug,
+    order
+  }
+}`;
+
+// Header Config
+export const headerConfigQuery = `*[_type == "headerConfig"][0]{
+  phone,
+  phoneUrl,
+  location,
+  badge1,
+  badge2,
+  announcementBar,
+  showBrandLogos,
+  brandLogos[] {
+    name,
+    slug,
+    "logo": logo { asset-> { url, metadata { dimensions { width, height } } } },
+    order
+  }
+}`;
+
+// Footer Config
+export const footerConfigQuery = `*[_type == "footerConfig"][0]{
+  aboutText,
+  contactInfo {
+    address,
+    phone,
+    email,
+    hours
+  },
+  columns[] {
+    title,
+    links[] {
+      label,
+      href
+    }
+  },
+  socialLinks[] {
+    platform,
+    url
+  },
+  bottomLinks[] {
+    label,
+    href
+  }
+}`;
+
+// Packout Components
+export const packoutComponentsQuery = `*[_type == "packoutComponent" && isActive == true] | order(order asc){
+  name,
+  "slug": slug.current,
+  componentType,
+  "image": image { asset-> { url, metadata { dimensions { width, height }, lqip } } },
+  price,
+  salePrice,
+  compatibleBases,
+  dimensions,
+  productId,
+  order
+}`;
+
+// Product Reviews (for homepage display)
+export const featuredReviewsQuery = `*[_type == "productReview" && isActive == true] | order(order asc)[0..5]{
+  productName,
+  author,
+  "authorAvatar": authorAvatar { asset-> { url } },
+  rating,
+  title,
+  comment,
+  isVerified,
+  isLocalGuide,
+  reviewCount,
+  datePublished,
+  source
+}`;
+
 export const homePageQuery = `{
   "homeSettings": ${homeSettingsQuery},
   "heroBanners": ${heroBannersQuery},
@@ -139,5 +259,11 @@ export const homePageQuery = `{
   "dealTiles": ${dealTilesQuery},
   "giveawayBanner": ${giveawayBannerQuery},
   "promoBanners": ${promoBannersQuery},
-  "sectionHeaders": ${sectionHeadersQuery}
+  "sectionHeaders": ${sectionHeadersQuery},
+  "promoPopup": ${promoPopupQuery},
+  "videoSection": ${videoSectionQuery},
+  "headerConfig": ${headerConfigQuery},
+  "footerConfig": ${footerConfigQuery},
+  "packoutComponents": ${packoutComponentsQuery},
+  "featuredReviews": ${featuredReviewsQuery}
 }`;

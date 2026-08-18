@@ -2,6 +2,7 @@
 import { VALID_LOCAL_BRANDS } from "@/lib/constants/brands";
 import { Flame, CircleArrowRight } from "lucide-react";
 import { HorizontalScroll } from "@/components/home/HorizontalScroll";
+import { CountdownTimer } from "@/components/home/CountdownTimer";
 
 function DealCard({ tile }: { tile: any }) {
   const textCol = tile.textColor || "#FFFFFF";
@@ -12,9 +13,9 @@ function DealCard({ tile }: { tile: any }) {
     >
       {/* Brand color background */}
       <div className="absolute inset-0" style={{ backgroundColor: tile.brandColor || "#000" }} />
-      {(tile.image?.asset?.url || VALID_LOCAL_BRANDS.includes(tile.brand.toLowerCase())) && (
+      {(tile.image?.asset?.url || (tile.brand && VALID_LOCAL_BRANDS.includes(tile.brand.toLowerCase()))) && (
         <img 
-          src={tile.image?.asset?.url || `/brands/${tile.brand.toLowerCase()}.webp`} 
+          src={tile.image?.asset?.url || `/brands/${tile.brand?.toLowerCase()}.webp`} 
           alt="" 
           className="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:scale-105 transition-transform duration-500" 
           onError={(e) => { e.currentTarget.style.display = 'none'; }}
@@ -53,6 +54,11 @@ function DealCard({ tile }: { tile: any }) {
           >
             {tile.subtitle}
           </p>
+          {tile.countdownEnd && (
+            <div className="mb-2">
+              <CountdownTimer targetDate={tile.countdownEnd} style="minimal" />
+            </div>
+          )}
           <span
             className="inline-flex items-center justify-center w-7 h-7 rounded-full transition-all"
             style={{
@@ -78,7 +84,8 @@ const fallbackDealTiles = [
 ];
 
 export function BestDealsSection({ dealTiles }: { dealTiles: any[] }) {
-  const safeTiles = (dealTiles && dealTiles.length > 0) ? dealTiles : fallbackDealTiles;
+  const rawTiles = (dealTiles && dealTiles.length > 0) ? dealTiles : fallbackDealTiles;
+  const safeTiles = rawTiles.filter(t => t && t.brand);
 
   return (
     <section className="bg-white dark:bg-[#111111] py-2.5 md:py-3" data-section="Las Mejores Ofertas de Hoy">
@@ -108,9 +115,9 @@ export function BestDealsSection({ dealTiles }: { dealTiles: any[] }) {
               className="group relative overflow-hidden rounded-lg h-[200px] transition-shadow hover:shadow-lg"
             >
               <div className="absolute inset-0" style={{ backgroundColor: tile.brandColor || "#000" }} />
-              {(tile.image?.asset?.url || VALID_LOCAL_BRANDS.includes(tile.brand.toLowerCase())) && (
+              {(tile.image?.asset?.url || (tile.brand && VALID_LOCAL_BRANDS.includes(tile.brand.toLowerCase()))) && (
                 <img 
-                  src={tile.image?.asset?.url || `/brands/${tile.brand.toLowerCase()}.webp`} 
+                  src={tile.image?.asset?.url || `/brands/${tile.brand?.toLowerCase()}.webp`} 
                   alt="" 
                   className="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:scale-105 transition-transform duration-500" 
                   onError={(e) => { e.currentTarget.style.display = 'none'; }}
@@ -142,6 +149,11 @@ export function BestDealsSection({ dealTiles }: { dealTiles: any[] }) {
                   >
                     {tile.subtitle}
                   </p>
+                  {tile.countdownEnd && (
+                    <div className="mb-2">
+                      <CountdownTimer targetDate={tile.countdownEnd} style="minimal" />
+                    </div>
+                  )}
                   <span
                     className="inline-flex items-center justify-center w-6 h-6 rounded-full transition-all"
                     style={{

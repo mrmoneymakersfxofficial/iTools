@@ -2,10 +2,7 @@
 import Link from "next/link";
 import { Wrench, TrendingUp, Plus } from "lucide-react";
 import { HorizontalScroll } from "@/components/home/HorizontalScroll";
-
-function formatPrice(price: number): string {
-  return `S/ ${price.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-}
+import { formatPrice } from "@/lib/format";
 
 function MobileProductCard({ product }: { product: any }) {
   const discount = product.price && product.salePrice ? Math.round(((product.price - product.salePrice) / product.price) * 100) : 0;

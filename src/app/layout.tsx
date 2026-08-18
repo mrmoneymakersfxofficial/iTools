@@ -2,19 +2,19 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
-import { ProductQuickView } from "@/components/product/ProductQuickView";
 import { CartDrawer } from "@/components/layout/CartDrawer";
 import { ClientLayoutEffects } from "@/components/layout/ClientLayoutEffects";
+import { CompareDrawer } from "@/components/product/CompareDrawer";
 import { ThemeProvider } from "next-themes";
 import { AuthProvider } from "@/components/providers/AuthProvider";
 import { BottomNav } from "@/components/layout/BottomNav";
-import { IToolsAssistant } from "@/components/layout/IToolsAssistant";
 import { draftMode } from "next/headers";
 import { SanityVisualEditing } from "@/components/sanity/SanityVisualEditing";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { fetchLayoutData } from "@/lib/sanity/fetch-layout";
 import { GlobalSettingsProvider } from "@/stores/global-settings-context";
+import { DynamicClientWidgets } from "@/components/layout/DynamicClientWidgets";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -118,17 +118,18 @@ export default async function RootLayout({
 
   return (
     <html lang="es" suppressHydrationWarning>
-      <body className={`${inter.variable} font-sans min-h-screen bg-background text-foreground flex flex-col`}>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+      <body className={`${inter.variable} font-sans min-h-screen antialiased bg-background text-foreground flex flex-col`}>
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
           <GlobalSettingsProvider settings={settings}>
             <AuthProvider>
               <Header />
               <main className="flex-1 mt-[112px] md:mt-[136px]">{children}</main>
               <Footer />
+              <DynamicClientWidgets />
               <BottomNav />
               <CartDrawer />
+              <CompareDrawer />
               <ProductQuickView />
-              <IToolsAssistant />
               <Toaster />
               <ClientLayoutEffects />
               {mode.isEnabled && <SanityVisualEditing />}

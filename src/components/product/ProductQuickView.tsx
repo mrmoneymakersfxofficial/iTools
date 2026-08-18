@@ -26,10 +26,7 @@ import { useQuickViewStore } from "@/stores/quickview-store";
 import { getProductsByBrand, getBrandTheme } from "@/lib/data";
 import type { Product } from "@/types";
 import { urlFor } from "@/sanity/image";
-
-function formatPrice(n: number): string {
-  return `S/ ${n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-}
+import { formatPrice } from "@/lib/format";
 
 function getBrandColorForProduct(product: Product): string {
   if (product.brand) {

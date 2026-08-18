@@ -10,6 +10,7 @@ import { ProductCard } from "@/components/product/ProductCard";
 import { useQuickViewStore } from "@/stores/quickview-store";
 import { useCartStore } from "@/stores/cart-store";
 import type { Product, Brand } from "@/types";
+import { formatPrice } from "@/lib/format";
 
 interface BrandTheme {
   color: string;
@@ -253,11 +254,6 @@ function BrandCategoryIcon({ type, color }: { type: string; color: string }) {
   }
 }
 
-function formatPrice(price: number): string {
-  return `S/ ${price.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-}
-
-/* ── Reusable section fade div ── */
 function SectionFade({ color }: { color: string }) {
   return null;
 }

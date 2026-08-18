@@ -1,4 +1,6 @@
 
+export const dynamic = 'force-dynamic';
+
 /* ── Desktop-only components ── */
 import { TrendingSidebar } from "@/components/home/TrendingSidebar";
 import { ToolCribSidebar } from "@/components/home/ToolCribSidebar";
@@ -22,6 +24,9 @@ import { ExploreProductsMobile } from "@/components/home/ExploreProductsMobile";
 import { FeaturedSection, NewArrivalsSection } from "@/components/home/ProductSections";
 import { BrandShowcase } from "@/components/home/BrandShowcase";
 import { BrandBannersCarousel } from "@/components/home/BrandBannersCarousel";
+import { VideoSection } from "@/components/home/VideoSection";
+import { PromoPopup } from "@/components/layout/PromoPopup";
+import { CompareDrawer } from "@/components/product/CompareDrawer";
 
 
 
@@ -116,8 +121,13 @@ export default async function Home() {
           <BrandShowcase brands={data.brandShowcase} />
           <FeaturedSection products={data.products?.filter(p => p.showInFeatured)} />
           <NewArrivalsSection products={data.products?.filter(p => p.showInNewArrivals)} />
+
+          {/* Video Section */}
+          <VideoSection data={data.videoSection} />
         </div>
       </main>
+      {/* Global: Promo Popup */}
+      <PromoPopup data={data.promoPopup} />
     </div>
   );
 }
@@ -133,7 +143,8 @@ const fallbackDealTiles = [
 ];
 
 function DesktopDealTiles({ dealTiles }: { dealTiles: any[] }) {
-  const safeTiles = (dealTiles && dealTiles.length > 0) ? dealTiles : fallbackDealTiles;
+  const rawTiles = (dealTiles && dealTiles.length > 0) ? dealTiles : fallbackDealTiles;
+  const safeTiles = rawTiles.filter(t => t && t.brand);
 
 
   return (
@@ -148,9 +159,9 @@ function DesktopDealTiles({ dealTiles }: { dealTiles: any[] }) {
               className="group relative overflow-hidden rounded-lg h-[200px] transition-shadow hover:shadow-lg"
             >
               <div className="absolute inset-0" style={{ backgroundColor: tile.brandColor || "#000" }} />
-              {(tile.image?.asset?.url || VALID_LOCAL_BRANDS.includes(tile.brand.toLowerCase())) && (
+              {(tile.image?.asset?.url || (tile.brand && VALID_LOCAL_BRANDS.includes(tile.brand.toLowerCase()))) && (
                 <img 
-                  src={tile.image?.asset?.url || `/brands/${tile.brand.toLowerCase()}.webp`} 
+                  src={tile.image?.asset?.url || `/brands/${tile.brand?.toLowerCase()}.webp`} 
                   alt="" 
                   className="absolute inset-0 w-full h-full object-cover opacity-50 transition-transform duration-500" 
                 />

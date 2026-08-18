@@ -5,6 +5,9 @@ import Link from 'next/link'
 import { Package, ArrowRight, Search } from 'lucide-react'
 import OrdersListClient from './OrdersListClient'
 
+// Force dynamic rendering — uses getServerSession which queries DB
+export const dynamic = 'force-dynamic'
+
 export default async function PedidosPage({
   searchParams,
 }: {

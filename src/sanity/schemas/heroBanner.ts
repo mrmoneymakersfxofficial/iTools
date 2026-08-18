@@ -17,6 +17,12 @@ export default defineType({
       validation: (r) => r.required(),
     }),
     defineField({ name: "bgGradient", title: "Gradiente de fallback (CSS)", type: "string" }),
+    defineField({
+      name: "countdownEnd",
+      title: "Fecha de Expiración (Countdown)",
+      type: "datetime",
+      description: "Si se establece, muestra una cuenta regresiva en el banner",
+    }),
     defineField({ name: "order", title: "Orden", type: "number", validation: (r) => r.required().min(0) }),
     defineField({ name: "isActive", title: "Activo", type: "boolean", initialValue: true }),
   ],

@@ -15,21 +15,24 @@ import {
   Star,
   Wrench,
   Share2,
+  FileDown,
+  GitCompare,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { ProductCard } from "@/components/product/ProductCard";
+import { ShareDialog } from "@/components/product/ShareDialog";
+import { ProductReviews } from "@/components/product/ProductReviews";
+import { PdfDownloadButton } from "@/components/product/PdfDownloadButton";
 import { useCartStore } from "@/stores/cart-store";
 import { useWishlistStore } from "@/stores/wishlist-store";
+import { useCompareStore } from "@/stores/compare-store";
 import type { Product } from "@/types";
 import { useSectionDeepLinking } from "@/hooks/useSectionDeepLinking";
 import { sectionId } from "@/hooks/useSectionDeepLinking";
 import { urlFor } from "@/sanity/image";
-
-function formatPrice(n: number): string {
-  return `S/ ${n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-}
+import { formatPrice } from "@/lib/format";
 
 function StarRating({ rating, count }: { rating: number; count: number }) {
   return (
@@ -57,7 +60,7 @@ const SECTION_REVIEWS = "Reseñas";
 const SECTION_BENEFITS = "Beneficios de Compra";
 const SECTION_RELATED = "Productos Relacionados";
 
-export function ProductDetailClient({ product, relatedProducts }: { product: Product; relatedProducts: Product[] }) {
+export function ProductDetailClient({ product, relatedProducts, reviews }: { product: Product; relatedProducts: Product[]; reviews?: any[] }) {
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState<"specs" | "description" | "reviews">("specs");
   const [activeImageIndex, setActiveImageIndex] = useState(0);
@@ -65,6 +68,8 @@ export function ProductDetailClient({ product, relatedProducts }: { product: Pro
   const openCart = useCartStore((s) => s.openCart);
   const { toggleItem, isWishlisted } = useWishlistStore();
   const wishlisted = isWishlisted(product.id);
+  const { addItem: addToCompare, isInCompare } = useCompareStore();
+  const inCompare = isInCompare(product.slug || product.id);
 
   // Enable section deep linking on this page
   useSectionDeepLinking();
@@ -266,15 +271,96 @@ export function ProductDetailClient({ product, relatedProducts }: { product: Pro
                 </Button>
               </div>
 
-              {/* Share */}
-              <button
-                type="button"
-                onClick={handleCopyLink}
-                className="flex items-center gap-2 text-sm text-muted-foreground hover:text-itools-blue transition-colors self-start"
-              >
-                <Share2 className="h-4 w-4" />
-                Copiar enlace para compartir
-              </button>
+              {/* Buy Now + Wishlist actions */}
+              <div className="flex gap-2 mt-1">
+                <Button
+                  onClick={() => {
+                    for (let i = 0; i < quantity; i++) addToCart(product);
+                    window.location.href = "/checkout";
+                  }}
+                  disabled={product.stock === 0}
+                  className="flex-1 bg-itools-dark hover:bg-gray-800 text-white font-impact h-12 text-base tracking-wide transition-colors"
+                >
+                  Comprar Ahora
+                </Button>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className={cn(
+                    "h-12 w-12 border-2 transition-colors",
+                    wishlisted ? "border-itools-red text-itools-red" : "border-gray-300 dark:border-gray-600 text-gray-400 hover:text-itools-red hover:border-itools-red"
+                  )}
+                  onClick={() => toggleItem(product.id)}
+                  title={wishlisted ? "En tu lista de deseos" : "Agregar a lista de deseos"}
+                >
+                  <Heart className={cn("h-5 w-5", wishlisted && "fill-itools-red")} />
+                </Button>
+              </div>
+
+              {/* Share, Compare & Downloadable Resources */}
+              <div className="space-y-3 mt-2">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <ShareDialog productName={product.name} productUrl={`/producto/${product.slug}`} />
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className={cn("gap-1.5", inCompare ? "text-primary" : "text-muted-foreground hover:text-primary")}
+                    onClick={() =>
+                      addToCompare({
+                        slug: product.slug || product.id,
+                        name: product.name,
+                        price: product.price,
+                        salePrice: product.comparePrice,
+                        image: product.image ? urlFor(product.image).width(100).height(100).format("webp").url() : undefined,
+                        brand: product.brand?.name,
+                        specs: product.specs,
+                      })
+                    }
+                    title={inCompare ? "Ya en comparación" : "Comparar producto"}
+                  >
+                    <GitCompare className="h-4 w-4" />
+                    Comparar
+                  </Button>
+                </div>
+
+                {/* Downloadable Resources Section */}
+                {(product as any).technicalSheetUrl && (
+                  <div className="border-t border-border pt-3">
+                    <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">
+                      Archivos descargables
+                    </p>
+                    <div className="flex gap-2 flex-wrap">
+                      <Link href={(product as any).technicalSheetUrl} target="_blank">
+                        <Button variant="outline" size="sm" className="gap-1.5 bg-red-50 dark:bg-red-950/20 border-red-200 dark:border-red-900 text-red-700 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-950/30">
+                          <FileDown className="h-4 w-4" />
+                          Ficha Técnica (PDF)
+                        </Button>
+                      </Link>
+                      <Link href={`/api/pdf/ficha-tecnica?sku=${product.sku}`} target="_blank">
+                        <Button variant="outline" size="sm" className="gap-1.5">
+                          <FileDown className="h-4 w-4" />
+                          Imprimir Ficha
+                        </Button>
+                      </Link>
+                    </div>
+                  </div>
+                )}
+                {!(product as any).technicalSheetUrl && (
+                  <PdfDownloadButton
+                    product={{
+                      name: product.name,
+                      slug: product.slug || product.id,
+                      sku: product.sku,
+                      brand: product.brand?.name,
+                      price: product.price,
+                      description: product.description || product.shortDescription,
+                      specs: (product as any).specs,
+                    }}
+                    variant="outline"
+                    size="sm"
+                  />
+                )}
+              </div>
             </div>
           </div>
         </section>
@@ -400,15 +486,10 @@ export function ProductDetailClient({ product, relatedProducts }: { product: Pro
             className="bg-white rounded-b-xl border border-t-0 p-6 mt-px"
           >
             {activeTab === "reviews" && (
-              <div className="text-center py-12">
-                <Star className="h-12 w-12 text-gray-200 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-foreground mb-2">
-                  Aún no hay reseñas
-                </h3>
-                <p className="text-sm text-muted-foreground max-w-md mx-auto">
-                  Sé el primero en dejar tu reseña sobre este producto y comparte tu experiencia con otros profesionales.
-                </p>
-              </div>
+              <ProductReviews
+                reviews={reviews || []}
+                productSlug={product.slug || product.id}
+              />
             )}
           </section>
         </div>

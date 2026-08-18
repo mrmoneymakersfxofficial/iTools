@@ -1,6 +1,9 @@
 import { db } from "@/lib/db";
 import { CouponManager } from "./CuponesClient";
 
+// Force dynamic rendering — this page queries the DB and must not be prerendered at build time
+export const dynamic = "force-dynamic";
+
 export default async function CuponesPage() {
   const coupons = await db.coupon.findMany({
     orderBy: { createdAt: "desc" },

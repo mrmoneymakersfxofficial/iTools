@@ -2,6 +2,9 @@ import { db } from "@/lib/db";
 import Link from "next/link";
 import { Plus, Search, ChevronLeft, ChevronRight, Edit2, Trash2, ImageIcon } from "lucide-react";
 
+// Force dynamic rendering — this page queries the DB and must not be prerendered at build time
+export const dynamic = "force-dynamic";
+
 const PER_PAGE = 20;
 
 function formatSoles(n: number) {
@@ -16,6 +19,7 @@ function parseImages(imagesJson: string): string[] {
     return [];
   }
 }
+
 
 export default async function ProductosPage({
   searchParams,

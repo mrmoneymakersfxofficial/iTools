@@ -31,6 +31,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'
+import { formatPrice } from '@/lib/format'
 
 const paymentMethods = [
   {
@@ -54,10 +55,6 @@ const paymentMethods = [
 ]
 
 const SHIPPING_COST: number = 15
-
-function formatPrice(price: number) {
-  return `S/ ${price.toFixed(2)}`
-}
 
 export default function CheckoutPage() {
   const { data: session, status: authStatus } = useSession()

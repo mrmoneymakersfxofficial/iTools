@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight, CircleArrowRight, Wrench } from "lucide-react";
+import { CountdownTimer } from "@/components/home/CountdownTimer";
 
 /* ─── Types ─── */
 const INTERVAL_MS = 5000;
@@ -137,6 +138,13 @@ export function HeroCarousel({ banners }: { banners: any[] }) {
                     <CircleArrowRight className="h-4 w-4" />
                   </span>
                 </div>
+
+                {/* Countdown Timer */}
+                {b.countdownEnd && (
+                  <div className="mt-3 md:mt-4">
+                    <CountdownTimer targetDate={b.countdownEnd} style="modern" />
+                  </div>
+                )}
               </div>
             </Link>
           );

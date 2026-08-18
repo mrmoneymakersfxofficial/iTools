@@ -42,7 +42,37 @@ export const structure: StructureResolver = (S) =>
               S.documentTypeListItem("dealTile").title("Ofertas Especiales"),
               S.documentTypeListItem("product").title("Productos"),
               S.documentTypeListItem("sectionHeader").title("Encabezados de Sección"),
+              S.documentTypeListItem("promoPopup").title("Popup Emergente"),
+              S.documentTypeListItem("videoSection").title("Videos"),
+              S.documentTypeListItem("packoutComponent").title("PACKOUT Builder"),
+              S.documentTypeListItem("productReview").title("Reseñas"),
             ])
         ),
       S.documentTypeListItem("page").title("Páginas Estáticas"),
+      // Exclude everything already explicitly listed above
+      ...S.documentTypeListItems().filter(
+        (listItem) =>
+          ![
+            "homeSettings",
+            "heroSlide",
+            "promoBanner",
+            "giveawayBanner",
+            "brandPromoSlide",
+            "brandShowcaseItem",
+            "category",
+            "dealTile",
+            "product",
+            "trendingCategory",
+            "sectionHeader",
+            "promoPopup",
+            "videoSection",
+            "packoutComponent",
+            "productReview",
+            "headerConfig",
+            "footerConfig",
+            "uiConfig",
+            "brandShowcaseSettings",
+            "page"
+          ].includes(listItem.getId() as string)
+      ),
     ]);

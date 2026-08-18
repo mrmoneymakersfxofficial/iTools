@@ -4,10 +4,7 @@ import Link from "next/link";
 import { Wrench, Star, Plus } from "lucide-react";
 import { HorizontalScroll } from "@/components/home/HorizontalScroll";
 import { useCartStore } from "@/stores/cart-store";
-
-function formatPrice(price: number): string {
-  return `S/ ${price.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-}
+import { formatPrice } from "@/lib/format";
 
 const tabs = [
   { id: "featured", label: "Productos Destacados" },
