@@ -14,7 +14,7 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { fetchLayoutData } from "@/lib/sanity/fetch-layout";
 import { GlobalSettingsProvider } from "@/stores/global-settings-context";
-import { DynamicClientWidgets } from "@/components/layout/DynamicClientWidgets";
+
 
 const inter = Inter({
   variable: "--font-inter",
@@ -125,7 +125,7 @@ export default async function RootLayout({
               <Header />
               <main className="flex-1 mt-[112px] md:mt-[136px]">{children}</main>
               <Footer />
-              <DynamicClientWidgets />
+
               <BottomNav />
               <CartDrawer />
               <CompareDrawer />
