@@ -129,7 +129,6 @@ export default async function RootLayout({
               <BottomNav />
               <CartDrawer />
               <CompareDrawer />
-              <ProductQuickView />
               <Toaster />
               <ClientLayoutEffects />
               {mode.isEnabled && <SanityVisualEditing />}
