@@ -123,7 +123,7 @@ export default async function RootLayout({
           <GlobalSettingsProvider settings={settings}>
             <AuthProvider>
               <Header />
-              <main className="flex-1 mt-[112px] md:mt-[136px]">{children}</main>
+              <main className="flex-1 mt-[116px] md:mt-[188px]">{children}</main>
               <Footer />
 
               <BottomNav />
