@@ -243,27 +243,24 @@ export function BottomNav() {
               </div>
             </div>
 
-            {/* Brand cards grid */}
+            {/* Brand cards grid — with webp images */}
             <div className="px-3 pb-6 grid grid-cols-2 gap-2 overflow-y-auto max-h-[45vh] no-scrollbar">
               {brandLinks.map((brand) => (
                 <button
-                  key={brand.slug}
+                  key={`gc-${brand.slug}`}
                   onClick={() => { setShowBrands(false); router.push(`/marca/${brand.slug}`); }}
                   className="relative overflow-hidden rounded-xl border border-[#1A1A1A] transition-all active:scale-[0.97] text-left"
                 >
-                  <div className="px-3 pt-3 pb-2.5" style={{ backgroundColor: brand.color }}>
-                    <p className="text-xs font-black uppercase tracking-wider" style={{ color: brand.textColor || "#FFF" }}>
-                      {brand.name}
-                    </p>
-                    <p className="text-[9px] mt-0.5 font-medium opacity-70" style={{ color: brand.textColor || "#FFF" }}>
-                      Ver tienda →
-                    </p>
+                  <div className="relative h-[60px] overflow-hidden" style={{ backgroundColor: brand.color }}>
+                    <img
+                      src={`/brands/${brand.slug}.webp`}
+                      alt={brand.name}
+                      className="w-full h-full object-cover"
+                      onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
+                    />
                   </div>
                   <div className="bg-[#111] px-3 py-2 flex items-center justify-between">
-                    <div className="flex items-center gap-1.5">
-                      <Wrench className="h-3 w-3 text-[#555]" />
-                      <span className="text-[9px] text-[#666]">Productos</span>
-                    </div>
+                    <span className="text-[10px] font-bold text-white/80 uppercase tracking-wide">{brand.name}</span>
                     <ChevronRight className="h-3 w-3 text-[#444]" />
                   </div>
                 </button>
