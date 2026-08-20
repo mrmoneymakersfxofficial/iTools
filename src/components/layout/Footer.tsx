@@ -52,7 +52,7 @@ const infoLinks = [
   { label: "Contacto", href: "/contacto" },
 ];
 
-export default function Footer() {
+export function Footer() {
   const { footerConfig, categories, headerConfig } = useGlobalSettings();
 
   const topCategories = categories
