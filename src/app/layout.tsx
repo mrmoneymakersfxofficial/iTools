@@ -123,7 +123,7 @@ export default async function RootLayout({
           <GlobalSettingsProvider settings={settings}>
             <AuthProvider>
               <Header />
-              <main style={{ marginTop: "var(--header-h, 120px)" }} className="flex-1">{children}</main>
+              <main className="flex-1">{children}</main>
               <Footer />
 
               <BottomNav />
