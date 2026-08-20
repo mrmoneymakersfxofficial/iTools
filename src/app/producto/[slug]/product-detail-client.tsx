@@ -34,6 +34,18 @@ import { sectionId } from "@/hooks/useSectionDeepLinking";
 import { urlFor } from "@/sanity/image";
 import { formatPrice } from "@/lib/format";
 
+/** Safe wrapper for urlFor — returns empty string if asset is missing */
+function safeUrlFor(img: any, width: number, height?: number): string {
+  try {
+    if (!img?.asset) return "";
+    const builder = urlFor(img).width(width).format("webp");
+    return height ? builder.height(height).url() : builder.url();
+  } catch {
+    return "";
+  }
+}
+
+
 function StarRating({ rating, count }: { rating: number; count: number }) {
   return (
     <div className="flex items-center gap-2">
@@ -117,15 +129,20 @@ export function ProductDetailClient({ product, relatedProducts, reviews }: { pro
             <div className="bg-white dark:bg-[#111111] rounded-xl border border-border dark:border-[#333] p-4 lg:p-6">
               <div className="flex flex-col gap-4">
                 <div className="relative aspect-square bg-surface rounded-lg flex items-center justify-center overflow-hidden">
-                  {(product.images?.[activeImageIndex] || product.images?.[0] || product.image) ? (
-                    <img 
-                      src={urlFor(product.images?.[activeImageIndex] || product.images?.[0] || product.image).width(800).format("webp").url()} 
-                      alt={product.name} 
-                      className="absolute inset-0 w-full h-full object-contain" 
-                    />
-                  ) : (
-                    <Wrench className="h-32 w-32 text-gray-200 dark:text-gray-600" />
-                  )}
+                  {(() => {
+                    const activeImg = product.images?.[activeImageIndex] || product.images?.[0] || product.image;
+                    const src = safeUrlFor(activeImg, 800, 800);
+                    return src ? (
+                      <img
+                        src={src}
+                        alt={product.name}
+                        className="absolute inset-0 w-full h-full object-contain"
+                      />
+                    ) : (
+                      <Wrench className="h-32 w-32 text-gray-200 dark:text-gray-600" />
+                    );
+                  })()}
+
                   <div className="absolute top-3 left-3 flex flex-col gap-1.5 z-10">
                     {discount > 0 && (
                       <Badge className="bg-itools-red text-white border-0 text-sm px-2.5 py-1">
@@ -146,23 +163,27 @@ export function ProductDetailClient({ product, relatedProducts, reviews }: { pro
                     <Heart className={`h-5 w-5 transition-colors ${wishlisted ? "fill-itools-red text-itools-red" : "text-gray-400"}`} />
                   </button>
                 </div>
-                {product.images && product.images.length > 1 && (
+                {product.images && product.images.filter((img: any) => img?.asset).length > 1 && (
                   <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
-                    {product.images.map((img: any, idx: number) => (
-                      <button
-                        key={idx}
-                        onClick={() => setActiveImageIndex(idx)}
-                        className={`relative w-20 h-20 shrink-0 rounded-md overflow-hidden border-2 transition-colors ${
-                          activeImageIndex === idx ? "border-itools-blue" : "border-transparent hover:border-gray-300 dark:hover:border-gray-600"
-                        }`}
-                      >
-                        <img 
-                          src={urlFor(img).width(150).format("webp").url()} 
-                          alt={`${product.name} - Imagen ${idx + 1}`} 
-                          className="w-full h-full object-cover" 
-                        />
-                      </button>
-                    ))}
+                    {product.images.filter((img: any) => img?.asset).map((img: any, idx: number) => {
+                      const thumbSrc = safeUrlFor(img, 150);
+                      if (!thumbSrc) return null;
+                      return (
+                        <button
+                          key={idx}
+                          onClick={() => setActiveImageIndex(idx)}
+                          className={`relative w-20 h-20 shrink-0 rounded-md overflow-hidden border-2 transition-colors ${
+                            activeImageIndex === idx ? "border-itools-blue" : "border-transparent hover:border-gray-300 dark:hover:border-gray-600"
+                          }`}
+                        >
+                          <img
+                            src={thumbSrc}
+                            alt={`${product.name} - Imagen ${idx + 1}`}
+                            className="w-full h-full object-cover"
+                          />
+                        </button>
+                      );
+                    })}
                   </div>
                 )}
               </div>

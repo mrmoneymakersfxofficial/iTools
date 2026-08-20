@@ -40,9 +40,15 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       locale: "es_PE",
       siteName: "iTools Perú",
       url: `${SITE_URL}/producto/${product.slug}`,
-      images: (product.images?.[0] || product.image)
-        ? [{ url: urlFor(product.images?.[0] || product.image).width(800).height(800).url(), width: 800, height: 800, alt: product.name }]
-        : [{ url: "/og-image.png", width: 1200, height: 630, alt: "iTools Perú" }],
+      images: (() => {
+        try {
+          const img = product.images?.[0] || product.image;
+          if (img?.asset) {
+            return [{ url: urlFor(img).width(800).height(800).url(), width: 800, height: 800, alt: product.name }];
+          }
+        } catch {}
+        return [{ url: "/og-image.png", width: 1200, height: 630, alt: "iTools Perú" }];
+      })(),
     },
     twitter: {
       card: "summary_large_image",
