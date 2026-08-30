@@ -1,12 +1,42 @@
 /**
- * Bsale ↔ iTools Product Sync
+ * Bsale <-> iTools Product Sync
  * 
- * Syncs products from Bsale to the iTools database (Prisma/Supabase).
- * This is the INITIAL sync that should be run once after setup.
+ * Syncs products from Bsale to the iTools database (Prisma/Supabase) AND Sanity (CMS).
  */
 
 import { db } from "@/lib/db";
 import * as bsale from "./client";
+import { createClient } from "next-sanity";
+import { apiVersion, dataset, projectId } from "@/sanity/env";
+
+const sanityWriteClient = createClient({
+  projectId,
+  dataset,
+  apiVersion,
+  useCdn: false,
+  token: process.env.SANITY_API_WRITE_TOKEN,
+});
+
+async function patchSanityProduct(sku: string, data: { stock?: number; price?: number; salePrice?: number }) {
+  if (!process.env.SANITY_API_WRITE_TOKEN) {
+    console.warn("[Sanity Sync] Skipping Sanity update because SANITY_API_WRITE_TOKEN is not set.");
+    return;
+  }
+  try {
+    // Find product in Sanity by SKU
+    const sanityProduct = await sanityWriteClient.fetch(`*[_type == "product" && sku == $sku][0]{_id}`, { sku });
+    if (!sanityProduct) {
+      console.warn(`[Sanity Sync] Product with SKU ${sku} not found in Sanity.`);
+      return;
+    }
+    
+    // Patch product
+    await sanityWriteClient.patch(sanityProduct._id).set(data).commit();
+    console.log(`[Sanity Sync] Patched product ${sku} successfully in Sanity.`);
+  } catch (err) {
+    console.error(`[Sanity Sync] Error patching product ${sku}:`, err);
+  }
+}
 
 interface SyncResult {
   productsSynced: number;
@@ -15,10 +45,6 @@ interface SyncResult {
   errors: string[];
 }
 
-/**
- * Full product sync from Bsale → iTools DB
- * Run this once after initial Bsale setup.
- */
 export async function syncAllProducts(
   officeId?: number,
   priceListId?: number,
@@ -37,7 +63,6 @@ export async function syncAllProducts(
   };
 
   try {
-    // 1. Fetch all products from Bsale (paginated)
     log("Fetching products from Bsale...");
     let offset = 0;
     const limit = 50;
@@ -49,51 +74,32 @@ export async function syncAllProducts(
 
       for (const bsaleProduct of products) {
         try {
-          // 2. Get variants for this product
           const variantsResponse = await bsale.getProductVariants(bsaleProduct.id);
           const variants = variantsResponse.items || [];
-
-          // 3. Get the primary variant (first one) for price/stock
           const primaryVariant = variants[0];
 
-          // 4. Get stock for the primary variant
           let stock = 0;
           if (primaryVariant && officeId) {
             try {
-              const stockData = await bsale.getStockByVariant(
-                primaryVariant.id,
-                officeId
-              );
+              const stockData = await bsale.getStockByVariant(primaryVariant.id, officeId);
               stock = stockData.length > 0 ? stockData[0].quantityAvailable : 0;
-            } catch {
-              // Stock not found is OK
-            }
+            } catch {}
           }
 
-          // 5. Get price from price list
           let price = 0;
           let comparePrice: number | null = null;
           if (primaryVariant && priceListId) {
             try {
-              const priceData = await bsale.getPriceListDetails(
-                priceListId,
-                primaryVariant.id
-              );
+              const priceData = await bsale.getPriceListDetails(priceListId, primaryVariant.id);
               if (priceData.items && priceData.items.length > 0) {
                 price = priceData.items[0].priceWithTax / 100;
                 comparePrice = priceData.items[0].basePrice / 100;
               }
-            } catch {
-              // Price not found is OK
-            }
+            } catch {}
           }
 
-          // 6. Create or update product in iTools DB
           const sku = primaryVariant?.code || `BSALE-${bsaleProduct.id}`;
-          const slug = bsaleProduct.name
-            .toLowerCase()
-            .replace(/[^a-z0-9]+/g, "-")
-            .replace(/(^-|-$)/g, "");
+          const slug = bsaleProduct.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 
           await db.product.upsert({
             where: { sku },
@@ -119,6 +125,13 @@ export async function syncAllProducts(
             },
           });
 
+          // Sync stock & price to Sanity as well
+          await patchSanityProduct(sku, {
+            stock,
+            price: price || undefined,
+            salePrice: (comparePrice && comparePrice !== price) ? comparePrice : undefined
+          });
+
           result.productsSynced++;
           result.variantsSynced += variants.length;
           result.stockUpdated++;
@@ -131,7 +144,6 @@ export async function syncAllProducts(
         }
       }
 
-      // Pagination
       hasMore = products.length === limit;
       offset += limit;
     }
@@ -146,9 +158,6 @@ export async function syncAllProducts(
   return result;
 }
 
-/**
- * Quick stock sync for a single variant (used by webhooks)
- */
 export async function syncVariantStock(
   variantId: number,
   officeId: number
@@ -159,7 +168,6 @@ export async function syncVariantStock(
 
     const available = stockData[0].quantityAvailable;
 
-    // Find the product in iTools DB that has this variant
     const products = await db.product.findMany({
       where: {
         specs: { path: ["bsaleVariants"], array_contains: variantId },
@@ -167,15 +175,49 @@ export async function syncVariantStock(
     });
 
     if (products.length > 0) {
+      const p = products[0];
       await db.product.update({
-        where: { id: products[0].id },
+        where: { id: p.id },
         data: { stock: available },
       });
-    }
+      
+      // Update Sanity
+      await patchSanityProduct(p.sku, { stock: available });
 
-    return { stock: available, sku: products[0]?.sku || "" };
+      return { stock: available, sku: p.sku };
+    }
+    return null;
   } catch (error) {
     console.error(`[Bsale] Stock sync error for variant ${variantId}:`, error);
     return null;
   }
+}
+
+export async function syncVariantPrice(variantId: number, priceListId: number): Promise<void> {
+    try {
+        const priceData = await bsale.getPriceListDetails(priceListId, variantId);
+        if (!priceData.items?.length) return;
+    
+        const price = priceData.items[0].priceWithTax / 100;
+        const comparePrice = priceData.items[0].basePrice / 100;
+    
+        const products = await db.product.findMany({
+          where: { specs: { path: ["bsaleVariants"], array_contains: variantId } },
+        });
+    
+        if (products.length > 0) {
+          const p = products[0];
+          await db.product.update({
+            where: { id: p.id },
+            data: { price, comparePrice: comparePrice !== price ? comparePrice : null },
+          });
+          
+          await patchSanityProduct(p.sku, {
+              price,
+              salePrice: comparePrice !== price ? comparePrice : undefined
+          });
+        }
+    } catch (err) {
+        console.error(`[Bsale] Price sync error for variant ${variantId}:`, err);
+    }
 }
