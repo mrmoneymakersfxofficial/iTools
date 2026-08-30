@@ -125,8 +125,8 @@ export function ProductCard({ product, index = 0, quickView, quickViewColor }: P
       <div className="relative aspect-square bg-[#F9FAFB] dark:bg-[#222] flex items-center justify-center p-6 overflow-hidden shrink-0">
         <div className="absolute inset-0 bg-gradient-to-b from-transparent to-gray-100/50 dark:to-gray-800/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         
-        {product.images?.[0] || product.image ? (
-          <img src={urlFor(product.images?.[0] || product.image).width(400).format("webp").url()} alt={product.name} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+        {((product.images?.[0] as any)?.asset || (product.image as any)?.asset) ? (
+          <img src={urlFor((product.images?.[0] as any)?.asset ? product.images![0] : product.image!).width(400).format("webp").url()} alt={product.name} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
         ) : (
           <Wrench className="h-16 w-16 text-gray-300 dark:text-gray-500 group-hover:scale-110 transition-transform duration-300" />
         )}

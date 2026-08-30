@@ -194,3 +194,4 @@ export function PromoPopup({ data }: { data: PromoPopupData | null }) {
     </Dialog>
   );
 }
+

@@ -149,7 +149,7 @@ export function ProductQuickView() {
               <div className="relative aspect-[4/3] bg-[#1A1A1A] flex items-center justify-center">
                 {(product?.images?.[activeImageIndex] || product?.images?.[0] || product?.image) ? (
                   <img 
-                    src={urlFor(product.images?.[activeImageIndex] || product.images?.[0] || product.image).width(800).format("webp").url()} 
+                    src={urlFor((product.images?.[activeImageIndex] as any)?.asset ? product.images![activeImageIndex] : (product.images?.[0] as any)?.asset ? product.images![0] : product.image!).width(800).format("webp").url()} 
                     alt={product.name} 
                     className="absolute inset-0 w-full h-full object-contain" 
                   />
@@ -187,7 +187,7 @@ export function ProductQuickView() {
               {/* Image Thumbnails */}
               {product?.images && product.images.length > 1 && (
                 <div className="flex gap-2 overflow-x-auto p-4 bg-[#111] scrollbar-hide">
-                  {product.images.map((img: any, idx: number) => (
+                  {product.images.filter((img: any) => img?.asset).map((img: any, idx: number) => (
                     <button
                       key={idx}
                       onClick={() => setActiveImageIndex(idx)}
@@ -447,7 +447,7 @@ export function ProductQuickView() {
                           <div className="relative aspect-square bg-[#1A1A1A] flex items-center justify-center overflow-hidden mb-2 rounded-lg">
                             {(related.images?.[0] || related.image) ? (
                               <img 
-                                src={urlFor(related.images?.[0] || related.image).width(200).format("webp").url()} 
+                                src={urlFor((related.images?.[0] as any)?.asset ? related.images![0] : related.image!).width(200).format("webp").url()} 
                                 alt={related.name} 
                                 className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" 
                               />
@@ -482,3 +482,4 @@ export function ProductQuickView() {
     </AnimatePresence>
   );
 }
+
