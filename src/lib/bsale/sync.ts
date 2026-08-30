@@ -17,7 +17,42 @@ const sanityWriteClient = createClient({
   token: process.env.SANITY_API_WRITE_TOKEN,
 });
 
-async function patchSanityProduct(sku: string, data: { stock?: number; price?: number; salePrice?: number }) {
+async function patchSanityProduct(sku: string, data: { name?: string; slug?: string; stock?: number; price?: number; salePrice?: number; isActive?: boolean }) {
+  if (!process.env.SANITY_API_WRITE_TOKEN) return;
+  try {
+    const sanityProduct = await sanityWriteClient.fetch(`*[_type == "product" && sku == $sku][0]{_id}`, { sku });
+    if (!sanityProduct) {
+      if (data.name && data.slug) {
+        // Create it
+        await sanityWriteClient.create({
+          _type: "product",
+          name: data.name,
+          slug: { _type: "slug", current: data.slug },
+          sku: sku,
+          price: data.price || 0,
+          salePrice: data.salePrice,
+          stock: data.stock || 0,
+          isActive: data.isActive !== false
+        });
+        console.log(`[Sanity Sync] Created new product ${sku} in Sanity.`);
+      }
+      return;
+    }
+    
+    // Patch existing
+    const patchData: any = {};
+    if (data.stock !== undefined) patchData.stock = data.stock;
+    if (data.price !== undefined) patchData.price = data.price;
+    if (data.salePrice !== undefined) patchData.salePrice = data.salePrice;
+    
+    if (Object.keys(patchData).length > 0) {
+      await sanityWriteClient.patch(sanityProduct._id).set(patchData).commit();
+      console.log(`[Sanity Sync] Patched product ${sku} successfully in Sanity.`);
+    }
+  } catch (err) {
+    console.error(`[Sanity Sync] Error with product ${sku}:`, err);
+  }
+}) {
   if (!process.env.SANITY_API_WRITE_TOKEN) {
     console.warn("[Sanity Sync] Skipping Sanity update because SANITY_API_WRITE_TOKEN is not set.");
     return;
@@ -127,6 +162,9 @@ export async function syncAllProducts(
 
           // Sync stock & price to Sanity as well
           await patchSanityProduct(sku, {
+            name: bsaleProduct.name,
+            slug: slug,
+            isActive: bsaleProduct.state === 0,
             stock,
             price: price || undefined,
             salePrice: (comparePrice && comparePrice !== price) ? comparePrice : undefined
