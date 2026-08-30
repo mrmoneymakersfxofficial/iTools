@@ -28,6 +28,7 @@ import { PdfDownloadButton } from "@/components/product/PdfDownloadButton";
 import { useCartStore } from "@/stores/cart-store";
 import { useWishlistStore } from "@/stores/wishlist-store";
 import { useCompareStore } from "@/stores/compare-store";
+import { cn } from "@/lib/utils";
 import type { Product } from "@/types";
 import { useSectionDeepLinking } from "@/hooks/useSectionDeepLinking";
 import { sectionId } from "@/hooks/useSectionDeepLinking";
