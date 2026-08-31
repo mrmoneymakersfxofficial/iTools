@@ -52,6 +52,41 @@ export async function patchSanityProduct(sku: string, data: { name?: string; slu
   } catch (err) {
     console.error(`[Sanity Sync] Error with product ${sku}:`, err);
   }
+}
+
+export async function syncAllProducts(
+    const sanityProduct = await sanityWriteClient.fetch(`*[_type == "product" && sku == $sku][0]{_id}`, { sku });
+    if (!sanityProduct) {
+      if (data.name && data.slug) {
+        // Create it
+        await sanityWriteClient.create({
+          _type: "product",
+          name: data.name,
+          slug: { _type: "slug", current: data.slug },
+          sku: sku,
+          price: data.price || 0,
+          salePrice: data.salePrice,
+          stock: data.stock || 0,
+          isActive: data.isActive !== false
+        });
+        console.log(`[Sanity Sync] Created new product ${sku} in Sanity.`);
+      }
+      return;
+    }
+    
+    // Patch existing
+    const patchData: any = {};
+    if (data.stock !== undefined) patchData.stock = data.stock;
+    if (data.price !== undefined) patchData.price = data.price;
+    if (data.salePrice !== undefined) patchData.salePrice = data.salePrice;
+    
+    if (Object.keys(patchData).length > 0) {
+      await sanityWriteClient.patch(sanityProduct._id).set(patchData).commit();
+      console.log(`[Sanity Sync] Patched product ${sku} successfully in Sanity.`);
+    }
+  } catch (err) {
+    console.error(`[Sanity Sync] Error with product ${sku}:`, err);
+  }
 }) {
   if (!process.env.SANITY_API_WRITE_TOKEN) {
     console.warn("[Sanity Sync] Skipping Sanity update because SANITY_API_WRITE_TOKEN is not set.");
@@ -259,4 +294,5 @@ export async function syncVariantPrice(variantId: number, priceListId: number): 
         console.error(`[Bsale] Price sync error for variant ${variantId}:`, err);
     }
 }
+
 
