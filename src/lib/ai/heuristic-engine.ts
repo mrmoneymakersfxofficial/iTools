@@ -41,7 +41,12 @@ export async function generateHeuristicResponse(msg: string): Promise<{ type: "t
   }
 
   if (lower.match(/(gracias|ok|perfecto|entendido)/)) {
-    return { type: "text", text: "¡De nada! Aquí estoy si necesitas buscar algo más." };
+    return { type: "text", text: "�De nada! Aqu� estoy si necesitas buscar algo m�s." };
+  }
+
+  if (lower.match(/^(precio|precios|costo|cotizacion|informacion|info|ayuda|contacto)$/)) {
+    return { type: "text", text: "�Claro que s�! Para darte el precio o informaci�n exacta, por favor dime el nombre de la herramienta que buscas (ej. 'Taladro Milwaukee')." };
+  };
   }
   
   // Product Search Intent
