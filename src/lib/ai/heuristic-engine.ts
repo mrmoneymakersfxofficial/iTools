@@ -10,7 +10,6 @@
 }
 
 export async function loadAICatalog() {
-  // No longer needed, we search server-side to save bandwidth
   return Promise.resolve();
 }
 
@@ -39,7 +38,6 @@ export async function generateHeuristicResponse(msg: string): Promise<{ type: "t
 
   if (lower.match(/(marcas|marca|milwaukee|dewalt|makita|bosch)/)) {
     return { type: "text", text: "Trabajamos con las mejores marcas profesionales: Milwaukee, DeWalt, Makita, Bosch, Stanley, entre otras. ¡Pídeme el precio de cualquier herramienta!" };
-  };
   }
 
   if (lower.match(/(gracias|ok|perfecto|entendido)/)) {
@@ -70,4 +68,3 @@ export async function generateHeuristicResponse(msg: string): Promise<{ type: "t
   
   return { type: "text", text: "No he logrado entender tu consulta. Por favor, sé más específico o prueba buscando el nombre de una herramienta (Ej: 'Llave de impacto DeWalt')." };
 }
-
