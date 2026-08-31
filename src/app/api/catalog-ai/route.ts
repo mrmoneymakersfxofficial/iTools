@@ -1,12 +1,12 @@
 ﻿import { NextResponse } from "next/server";
-import { client } from "@/sanity/client.server";
+import { serverClient } from "@/sanity/client.server";
 
 // Cache this route heavily (revalidates every 12 hours)
 export const revalidate = 43200; 
 
 export async function GET() {
   try {
-    const products = await client.fetch(
+    const products = await serverClient.fetch(
       `*[_type == "product" && isActive == true] {
         _id,
         name,
@@ -24,3 +24,4 @@ export async function GET() {
     return NextResponse.json({ products: [] }, { status: 500 });
   }
 }
+
