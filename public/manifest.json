@@ -1,5 +1,5 @@
 ﻿{
-  "name": "iTools Per",
+  "name": "iTools",
   "short_name": "iTools",
   "description": "Tu tienda de herramientas profesionales",
   "start_url": "/",
@@ -8,14 +8,9 @@
   "theme_color": "#D1001C",
   "icons": [
     {
-      "src": "/icon-192x192.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "/icon-512x512.png",
-      "sizes": "512x512",
-      "type": "image/png"
+      "src": "/icon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml"
     }
   ]
 }

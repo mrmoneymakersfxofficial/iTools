@@ -33,6 +33,15 @@ export async function generateHeuristicResponse(msg: string): Promise<{ type: "t
     return { type: "text", text: "Todos nuestros productos son 100% originales, nuevos en caja sellada y cuentan con garantía oficial de la marca en Perú." };
   }
 
+  if (lower.match(/(categorias|categoria|tipos|herramientas electricas|manuales|inalambricas)/)) {
+    return { type: "text", text: "Ofrecemos varias categorías: Herramientas Inalámbricas, Eléctricas, Manuales, Accesorios y Almacenamiento (Packout). Puedes ver todas las categorías en el menú inferior o buscando una herramienta específica." };
+  }
+
+  if (lower.match(/(marcas|marca|milwaukee|dewalt|makita|bosch)/)) {
+    return { type: "text", text: "Trabajamos con las mejores marcas profesionales: Milwaukee, DeWalt, Makita, Bosch, Stanley, entre otras. ¡Pídeme el precio de cualquier herramienta!" };
+  };
+  }
+
   if (lower.match(/(gracias|ok|perfecto|entendido)/)) {
     return { type: "text", text: "¡De nada! Aquí estoy si necesitas buscar algo más." };
   }
@@ -61,3 +70,4 @@ export async function generateHeuristicResponse(msg: string): Promise<{ type: "t
   
   return { type: "text", text: "No he logrado entender tu consulta. Por favor, sé más específico o prueba buscando el nombre de una herramienta (Ej: 'Llave de impacto DeWalt')." };
 }
+

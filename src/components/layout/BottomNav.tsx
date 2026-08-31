@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -11,6 +11,7 @@ import {
 import { getProductsByBrandSlug, categories, brands } from "@/lib/data";
 import type { Product } from "@/types";
 import { formatPrice } from "@/lib/format";
+import { useAiChatStore } from "@/stores/ai-chat-store";
 
 const brandLinks = [
   { name: "Milwaukee", slug: "milwaukee", color: "#D1001C" },
@@ -49,18 +50,16 @@ export function BottomNav() {
   const router = useRouter();
   const [showBrands, setShowBrands] = useState(false);
   const [showCategories, setShowCategories] = useState(false);
-  const [showChat, setShowChat] = useState(false);
+  
   const [chatMessages, setChatMessages] = useState<{ role: "user" | "bot"; text: string }[]>([
-    { role: "bot", text: "¡Hola! Soy iTools Pro, tu asistente de herramientas. ¿En qué puedo ayudarte?" },
+    { role: "bot", text: "Â¡Hola! Soy Asistente IA, tu asistente de herramientas. Â¿En quÃ© puedo ayudarte?" },
   ]);
-  const [chatInput, setChatInput] = useState("");
+  
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const brandsScrollRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-  }, [chatMessages]);
+  
 
   useEffect(() => {
     setShowBrands(false);
@@ -78,7 +77,7 @@ export function BottomNav() {
     setTimeout(() => {
       setChatMessages((prev) => [
         ...prev,
-        { role: "bot", text: "Gracias por tu mensaje. Un especialista iTools te contactará pronto. Mientras tanto, explora nuestras marcas y categorías en el menú inferior." },
+        { role: "bot", text: "Gracias por tu mensaje. Un especialista iTools te contactarÃ¡ pronto. Mientras tanto, explora nuestras marcas y categorÃ­as en el menÃº inferior." },
       ]);
     }, 1000);
   };
@@ -105,14 +104,14 @@ export function BottomNav() {
 
   return (
     <>
-      {/* ── Bottom Bar — MOBILE ONLY ── */}
+      {/* â”€â”€ Bottom Bar â€” MOBILE ONLY â”€â”€ */}
       <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#0A0A0A]/98 backdrop-blur-xl border-t border-[#1A1A1A]">
         {/* Main nav buttons */}
         <div className="flex items-center justify-around px-1 pb-[env(safe-area-inset-bottom)]">
           <Link
             href="/"
             className={`flex flex-col items-center gap-0.5 py-2 px-2.5 rounded-xl transition-all ${
-              pathname === "/" ? "text-[#E35205]" : "text-gray-400 hover:text-gray-200"
+              pathname === "/" ? "text-[#D1001C]" : "text-gray-400 hover:text-gray-200"
             }`}
           >
             <Home className="h-5 w-5" />
@@ -121,40 +120,40 @@ export function BottomNav() {
           </Link>
 
           <button
-            onClick={() => { setShowChat(false); setShowBrands(false); setShowCategories(!showCategories); }}
+            onClick={() => { setShowBrands(false); setShowCategories(!showCategories); }}
             className={`flex flex-col items-center gap-0.5 py-2 px-2.5 rounded-xl transition-all ${
-              isCategoryPage || showCategories ? "text-[#E35205]" : "text-gray-400 hover:text-gray-200"
+              isCategoryPage || showCategories ? "text-[#D1001C]" : "text-gray-400 hover:text-gray-200"
             }`}
           >
             <Search className="h-5 w-5" />
-            <span className="text-[8px] font-bold uppercase tracking-wider">Categorías</span>
+            <span className="text-[8px] font-bold uppercase tracking-wider">CategorÃ­as</span>
             {(isCategoryPage || showCategories) && <div className="w-4 h-0.5 rounded-full bg-[#E35205]" />}
           </button>
 
-          {/* Chatbot button — elevated center */}
+          {/* Chatbot button â€” elevated center */}
           <button
-            onClick={() => { setShowCategories(false); setShowBrands(false); setShowChat(!showChat); }}
+            onClick={() => { setShowCategories(false); setShowBrands(false); useAiChatStore.getState().toggleChat(); }}
             className="relative flex flex-col items-center gap-0.5 py-1 px-3 rounded-xl transition-all -mt-5"
           >
             <div
               className="w-12 h-12 rounded-2xl flex items-center justify-center transition-all active:scale-90"
               style={{
-                background: "linear-gradient(135deg, #E35205, #CC3300)",
-                boxShadow: showChat
-                  ? "0 0 20px rgba(227, 82, 5, 0.5), 0 4px 12px rgba(227, 82, 5, 0.3)"
-                  : "0 4px 16px rgba(227, 82, 5, 0.35)",
+                background: "linear-gradient(135deg, #D1001C, #990000)",
+                boxShadow: false
+                  ? "0 0 20px rgba(209, 0, 28, 0.5), 0 4px 12px rgba(209, 0, 28, 0.3)"
+                  : "0 4px 16px rgba(209, 0, 28, 0.35)",
               }}
             >
               <MessageCircle className="h-5 w-5 text-white" />
               <Sparkles className="h-3 w-3 text-white/80 absolute -top-0.5 -right-0.5" />
             </div>
-            <span className="text-[7px] font-black uppercase tracking-widest text-[#E35205]">iTools Pro</span>
+            <span className="text-[7px] font-black uppercase tracking-widest text-[#D1001C]">Asistente IA</span>
           </button>
 
           <button
-            onClick={() => { setShowChat(false); setShowCategories(false); setShowBrands(!showBrands); }}
+            onClick={() => { setShowCategories(false); setShowBrands(!showBrands); }}
             className={`flex flex-col items-center gap-0.5 py-2 px-2.5 rounded-xl transition-all ${
-              isBrandPage || showBrands ? "text-[#E35205]" : "text-gray-400 hover:text-gray-200"
+              isBrandPage || showBrands ? "text-[#D1001C]" : "text-gray-400 hover:text-gray-200"
             }`}
           >
             <ShoppingBag className="h-5 w-5" />
@@ -165,7 +164,7 @@ export function BottomNav() {
           <Link
             href="/packout-builder"
             className={`flex flex-col items-center gap-0.5 py-2 px-2.5 rounded-xl transition-all ${
-              pathname === "/packout-builder" ? "text-[#E35205]" : "text-gray-400 hover:text-gray-200"
+              pathname === "/packout-builder" ? "text-[#D1001C]" : "text-gray-400 hover:text-gray-200"
             }`}
           >
             <Layers className="h-5 w-5" />
@@ -183,7 +182,7 @@ export function BottomNav() {
         </div>
       </nav>
 
-      {/* ── BRANDS MODAL ── */}
+      {/* â”€â”€ BRANDS MODAL â”€â”€ */}
       {showBrands && (
         <div className="lg:hidden fixed inset-0 z-[60]" onClick={() => setShowBrands(false)}>
           <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" />
@@ -243,7 +242,7 @@ export function BottomNav() {
               </div>
             </div>
 
-            {/* Brand cards grid — with webp images */}
+            {/* Brand cards grid â€” with webp images */}
             <div className="px-3 pb-6 grid grid-cols-2 gap-2 overflow-y-auto max-h-[45vh] no-scrollbar">
               {brandLinks.map((brand) => (
                 <button
@@ -270,7 +269,7 @@ export function BottomNav() {
         </div>
       )}
 
-      {/* ── CATEGORIES MODAL ── */}
+      {/* â”€â”€ CATEGORIES MODAL â”€â”€ */}
       {showCategories && (
         <div className="lg:hidden fixed inset-0 z-[60]" onClick={() => setShowCategories(false)}>
           <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" />
@@ -284,7 +283,7 @@ export function BottomNav() {
             {/* Header */}
             <div className="px-4 pb-3 flex items-center justify-between">
               <div>
-                <h3 className="text-base font-bold text-white uppercase tracking-wide">Categorías</h3>
+                <h3 className="text-base font-bold text-white uppercase tracking-wide">CategorÃ­as</h3>
                 <p className="text-[10px] text-[#666] mt-0.5">Explora por tipo de herramienta</p>
               </div>
               <button onClick={() => setShowCategories(false)} className="w-8 h-8 rounded-full bg-[#1A1A1A] flex items-center justify-center">
@@ -299,10 +298,10 @@ export function BottomNav() {
                   {/* Back button */}
                   <button
                     onClick={() => setSelectedCategory(null)}
-                    className="mx-4 mb-3 flex items-center gap-1.5 text-[11px] text-[#E35205] font-semibold"
+                    className="mx-4 mb-3 flex items-center gap-1.5 text-[11px] text-[#D1001C] font-semibold"
                   >
                     <ArrowLeft className="h-3.5 w-3.5" />
-                    Todas las Categorías
+                    Todas las CategorÃ­as
                   </button>
                   {/* Subcategories and products */}
                   {(() => {
@@ -319,7 +318,7 @@ export function BottomNav() {
                                 key={child.id}
                                 href={`/categoria/${child.slug}`}
                                 onClick={() => setShowCategories(false)}
-                                className="shrink-0 px-3 py-2 rounded-lg bg-[#1A1A1A] border border-[#222] text-[10px] font-bold text-[#CCC] uppercase tracking-wider hover:border-[#E35205] hover:text-[#E35205] transition-all"
+                                className="shrink-0 px-3 py-2 rounded-lg bg-[#1A1A1A] border border-[#222] text-[10px] font-bold text-[#CCC] uppercase tracking-wider hover:border-[#E35205] hover:text-[#D1001C] transition-all"
                               >
                                 {child.name}
                               </Link>
@@ -342,7 +341,7 @@ export function BottomNav() {
                                 <div className="p-2.5">
                                   <p className="text-[10px] text-[#CCC] line-clamp-2 leading-snug mb-1.5">{product.name}</p>
                                   <div className="flex items-center justify-between">
-                                    <span className="text-xs font-bold text-[#E35205]">{formatPrice(product.price)}</span>
+                                    <span className="text-xs font-bold text-[#D1001C]">{formatPrice(product.price)}</span>
                                     {product.comparePrice && (
                                       <span className="text-[9px] text-[#555] line-through">{formatPrice(product.comparePrice)}</span>
                                     )}
@@ -353,7 +352,7 @@ export function BottomNav() {
                           </div>
                         ) : (
                           <div className="px-4 py-8 text-center">
-                            <p className="text-[#555] text-xs">Próximamente más productos en esta categoría.</p>
+                            <p className="text-[#555] text-xs">PrÃ³ximamente mÃ¡s productos en esta categorÃ­a.</p>
                           </div>
                         )}
                         {/* Link to full category */}
@@ -362,9 +361,9 @@ export function BottomNav() {
                             href={`/categoria/${cat.slug}`}
                             onClick={() => setShowCategories(false)}
                             className="block w-full text-center py-3 rounded-xl text-xs font-bold uppercase tracking-wider text-white transition-all active:scale-[0.98]"
-                            style={{ background: "linear-gradient(135deg, #E35205, #CC3300)" }}
+                            style={{ background: "linear-gradient(135deg, #D1001C, #990000)" }}
                           >
-                            Ver Toda la Categoría
+                            Ver Toda la CategorÃ­a
                           </Link>
                         </div>
                       </div>
@@ -382,7 +381,7 @@ export function BottomNav() {
                         onClick={() => setSelectedCategory(cat.id)}
                         className="relative overflow-hidden rounded-xl border border-[#1A1A1A] bg-[#111] p-4 text-left transition-all active:scale-[0.97] hover:border-[#E35205]/40"
                       >
-                        <div className="w-9 h-9 rounded-lg bg-[#E35205]/10 flex items-center justify-center text-[#E35205] mb-3">
+                        <div className="w-9 h-9 rounded-lg bg-[#E35205]/10 flex items-center justify-center text-[#D1001C] mb-3">
                           {categoryIcons[cat.icon || ""] || <Wrench className="h-5 w-5" />}
                         </div>
                         <p className="text-xs font-bold text-white leading-tight">{cat.name}</p>
@@ -398,30 +397,30 @@ export function BottomNav() {
         </div>
       )}
 
-      {/* ── CHATBOT PANEL ── */}
-      {showChat && (
+      {/* â”€â”€ CHATBOT PANEL â”€â”€ */}
+      {false && (
         <div className="lg:hidden fixed bottom-20 left-2 right-2 z-[60] animate-in slide-in-from-bottom-4 fade-in duration-300">
           <div
             className="bg-[#111] rounded-2xl border border-[#222] overflow-hidden"
-            style={{ boxShadow: "0 0 40px rgba(227, 82, 5, 0.1), 0 20px 60px rgba(0,0,0,0.5)" }}
+            style={{ boxShadow: "0 0 40px rgba(209, 0, 28, 0.1), 0 20px 60px rgba(0,0,0,0.5)" }}
           >
             {/* Chat header */}
-            <div className="px-4 py-3 flex items-center justify-between" style={{ background: "linear-gradient(135deg, #E35205, #CC3300)" }}>
+            <div className="px-4 py-3 flex items-center justify-between" style={{ background: "linear-gradient(135deg, #D1001C, #990000)" }}>
               <div className="flex items-center gap-2.5">
                 <div className="w-8 h-8 rounded-xl bg-white/20 flex items-center justify-center">
                   <Wrench className="h-4 w-4 text-white" />
                 </div>
                 <div>
-                  <p className="text-sm font-bold text-white">iTools Pro</p>
+                  <p className="text-sm font-bold text-white">Asistente IA</p>
                   <p className="text-[10px] text-white/70">Asistente de herramientas</p>
                 </div>
               </div>
               <div className="flex items-center gap-2">
                 <div className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-white/15">
                   <div className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
-                  <span className="text-[9px] text-white/80 font-medium">En línea</span>
+                  <span className="text-[9px] text-white/80 font-medium">En lÃ­nea</span>
                 </div>
-                <button onClick={() => setShowChat(false)} className="w-7 h-7 rounded-full bg-white/15 flex items-center justify-center">
+                <button onClick={() => setfalse(false)} className="w-7 h-7 rounded-full bg-white/15 flex items-center justify-center">
                   <X className="h-3.5 w-3.5 text-white" />
                 </button>
               </div>
@@ -434,7 +433,7 @@ export function BottomNav() {
                     className={`max-w-[80%] px-3 py-2 rounded-2xl text-sm leading-relaxed ${
                       msg.role === "user" ? "rounded-br-md text-white" : "rounded-bl-md text-[#DDD] bg-[#1A1A1A] border border-[#222]"
                     }`}
-                    style={msg.role === "user" ? { background: "linear-gradient(135deg, #E35205, #CC3300)" } : {}}
+                    style={msg.role === "user" ? { background: "linear-gradient(135deg, #D1001C, #990000)" } : {}}
                   >
                     {msg.text}
                   </div>
@@ -443,7 +442,7 @@ export function BottomNav() {
             </div>
             {/* Quick actions */}
             <div className="px-3 py-2 flex gap-1.5 overflow-x-auto no-scrollbar border-t border-[#1A1A1A]">
-              {["Ver ofertas", "Marcas", "Envío", "Garantía"].map((action) => (
+              {["Ver ofertas", "Marcas", "EnvÃ­o", "GarantÃ­a"].map((action) => (
                 <button
                   key={action}
                   onClick={() => {
@@ -471,7 +470,7 @@ export function BottomNav() {
               <button
                 onClick={sendChat}
                 className="w-10 h-10 rounded-xl flex items-center justify-center active:scale-90"
-                style={{ background: "linear-gradient(135deg, #E35205, #CC3300)" }}
+                style={{ background: "linear-gradient(135deg, #D1001C, #990000)" }}
               >
                 <Send className="h-4 w-4 text-white" />
               </button>
@@ -482,3 +481,5 @@ export function BottomNav() {
     </>
   );
 }
+
+
