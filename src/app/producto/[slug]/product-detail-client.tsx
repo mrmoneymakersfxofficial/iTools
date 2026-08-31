@@ -1,4 +1,5 @@
 "use client";
+import { cn } from "@/lib/utils";
 
 import { useState } from "react";
 import Link from "next/link";
@@ -533,3 +534,5 @@ export function ProductDetailClient({ product, relatedProducts, reviews }: { pro
     </main>
   );
 }
+
+
