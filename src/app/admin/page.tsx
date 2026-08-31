@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+﻿import { db } from "@/lib/db";
 import {
   DollarSign,
   ShoppingBag,
@@ -11,10 +11,10 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 
-// Force dynamic rendering — this page queries the DB and must not be prerendered at build time
+// Force dynamic rendering â€” this page queries the DB and must not be prerendered at build time
 export const dynamic = "force-dynamic";
 
-/* ── Helpers ─────────────────────────────────────────────────── */
+/* â”€â”€ Helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 function parseItems(itemsJson: string): Array<{ productId: string; name: string; quantity: number; price: number }> {
   try {
@@ -61,7 +61,7 @@ function timeAgo(date: Date) {
   return `Hace ${diffDays}d`;
 }
 
-/* ── Data Fetching ───────────────────────────────────────────── */
+/* â”€â”€ Data Fetching â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 const todayStart = new Date();
 todayStart.setHours(0, 0, 0, 0);
@@ -185,7 +185,7 @@ async function getDashboardData() {
   };
 }
 
-/* ── Page ────────────────────────────────────────────────────── */
+/* â”€â”€ Page â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 
 export default async function AdminDashboard() {
@@ -231,13 +231,13 @@ export default async function AdminDashboard() {
   return (
     <>
       {/* Subheader */}
-      <div className="mb-6">
-        <p className="text-xs text-[#666]">
-          Resumen de la tienda — {todayLabel}
-        </p>
-      </div>
-
-      {/* Stats grid */}
+        <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <p className="text-xs text-[#666]">
+            Resumen de la tienda — {todayLabel}
+          </p>
+          <ExportButtons orders={data.recentOrders} topProducts={[]} />
+        </div>
+        {/* Stats grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
         {stats.map((stat) => (
           <div
@@ -270,12 +270,12 @@ export default async function AdminDashboard() {
               href="/admin/pedidos"
               className="text-[10px] text-[#E35205] font-semibold hover:underline"
             >
-              Ver todos →
+              Ver todos â†’
             </Link>
           </div>
           {data.recentOrders.length === 0 ? (
             <div className="px-4 py-12 text-center text-sm text-[#666]">
-              No hay pedidos todavía
+              No hay pedidos todavÃ­a
             </div>
           ) : (
             <div className="overflow-x-auto">
@@ -376,7 +376,7 @@ export default async function AdminDashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Revenue Chart Placeholder (7 days) */}
         <div className="bg-[#111] rounded-xl border border-[#1A1A1A] p-4">
-          <h3 className="text-sm font-bold mb-4">Ingresos — Últimos 7 días</h3>
+          <h3 className="text-sm font-bold mb-4">Ingresos â€” Ãšltimos 7 dÃ­as</h3>
           {data.revenueByDay.every((d) => d.total === 0) ? (
             <div className="h-40 flex items-center justify-center text-sm text-[#666]">
               Sin datos de ingresos
@@ -486,7 +486,7 @@ export default async function AdminDashboard() {
                   {p.name}
                 </p>
                 <p className="text-[9px] text-[#555] mt-0.5">
-                  {p.brand?.name || "Sin marca"} · SKU: {p.sku}
+                  {p.brand?.name || "Sin marca"} Â· SKU: {p.sku}
                 </p>
                 <div className="flex items-center justify-between mt-2">
                   <span
@@ -495,7 +495,7 @@ export default async function AdminDashboard() {
                     {p.stock === 0 ? "Agotado" : `${p.stock} en stock`}
                   </span>
                   <span className="text-[9px] text-[#555]">
-                    Alerta: ≤{p.lowStockAlert}
+                    Alerta: â‰¤{p.lowStockAlert}
                   </span>
                 </div>
               </Link>
@@ -506,3 +506,4 @@ export default async function AdminDashboard() {
     </>
   );
 }
+
