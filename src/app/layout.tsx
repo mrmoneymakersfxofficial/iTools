@@ -11,6 +11,7 @@ import { BottomNav } from "@/components/layout/BottomNav";
 import { draftMode } from "next/headers";
 import { SanityVisualEditing } from "@/components/sanity/SanityVisualEditing";
 import { Header } from "@/components/layout/Header";
+import { AgentIA } from "@/components/chat/AgentIA";
 import { Footer } from "@/components/layout/Footer";
 import { fetchLayoutData } from "@/lib/sanity/fetch-layout";
 import { GlobalSettingsProvider } from "@/stores/global-settings-context";
@@ -140,6 +141,7 @@ export default async function RootLayout({
               <CartDrawer />
               <CompareDrawer />
               <Toaster />
+              <AgentIA />
               <ClientLayoutEffects />
               {mode.isEnabled && <SanityVisualEditing />}
             </AuthProvider>
@@ -149,3 +151,4 @@ export default async function RootLayout({
     </html>
   );
 }
+
