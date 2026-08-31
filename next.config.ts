@@ -12,6 +12,7 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: true,
   },
   reactStrictMode: true,
+  turbopack: {},
   images: {
     unoptimized: false,
     remotePatterns: [
@@ -44,3 +45,4 @@ const nextConfig: NextConfig = {
 };
 
 export default withSerwist(nextConfig);
+
