@@ -55,8 +55,8 @@ export function AgentIA() {
     setInput("");
     
     // Fake slight delay for realism
-    setTimeout(() => {
-      const response = generateHeuristicResponse(userMsg.text);
+    setTimeout(async () => {
+      const response = await generateHeuristicResponse(userMsg.text);
       setMessages(prev => [
         ...prev, 
         {
@@ -177,3 +177,4 @@ export function AgentIA() {
     </>
   );
 }
+

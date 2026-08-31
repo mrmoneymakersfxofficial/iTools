@@ -1,6 +1,4 @@
-﻿import Fuse from "fuse.js";
-
-export interface AIProduct {
+﻿export interface AIProduct {
   _id: string;
   name: string;
   slug: string;
@@ -11,29 +9,12 @@ export interface AIProduct {
   image: string;
 }
 
-let fuseIndex: Fuse<AIProduct> | null = null;
-let isLoaded = false;
-
 export async function loadAICatalog() {
-  if (isLoaded) return;
-  try {
-    const res = await fetch("/api/catalog-ai");
-    const data = await res.json();
-    if (data.products) {
-      fuseIndex = new Fuse(data.products, {
-        keys: ["name", "sku"],
-        threshold: 0.3,
-        distance: 100,
-        includeScore: true,
-      });
-      isLoaded = true;
-    }
-  } catch (err) {
-    console.error("Failed to load AI catalog", err);
-  }
+  // No longer needed, we search server-side to save bandwidth
+  return Promise.resolve();
 }
 
-export function generateHeuristicResponse(msg: string): { type: "text" | "products", text: string, products?: AIProduct[] } {
+export async function generateHeuristicResponse(msg: string): Promise<{ type: "text" | "products", text: string, products?: AIProduct[] }> {
   const lower = msg.toLowerCase().trim();
   
   if (lower.match(/^(hola|buenas|buenos|saludos|hi|hello)/)) {
@@ -57,25 +38,24 @@ export function generateHeuristicResponse(msg: string): { type: "text" | "produc
   }
   
   // Product Search Intent
-  if (!fuseIndex) {
-    return { type: "text", text: "Estoy procesando el catálogo de herramientas... por favor, pregúntame de nuevo en 3 segundos." };
-  }
-  
   const cleanSearch = lower.replace(/(tienes|tienen|busco|precio de|cuanto esta|cuanto cuesta|quiero|necesito|algún|algun|un|una)/g, "").trim();
   
   if (cleanSearch.length > 2) {
-    const results = fuseIndex.search(cleanSearch);
-    
-    if (results.length > 0) {
-      // Filter out low confidence
-      const topResults = results.slice(0, 4).map(r => r.item);
-      return {
-        type: "products",
-        text: `¡Claro! He encontrado estas opciones para "${cleanSearch}":`,
-        products: topResults
-      };
-    } else {
-      return { type: "text", text: `Lo siento, no he encontrado resultados exactos para "${cleanSearch}". Revisa la ortografía o intenta buscar por la marca (ej. "Taladro Milwaukee").` };
+    try {
+      const res = await fetch(`/api/catalog-ai?q=${encodeURIComponent(cleanSearch)}`);
+      const data = await res.json();
+      
+      if (data.products && data.products.length > 0) {
+        return {
+          type: "products",
+          text: `¡Claro! He encontrado estas opciones para "${cleanSearch}":`,
+          products: data.products
+        };
+      } else {
+        return { type: "text", text: `Lo siento, no he encontrado resultados exactos para "${cleanSearch}". Revisa la ortografía o intenta buscar por la marca (ej. "Taladro Milwaukee").` };
+      }
+    } catch (err) {
+      return { type: "text", text: `Ocurrió un error al buscar "${cleanSearch}". Por favor intenta nuevamente en unos segundos.` };
     }
   }
   
