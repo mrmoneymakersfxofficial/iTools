@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
@@ -24,58 +24,68 @@ const inter = Inter({
 
 const SITE_URL = "https://itools.pe";
 
+export const viewport: Viewport = {
+  themeColor: "#D1001C",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+};
+
 export const metadata: Metadata = {
+  manifest: "/manifest.json",
+  appleWebApp: { capable: true, statusBarStyle: "default", title: "iTools" },
   title: {
-    default: "iTools Perú | Herramientas Milwaukee — Distribuidor Oficial",
-    template: "%s | iTools Perú",
+    default: "iTools PerÃº | Herramientas Milwaukee â€” Distribuidor Oficial",
+    template: "%s | iTools PerÃº",
   },
   description:
-    "iTools Perú — Distribuidor autorizado de herramientas Milwaukee. Taladros, impactos, sierras, rotomartillos y más. Servicio Técnico Oficial. Envío a todo Perú. RUC: 20610613749.",
+    "iTools PerÃº â€” Distribuidor autorizado de herramientas Milwaukee. Taladros, impactos, sierras, rotomartillos y mÃ¡s. Servicio TÃ©cnico Oficial. EnvÃ­o a todo PerÃº. RUC: 20610613749.",
   keywords: [
-    "iTools Perú",
-    "Milwaukee Perú",
+    "iTools PerÃº",
+    "Milwaukee PerÃº",
     "herramientas Milwaukee",
     "taladro Milwaukee",
-    "servicio técnico Milwaukee",
+    "servicio tÃ©cnico Milwaukee",
     "herramientas profesionales",
-    "herramientas eléctricas",
-    "herramientas inalámbricas",
+    "herramientas elÃ©ctricas",
+    "herramientas inalÃ¡mbricas",
     "M18 FUEL",
-    "comprar herramientas Perú",
-    "herramientas de construcción",
-    "DeWalt Perú",
-    "Bosch Perú",
-    "Makita Perú",
+    "comprar herramientas PerÃº",
+    "herramientas de construcciÃ³n",
+    "DeWalt PerÃº",
+    "Bosch PerÃº",
+    "Makita PerÃº",
   ],
-  authors: [{ name: "iTools Perú", url: SITE_URL }],
-  creator: "iTools Perú",
-  publisher: "iTools Perú",
+  authors: [{ name: "iTools PerÃº", url: SITE_URL }],
+  creator: "iTools PerÃº",
+  publisher: "iTools PerÃº",
   metadataBase: new URL(SITE_URL),
   alternates: {
     canonical: "/",
   },
   openGraph: {
-    title: "iTools Perú | Herramientas Milwaukee — Distribuidor Oficial",
+    title: "iTools PerÃº | Herramientas Milwaukee â€” Distribuidor Oficial",
     description:
-      "Distribuidor autorizado de herramientas Milwaukee en Perú. Taladros, impactos, sierras y más. Servicio Técnico Oficial. Envío a todo Perú.",
+      "Distribuidor autorizado de herramientas Milwaukee en PerÃº. Taladros, impactos, sierras y mÃ¡s. Servicio TÃ©cnico Oficial. EnvÃ­o a todo PerÃº.",
     type: "website",
     locale: "es_PE",
-    siteName: "iTools Perú",
+    siteName: "iTools PerÃº",
     url: SITE_URL,
     images: [
       {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "iTools Perú — Herramientas Milwaukee",
+        alt: "iTools PerÃº â€” Herramientas Milwaukee",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "iTools Perú | Herramientas Milwaukee",
+    title: "iTools PerÃº | Herramientas Milwaukee",
     description:
-      "Distribuidor autorizado de herramientas Milwaukee en Perú. Envío a todo Perú.",
+      "Distribuidor autorizado de herramientas Milwaukee en PerÃº. EnvÃ­o a todo PerÃº.",
     images: ["/og-image.png"],
   },
   robots: {
@@ -104,14 +114,14 @@ export default async function RootLayout({
     headerConfig: layoutData?.header || {},
     footerConfig: layoutData?.footer || {},
     uiConfig: layoutData?.uiConfig || {
-      addToCartText: "Añadir al Carrito",
+      addToCartText: "AÃ±adir al Carrito",
       viewDetailsText: "Ver Detalles",
       outOfStockText: "Agotado",
       searchPlaceholder: "Buscar herramientas...",
-      shippingBadgeText: "Envío a todo Perú",
+      shippingBadgeText: "EnvÃ­o a todo PerÃº",
       securePaymentText: "Pago Seguro",
-      warrantyText: "Garantía Oficial",
-      returnsText: "Devolución en 30 días",
+      warrantyText: "GarantÃ­a Oficial",
+      returnsText: "DevoluciÃ³n en 30 dÃ­as",
     },
     categories: layoutData?.categories || [],
   };
