@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { syncAllProducts } from "@/lib/bsale/sync";
+import { syncAllProducts, patchSanityProduct } from "@/lib/bsale/sync";
 import * as bsale from "@/lib/bsale/client";
 
 /**
@@ -157,7 +157,7 @@ async function syncSpecificProducts(
         .replace(/[^a-z0-9]+/g, "-")
         .replace(/(^-|-$)/g, "");
 
-      await db.product.upsert({
+            await db.product.upsert({
         where: { sku },
         create: {
           sku,
@@ -185,6 +185,16 @@ async function syncSpecificProducts(
           },
           isPublished: bsaleProduct.state === 0,
         },
+      });
+
+      // SYNC TO SANITY
+      await patchSanityProduct(sku, {
+        name: bsaleProduct.name,
+        slug: slug,
+        stock: stock,
+        price: price || undefined,
+        salePrice: (comparePrice && comparePrice !== price) ? comparePrice : undefined,
+        isActive: bsaleProduct.state === 0
       });
 
       result.productsSynced++;
@@ -254,3 +264,4 @@ export async function GET() {
     );
   }
 }
+

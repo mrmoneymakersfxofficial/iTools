@@ -17,7 +17,7 @@ const sanityWriteClient = createClient({
   token: process.env.SANITY_API_WRITE_TOKEN,
 });
 
-async function patchSanityProduct(sku: string, data: { name?: string; slug?: string; stock?: number; price?: number; salePrice?: number; isActive?: boolean }) {
+export async function patchSanityProduct(sku: string, data: { name?: string; slug?: string; stock?: number; price?: number; salePrice?: number; isActive?: boolean }) {
   if (!process.env.SANITY_API_WRITE_TOKEN) return;
   try {
     const sanityProduct = await sanityWriteClient.fetch(`*[_type == "product" && sku == $sku][0]{_id}`, { sku });
@@ -259,3 +259,4 @@ export async function syncVariantPrice(variantId: number, priceListId: number): 
         console.error(`[Bsale] Price sync error for variant ${variantId}:`, err);
     }
 }
+
