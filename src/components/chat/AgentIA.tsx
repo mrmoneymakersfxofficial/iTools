@@ -2,10 +2,11 @@
 
 import { useState, useEffect, useRef } from "react";
 import { MessageCircle, X, Send, Bot, User, Sparkles } from "lucide-react";
-import { loadAICatalog, generateHeuristicResponse, type AIProduct } from "@/lib/ai/heuristic-engine";
+import { generateHeuristicResponse, type AIProduct } from "@/lib/ai/heuristic-engine";
 import { formatPrice } from "@/lib/format";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { useAiChatStore } from "@/stores/ai-chat-store";
 
 interface ChatMessage {
   id: string;
@@ -16,14 +17,13 @@ interface ChatMessage {
 }
 
 export function AgentIA() {
-  const [isOpen, setIsOpen] = useState(false);
+  const { isOpen, openChat, closeChat } = useAiChatStore();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (isOpen) {
-      loadAICatalog();
       if (messages.length === 0) {
         setMessages([
           {
@@ -41,7 +41,7 @@ export function AgentIA() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  const handleSend = () => {
+  const handleSend = async () => {
     if (!input.trim()) return;
     
     const userMsg: ChatMessage = {
@@ -54,7 +54,6 @@ export function AgentIA() {
     setMessages(prev => [...prev, userMsg]);
     setInput("");
     
-    // Fake slight delay for realism
     setTimeout(async () => {
       const response = await generateHeuristicResponse(userMsg.text);
       setMessages(prev => [
@@ -72,26 +71,19 @@ export function AgentIA() {
 
   return (
     <>
-      {/* Floating Button */}
-      <button
-        onClick={() => setIsOpen(true)}
-        className={cn(
-          "fixed bottom-6 right-6 z-[60] w-14 h-14 rounded-full bg-[#D1001C] text-white shadow-xl flex items-center justify-center hover:bg-red-700 hover:scale-105 transition-all duration-300",
-          isOpen && "opacity-0 pointer-events-none scale-0"
-        )}
-      >
-        <Sparkles className="w-6 h-6 animate-pulse" />
-      </button>
+      
 
       {/* Chat Window */}
       <div
         className={cn(
-          "fixed bottom-6 right-6 z-[70] w-[350px] sm:w-[380px] max-w-[calc(100vw-32px)] h-[550px] max-h-[calc(100vh-100px)] bg-white rounded-2xl shadow-2xl flex flex-col border border-neutral-200 transition-all duration-300 transform origin-bottom-right overflow-hidden",
-          isOpen ? "scale-100 opacity-100" : "scale-0 opacity-0 pointer-events-none"
+          "fixed z-[999] bg-white shadow-2xl flex flex-col transition-all duration-300 overflow-hidden border border-neutral-200",
+          // Mobile styling (full screen or attached to bottom nav)
+          "bottom-[70px] right-2 left-2 sm:bottom-6 sm:left-auto sm:right-6 rounded-2xl h-[450px] sm:h-[550px] sm:w-[380px]",
+          isOpen ? "scale-100 opacity-100 translate-y-0" : "scale-95 opacity-0 pointer-events-none translate-y-4"
         )}
       >
         {/* Header */}
-        <div className="bg-[#111] p-4 flex items-center justify-between text-white shrink-0">
+        <div className="bg-[#111] p-4 flex items-center justify-between text-white shrink-0 rounded-t-2xl">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#D1001C] to-red-900 flex items-center justify-center shrink-0">
               <Bot className="w-6 h-6 text-white" />
@@ -104,7 +96,7 @@ export function AgentIA() {
             </div>
           </div>
           <button 
-            onClick={() => setIsOpen(false)}
+            onClick={closeChat}
             className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors shrink-0"
           >
             <X className="w-4 h-4" />
@@ -121,12 +113,12 @@ export function AgentIA() {
                   ? "bg-[#D1001C] text-white rounded-br-sm" 
                   : "bg-white border border-gray-200 text-gray-800 rounded-bl-sm shadow-sm"
               )}>
-                <p className="whitespace-pre-wrap">{msg.text}</p>
+                <div className="whitespace-pre-wrap text-sm">{msg.text}</div>
                 
                 {msg.type === "products" && msg.products && (
                   <div className="mt-3 flex flex-col gap-2">
                     {msg.products.map(p => (
-                      <Link href={`/producto/${p.slug}`} key={p._id} className="flex gap-3 p-2 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors border border-gray-100 group">
+                      <Link href={`/producto/${p.slug}`} key={p._id} onClick={closeChat} className="flex gap-3 p-2 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors border border-gray-100 group">
                         <div className="w-12 h-12 rounded-lg bg-white shrink-0 overflow-hidden border border-gray-200 flex items-center justify-center">
                           {p.image ? (
                             <img src={p.image} alt={p.name} className="w-full h-full object-contain p-1" />

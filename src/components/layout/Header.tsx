@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import {
@@ -22,6 +22,9 @@ import {
 } from "lucide-react";
 import { AccountMenu, AccountMenuDesktop } from "@/components/layout/AccountMenu";
 import { ThemeToggle } from "@/components/layout/ThemeToggle";
+import { PwaInstallButton } from "@/components/layout/PwaInstallButton";
+import { Bot } from "lucide-react";
+import { useAiChatStore } from "@/stores/ai-chat-store";
 import { BrandMarquee } from "@/components/layout/BrandMarquee";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -43,7 +46,7 @@ import { urlFor } from "@/sanity/image";
 import Image from "next/image";
 import { formatPrice } from "@/lib/format";
 
-/* ───────────────────────── Types ───────────────────────── */
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ Types â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 interface BrandLogoItem {
   name: string;
@@ -63,10 +66,10 @@ interface HeaderConfigData {
   brandLogos?: BrandLogoItem[];
 }
 
-/* ───────────────────────── helpers ───────────────────────── */
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 
-/* ───────────────────────── sub-components ───────────────────────── */
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ sub-components â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 /** Desktop category dropdown row */
 function CategoryNavItem({ category }: { category: Category }) {
@@ -206,7 +209,7 @@ function MobileSearchOverlay({
           size="icon"
           onClick={onClose}
           className="shrink-0 text-muted-foreground hover:text-foreground"
-          aria-label="Cerrar búsqueda"
+          aria-label="Cerrar bÃºsqueda"
         >
           <X className="h-5 w-5" />
         </Button>
@@ -267,7 +270,7 @@ function MobileSearchOverlay({
   );
 }
 
-/* ───────────────────────── Modern Hamburger Menu ───────────────────────── */
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ Modern Hamburger Menu â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 function MobileMenuContent({ onClose }: { onClose: () => void }) {
   const { categories } = useGlobalSettings();
@@ -293,7 +296,7 @@ function MobileMenuContent({ onClose }: { onClose: () => void }) {
               <Sparkles className="h-5 w-5 text-white" />
             </div>
             <div>
-              <p className="text-[15px] font-semibold tracking-tight">iTools Perú</p>
+              <p className="text-[15px] font-semibold tracking-tight">iTools PerÃº</p>
               <p className="text-[11px] text-white/50">Tu tienda de herramientas</p>
             </div>
           </div>
@@ -318,7 +321,7 @@ function MobileMenuContent({ onClose }: { onClose: () => void }) {
             <div className="h-9 w-9 rounded-xl bg-white/10 flex items-center justify-center">
               <Package className="h-4 w-4 text-white/80" />
             </div>
-            <span className="text-[10px] text-white/60 font-medium">Categorías</span>
+            <span className="text-[10px] text-white/60 font-medium">CategorÃ­as</span>
           </a>
           <a
             href="/contacto"
@@ -333,9 +336,9 @@ function MobileMenuContent({ onClose }: { onClose: () => void }) {
         </div>
       </div>
 
-      <nav className="flex-1 overflow-y-auto px-3" aria-label="Menú de navegación">
+      <nav className="flex-1 overflow-y-auto px-3" aria-label="MenÃº de navegaciÃ³n">
         <p className="px-3 pb-2 pt-2 text-[10px] font-semibold uppercase tracking-widest text-white/30">
-          Categorías
+          CategorÃ­as
         </p>
         <div className="space-y-0.5">
           {topLevelCategories.map((category, idx) => {
@@ -398,7 +401,11 @@ function MobileMenuContent({ onClose }: { onClose: () => void }) {
         </div>
       </nav>
 
-      <div className="px-4 py-4 border-t border-white/5">
+      <div className="px-4 pb-4">
+          <PwaInstallButton className="w-full justify-center" />
+        </div>
+
+        <div className="px-4 py-4 border-t border-white/5">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <div className="h-8 w-8 rounded-xl bg-white/5 flex items-center justify-center">
@@ -413,7 +420,7 @@ function MobileMenuContent({ onClose }: { onClose: () => void }) {
   );
 }
 
-/* ───────────────────────── Main Header Component ───────────────────────── */
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ Main Header Component â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 export function Header() {
   const { uiConfig, headerConfig, categories } = useGlobalSettings();
@@ -432,9 +439,9 @@ export function Header() {
   const config = headerConfig || {};
   const phone = config.phone || "01 234 5678";
   const phoneUrl = config.phoneUrl || "tel:+5112345678";
-  const location = config.location || "Lima, Perú";
-  const badge1 = config.badge1 || "Servicio Técnico Oficial Milwaukee";
-  const badge2 = config.badge2 || "Envío a todo Perú";
+  const location = config.location || "Lima, PerÃº";
+  const badge1 = config.badge1 || "Servicio TÃ©cnico Oficial Milwaukee";
+  const badge2 = config.badge2 || "EnvÃ­o a todo PerÃº";
   const showBrandLogos = config.showBrandLogos !== false; // default true
   const brandLogos = config.brandLogos || [];
 
@@ -479,7 +486,7 @@ export function Header() {
   return (
     <>
       <header className="sticky top-0 z-50 w-full">
-        {/* ── Top Bar (desktop only) ── */}
+        {/* â”€â”€ Top Bar (desktop only) â”€â”€ */}
         <div className="hidden md:block bg-itools-dark text-white">
           <div className="mx-auto max-w-7xl px-4 flex items-center justify-between h-8 text-xs">
             <div className="flex items-center gap-4">
@@ -518,7 +525,7 @@ export function Header() {
           </div>
         </div>
 
-        {/* ── Main Bar ── */}
+        {/* â”€â”€ Main Bar â”€â”€ */}
         <div className="bg-white dark:bg-[#111111] border-b border-border dark:border-[#222] shadow-sm">
           <div className="mx-auto max-w-7xl px-4 h-16 flex items-center gap-3 lg:gap-6">
             {/* Left: Mobile hamburger / Desktop logo */}
@@ -530,7 +537,7 @@ export function Header() {
                     variant="ghost"
                     size="icon"
                     className="md:hidden -ml-1 text-itools-dark dark:text-white/90 hover:text-itools-blue"
-                    aria-label="Abrir menú"
+                    aria-label="Abrir menÃº"
                   >
                     <Menu className="h-5 w-5" />
                   </Button>
@@ -548,7 +555,7 @@ export function Header() {
               <a href="/" className="flex items-center">
                 <img
                   src="/logo.png"
-                  alt="iTools.Pe — Herramientas profesionales en Perú"
+                  alt="iTools.Pe â€” Herramientas profesionales en PerÃº"
                   className="h-10 lg:h-12 w-auto object-contain"
                   width={180}
                   height={56}
@@ -645,7 +652,7 @@ export function Header() {
                 variant="ghost"
                 size="icon"
                 className="relative text-itools-dark dark:text-white/90 hover:text-itools-red dark:hover:text-itools-red transition-colors"
-                aria-label={`Lista de deseos (${wishlistCount} artículos)`}
+                aria-label={`Lista de deseos (${wishlistCount} artÃ­culos)`}
               >
                 <Heart
                   className={cn(
@@ -665,7 +672,7 @@ export function Header() {
                 size="icon"
                 className="relative text-itools-dark dark:text-white/90 hover:text-itools-blue"
                 onClick={openCart}
-                aria-label={`Carrito de compras (${cartItemCount} artículos)`}
+                aria-label={`Carrito de compras (${cartItemCount} artÃ­culos)`}
               >
                 <ShoppingCart className="h-5 w-5" />
                 {cartItemCount > 0 && (
@@ -675,7 +682,12 @@ export function Header() {
                 )}
               </Button>
 
-              <div className="hidden md:block">
+              <button onClick={() => useAiChatStore.getState().toggleChat()} className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#D1001C]/10 text-[#D1001C] hover:bg-[#D1001C]/20 transition-colors">
+                  <Bot className="w-4 h-4" />
+                  <span className="text-xs font-bold">IA</span>
+                </button>
+
+                <div className="hidden md:block">
                 <AccountMenuDesktop />
               </div>
               <div className="md:hidden">
@@ -685,13 +697,13 @@ export function Header() {
           </div>
         </div>
 
-        {/* ── Brand Logo Bar (from Sanity) or Category Nav ── */}
+        {/* â”€â”€ Brand Logo Bar (from Sanity) or Category Nav â”€â”€ */}
         {showBrandLogos && brandLogos.length > 0 ? (
           <BrandLogoBar brands={brandLogos} />
         ) : (
           <nav
             className="hidden md:block bg-itools-dark"
-            aria-label="Categorías de productos"
+            aria-label="CategorÃ­as de productos"
           >
             <div className="mx-auto max-w-7xl px-4 flex items-center">
               {topLevelCategories.map((cat) => (
@@ -701,7 +713,7 @@ export function Header() {
           </nav>
         )}
 
-        {/* ── Brand Marquee Bar ── */}
+        {/* â”€â”€ Brand Marquee Bar â”€â”€ */}
         <BrandMarquee />
       </header>
 
@@ -714,4 +726,6 @@ export function Header() {
     </>
   );
 }
+
+
 
