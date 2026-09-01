@@ -58,7 +58,7 @@ export const categoriesQuery = `*[_type == "category" && isActive == true] | ord
   order
 }`;
 
-export const productsQuery = `*[_type == "product" && isActive == true] | order(order asc) {
+export const productsQuery = `*[_type == "product" && isActive == true && (showInTrending == true || showInFeatured == true || showInToolCrib == true || showInNewArrivals == true || defined(salePrice))][0...60] | order(order asc) {
   _id,
   name,
   "slug": slug.current,

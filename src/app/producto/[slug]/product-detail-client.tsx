@@ -87,13 +87,29 @@ export function ProductDetailClient({ product, relatedProducts, reviews }: { pro
   // Enable section deep linking on this page
   useSectionDeepLinking();
 
-  const discount = product.comparePrice
-    ? Math.round(((product.comparePrice - product.price) / product.comparePrice) * 100)
+  const regularPrice = product.price || 0;
+  const promoPrice = (product.salePrice && product.salePrice < regularPrice)
+    ? product.salePrice
+    : ((product.comparePrice && product.comparePrice < regularPrice) ? product.comparePrice : null);
+  const compareOriginalPrice = (product.comparePrice && product.comparePrice > regularPrice)
+    ? product.comparePrice
+    : (promoPrice ? regularPrice : null);
+  const finalPrice = promoPrice || regularPrice;
+  const originalStrikethrough = promoPrice ? regularPrice : compareOriginalPrice;
+
+  const discount = (originalStrikethrough && originalStrikethrough > finalPrice)
+    ? Math.round(((originalStrikethrough - finalPrice) / originalStrikethrough) * 100)
     : 0;
+
+  const cartProduct = {
+    ...product,
+    price: finalPrice,
+    comparePrice: originalStrikethrough || undefined,
+  };
 
   const handleAddToCart = () => {
     for (let i = 0; i < quantity; i++) {
-      addToCart(product);
+      addToCart(cartProduct);
     }
     openCart();
   };
@@ -217,21 +233,24 @@ export function ProductDetailClient({ product, relatedProducts, reviews }: { pro
 
               {/* Price Block */}
               <div className="bg-surface rounded-lg p-4 flex flex-wrap items-center gap-4">
-                {product.comparePrice && product.comparePrice > product.price ? (
+                {originalStrikethrough && originalStrikethrough > finalPrice ? (
                   <>
                     <span className="text-3xl font-impact text-itools-red">
-                      {formatPrice(product.price)}
+                      {formatPrice(finalPrice)}
                     </span>
                     <span className="text-lg text-muted-foreground line-through">
-                      {formatPrice(product.comparePrice)}
+                      {formatPrice(originalStrikethrough)}
                     </span>
                     <Badge className="bg-itools-red text-white border-0 text-sm">
-                      Ahorras {formatPrice(product.comparePrice - product.price)}
+                      {product.discountBadge || `-${discount}% OFF`}
                     </Badge>
+                    <span className="text-xs text-muted-foreground">
+                      Ahorras {formatPrice(originalStrikethrough - finalPrice)}
+                    </span>
                   </>
                 ) : (
                   <span className="text-3xl font-impact text-foreground">
-                    {formatPrice(product.price)}
+                    {formatPrice(finalPrice)}
                   </span>
                 )}
               </div>

@@ -120,38 +120,67 @@ function CategoryNavItem({ category }: { category: Category }) {
   );
 }
 
-/** Brand Logo Bar - clickable logos instead of text tabs */
-function BrandLogoBar({ brands }: { brands: BrandLogoItem[] }) {
-  if (!brands || brands.length === 0) return null;
+/** Category Nav Bar - horizontal list of categories from Sanity CMS */
+function HeaderCategoryBar({ categories }: { categories: Category[] }) {
+  if (!categories || categories.length === 0) return null;
+  const topCategories = categories.filter((c) => !c.parentId);
 
   return (
-    <div className="hidden md:block bg-white dark:bg-[#111111] border-b border-border dark:border-[#222]">
-      <div className="mx-auto max-w-7xl px-4 flex items-center gap-3 py-2 overflow-x-auto scrollbar-hide">
-        {brands
-          .sort((a, b) => (a.order || 0) - (b.order || 0))
-          .map((brand) => (
+    <nav
+      className="hidden md:block bg-white dark:bg-[#111111] border-b border-border dark:border-[#222]"
+      aria-label="Categor�as principales"
+    >
+      <div className="mx-auto max-w-7xl px-4 flex items-center gap-1 py-1.5 overflow-x-auto scrollbar-hide">
+        {topCategories.map((cat) => (
+          <HeaderCategoryItem key={cat.id || cat.slug} category={cat} />
+        ))}
+      </div>
+    </nav>
+  );
+}
+
+function HeaderCategoryItem({ category }: { category: Category }) {
+  const [open, setOpen] = useState(false);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const handleEnter = () => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    setOpen(true);
+  };
+
+  const handleLeave = () => {
+    timeoutRef.current = setTimeout(() => setOpen(false), 150);
+  };
+
+  const hasChildren = category.children && category.children.length > 0;
+
+  return (
+    <div
+      className="relative shrink-0"
+      onMouseEnter={handleEnter}
+      onMouseLeave={handleLeave}
+    >
+      <a
+        href={`/categoria/${category.slug}`}
+        className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold text-muted-foreground hover:text-itools-blue dark:hover:text-blue-400 hover:bg-surface dark:hover:bg-[#222] transition-colors whitespace-nowrap"
+      >
+        <span>{category.name}</span>
+        {hasChildren && <ChevronDown className="h-3 w-3 opacity-60" />}
+      </a>
+
+      {hasChildren && open && (
+        <div className="absolute left-0 top-full z-50 min-w-[200px] rounded-xl border border-border dark:border-[#333] bg-white dark:bg-[#1a1a1a] shadow-xl p-1.5 animate-in fade-in-0 slide-in-from-top-1 duration-150">
+          {category.children!.map((child) => (
             <a
-              key={brand.slug}
-              href={`/marca/${brand.slug}`}
-              className="shrink-0 flex items-center justify-center h-8 px-3 rounded-lg hover:bg-surface dark:hover:bg-[#222] transition-all group"
-              title={brand.name}
+              key={child.id || child.slug}
+              href={`/categoria/${child.slug}`}
+              className="block px-3 py-2 rounded-lg text-xs font-medium text-foreground hover:bg-surface dark:hover:bg-[#222] hover:text-itools-blue transition-colors"
             >
-              {brand.logo?.asset?.url ? (
-                <Image
-                  src={urlFor(brand.logo).width(80).height(32).format("webp").url()!}
-                  alt={brand.name}
-                  width={80}
-                  height={32}
-                  className="h-6 w-auto object-contain opacity-80 group-hover:opacity-100 transition-opacity"
-                />
-              ) : (
-                <span className="text-xs font-semibold text-muted-foreground group-hover:text-itools-blue transition-colors whitespace-nowrap">
-                  {brand.name}
-                </span>
-              )}
+              {child.name}
             </a>
           ))}
-      </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -697,21 +726,8 @@ export function Header() {
           </div>
         </div>
 
-        {/* â”€â”€ Brand Logo Bar (from Sanity) or Category Nav â”€â”€ */}
-        {showBrandLogos && brandLogos.length > 0 ? (
-          <BrandLogoBar brands={brandLogos} />
-        ) : (
-          <nav
-            className="hidden md:block bg-itools-dark"
-            aria-label="CategorÃ­as de productos"
-          >
-            <div className="mx-auto max-w-7xl px-4 flex items-center">
-              {topLevelCategories.map((cat) => (
-                <CategoryNavItem key={cat.id} category={cat} />
-              ))}
-            </div>
-          </nav>
-        )}
+        {/* -- Category Nav Bar (from Sanity CMS) -- */}
+        <HeaderCategoryBar categories={categories} />
 
         {/* â”€â”€ Brand Marquee Bar â”€â”€ */}
         <BrandMarquee />

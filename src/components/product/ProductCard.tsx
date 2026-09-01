@@ -90,14 +90,9 @@ export function ProductCard({ product, index = 0, quickView, quickViewColor }: P
 
       {/* Badges */}
       <div className="absolute top-2 left-2 z-10 flex flex-col gap-1">
-        {discount > 0 && (
+        {(product.discountBadge || discount > 0) && (
           <Badge className="bg-itools-red text-white border-0 text-[10px] px-2 py-0.5">
-            -{discount}%
-          </Badge>
-        )}
-        {product.discountBadge && (
-          <Badge className="bg-itools-dark text-white border-0 text-[10px] px-2 py-0.5">
-            {product.discountBadge}
+            {product.discountBadge || `-${discount}%`}
           </Badge>
         )}
         {product.isNewArrival && (

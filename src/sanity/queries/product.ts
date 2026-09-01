@@ -6,7 +6,7 @@ export const productBySlugQuery = `*[_type == "product" && slug.current == $slug
   shortDescription,
   description,
   price,
-  "comparePrice": salePrice,
+  salePrice,
   discountBadge,
   stock,
   rating,
