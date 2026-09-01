@@ -38,7 +38,7 @@ export const uiConfigQuery = `*[_type == "uiConfig"][0] {
 export const categoriesQuery = `*[_type == "category" && isActive == true] | order(order asc) {
   _id,
   name,
-  "slug": slug,
+  "slug": slug.current,
   iconName,
   "parentId": parent->_id,
   "id": _id

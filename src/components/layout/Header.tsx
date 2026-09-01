@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import {
@@ -120,10 +120,24 @@ function CategoryNavItem({ category }: { category: Category }) {
   );
 }
 
+const fallbackHeaderCategories: Category[] = [
+  { id: "cat-1", name: "Taladros", slug: "taladros" },
+  { id: "cat-2", name: "Rotomartillos", slug: "rotomartillos" },
+  { id: "cat-3", name: "Impacto & Atornilladores", slug: "atornilladores" },
+  { id: "cat-4", name: "Sierras & Corte", slug: "sierras" },
+  { id: "cat-5", name: "Herramientas El�ctricas", slug: "herramientas-electricas" },
+  { id: "cat-6", name: "Herramientas Manuales", slug: "herramientas-manuales" },
+  { id: "cat-7", name: "Bater�as & Cargadores", slug: "baterias-cargadores" },
+  { id: "cat-8", name: "Almacenamiento (Packout)", slug: "almacenamiento" },
+  { id: "cat-9", name: "Accesorios & Brocas", slug: "accesorios" },
+  { id: "cat-10", name: "Seguridad & EPP", slug: "seguridad-industrial" },
+  { id: "cat-11", name: "Medici�n & Niveles", slug: "medicion" },
+];
+
 /** Category Nav Bar - horizontal list of categories from Sanity CMS */
 function HeaderCategoryBar({ categories }: { categories: Category[] }) {
-  if (!categories || categories.length === 0) return null;
-  const topCategories = categories.filter((c) => !c.parentId);
+  const filtered = (categories || []).filter((c) => !c.parentId && c.name && c.slug);
+  const topCategories = filtered.length > 0 ? filtered : fallbackHeaderCategories;
 
   return (
     <nav

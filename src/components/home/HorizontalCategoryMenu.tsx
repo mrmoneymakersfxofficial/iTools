@@ -2,10 +2,23 @@
 
 import Link from "next/link";
 
-export function HorizontalCategoryMenu({ categories }: { categories: any[] }) {
-  const safeCategories = categories || [];
+const fallbackCategories = [
+  { _id: "cat-1", name: "Taladros", slug: "taladros" },
+  { _id: "cat-2", name: "Rotomartillos", slug: "rotomartillos" },
+  { _id: "cat-3", name: "Atornilladores & Impacto", slug: "atornilladores" },
+  { _id: "cat-4", name: "Sierras & Corte", slug: "sierras" },
+  { _id: "cat-5", name: "Herramientas Eléctricas", slug: "herramientas-electricas" },
+  { _id: "cat-6", name: "Herramientas Manuales", slug: "herramientas-manuales" },
+  { _id: "cat-7", name: "Baterías & Cargadores", slug: "baterias-cargadores" },
+  { _id: "cat-8", name: "Almacenamiento (Packout)", slug: "almacenamiento" },
+  { _id: "cat-9", name: "Accesorios & Brocas", slug: "accesorios" },
+  { _id: "cat-10", name: "Seguridad & EPP", slug: "seguridad-industrial" },
+  { _id: "cat-11", name: "Medición", slug: "medicion" },
+];
 
-  if (safeCategories.length === 0) return null;
+export function HorizontalCategoryMenu({ categories }: { categories: any[] }) {
+  const filtered = (categories || []).filter(c => c && c.name && c.slug);
+  const safeCategories = filtered.length > 0 ? filtered : fallbackCategories;
 
   return (
     <nav

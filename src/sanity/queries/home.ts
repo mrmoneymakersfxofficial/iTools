@@ -248,6 +248,75 @@ export const featuredReviewsQuery = `*[_type == "productReview" && isActive == t
   source
 }`;
 
+export const featuredProductsQuery = `*[_type == "product" && isActive == true && (showInFeatured == true || stock > 0)] | order(stock desc)[0...12] {
+  _id,
+  name,
+  "slug": slug.current,
+  sku,
+  brand-> { _id, name, slug, logo { asset-> { url } } },
+  category-> { _id, name, "slug": slug.current },
+  shortDescription,
+  image { asset-> { url, metadata { dimensions { width, height }, lqip } } },
+  images[] { asset-> { url, metadata { dimensions { width, height }, lqip } } },
+  price,
+  salePrice,
+  discountBadge,
+  stock,
+  rating,
+  reviews,
+  isNewArrival,
+  showInTrending,
+  showInToolCrib,
+  showInFeatured,
+  showInNewArrivals
+}`;
+
+export const newArrivalsQuery = `*[_type == "product" && isActive == true && (showInNewArrivals == true || stock > 0)] | order(_createdAt desc)[0...12] {
+  _id,
+  name,
+  "slug": slug.current,
+  sku,
+  brand-> { _id, name, slug, logo { asset-> { url } } },
+  category-> { _id, name, "slug": slug.current },
+  shortDescription,
+  image { asset-> { url, metadata { dimensions { width, height }, lqip } } },
+  images[] { asset-> { url, metadata { dimensions { width, height }, lqip } } },
+  price,
+  salePrice,
+  discountBadge,
+  stock,
+  rating,
+  reviews,
+  isNewArrival,
+  showInTrending,
+  showInToolCrib,
+  showInFeatured,
+  showInNewArrivals
+}`;
+
+export const trendingProductsQuery = `*[_type == "product" && isActive == true && (showInTrending == true || defined(salePrice))] | order(stock desc)[0...12] {
+  _id,
+  name,
+  "slug": slug.current,
+  sku,
+  brand-> { _id, name, slug, logo { asset-> { url } } },
+  category-> { _id, name, "slug": slug.current },
+  shortDescription,
+  image { asset-> { url, metadata { dimensions { width, height }, lqip } } },
+  images[] { asset-> { url, metadata { dimensions { width, height }, lqip } } },
+  price,
+  salePrice,
+  discountBadge,
+  stock,
+  rating,
+  reviews,
+  isNewArrival,
+  showInTrending,
+  showInToolCrib,
+  showInFeatured,
+  showInNewArrivals
+}`;
+
 export const homePageQuery = `{
   "homeSettings": ${homeSettingsQuery},
   "heroBanners": ${heroBannersQuery},
@@ -256,6 +325,9 @@ export const homePageQuery = `{
   "trendingCategories": ${trendingCategoriesQuery},
   "categories": ${categoriesQuery},
   "products": ${productsQuery},
+  "featuredProducts": ${featuredProductsQuery},
+  "newArrivals": ${newArrivalsQuery},
+  "trendingProducts": ${trendingProductsQuery},
   "dealTiles": ${dealTilesQuery},
   "giveawayBanner": ${giveawayBannerQuery},
   "promoBanners": ${promoBannersQuery},

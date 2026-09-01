@@ -67,7 +67,7 @@ export default async function Home() {
             <CenterGiveawayBanner banner={data.giveawayBanner} />
           </div>
 
-          <TrendingProductsMobile products={data.products?.filter(p => p.showInTrending)} />
+          <TrendingProductsMobile products={data.trendingProducts?.length ? data.trendingProducts : (data.products?.filter(p => p.showInTrending) || data.products?.slice(0, 8))} />
 
           <BestDealsSection dealTiles={data.dealTiles} />
 
@@ -112,15 +112,15 @@ export default async function Home() {
               {/* RIGHT SIDEBAR */}
               <div className="w-[280px] xl:w-[300px] shrink-0">
                 <div className="sticky top-[120px]">
-                  <ToolCribSidebar products={data.products?.filter(p => p.showInToolCrib)} />
+                  <ToolCribSidebar products={data.products?.filter(p => p.showInToolCrib)?.length ? data.products.filter(p => p.showInToolCrib) : (data.featuredProducts || data.products?.slice(0, 8))} />
                 </div>
               </div>
             </div>
           </div>
 
           <BrandShowcase brands={data.brandShowcase} />
-          <FeaturedSection products={data.products?.filter(p => p.showInFeatured)} />
-          <NewArrivalsSection products={data.products?.filter(p => p.showInNewArrivals)} />
+          <FeaturedSection products={data.featuredProducts?.length ? data.featuredProducts : data.products?.slice(0, 8)} />
+          <NewArrivalsSection products={data.newArrivals?.length ? data.newArrivals : data.products?.slice(8, 16)} />
 
           {/* Video Section */}
           <VideoSection data={data.videoSection} />
