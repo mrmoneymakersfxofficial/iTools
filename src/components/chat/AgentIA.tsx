@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState, useEffect, useRef } from "react";
 import { MessageCircle, X, Send, Bot, User, Sparkles } from "lucide-react";
@@ -71,7 +71,18 @@ export function AgentIA() {
 
   return (
     <>
-      
+      {/* Floating Button for PC / Laptop (Desktop) */}
+      <button
+        onClick={openChat}
+        className={cn(
+          "hidden md:flex fixed bottom-6 right-6 z-[60] h-14 px-5 rounded-full bg-[#D1001C] text-white shadow-2xl items-center gap-2.5 hover:bg-red-700 hover:scale-105 active:scale-95 transition-all duration-300 border-2 border-white/20",
+          isOpen && "opacity-0 pointer-events-none scale-0"
+        )}
+        aria-label="Abrir Asistente IA"
+      >
+        <Sparkles className="w-5 h-5 animate-pulse text-white" />
+        <span className="text-xs font-bold tracking-wide uppercase">Asistente IA</span>
+      </button>
 
       {/* Chat Window */}
       <div
