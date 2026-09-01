@@ -127,13 +127,66 @@ export function CategoryPageClient({ category, products }: { category: Category;
           </div>
         </section>
 
-        {/* Section: Products Grid */}
+        {/* Section: Products Grid with Every 8 Products Separator */}
         <section data-section={SECTION_PRODUCTS} id={sectionId(SECTION_PRODUCTS)}>
           {products.length > 0 ? (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 md:gap-4 lg:gap-5">
-              {products.map((product, i) => (
-                <ProductCard key={product.id} product={product} index={i} />
-              ))}
+            <div className="space-y-6">
+              {Array.from({ length: Math.ceil(products.length / 8) }).map((_, chunkIndex) => {
+                const chunk = products.slice(chunkIndex * 8, (chunkIndex + 1) * 8);
+                return (
+                  <div key={chunkIndex} className="space-y-6">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 md:gap-4 lg:gap-5">
+                      {chunk.map((product, i) => (
+                        <ProductCard key={product.id || (product as any)._id} product={product} index={chunkIndex * 8 + i} />
+                      ))}
+                    </div>
+
+                    {/* Separator / Category Offer Banner every 8 products (except after last chunk) */}
+                    {chunkIndex < Math.ceil(products.length / 8) - 1 && (
+                      <div className="my-6 rounded-2xl overflow-hidden border border-border dark:border-[#333] bg-gradient-to-r from-[#111] via-[#1a1a1a] to-[#111] text-white p-4 sm:p-6 shadow-md">
+                        {(category as any).bannerImage?.asset?.url ? (
+                          <div className="relative w-full h-[120px] sm:h-[160px] rounded-xl overflow-hidden">
+                            <img
+                              src={(category as any).bannerImage.asset.url}
+                              alt={(category as any).bannerTitle || category.name}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                        ) : (
+                          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                            <div className="text-center sm:text-left">
+                              <span className="inline-block bg-[#D1001C] text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full mb-1.5 uppercase tracking-wider">
+                                {(category as any).bannerTitle || "OFERTAS"}
+                              </span>
+                              <h3 className="text-lg sm:text-xl font-impact text-white tracking-wide">
+                                {(category as any).bannerSubtitle || `Precios Especiales en ${category.name}`}
+                              </h3>
+                              <p className="text-xs text-white/70 mt-0.5">
+                                Descuentos automáticos aplicados en herramientas de alta gama.
+                              </p>
+                            </div>
+                            {(category as any).bannerLink ? (
+                              <Link
+                                href={(category as any).bannerLink}
+                                className="shrink-0 px-4 py-2 bg-[#D1001C] text-white rounded-xl text-xs font-bold hover:bg-red-700 transition-colors"
+                              >
+                                Ver Promociones →
+                              </Link>
+                            ) : (
+                              <button
+                                onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+                                className="shrink-0 px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-xl text-xs font-bold transition-colors"
+                              >
+                                Volver Arriba ↑
+                              </button>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           ) : (
             <div className="text-center py-20 bg-white dark:bg-[#1a1a1a] rounded-xl border border-border dark:border-[#333]">

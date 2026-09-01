@@ -18,6 +18,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import { useGlobalSettings } from "@/stores/global-settings-context";
+import { BrandMarquee } from "@/components/layout/BrandMarquee";
 
 const trustFeatures: {
   icon: React.ComponentType<React.SVGProps<SVGSVGElement> & { strokeWidth?: number }>;
@@ -96,6 +97,9 @@ export function Footer() {
           ))}
         </div>
       </section>
+
+      {/* ── Brand Marquee Slider (above main footer) ── */}
+      <BrandMarquee />
 
       {/* ── Main Footer ───────────────────────────────────────── */}
       <section className="bg-itools-dark text-gray-300" aria-label="Pie de página">

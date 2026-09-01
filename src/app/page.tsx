@@ -71,6 +71,9 @@ export default async function Home() {
 
           <BestDealsSection dealTiles={data.dealTiles} />
 
+          {/* Videos de Productos y Demostraciones (TikTok / Drive Vertical) */}
+          <VideoSection data={data.videoSection} />
+
           <CategoriesGridMobile categories={data.categories} />
 
           <BrandsGridMobile brands={data.brandShowcase?.filter(b => b.showInGrid)} />
@@ -118,12 +121,12 @@ export default async function Home() {
             </div>
           </div>
 
+          {/* Videos de Productos y Demostraciones (TikTok / Drive Vertical) */}
+          <VideoSection data={data.videoSection} />
+
           <BrandShowcase brands={data.brandShowcase} />
           <FeaturedSection products={data.featuredProducts?.length ? data.featuredProducts : data.products?.slice(0, 8)} />
           <NewArrivalsSection products={data.newArrivals?.length ? data.newArrivals : data.products?.slice(8, 16)} />
-
-          {/* Video Section */}
-          <VideoSection data={data.videoSection} />
         </div>
       </main>
       {/* Global: Promo Popup */}

@@ -742,9 +742,6 @@ export function Header() {
 
         {/* -- Category Nav Bar (from Sanity CMS) -- */}
         <HeaderCategoryBar categories={categories} />
-
-        {/* â”€â”€ Brand Marquee Bar â”€â”€ */}
-        <BrandMarquee />
       </header>
 
       {mobileSearchOpen && (

@@ -4,6 +4,8 @@ import { fetchCategoryBySlug, fetchProductsByCategorySlug, fetchAllCategorySlugs
 
 const SITE_URL = "https://itools.pe";
 
+export const dynamic = "force-dynamic";
+
 export async function generateStaticParams() {
   const categories = await fetchAllCategorySlugs();
   return categories.map((cat: any) => ({ slug: cat.slug }));
@@ -12,15 +14,15 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const category = await fetchCategoryBySlug(slug);
-  if (!category) return { title: "Categoría no encontrada | iTools Perú" };
+  if (!category || !category.name) return { title: "Categoría | iTools Perú" };
 
   return {
     title: `${category.name} — Comprar Online | iTools Perú`,
-    description: `Explora nuestra selección de ${category.name.toLowerCase()}. Herramientas profesionales de Milwaukee, DeWalt, Bosch y más. Envío a todo Perú. RUC: 20610613749.`,
+    description: `Explora nuestra selección de ${(category.name || "").toLowerCase()}. Herramientas profesionales de Milwaukee, DeWalt, Bosch y más. Envío a todo Perú. RUC: 20610613749.`,
     keywords: [
       category.name,
       `${category.name} Perú`,
-      `comprar ${category.name.toLowerCase()}`,
+      `comprar ${(category.name || "").toLowerCase()}`,
       "iTools Perú",
       "herramientas profesionales Perú",
     ],
@@ -49,7 +51,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
 
   if (!category) notFound();
 
-  const products = await fetchProductsByCategorySlug(slug);
+  const products = await fetchProductsByCategorySlug(slug, category.productsLimit || 24);
 
   return <CategoryPageClient category={category} products={products} />;
 }
