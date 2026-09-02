@@ -131,6 +131,7 @@ export const promoBannersQuery = `*[_type == "promoBanner" && isActive == true] 
   ctaText,
   link,
   bgGradient,
+  image { asset-> { url, metadata { dimensions { width, height }, lqip } } },
   order
 }`;
 

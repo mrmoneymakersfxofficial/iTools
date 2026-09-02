@@ -125,13 +125,13 @@ const fallbackHeaderCategories: Category[] = [
   { id: "cat-2", name: "Rotomartillos", slug: "rotomartillos" },
   { id: "cat-3", name: "Impacto & Atornilladores", slug: "atornilladores" },
   { id: "cat-4", name: "Sierras & Corte", slug: "sierras" },
-  { id: "cat-5", name: "Herramientas El�ctricas", slug: "herramientas-electricas" },
+  { id: "cat-5", name: "Herramientas Eléctricas", slug: "herramientas-electricas" },
   { id: "cat-6", name: "Herramientas Manuales", slug: "herramientas-manuales" },
-  { id: "cat-7", name: "Bater�as & Cargadores", slug: "baterias-cargadores" },
+  { id: "cat-7", name: "Baterías & Cargadores", slug: "baterias-cargadores" },
   { id: "cat-8", name: "Almacenamiento (Packout)", slug: "almacenamiento" },
   { id: "cat-9", name: "Accesorios & Brocas", slug: "accesorios" },
   { id: "cat-10", name: "Seguridad & EPP", slug: "seguridad-industrial" },
-  { id: "cat-11", name: "Medici�n & Niveles", slug: "medicion" },
+  { id: "cat-11", name: "Medición & Niveles", slug: "medicion" },
 ];
 
 /** Category Nav Bar - horizontal list of categories from Sanity CMS */
@@ -142,7 +142,7 @@ function HeaderCategoryBar({ categories }: { categories: Category[] }) {
   return (
     <nav
       className="hidden md:block bg-white dark:bg-[#111111] border-b border-border dark:border-[#222]"
-      aria-label="Categor�as principales"
+      aria-label="Categorías principales"
     >
       <div className="mx-auto max-w-7xl px-4 flex items-center gap-1 py-1.5 overflow-x-auto scrollbar-hide">
         {topCategories.map((cat) => (

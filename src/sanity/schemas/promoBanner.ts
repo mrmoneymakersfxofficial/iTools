@@ -11,6 +11,12 @@ export default defineType({
     defineField({ name: "ctaText", title: "Texto del botón", type: "string" }),
     defineField({ name: "link", title: "Enlace", type: "string" }),
     defineField({ name: "bgGradient", title: "Gradiente de fondo (CSS)", type: "string" }),
+    defineField({
+      name: "image",
+      title: "Imagen del Banner (Opcional - Imagen de fondo completa)",
+      type: "image",
+      options: { hotspot: true },
+    }),
     defineField({ name: "order", title: "Orden", type: "number", validation: (r) => r.required().min(0) }),
     defineField({ name: "isActive", title: "Activo", type: "boolean", initialValue: true }),
   ],
