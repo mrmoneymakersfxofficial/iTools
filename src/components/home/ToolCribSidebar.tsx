@@ -2,15 +2,21 @@
 import Link from "next/link";
 import { Wrench, Star, TrendingUp } from "lucide-react";
 import { formatPrice } from "@/lib/format";
+import { getSanityAttr } from "@/lib/sanity/visual-attributes";
 
 function SidebarProductCard({ product }: { product: any }) {
   const price = product.price || 0;
   const comparePrice = product.salePrice ? product.price : (product.comparePrice || null);
   const displayPrice = product.salePrice || product.price || 0;
   const discount = comparePrice ? Math.round(((comparePrice - displayPrice) / comparePrice) * 100) : 0;
+  const sanityAttr = getSanityAttr(product._id || product.id, "product", "image");
   
   return (
-    <Link href={`/producto/${product.slug}`} className="group flex gap-3 p-3 hover:bg-[#F5F6F8] dark:bg-[#1a1a1a] transition-colors border-b border-[#F0F0F0] last:border-b-0">
+    <Link
+      href={`/producto/${product.slug}`}
+      {...sanityAttr}
+      className="group flex gap-3 p-3 hover:bg-[#F5F6F8] dark:bg-[#1a1a1a] transition-colors border-b border-[#F0F0F0] last:border-b-0"
+    >
       <div className="relative shrink-0 w-16 h-16 rounded bg-[#F5F5F5] dark:bg-[#1a1a1a] flex items-center justify-center border border-[#E8E8E8] dark:border-[#333]">
         {product.image?.asset?.url ? (
           <img src={product.image.asset.url} alt={product.name} className="absolute inset-0 w-full h-full object-cover rounded" />

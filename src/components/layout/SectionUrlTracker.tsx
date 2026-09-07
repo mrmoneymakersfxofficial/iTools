@@ -89,7 +89,7 @@ export function SectionUrlTracker() {
       </span>
       {isCmsUser && (
         <Link
-          href={`/cms/structure/homepage/${activeSection.docType || "homeSettings"}`}
+          href={`/cms/structure/${activeSection.docType || "homeSettings"}`}
           target="_blank"
           className="flex items-center gap-1 bg-[#0056D2] hover:bg-[#0047AB] text-white px-2 py-0.5 rounded-full text-[10px] font-bold uppercase transition-colors"
           title="Editar en CMS Sanity"

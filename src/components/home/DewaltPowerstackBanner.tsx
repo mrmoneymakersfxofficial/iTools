@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { getSanityAttr } from "@/lib/sanity/visual-attributes";
 
 interface DewaltPowerstackBannerProps {
   banner?: any;
@@ -10,12 +11,14 @@ interface DewaltPowerstackBannerProps {
 export function DewaltPowerstackBanner({ banner }: DewaltPowerstackBannerProps) {
   const imageUrl = banner?.image?.asset?.url || "/banners/sections/dewalt-powerstack.webp";
   const linkUrl = banner?.link || "/marca/dewalt";
+  const sanityAttr = getSanityAttr(banner?._id || "promo-banner-dewalt-powerstack", "promoBanner", "image");
 
   return (
     <section className="py-2.5 md:py-3 w-full" id="dewalt-powerstack" data-section="DeWalt Powerstack" data-sanity-doc="promoBanner">
       <div className="mx-auto max-w-[1440px] px-3 sm:px-4 lg:px-6">
         <Link
           href={linkUrl}
+          {...sanityAttr}
           className="group relative block w-full h-[110px] sm:h-[130px] md:h-[150px] rounded-xl overflow-hidden shadow-md border border-[#222] transition-transform duration-300 hover:scale-[1.005]"
         >
           <img

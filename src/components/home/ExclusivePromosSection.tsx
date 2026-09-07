@@ -2,8 +2,21 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { getSanityAttr } from "@/lib/sanity/visual-attributes";
 
-export function ExclusivePromosSection() {
+interface ExclusivePromosSectionProps {
+  banners?: any[];
+}
+
+export function ExclusivePromosSection({ banners }: ExclusivePromosSectionProps) {
+  const b1 = banners?.find((b: any) => b._id === "promo-banner-taller-milwaukee") || banners?.[0];
+  const b2 = banners?.find((b: any) => b._id === "promo-banner-taller-makita") || banners?.[1];
+  const b3 = banners?.find((b: any) => b._id === "promo-banner-hotsale-cocina") || banners?.[2];
+
+  const attr1 = getSanityAttr(b1?._id || "promo-banner-taller-milwaukee", "promoBanner", "image");
+  const attr2 = getSanityAttr(b2?._id || "promo-banner-taller-makita", "promoBanner", "image");
+  const attr3 = getSanityAttr(b3?._id || "promo-banner-hotsale-cocina", "promoBanner", "image");
+
   return (
     <section className="py-6 w-full" id="promociones-exclusivas" data-section="Promociones Exclusivas" data-sanity-doc="promoBanner">
       <div className="mx-auto max-w-[1440px] px-3 sm:px-4 lg:px-6">
@@ -19,24 +32,26 @@ export function ExclusivePromosSection() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 mb-3 sm:mb-4">
           {/* Milwaukee Batería Gratis */}
           <Link
-            href="/marca/milwaukee"
+            href={b1?.link || "/marca/milwaukee"}
+            {...attr1}
             className="group relative block w-full h-[180px] sm:h-[220px] md:h-[250px] rounded-xl overflow-hidden shadow-sm border border-[#E0E0E0] dark:border-[#333] transition-transform duration-300 hover:scale-[1.01]"
           >
             <img
-              src="/banners/sections/milwaukee-bateria-gratis.webp"
-              alt="Milwaukee Batería Gratis M12"
+              src={b1?.image?.asset?.url || "/banners/sections/milwaukee-bateria-gratis.webp"}
+              alt={b1?.title || "Milwaukee Batería Gratis M12"}
               className="w-full h-full object-cover"
             />
           </Link>
 
           {/* Makita Potencia tu Sistema */}
           <Link
-            href="/marca/makita"
+            href={b2?.link || "/marca/makita"}
+            {...attr2}
             className="group relative block w-full h-[180px] sm:h-[220px] md:h-[250px] rounded-xl overflow-hidden shadow-sm border border-[#E0E0E0] dark:border-[#333] transition-transform duration-300 hover:scale-[1.01]"
           >
             <img
-              src="/banners/sections/makita-potencia-sistema.webp"
-              alt="Makita Potencia tu Sistema Gratis"
+              src={b2?.image?.asset?.url || "/banners/sections/makita-potencia-sistema.webp"}
+              alt={b2?.title || "Makita Potencia tu Sistema Gratis"}
               className="w-full h-full object-cover"
             />
           </Link>
@@ -44,12 +59,13 @@ export function ExclusivePromosSection() {
 
         {/* Full-width Hot Sale Empotrables Cocina Banner */}
         <Link
-          href="/categoria/ferreteria-general"
+          href={b3?.link || "/categoria/ferreteria-general"}
+          {...attr3}
           className="group relative block w-full h-[120px] sm:h-[150px] md:h-[175px] rounded-xl overflow-hidden shadow-sm border border-[#E0E0E0] dark:border-[#333] transition-transform duration-300 hover:scale-[1.005]"
         >
           <img
-            src="/banners/sections/hotsale-cocina.webp"
-            alt="Hot Sale Hasta 40% Empotrables de Cocina"
+            src={b3?.image?.asset?.url || "/banners/sections/hotsale-cocina.webp"}
+            alt={b3?.title || "Hot Sale Hasta 40% Empotrables de Cocina"}
             className="w-full h-full object-cover"
           />
         </Link>

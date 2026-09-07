@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { getSanityAttr } from "@/lib/sanity/visual-attributes";
 
 interface HomeCenterHeroProps {
   heroBanners?: any[];
@@ -14,16 +15,22 @@ export function HomeCenterHero({
   brandPromoBanners,
   promoBanners,
 }: HomeCenterHeroProps) {
-  const topBanner = heroBanners?.[0];
-  const midBanner = brandPromoBanners?.[0];
-  const bottomBannerLeft = promoBanners?.[0];
-  const bottomBannerRight = promoBanners?.[1];
+  const topBanner = heroBanners?.find((b: any) => b._id === "hero-1") || heroBanners?.[0];
+  const midBanner = brandPromoBanners?.find((b: any) => b._id === "brand-promo-milwaukee") || brandPromoBanners?.[0];
+  const bottomBannerLeft = promoBanners?.find((b: any) => b._id === "promo-banner-hero-rotomartillo") || promoBanners?.[0];
+  const bottomBannerRight = promoBanners?.find((b: any) => b._id === "promo-banner-hero-electricista") || promoBanners?.[1];
+
+  const topSanityAttr = getSanityAttr(topBanner?._id || "hero-1", topBanner?._type || "heroSlide", "image");
+  const midSanityAttr = getSanityAttr(midBanner?._id || "brand-promo-milwaukee", midBanner?._type || "brandPromoSlide", "image");
+  const leftSanityAttr = getSanityAttr(bottomBannerLeft?._id || "promo-banner-hero-rotomartillo", bottomBannerLeft?._type || "promoBanner", "image");
+  const rightSanityAttr = getSanityAttr(bottomBannerRight?._id || "promo-banner-hero-electricista", bottomBannerRight?._type || "promoBanner", "image");
 
   return (
     <div className="flex flex-col gap-2.5 w-full" id="hero" data-section="Hero Principal">
       {/* ── 1. Top Large Banner: DeWalt Toughcase / Hero ── */}
       <Link
         href={topBanner?.link || "/marca/dewalt"}
+        {...topSanityAttr}
         className="group relative block w-full h-[220px] sm:h-[260px] md:h-[280px] rounded-lg overflow-hidden border border-[#E0E0E0] dark:border-[#333] shadow-sm transition-transform duration-300 hover:scale-[1.005]"
       >
         {topBanner?.image?.asset?.url ? (
@@ -32,6 +39,7 @@ export function HomeCenterHero({
             alt={topBanner.title || "DeWalt ToughCase"}
             fill
             className="object-cover"
+            sizes="(max-width: 768px) 100vw, 1200px"
             priority
           />
         ) : (
@@ -46,6 +54,7 @@ export function HomeCenterHero({
       {/* ── 2. Mid Slim Banner: Milwaukee Combo Kit ── */}
       <Link
         href={midBanner?.link || "/marca/milwaukee"}
+        {...midSanityAttr}
         className="group relative block w-full h-[75px] sm:h-[88px] rounded-lg overflow-hidden border border-[#E0E0E0] dark:border-[#333] shadow-sm transition-transform duration-300 hover:scale-[1.005]"
       >
         {midBanner?.image?.asset?.url ? (
@@ -54,6 +63,7 @@ export function HomeCenterHero({
             alt={midBanner.brandName || "Milwaukee Combo Kit"}
             fill
             className="object-cover"
+            sizes="(max-width: 768px) 100vw, 1200px"
           />
         ) : (
           <img
@@ -69,6 +79,7 @@ export function HomeCenterHero({
         {/* Left: Milwaukee Rotomartillo 2.7J */}
         <Link
           href={bottomBannerLeft?.link || "/categoria/rotomartillos"}
+          {...leftSanityAttr}
           className="group relative block w-full h-[260px] sm:h-[300px] md:h-[340px] rounded-lg overflow-hidden border border-[#E0E0E0] dark:border-[#333] shadow-sm transition-transform duration-300 hover:scale-[1.01]"
         >
           {bottomBannerLeft?.image?.asset?.url ? (
@@ -77,6 +88,7 @@ export function HomeCenterHero({
               alt={bottomBannerLeft.title || "Milwaukee Rotomartillo 2.7J"}
               fill
               className="object-cover"
+              sizes="(max-width: 768px) 50vw, 600px"
             />
           ) : (
             <img
@@ -90,6 +102,7 @@ export function HomeCenterHero({
         {/* Right: Preventa Electricista Tools */}
         <Link
           href={bottomBannerRight?.link || "/categoria/equipos-especializados"}
+          {...rightSanityAttr}
           className="group relative block w-full h-[260px] sm:h-[300px] md:h-[340px] rounded-lg overflow-hidden border border-[#E0E0E0] dark:border-[#333] shadow-sm transition-transform duration-300 hover:scale-[1.01]"
         >
           {bottomBannerRight?.image?.asset?.url ? (
@@ -98,6 +111,7 @@ export function HomeCenterHero({
               alt={bottomBannerRight.title || "Preventa Herramientas 1000V"}
               fill
               className="object-cover"
+              sizes="(max-width: 768px) 50vw, 600px"
             />
           ) : (
             <img

@@ -52,18 +52,27 @@ export default async function Home() {
           </div>
 
           <MainCategoriesSection categories={data.categories} dealTiles={data.dealTiles} />
-          <DewaltPowerstackBanner />
+          <DewaltPowerstackBanner banner={data.promoBanners?.find((b: any) => b._id === "promo-banner-dewalt-powerstack")} />
           <RedMarqueeBar />
           <VideoSection data={data.videoSection} />
           <BrandShowcase brands={data.brandShowcase} />
-          <BestSellersWorkshopSection products={bestSellers.length ? bestSellers : allProducts.slice(0, 4)} />
-          <TechnicalServiceBanner />
-          <ExclusivePromosSection />
-          <ProDealsSection products={proProducts.length ? proProducts : allProducts.slice(4, 8)} />
-          <EquipWorkshopSection products={workshopProducts.length ? workshopProducts : allProducts.slice(8, 13)} />
-          <SataFavoritesBanner />
-          <ExperienceSection />
-          <WhyBuySection />
+          <BestSellersWorkshopSection
+            products={bestSellers.length ? bestSellers : allProducts.slice(0, 4)}
+            backgroundBanner={data.promoBanners?.find((b: any) => b._id === "promo-banner-mas-vendidos-bg")}
+          />
+          <TechnicalServiceBanner banner={data.promoBanners?.find((b: any) => b._id === "promo-banner-servicio-tecnico")} />
+          <ExclusivePromosSection banners={data.promoBanners} />
+          <ProDealsSection
+            products={proProducts.length ? proProducts : allProducts.slice(4, 8)}
+            banners={data.promoBanners}
+          />
+          <EquipWorkshopSection
+            products={workshopProducts.length ? workshopProducts : allProducts.slice(8, 13)}
+            banners={data.promoBanners}
+          />
+          <SataFavoritesBanner banner={data.promoBanners?.find((b: any) => b._id === "promo-banner-sata-380")} />
+          <ExperienceSection banners={data.promoBanners} />
+          <WhyBuySection banners={data.promoBanners} />
         </div>
 
         {/* ═══════════════════════════════════════════════════
@@ -108,7 +117,7 @@ export default async function Home() {
           <MainCategoriesSection categories={data.categories} dealTiles={data.dealTiles} />
 
           {/* ── IMAGE 1: Full-Width DeWalt Powerstack Banner ── */}
-          <DewaltPowerstackBanner />
+          <DewaltPowerstackBanner banner={data.promoBanners?.find((b: any) => b._id === "promo-banner-dewalt-powerstack")} />
 
           {/* ── IMAGE 1: Red Moving Marquee (Envíos a todo el Perú) ── */}
           <RedMarqueeBar />
@@ -120,28 +129,37 @@ export default async function Home() {
           <BrandShowcase brands={data.brandShowcase} />
 
           {/* ── IMAGE 2: Los Más Vendidos (Fondo Taller + 4 Cards) ── */}
-          <BestSellersWorkshopSection products={bestSellers.length ? bestSellers : allProducts.slice(0, 4)} />
+          <BestSellersWorkshopSection
+            products={bestSellers.length ? bestSellers : allProducts.slice(0, 4)}
+            backgroundBanner={data.promoBanners?.find((b: any) => b._id === "promo-banner-mas-vendidos-bg")}
+          />
 
           {/* ── IMAGE 2: Servicio Técnico de Tus Marcas Favoritas ── */}
-          <TechnicalServiceBanner />
+          <TechnicalServiceBanner banner={data.promoBanners?.find((b: any) => b._id === "promo-banner-servicio-tecnico")} />
 
           {/* ── IMAGE 3: Promociones Exclusivas (50/50 + Hot Sale Cocina) ── */}
-          <ExclusivePromosSection />
+          <ExclusivePromosSection banners={data.promoBanners} />
 
           {/* ── IMAGE 3: Ofertas Para Profesionales (50/50 DeWalt vs Milwaukee + 4 Cards) ── */}
-          <ProDealsSection products={proProducts.length ? proProducts : allProducts.slice(4, 8)} />
+          <ProDealsSection
+            products={proProducts.length ? proProducts : allProducts.slice(4, 8)}
+            banners={data.promoBanners}
+          />
 
           {/* ── IMAGE 4: Equipa Tu Taller (Auto Style + 3 Banners + 5 Cards) ── */}
-          <EquipWorkshopSection products={workshopProducts.length ? workshopProducts : allProducts.slice(8, 13)} />
+          <EquipWorkshopSection
+            products={workshopProducts.length ? workshopProducts : allProducts.slice(8, 13)}
+            banners={data.promoBanners}
+          />
 
           {/* ── IMAGE 4: Favoritos de los Profesionales (SATA 380 piezas) ── */}
-          <SataFavoritesBanner />
+          <SataFavoritesBanner banner={data.promoBanners?.find((b: any) => b._id === "promo-banner-sata-380")} />
 
           {/* ── IMAGE 4: Vive la Experiencia iTools (4 Cards) ── */}
-          <ExperienceSection />
+          <ExperienceSection banners={data.promoBanners} />
 
           {/* ── IMAGE 5: ¿Por Qué Comprar en iTools.pe? (Tractor + 3 Banners) ── */}
-          <WhyBuySection />
+          <WhyBuySection banners={data.promoBanners} />
         </div>
 
         {/* Section URL hash and Sanity CMS tracker */}

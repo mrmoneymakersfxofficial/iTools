@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { getSanityAttr } from "@/lib/sanity/visual-attributes";
 
 interface MainCategoriesSectionProps {
   categories?: any[];
@@ -81,25 +82,34 @@ export function MainCategoriesSection({ categories, dealTiles }: MainCategoriesS
             </div>
           </div>
 
-          {/* Cards 2, 3, 4: DongCheng Combos */}
-          {[1, 2, 3].map((idx) => (
-            <Link
-              key={idx}
-              href="/marca/dongcheng"
-              className="group relative rounded-xl overflow-hidden shadow-sm border border-[#E0E0E0] dark:border-[#333] transition-transform duration-300 hover:scale-[1.01] bg-[#0047AB]"
-            >
-              <div className="relative w-full h-[260px]">
-                <img
-                  src="/banners/sections/dongcheng-combo.webp"
-                  alt={`Combo DongCheng ${idx}`}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-                <div className="absolute top-3 left-3 bg-[#E60000] text-white font-black text-[11px] px-2 py-0.5 rounded shadow">
-                  S/ 899.00
+          {/* Cards 2, 3, 4: DongCheng Combos from Sanity dealTiles */}
+          {[1, 2, 3].map((idx) => {
+            const tile = dealTiles?.[idx - 1];
+            const tileSanityAttr = getSanityAttr(tile?._id || `deal-tile-duo-${idx}`, "dealTile", "image");
+            const imgUrl = tile?.image?.asset?.url || "/banners/sections/dongcheng-combo.webp";
+            const price = tile?.promoPrice ? `S/ ${Number(tile.promoPrice).toFixed(2)}` : "S/ 899.00";
+            const linkHref = tile?.href || "/marca/dongcheng";
+
+            return (
+              <Link
+                key={tile?._id || idx}
+                href={linkHref}
+                {...tileSanityAttr}
+                className="group relative rounded-xl overflow-hidden shadow-sm border border-[#E0E0E0] dark:border-[#333] transition-transform duration-300 hover:scale-[1.01] bg-[#0047AB]"
+              >
+                <div className="relative w-full h-[260px]">
+                  <img
+                    src={imgUrl}
+                    alt={tile?.title || `Combo DongCheng ${idx}`}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute top-3 left-3 bg-[#E60000] text-white font-black text-[11px] px-2 py-0.5 rounded shadow">
+                    {price}
+                  </div>
                 </div>
-              </div>
-            </Link>
-          ))}
+              </Link>
+            );
+          })}
         </div>
       </div>
     </section>

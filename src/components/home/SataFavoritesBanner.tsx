@@ -2,8 +2,17 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { getSanityAttr } from "@/lib/sanity/visual-attributes";
 
-export function SataFavoritesBanner() {
+interface SataFavoritesBannerProps {
+  banner?: any;
+}
+
+export function SataFavoritesBanner({ banner }: SataFavoritesBannerProps) {
+  const imgUrl = banner?.image?.asset?.url || "/banners/sections/sata-380-piezas.webp";
+  const linkUrl = banner?.link || "/marca/sata";
+  const sanityAttr = getSanityAttr(banner?._id || "promo-banner-sata-380", "promoBanner", "image");
+
   return (
     <section
       id="favoritos-profesionales"
@@ -22,12 +31,13 @@ export function SataFavoritesBanner() {
 
         {/* SATA 380 piezas Panoramic Banner */}
         <Link
-          href="/marca/sata"
+          href={linkUrl}
+          {...sanityAttr}
           className="group relative block w-full h-[120px] sm:h-[150px] md:h-[180px] rounded-xl overflow-hidden shadow-sm border border-[#E0E0E0] dark:border-[#333] transition-transform duration-300 hover:scale-[1.005]"
         >
           <img
-            src="/banners/sections/sata-380-piezas.webp"
-            alt="SATA 380 piezas Listo para la chamba Carro de herramientas"
+            src={imgUrl}
+            alt={banner?.title || "SATA 380 piezas Listo para la chamba Carro de herramientas"}
             className="w-full h-full object-cover"
           />
         </Link>

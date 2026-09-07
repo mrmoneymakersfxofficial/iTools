@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { ShoppingBag } from "lucide-react";
+import { getSanityAttr } from "@/lib/sanity/visual-attributes";
 
 import { BRAND_SHOWCASE_ORDER, BRAND_CONFIGS, VALID_LOCAL_BRANDS } from "@/lib/constants/brands";
 
@@ -119,10 +120,13 @@ function renderGrid(brands: Array<{ _id: string; name: string; slug: string; loc
               : brand.logo?.asset?.url || null;
             const showImg = !!imgSrc;
 
+            const brandSanityAttr = getSanityAttr(brand._id || "brandShowcaseSettings", "brandShowcaseItem", "logo");
+
             return (
               <Link
                 key={brand._id || brand.slug}
                 href={`/marca/${brand.slug || "#"}`}
+                {...brandSanityAttr}
                 className="group flex items-center justify-center h-[88px] transition-opacity hover:opacity-80 rounded-md overflow-hidden"
                 style={config ? { backgroundColor: config.bg } : undefined}
               >

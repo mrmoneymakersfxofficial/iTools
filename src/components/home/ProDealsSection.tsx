@@ -7,9 +7,11 @@ import { formatPrice } from "@/lib/format";
 import { useCartStore } from "@/stores/cart-store";
 import { useWishlistStore } from "@/stores/wishlist-store";
 import { toast } from "@/hooks/use-toast";
+import { getSanityAttr } from "@/lib/sanity/visual-attributes";
 
 interface ProDealsSectionProps {
   products?: any[];
+  banners?: any[];
 }
 
 const fallbackProProducts = [
@@ -55,10 +57,16 @@ const fallbackProProducts = [
   },
 ];
 
-export function ProDealsSection({ products }: ProDealsSectionProps) {
+export function ProDealsSection({ products, banners }: ProDealsSectionProps) {
   const { addItem } = useCartStore();
   const { toggleItem, isWishlisted } = useWishlistStore();
   
+  const b1 = banners?.find((b: any) => b._id === "promo-banner-pro-dewalt") || banners?.[0];
+  const b2 = banners?.find((b: any) => b._id === "promo-banner-pro-milwaukee") || banners?.[1];
+
+  const attr1 = getSanityAttr(b1?._id || "promo-banner-pro-dewalt", "promoBanner", "image");
+  const attr2 = getSanityAttr(b2?._id || "promo-banner-pro-milwaukee", "promoBanner", "image");
+
   // Guarantee exactly 4 products are displayed (never 3)
   const initialProducts = (products && products.length > 0) ? [...products] : [];
   while (initialProducts.length < 4) {
@@ -113,23 +121,25 @@ export function ProDealsSection({ products }: ProDealsSectionProps) {
         {/* 2 50/50 Banners: DeWalt XR vs Milwaukee Forge */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 mb-4">
           <Link
-            href="/marca/dewalt"
+            href={b1?.link || "/marca/dewalt"}
+            {...attr1}
             className="group relative block w-full h-[180px] sm:h-[220px] md:h-[250px] rounded-xl overflow-hidden shadow-sm border border-[#E0E0E0] dark:border-[#333] transition-transform duration-300 hover:scale-[1.01]"
           >
             <img
-              src="/banners/sections/dewalt-xr-powerpack.webp"
-              alt="DeWalt XR Powerpack 20V 8Ah 50% Más Potencia"
+              src={b1?.image?.asset?.url || "/banners/sections/dewalt-xr-powerpack.webp"}
+              alt={b1?.title || "DeWalt XR Powerpack 20V 8Ah 50% Más Potencia"}
               className="w-full h-full object-cover"
             />
           </Link>
 
           <Link
-            href="/marca/milwaukee"
+            href={b2?.link || "/marca/milwaukee"}
+            {...attr2}
             className="group relative block w-full h-[180px] sm:h-[220px] md:h-[250px] rounded-xl overflow-hidden shadow-sm border border-[#E0E0E0] dark:border-[#333] transition-transform duration-300 hover:scale-[1.01]"
           >
             <img
-              src="/banners/sections/milwaukee-forge.webp"
-              alt="Milwaukee M18 Redlithium Forge 15 Minutos de Recarga"
+              src={b2?.image?.asset?.url || "/banners/sections/milwaukee-forge.webp"}
+              alt={b2?.title || "Milwaukee M18 Redlithium Forge 15 Minutos de Recarga"}
               className="w-full h-full object-cover"
             />
           </Link>
@@ -144,11 +154,13 @@ export function ProDealsSection({ products }: ProDealsSectionProps) {
             const displayPrice = salePrice || price || 0;
             const discount = comparePrice ? Math.round(((comparePrice - displayPrice) / comparePrice) * 100) : (product.discountBadge ? parseInt(product.discountBadge) : 0);
             const inWish = isWishlisted(product._id);
+            const prodSanityAttr = getSanityAttr(product._id || product.id, "product", "image");
 
             return (
               <Link
                 key={product._id || idx}
                 href={`/producto/${product.slug}`}
+                {...prodSanityAttr}
                 className="group relative bg-white dark:bg-[#1A1A1A] rounded-xl p-3 border border-[#EBEBEB] dark:border-[#2A2A2A] shadow-sm hover:shadow-md transition-all duration-300 flex flex-col justify-between"
               >
                 {/* Top: Discount badge & Wishlist Heart */}

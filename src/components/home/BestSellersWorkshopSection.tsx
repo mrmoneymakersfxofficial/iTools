@@ -6,14 +6,18 @@ import { ShoppingCart } from "lucide-react";
 import { formatPrice } from "@/lib/format";
 import { useCartStore } from "@/stores/cart-store";
 import { toast } from "@/hooks/use-toast";
+import { getSanityAttr } from "@/lib/sanity/visual-attributes";
 
 interface BestSellersWorkshopSectionProps {
   products?: any[];
+  backgroundBanner?: any;
 }
 
-export function BestSellersWorkshopSection({ products }: BestSellersWorkshopSectionProps) {
+export function BestSellersWorkshopSection({ products, backgroundBanner }: BestSellersWorkshopSectionProps) {
   const { addItem } = useCartStore();
   const displayProducts = (products && products.length > 0) ? products.slice(0, 4) : [];
+  const bgUrl = backgroundBanner?.image?.asset?.url || "/banners/sections/mas-vendidos-taller-full.webp";
+  const bgSanityAttr = getSanityAttr(backgroundBanner?._id || "promo-banner-mas-vendidos-bg", "promoBanner", "image");
 
   const handleQuickAdd = (e: React.MouseEvent, product: any) => {
     e.preventDefault();
@@ -37,9 +41,9 @@ export function BestSellersWorkshopSection({ products }: BestSellersWorkshopSect
   return (
     <section className="relative py-8 md:py-10 w-full overflow-hidden" id="los-mas-vendidos" data-section="Los Más Vendidos" data-sanity-doc="product">
       {/* ── Background Workshop Graphic with 3 drills & White Gradient (Image 4) ── */}
-      <div className="absolute inset-0 z-0">
+      <div className="absolute inset-0 z-0" {...bgSanityAttr}>
         <img
-          src="/banners/sections/mas-vendidos-taller-full.webp"
+          src={bgUrl}
           alt="Fondo Taller Los Más Vendidos"
           className="w-full h-full object-cover object-top opacity-95"
         />
@@ -65,10 +69,13 @@ export function BestSellersWorkshopSection({ products }: BestSellersWorkshopSect
             const displayPrice = salePrice || price || 0;
             const discount = comparePrice ? Math.round(((comparePrice - displayPrice) / comparePrice) * 100) : (product.discountBadge ? parseInt(product.discountBadge) : 0);
 
+            const prodSanityAttr = getSanityAttr(product._id || product.id, "product", "image");
+
             return (
               <Link
                 key={product._id || idx}
                 href={`/producto/${product.slug}`}
+                {...prodSanityAttr}
                 className="group relative bg-white dark:bg-[#1A1A1A] rounded-xl p-3.5 border border-[#E2E8F0] dark:border-[#2A2A2A] shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5 flex flex-col justify-between"
               >
                 {/* Discount Badge */}

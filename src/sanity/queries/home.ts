@@ -1,5 +1,6 @@
-export const heroBannersQuery = `*[_type == "heroSlide" && isActive == true] | order(order asc) {
+export const heroBannersQuery = `*[_type == "heroSlide" && isActive == true && !(_id in path('drafts.**'))] | order(order asc) {
   _id,
+  _type,
   title,
   subtitle,
   cta,
@@ -10,8 +11,9 @@ export const heroBannersQuery = `*[_type == "heroSlide" && isActive == true] | o
   order
 }`;
 
-export const brandPromoBannersQuery = `*[_type == "brandPromoSlide" && isActive == true] | order(order asc) {
+export const brandPromoBannersQuery = `*[_type == "brandPromoSlide" && isActive == true && !(_id in path('drafts.**'))] | order(order asc) {
   _id,
+  _type,
   brandName,
   brandSlug,
   image { asset-> { url, metadata { dimensions { width, height }, lqip } } },
@@ -40,7 +42,7 @@ export const brandShowcaseQuery = `*[_type == "brandShowcaseItem" && isActive ==
 export const trendingCategoriesQuery = `*[_type == "trendingCategory" && isActive == true] | order(order asc) {
   _id,
   name,
-  "slug": slug.current,
+  "slug": coalesce(slug.current, slug),
   viewCount,
   iconType,
   order
@@ -87,6 +89,7 @@ export const productsQuery = `*[_type == "product" && isActive == true && (showI
 
 export const dealTilesQuery = `*[_type == "dealTile" && isActive == true] | order(order asc) {
   _id,
+  _type,
   brand,
   brandColor,
   textColor,
@@ -123,8 +126,9 @@ export const giveawayBannerQuery = `*[_type == "giveawayBanner" && isActive == t
   bgGradient
 }`;
 
-export const promoBannersQuery = `*[_type == "promoBanner" && isActive == true] | order(order asc) {
+export const promoBannersQuery = `*[_type == "promoBanner" && isActive == true && !(_id in path('drafts.**'))] | order(order asc) {
   _id,
+  _type,
   title,
   headline,
   description,

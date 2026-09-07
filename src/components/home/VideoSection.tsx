@@ -5,6 +5,7 @@ import { Play, X, Smartphone } from "lucide-react";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { urlFor } from "@/sanity/image";
 import Image from "next/image";
+import { getSanityAttr } from "@/lib/sanity/visual-attributes";
 
 interface VideoItem {
   title: string;
@@ -120,10 +121,13 @@ export function VideoSection({ data }: { data: VideoSectionData | null }) {
             const platform = getVideoPlatform(video.googleDriveUrl);
             const thumbUrl = getThumbnailUrl(video.thumbnail);
 
+            const sanityAttr = getSanityAttr("videoSection", "videoSection", `videos[${i}]`);
+
             return (
               <button
                 key={i}
                 onClick={() => setActiveVideo(video)}
+                {...sanityAttr}
                 className="group relative shrink-0 w-[140px] sm:w-auto aspect-[9/16] rounded-2xl overflow-hidden bg-[#1A1A1A] border border-border dark:border-[#333] shadow-sm hover:shadow-lg hover:border-[#D1001C] transition-all duration-300 text-left cursor-pointer"
               >
                 {/* Thumbnail Image */}

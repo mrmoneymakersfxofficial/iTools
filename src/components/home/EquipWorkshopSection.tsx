@@ -7,15 +7,27 @@ import { formatPrice } from "@/lib/format";
 import { useCartStore } from "@/stores/cart-store";
 import { useWishlistStore } from "@/stores/wishlist-store";
 import { toast } from "@/hooks/use-toast";
+import { getSanityAttr } from "@/lib/sanity/visual-attributes";
 
 interface EquipWorkshopSectionProps {
   products?: any[];
+  banners?: any[];
 }
 
-export function EquipWorkshopSection({ products }: EquipWorkshopSectionProps) {
+export function EquipWorkshopSection({ products, banners }: EquipWorkshopSectionProps) {
   const { addItem } = useCartStore();
   const { toggleItem, isWishlisted } = useWishlistStore();
   const displayProducts = (products && products.length > 0) ? products.slice(0, 5) : [];
+
+  const bAuto = banners?.find((b: any) => b._id === "promo-banner-taller-autostyle") || banners?.[0];
+  const bTotal = banners?.find((b: any) => b._id === "promo-banner-total-530w") || banners?.[1];
+  const bMakita = banners?.find((b: any) => b._id === "promo-banner-taller-makita") || banners?.[2];
+  const bMilwaukee = banners?.find((b: any) => b._id === "promo-banner-taller-milwaukee") || banners?.[3];
+
+  const attrAuto = getSanityAttr(bAuto?._id || "promo-banner-taller-autostyle", "promoBanner", "image");
+  const attrTotal = getSanityAttr(bTotal?._id || "promo-banner-total-530w", "promoBanner", "image");
+  const attrMakita = getSanityAttr(bMakita?._id || "promo-banner-taller-makita", "promoBanner", "image");
+  const attrMilwaukee = getSanityAttr(bMilwaukee?._id || "promo-banner-taller-milwaukee", "promoBanner", "image");
 
   const handleQuickAdd = (e: React.MouseEvent, product: any) => {
     e.preventDefault();
@@ -62,12 +74,13 @@ export function EquipWorkshopSection({ products }: EquipWorkshopSectionProps) {
 
         {/* Top Panoramic Auto Style Banner */}
         <Link
-          href="/categoria/herramientas-electricas"
+          href={bAuto?.link || "/categoria/herramientas-electricas"}
+          {...attrAuto}
           className="group relative block w-full h-[110px] sm:h-[130px] md:h-[145px] rounded-xl overflow-hidden shadow-sm border border-[#E0E0E0] dark:border-[#333] transition-transform duration-300 hover:scale-[1.005] mb-3 sm:mb-4"
         >
           <img
-            src="/banners/sections/autostyle-banner.webp"
-            alt="Auto Style hasta 50% de ahorro"
+            src={bAuto?.image?.asset?.url || "/banners/sections/autostyle-banner.webp"}
+            alt={bAuto?.title || "Auto Style hasta 50% de ahorro"}
             className="w-full h-full object-cover"
           />
         </Link>
@@ -76,36 +89,39 @@ export function EquipWorkshopSection({ products }: EquipWorkshopSectionProps) {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 mb-4">
           {/* Total 530W */}
           <Link
-            href="/marca/total"
+            href={bTotal?.link || "/marca/total"}
+            {...attrTotal}
             className="group relative block w-full h-[170px] sm:h-[200px] rounded-xl overflow-hidden shadow-sm border border-[#E0E0E0] dark:border-[#333] transition-transform duration-300 hover:scale-[1.01]"
           >
             <img
-              src="/banners/sections/total-530w.webp"
-              alt="Total 530W Pistola para pintar S/ 99.90"
+              src={bTotal?.image?.asset?.url || "/banners/sections/total-530w.webp"}
+              alt={bTotal?.title || "Total 530W Pistola para pintar S/ 99.90"}
               className="w-full h-full object-cover"
             />
           </Link>
 
-          {/* Makita Teal Deals */}
+          {/* Makita Teal Deals / Potencia tu Sistema */}
           <Link
-            href="/marca/makita"
+            href={bMakita?.link || "/marca/makita"}
+            {...attrMakita}
             className="group relative block w-full h-[170px] sm:h-[200px] rounded-xl overflow-hidden shadow-sm border border-[#E0E0E0] dark:border-[#333] transition-transform duration-300 hover:scale-[1.01]"
           >
             <img
-              src="/banners/sections/makita-teal-deals.webp"
-              alt="Makita Teal Deals"
+              src={bMakita?.image?.asset?.url || "/banners/sections/makita-teal-deals.webp"}
+              alt={bMakita?.title || "Makita Teal Deals"}
               className="w-full h-full object-cover"
             />
           </Link>
 
-          {/* Milwaukee Red Hot Deals */}
+          {/* Milwaukee Red Hot Deals / Bateria Gratis */}
           <Link
-            href="/marca/milwaukee"
+            href={bMilwaukee?.link || "/marca/milwaukee"}
+            {...attrMilwaukee}
             className="group relative block w-full h-[170px] sm:h-[200px] rounded-xl overflow-hidden shadow-sm border border-[#E0E0E0] dark:border-[#333] transition-transform duration-300 hover:scale-[1.01]"
           >
             <img
-              src="/banners/sections/milwaukee-redhot-deals.webp"
-              alt="Milwaukee Red Hot Deals"
+              src={bMilwaukee?.image?.asset?.url || "/banners/sections/milwaukee-redhot-deals.webp"}
+              alt={bMilwaukee?.title || "Milwaukee Red Hot Deals"}
               className="w-full h-full object-cover"
             />
           </Link>
@@ -120,11 +136,13 @@ export function EquipWorkshopSection({ products }: EquipWorkshopSectionProps) {
             const displayPrice = salePrice || price || 0;
             const discount = comparePrice ? Math.round(((comparePrice - displayPrice) / comparePrice) * 100) : (product.discountBadge ? parseInt(product.discountBadge) : 0);
             const inWish = isWishlisted(product._id);
+            const prodSanityAttr = getSanityAttr(product._id || product.id, "product", "image");
 
             return (
               <Link
                 key={product._id || idx}
                 href={`/producto/${product.slug}`}
+                {...prodSanityAttr}
                 className="group relative bg-white dark:bg-[#1A1A1A] rounded-xl p-3 border border-[#EBEBEB] dark:border-[#2A2A2A] shadow-sm hover:shadow-md transition-all duration-300 flex flex-col justify-between"
               >
                 {/* Top: Discount badge & Wishlist Heart */}
