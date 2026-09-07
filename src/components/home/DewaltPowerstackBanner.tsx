@@ -12,7 +12,7 @@ export function DewaltPowerstackBanner({ banner }: DewaltPowerstackBannerProps) 
   const linkUrl = banner?.link || "/marca/dewalt";
 
   return (
-    <section className="py-2.5 md:py-3 w-full" data-section="Banner DeWalt Powerstack">
+    <section className="py-2.5 md:py-3 w-full" id="dewalt-powerstack" data-section="DeWalt Powerstack" data-sanity-doc="promoBanner">
       <div className="mx-auto max-w-[1440px] px-3 sm:px-4 lg:px-6">
         <Link
           href={linkUrl}

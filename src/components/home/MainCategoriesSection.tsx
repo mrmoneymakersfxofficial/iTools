@@ -28,7 +28,7 @@ export function MainCategoriesSection({ categories, dealTiles }: MainCategoriesS
   const pad = (n: number) => n.toString().padStart(2, "0");
 
   return (
-    <section className="py-4 md:py-6" data-section="Categorías Principales">
+    <section className="py-4 md:py-6" id="categorias-principales" data-section="Categorías Principales" data-sanity-doc="dealTile">
       <div className="mx-auto max-w-[1440px] px-3 sm:px-4 lg:px-6">
         {/* Section Title */}
         <div className="flex items-center gap-2 mb-3">

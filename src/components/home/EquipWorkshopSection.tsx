@@ -50,7 +50,7 @@ export function EquipWorkshopSection({ products }: EquipWorkshopSectionProps) {
   };
 
   return (
-    <section className="py-6 w-full" data-section="Equipa Tu Taller">
+    <section className="py-6 w-full" id="equipa-tu-taller" data-section="Equipa Tu Taller" data-sanity-doc="promoBanner">
       <div className="mx-auto max-w-[1440px] px-3 sm:px-4 lg:px-6">
         {/* Title */}
         <div className="flex items-center gap-2 mb-4">

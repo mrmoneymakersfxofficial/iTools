@@ -20,7 +20,7 @@ export function HomeCenterHero({
   const bottomBannerRight = promoBanners?.[1];
 
   return (
-    <div className="flex flex-col gap-2.5 w-full">
+    <div className="flex flex-col gap-2.5 w-full" id="hero" data-section="Hero Principal">
       {/* ── 1. Top Large Banner: DeWalt Toughcase / Hero ── */}
       <Link
         href={topBanner?.link || "/marca/dewalt"}
@@ -36,7 +36,7 @@ export function HomeCenterHero({
           />
         ) : (
           <img
-            src="/banners/hero/dewalt-hero.webp"
+            src="/banners/hero/dewalt-toughcase.webp"
             alt="DeWalt ToughCase S/ 349.90"
             className="w-full h-full object-cover"
           />
@@ -46,7 +46,7 @@ export function HomeCenterHero({
       {/* ── 2. Mid Slim Banner: Milwaukee Combo Kit ── */}
       <Link
         href={midBanner?.link || "/marca/milwaukee"}
-        className="group relative block w-full h-[80px] sm:h-[95px] rounded-lg overflow-hidden border border-[#E0E0E0] dark:border-[#333] shadow-sm transition-transform duration-300 hover:scale-[1.005]"
+        className="group relative block w-full h-[75px] sm:h-[88px] rounded-lg overflow-hidden border border-[#E0E0E0] dark:border-[#333] shadow-sm transition-transform duration-300 hover:scale-[1.005]"
       >
         {midBanner?.image?.asset?.url ? (
           <Image
@@ -57,19 +57,19 @@ export function HomeCenterHero({
           />
         ) : (
           <img
-            src="/banners/hero/milwaukee-hero.webp"
+            src="/banners/hero/milwaukee-combo-mid.webp"
             alt="Milwaukee Combo Kit S/ 2,799.90"
             className="w-full h-full object-cover"
           />
         )}
       </Link>
 
-      {/* ── 3. Bottom 2 Banners (50% / 50%) ── */}
+      {/* ── 3. Bottom 2 Banners: TALL CARDS (Image 2 style) ── */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
         {/* Left: Milwaukee Rotomartillo 2.7J */}
         <Link
           href={bottomBannerLeft?.link || "/categoria/rotomartillos"}
-          className="group relative block w-full h-[150px] sm:h-[165px] rounded-lg overflow-hidden border border-[#E0E0E0] dark:border-[#333] shadow-sm transition-transform duration-300 hover:scale-[1.01]"
+          className="group relative block w-full h-[260px] sm:h-[300px] md:h-[340px] rounded-lg overflow-hidden border border-[#E0E0E0] dark:border-[#333] shadow-sm transition-transform duration-300 hover:scale-[1.01]"
         >
           {bottomBannerLeft?.image?.asset?.url ? (
             <Image
@@ -80,7 +80,7 @@ export function HomeCenterHero({
             />
           ) : (
             <img
-              src="/banners/hero/milwaukee-hero-2.webp"
+              src="/banners/hero/milwaukee-rotomartillo-tall.webp"
               alt="Milwaukee Rotomartillo 2.7J ¡Pídelo ya!"
               className="w-full h-full object-cover"
             />
@@ -90,7 +90,7 @@ export function HomeCenterHero({
         {/* Right: Preventa Electricista Tools */}
         <Link
           href={bottomBannerRight?.link || "/categoria/equipos-especializados"}
-          className="group relative block w-full h-[150px] sm:h-[165px] rounded-lg overflow-hidden border border-[#E0E0E0] dark:border-[#333] shadow-sm transition-transform duration-300 hover:scale-[1.01]"
+          className="group relative block w-full h-[260px] sm:h-[300px] md:h-[340px] rounded-lg overflow-hidden border border-[#E0E0E0] dark:border-[#333] shadow-sm transition-transform duration-300 hover:scale-[1.01]"
         >
           {bottomBannerRight?.image?.asset?.url ? (
             <Image
@@ -101,7 +101,7 @@ export function HomeCenterHero({
             />
           ) : (
             <img
-              src="/banners/brands/bosch.webp"
+              src="/banners/hero/preventa-electricista-tall.webp"
               alt="Preventa Herramientas Electricista 1000V S/ 199.90"
               className="w-full h-full object-cover"
             />

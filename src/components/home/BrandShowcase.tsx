@@ -93,7 +93,7 @@ export function BrandShowcase({ brands }: { brands: any }) {
 
 function renderGrid(brands: Array<{ _id: string; name: string; slug: string; localConfig?: typeof BRAND_CONFIGS[string]; logo?: { asset?: { url?: string } } }>) {
   return (
-    <section className="py-6 bg-[#F8F9FA] dark:bg-[#111111]" data-section="Las Mejores Marcas">
+    <section className="py-6 bg-[#F8F9FA] dark:bg-[#111111]" id="las-mejores-marcas" data-section="Las Mejores Marcas" data-sanity-doc="brandShowcaseSettings">
       <div className="mx-auto max-w-[1440px] px-3 sm:px-4 lg:px-6">
         {/* Section Header matching Image 2 */}
         <div className="mb-4">

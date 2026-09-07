@@ -10,7 +10,7 @@ interface TechnicalServiceBannerProps {
 
 export function TechnicalServiceBanner({ phone = "936 085 056", link = "https://wa.me/51936085056" }: TechnicalServiceBannerProps) {
   return (
-    <section className="py-2.5 md:py-3 w-full" data-section="Servicio Técnico Oficial">
+    <section className="py-2.5 md:py-3 w-full" id="servicio-tecnico" data-section="Servicio Técnico Oficial" data-sanity-doc="promoBanner">
       <div className="mx-auto max-w-[1440px] px-3 sm:px-4 lg:px-6">
         <a
           href={link}

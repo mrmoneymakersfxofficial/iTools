@@ -12,10 +12,60 @@ interface ProDealsSectionProps {
   products?: any[];
 }
 
+const fallbackProProducts = [
+  {
+    _id: "pro-stanley-stdh8013",
+    name: "Taladro Percutor 1/2 800W STANLEY STDH8013",
+    slug: "taladro-percutor-stanley-stdh8013",
+    price: 219.00,
+    salePrice: 186.99,
+    discountBadge: "15",
+    reviews: 45,
+    brand: { name: "STANLEY" },
+  },
+  {
+    _id: "pro-bosch-go-2",
+    name: "ATORNILLADOR 1/4\" 3.6V 5NM 1 BAT 1.5 AH BOSCH GO 2.0",
+    slug: "atornillador-bosch-go-2",
+    price: 229.90,
+    salePrice: 199.90,
+    discountBadge: "13",
+    reviews: 45,
+    brand: { name: "BOSCH" },
+  },
+  {
+    _id: "pro-bosch-gsr-12v",
+    name: "ATORNILLADOR 12V, SISTEMA FLEXICLICK 5 EN 1 GSR 12V-15 FC BOSCH",
+    slug: "atornillador-12v-flexiclick-bosch",
+    price: 899.00,
+    salePrice: 594.92,
+    discountBadge: "34",
+    reviews: 45,
+    brand: { name: "BOSCH" },
+  },
+  {
+    _id: "pro-dewalt-d25133k",
+    name: "ROTOMARTILLO SDS PLUS 800W DEWALT D25133K",
+    slug: "rotomartillo-sds-plus-dewalt-d25133k",
+    price: 549.90,
+    salePrice: 489.00,
+    discountBadge: "11",
+    reviews: 45,
+    brand: { name: "DEWALT" },
+  },
+];
+
 export function ProDealsSection({ products }: ProDealsSectionProps) {
   const { addItem } = useCartStore();
   const { toggleItem, isWishlisted } = useWishlistStore();
-  const displayProducts = (products && products.length > 0) ? products.slice(0, 4) : [];
+  
+  // Guarantee exactly 4 products are displayed (never 3)
+  const initialProducts = (products && products.length > 0) ? [...products] : [];
+  while (initialProducts.length < 4) {
+    const fallbackToAdd = fallbackProProducts[initialProducts.length] || fallbackProProducts[0];
+    initialProducts.push(fallbackToAdd);
+  }
+  const displayProducts = initialProducts.slice(0, 4);
 
   const handleQuickAdd = (e: React.MouseEvent, product: any) => {
     e.preventDefault();
@@ -50,7 +100,7 @@ export function ProDealsSection({ products }: ProDealsSectionProps) {
   };
 
   return (
-    <section className="py-6 w-full" data-section="Ofertas Para Profesionales">
+    <section className="py-6 w-full" id="ofertas-para-profesionales" data-section="Ofertas Para Profesionales" data-sanity-doc="promoBanner">
       <div className="mx-auto max-w-[1440px] px-3 sm:px-4 lg:px-6">
         {/* Section Title */}
         <div className="flex items-center gap-2 mb-4">

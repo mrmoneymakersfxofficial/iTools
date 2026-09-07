@@ -5,7 +5,12 @@ import Image from "next/image";
 
 export function WhyBuySection() {
   return (
-    <section className="py-6 w-full" data-section="¿Por Qué Comprar en iTools.pe?">
+    <section
+      id="por-que-comprar"
+      className="py-6 w-full scroll-mt-20"
+      data-section="¿Por Qué Comprar en iTools.pe?"
+      data-sanity-doc="promoBanner"
+    >
       <div className="mx-auto max-w-[1440px] px-3 sm:px-4 lg:px-6">
         {/* Title with left and right red arrows */}
         <div className="flex items-center gap-2 mb-4">

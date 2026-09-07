@@ -99,7 +99,7 @@ export function VideoSection({ data }: { data: VideoSectionData | null }) {
   const embedInfo = activeVideo ? getEmbedInfo(activeVideo.googleDriveUrl) : null;
 
   return (
-    <section className="py-6 md:py-8 bg-white dark:bg-[#111111] border-y border-border dark:border-[#222]">
+    <section className="py-6 md:py-8 bg-white dark:bg-[#111111] border-y border-border dark:border-[#222]" id="ofertas-en-tendencia" data-section="Ofertas en Tendencia" data-sanity-doc="videoSection">
       <div className="mx-auto max-w-[1440px] px-3 sm:px-4 lg:px-6">
         {/* Section Header matching Image 2 */}
         <div className="mb-4">

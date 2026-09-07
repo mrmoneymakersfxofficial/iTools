@@ -39,6 +39,7 @@ export const structure: StructureResolver = (S) =>
               S.documentTypeListItem("brandPromoSlide").title("Banners de Marcas"),
               S.documentTypeListItem("brandShowcaseItem").title("Marcas"),
               S.documentTypeListItem("category").title("Categorías"),
+              S.documentTypeListItem("trendingCategory").title("Categorías en Tendencia (Sidebar)"),
               S.documentTypeListItem("dealTile").title("Ofertas Especiales"),
               S.documentTypeListItem("product").title("Productos"),
               S.documentTypeListItem("sectionHeader").title("Encabezados de Sección"),

@@ -5,7 +5,12 @@ import Image from "next/image";
 
 export function SataFavoritesBanner() {
   return (
-    <section className="py-4 md:py-6 w-full" data-section="Favoritos de los Profesionales">
+    <section
+      id="favoritos-profesionales"
+      className="py-4 md:py-6 w-full scroll-mt-20"
+      data-section="Favoritos de los Profesionales"
+      data-sanity-doc="promoBanner"
+    >
       <div className="mx-auto max-w-[1440px] px-3 sm:px-4 lg:px-6">
         {/* Title */}
         <div className="flex items-center gap-2 mb-4">

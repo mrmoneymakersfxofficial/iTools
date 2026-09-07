@@ -5,7 +5,7 @@ import Image from "next/image";
 
 export function ExclusivePromosSection() {
   return (
-    <section className="py-6 w-full" data-section="Promociones Exclusivas">
+    <section className="py-6 w-full" id="promociones-exclusivas" data-section="Promociones Exclusivas" data-sanity-doc="promoBanner">
       <div className="mx-auto max-w-[1440px] px-3 sm:px-4 lg:px-6">
         {/* Title */}
         <div className="flex items-center gap-2 mb-4">

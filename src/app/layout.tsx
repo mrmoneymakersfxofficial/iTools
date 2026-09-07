@@ -1,4 +1,4 @@
-﻿import type { Metadata, Viewport } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
@@ -122,14 +122,14 @@ export default async function RootLayout({
     headerConfig: layoutData?.header || {},
     footerConfig: layoutData?.footer || {},
     uiConfig: layoutData?.uiConfig || {
-      addToCartText: "AÃ±adir al Carrito",
+      addToCartText: "Añadir al Carrito",
       viewDetailsText: "Ver Detalles",
       outOfStockText: "Agotado",
       searchPlaceholder: "Buscar herramientas...",
-      shippingBadgeText: "EnvÃ­o a todo PerÃº",
+      shippingBadgeText: "Envío a todo Perú",
       securePaymentText: "Pago Seguro",
-      warrantyText: "GarantÃ­a Oficial",
-      returnsText: "DevoluciÃ³n en 30 dÃ­as",
+      warrantyText: "Garantía Oficial",
+      returnsText: "Devolución en 30 días",
     },
     categories: layoutData?.categories || [],
   };

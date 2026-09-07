@@ -19,6 +19,7 @@ import { ExperienceSection } from "@/components/home/ExperienceSection";
 import { WhyBuySection } from "@/components/home/WhyBuySection";
 import { PromoPopup } from "@/components/layout/PromoPopup";
 import { HorizontalCategoryMenu } from "@/components/home/HorizontalCategoryMenu";
+import { SectionUrlTracker } from "@/components/layout/SectionUrlTracker";
 
 import { fetchHomePageData } from "@/lib/sanity/fetch-home";
 
@@ -142,6 +143,9 @@ export default async function Home() {
           {/* ── IMAGE 5: ¿Por Qué Comprar en iTools.pe? (Tractor + 3 Banners) ── */}
           <WhyBuySection />
         </div>
+
+        {/* Section URL hash and Sanity CMS tracker */}
+        <SectionUrlTracker />
       </main>
 
       {/* Global: Promo Popup */}
