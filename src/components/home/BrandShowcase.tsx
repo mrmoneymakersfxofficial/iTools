@@ -92,13 +92,19 @@ export function BrandShowcase({ brands }: { brands: any[] }) {
 
 function renderGrid(brands: Array<{ _id: string; name: string; slug: string; localConfig?: typeof BRAND_CONFIGS[string]; logo?: { asset?: { url?: string } } }>) {
   return (
-    <section className="py-4 bg-[#F5F5F5] dark:bg-[#111111]" data-section="Comprar por Marca">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center gap-2 mb-3">
-          <ShoppingBag className="h-5 w-5 text-[#1A1A1A] dark:text-white" />
-          <h2 className="text-base font-bold text-[#1A1A1A] dark:text-white uppercase tracking-wide">
-            Comprar por Marca
-          </h2>
+    <section className="py-6 bg-[#F8F9FA] dark:bg-[#111111]" data-section="Las Mejores Marcas">
+      <div className="mx-auto max-w-[1440px] px-3 sm:px-4 lg:px-6">
+        {/* Section Header matching Image 2 */}
+        <div className="mb-4">
+          <div className="flex items-center gap-2">
+            <span className="text-[#E60000] font-black text-lg tracking-tighter">▶▶</span>
+            <h2 className="text-base sm:text-lg font-black text-[#1A1A1A] dark:text-white uppercase tracking-wider">
+              LAS MEJORES MARCAS PARA TU TRABAJO
+            </h2>
+          </div>
+          <p className="text-xs text-muted-foreground mt-0.5">
+            Todo lo que necesitas para equipar tu taller con confianza.
+          </p>
         </div>
 
         <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-1.5 md:gap-2">

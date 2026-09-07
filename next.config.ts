@@ -1,4 +1,4 @@
-﻿import type { NextConfig } from "next";
+import type { NextConfig } from "next";
 import withSerwistInit from "@serwist/next";
 
 const withSerwist = withSerwistInit({
@@ -13,6 +13,9 @@ const nextConfig: NextConfig = {
   },
   reactStrictMode: true,
   turbopack: {},
+  experimental: {
+    turbopackUseSystemTlsCerts: true,
+  },
   images: {
     unoptimized: false,
     remotePatterns: [

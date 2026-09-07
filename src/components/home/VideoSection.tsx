@@ -75,35 +75,39 @@ function getVideoPlatform(url: string | null | undefined): { name: string; color
   return { name: "Video", color: "#D1001C" };
 }
 
+const fallbackVideos: VideoItem[] = [
+  { title: "MILWAUKEE M18 FUEL - Taladro percutor 158 nm en accion - 2907-259", googleDriveUrl: "https://www.tiktok.com/@itoolsperu" },
+  { title: "TOTAL TOOLS - Rotomartillo inalámbrico 20V industrial brushless", googleDriveUrl: "https://www.tiktok.com/@itoolsperu" },
+  { title: "MILWAUKEE M18 FUEL - Taladro percutor 158 nm en accion - 2907-259", googleDriveUrl: "https://www.tiktok.com/@itoolsperu" },
+  { title: "DEWALT XR 20V MAX - Atornillador brushless de alta potencia", googleDriveUrl: "https://www.tiktok.com/@itoolsperu" },
+  { title: "SATA TOOLS - Herramientas manuales y dados de precisión profesional", googleDriveUrl: "https://www.tiktok.com/@itoolsperu" },
+];
+
 export function VideoSection({ data }: { data: VideoSectionData | null }) {
   const [activeVideo, setActiveVideo] = useState<VideoItem | null>(null);
-  if (!data || !data.videos || data.videos.length === 0) return null;
+  const videos = (data?.videos && data.videos.length > 0) ? data.videos : fallbackVideos;
 
   const embedInfo = activeVideo ? getEmbedInfo(activeVideo.googleDriveUrl) : null;
 
   return (
     <section className="py-6 md:py-8 bg-white dark:bg-[#111111] border-y border-border dark:border-[#222]">
       <div className="mx-auto max-w-[1440px] px-3 sm:px-4 lg:px-6">
-        {/* Section Header */}
-        <div className="flex items-center justify-between mb-4">
+        {/* Section Header matching Image 2 */}
+        <div className="mb-4">
           <div className="flex items-center gap-2">
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-red-600/10 text-[#D1001C]">
-              <Smartphone className="h-4 w-4" />
-            </div>
-            <div>
-              <h2 className="text-base sm:text-lg font-impact text-foreground uppercase tracking-wide">
-                {data.sectionTitle || "Videos y Demostraciones"}
-              </h2>
-              {data.sectionSubtitle && (
-                <p className="text-xs text-muted-foreground">{data.sectionSubtitle}</p>
-              )}
-            </div>
+            <span className="text-[#E60000] font-black text-lg tracking-tighter">▶▶</span>
+            <h2 className="text-base sm:text-lg font-black text-foreground uppercase tracking-wider">
+              {data?.sectionTitle || "OFERTAS EN TENDENCIA !!"}
+            </h2>
           </div>
+          <p className="text-xs text-muted-foreground mt-0.5">
+            {data?.sectionSubtitle || "Descubre nuestros productos, ofertas y novedades en TikTok."}
+          </p>
         </div>
 
         {/* Vertical Videos Scroll / Grid */}
         <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide sm:grid sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 sm:overflow-visible">
-          {data.videos.map((video, i) => {
+          {videos.map((video, i) => {
             const platform = getVideoPlatform(video.googleDriveUrl);
             return (
               <button

@@ -12,6 +12,7 @@ import {
   Truck,
   Clock,
   Award,
+  Lock,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -100,6 +101,63 @@ export function Footer() {
 
       {/* ── Brand Marquee Slider (above main footer) ── */}
       <BrandMarquee />
+
+      {/* ── Red Social & Payment Trust Strip (Image 5) ── */}
+      <section className="bg-[#E60000] text-white py-2.5 px-4 shadow-sm" aria-label="Medios de pago y redes sociales">
+        <div className="mx-auto max-w-7xl flex flex-wrap items-center justify-between gap-4 text-xs font-bold">
+          {/* Left: Social */}
+          <div className="flex items-center gap-2.5">
+            <span className="uppercase tracking-wider">Síguenos en:</span>
+            <div className="flex items-center gap-1.5">
+              <a
+                href="https://youtube.com/@itoolsperu"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="YouTube"
+                className="h-6 w-6 rounded-full bg-white text-[#E60000] flex items-center justify-center hover:opacity-90 transition-opacity"
+              >
+                <Youtube className="h-3.5 w-3.5 fill-current" />
+              </a>
+              <a
+                href="https://instagram.com/itoolsperu"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Instagram"
+                className="h-6 w-6 rounded-full bg-white text-[#E60000] flex items-center justify-center hover:opacity-90 transition-opacity"
+              >
+                <Instagram className="h-3.5 w-3.5" />
+              </a>
+              <a
+                href="https://facebook.com/itoolsperu"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Facebook"
+                className="h-6 w-6 rounded-full bg-white text-[#E60000] flex items-center justify-center hover:opacity-90 transition-opacity"
+              >
+                <Facebook className="h-3.5 w-3.5 fill-current" />
+              </a>
+            </div>
+          </div>
+
+          {/* Center: Medios de pago */}
+          <div className="flex items-center gap-2">
+            <span className="uppercase tracking-wider">Medios de pago:</span>
+            <div className="flex items-center gap-1.5 bg-white px-2.5 py-1 rounded-full text-[#111] text-[10px] font-black shadow-sm">
+              <span className="bg-[#742284] text-white px-1.5 py-0.5 rounded text-[9px]">Yape</span>
+              <span className="bg-[#00D1D5] text-white px-1.5 py-0.5 rounded text-[9px]">Plin</span>
+              <span className="text-[#0056D2] font-black italic">VISA</span>
+              <span className="text-[#EB001B] font-black">MC</span>
+              <span className="text-gray-600 font-bold">AMEX</span>
+            </div>
+          </div>
+
+          {/* Right: Tienda 100% Segura */}
+          <div className="flex items-center gap-1.5">
+            <Lock className="h-4 w-4" />
+            <span className="uppercase tracking-wider">Tienda 100% Segura</span>
+          </div>
+        </div>
+      </section>
 
       {/* ── Main Footer ───────────────────────────────────────── */}
       <section className="bg-itools-dark text-gray-300" aria-label="Pie de página">

@@ -1,45 +1,40 @@
-
 export const dynamic = 'force-dynamic';
 
-/* ── Desktop-only components ── */
+/* ── Desktop-only & Shared components ── */
 import { TrendingSidebar } from "@/components/home/TrendingSidebar";
 import { ToolCribSidebar } from "@/components/home/ToolCribSidebar";
-import { HeroCarousel } from "@/components/home/HeroCarousel";
-import { CenterSmallBanners } from "@/components/home/CenterSmallBanners";
-
-/* ── Shared components ── */
-import { CenterGiveawayBanner } from "@/components/home/CenterGiveawayBanner";
-import { BestDealsSection } from "@/components/home/BestDealsSection";
-
-/* ── Mobile-only components ── */
-import { HorizontalCategoryMenu } from "@/components/home/HorizontalCategoryMenu";
-import { ToolCribMobileBar } from "@/components/home/ToolCribMobileBar";
-import { TrendingCategoriesMobile } from "@/components/home/TrendingCategoriesMobile";
-import { TrendingProductsMobile } from "@/components/home/TrendingProductsMobile";
-import { CategoriesGridMobile } from "@/components/home/CategoriesGridMobile";
-import { BrandsGridMobile } from "@/components/home/BrandsGridMobile";
-import { ExploreProductsMobile } from "@/components/home/ExploreProductsMobile";
-
-/* ── Desktop full-width sections ── */
-import { FeaturedSection, NewArrivalsSection } from "@/components/home/ProductSections";
-import { BrandShowcase } from "@/components/home/BrandShowcase";
-import { BrandBannersCarousel } from "@/components/home/BrandBannersCarousel";
+import { HomeCenterHero } from "@/components/home/HomeCenterHero";
+import { MainCategoriesSection } from "@/components/home/MainCategoriesSection";
+import { DewaltPowerstackBanner } from "@/components/home/DewaltPowerstackBanner";
+import { RedMarqueeBar } from "@/components/home/RedMarqueeBar";
 import { VideoSection } from "@/components/home/VideoSection";
+import { BrandShowcase } from "@/components/home/BrandShowcase";
+import { BestSellersWorkshopSection } from "@/components/home/BestSellersWorkshopSection";
+import { TechnicalServiceBanner } from "@/components/home/TechnicalServiceBanner";
+import { ExclusivePromosSection } from "@/components/home/ExclusivePromosSection";
+import { ProDealsSection } from "@/components/home/ProDealsSection";
+import { EquipWorkshopSection } from "@/components/home/EquipWorkshopSection";
+import { SataFavoritesBanner } from "@/components/home/SataFavoritesBanner";
+import { ExperienceSection } from "@/components/home/ExperienceSection";
+import { WhyBuySection } from "@/components/home/WhyBuySection";
 import { PromoPopup } from "@/components/layout/PromoPopup";
-import { CompareDrawer } from "@/components/product/CompareDrawer";
-
-
+import { HorizontalCategoryMenu } from "@/components/home/HorizontalCategoryMenu";
 
 import { fetchHomePageData } from "@/lib/sanity/fetch-home";
-import { VALID_LOCAL_BRANDS } from "@/lib/constants/brands";
 
 export default async function Home() {
   const data = await fetchHomePageData();
 
   if (!data) return null;
 
+  // Products subsets for different sections
+  const allProducts = data.products || [];
+  const bestSellers = allProducts.filter((p: any) => p.showInTrending || p.showInFeatured || p.stock > 0).slice(0, 4);
+  const proProducts = allProducts.filter((p: any) => p.showInFeatured || p.price > 100).slice(0, 4);
+  const workshopProducts = allProducts.filter((p: any) => p.showInNewArrivals || p.stock > 0).slice(0, 5);
+
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col bg-[#FDFDFD] dark:bg-[#0A0A0A]">
       <main className="flex-1">
         {/* ═══════════════════════════════════════════════════
             MOBILE LAYOUT (below lg)
@@ -47,144 +42,110 @@ export default async function Home() {
         <div className="lg:hidden" data-mobile>
           <HorizontalCategoryMenu categories={data.categories} />
 
-          <section className="container mx-auto max-w-7xl px-4 md:px-6 py-4 md:py-8">
-            <div className="mb-4 md:mb-6">
-              <HeroCarousel banners={data.heroBanners} />
-            </div>
-
-            <div className="mb-4 md:mb-6">
-              <BrandBannersCarousel banners={data.brandPromoBanners} />
-            </div>
-
-            <CenterSmallBanners banners={data.promoBanners} />
-          </section>
-
-          <ToolCribMobileBar settings={data.homeSettings} />
-
-          <TrendingCategoriesMobile categories={data.trendingCategories} />
-
-          <div className="px-4 md:px-6">
-            <CenterGiveawayBanner banner={data.giveawayBanner} />
+          <div className="px-3 py-3">
+            <HomeCenterHero
+              heroBanners={data.heroBanners}
+              brandPromoBanners={data.brandPromoBanners}
+              promoBanners={data.promoBanners}
+            />
           </div>
 
-          <TrendingProductsMobile products={data.trendingProducts?.length ? data.trendingProducts : (data.products?.filter(p => p.showInTrending) || data.products?.slice(0, 8))} />
-
-          <BestDealsSection dealTiles={data.dealTiles} />
-
-          {/* Videos de Productos y Demostraciones (TikTok / Drive Vertical) */}
+          <MainCategoriesSection categories={data.categories} dealTiles={data.dealTiles} />
+          <DewaltPowerstackBanner />
+          <RedMarqueeBar />
           <VideoSection data={data.videoSection} />
-
-          <CategoriesGridMobile categories={data.categories} />
-
-          <BrandsGridMobile brands={data.brandShowcase?.filter(b => b.showInGrid)} />
-
-          <ExploreProductsMobile products={data.products} />
+          <BrandShowcase brands={data.brandShowcase} />
+          <BestSellersWorkshopSection products={bestSellers.length ? bestSellers : allProducts.slice(0, 4)} />
+          <TechnicalServiceBanner />
+          <ExclusivePromosSection />
+          <ProDealsSection products={proProducts.length ? proProducts : allProducts.slice(4, 8)} />
+          <EquipWorkshopSection products={workshopProducts.length ? workshopProducts : allProducts.slice(8, 13)} />
+          <SataFavoritesBanner />
+          <ExperienceSection />
+          <WhyBuySection />
         </div>
 
         {/* ═══════════════════════════════════════════════════
-            DESKTOP LAYOUT (lg+)
+            DESKTOP LAYOUT (lg+) - EXACT 5 IMAGES SEQUENCE
             ═══════════════════════════════════════════════════ */}
         <div className="hidden lg:block">
+          {/* ── IMAGE 1: Hero 3-Column Grid ── */}
           <div className="mx-auto max-w-[1440px] px-2.5 lg:px-4 py-3">
             <div className="flex gap-3">
-              {/* LEFT SIDEBAR */}
+              {/* LEFT SIDEBAR: Categorías de Tendencia */}
               <div className="w-[240px] xl:w-[260px] shrink-0">
                 <div className="sticky top-[120px]">
                   <TrendingSidebar categories={data.trendingCategories} />
                 </div>
               </div>
 
-              {/* CENTER COLUMN */}
-              <div className="flex-1 min-w-0 space-y-2.5">
-                <HeroCarousel banners={data.heroBanners} />
-                <BrandBannersCarousel banners={data.brandPromoBanners} />
-                <CenterSmallBanners banners={data.promoBanners} />
-                <CenterGiveawayBanner banner={data.giveawayBanner} />
-
-                <div>
-                  <div className="flex items-center gap-2 mb-2">
-                    <svg className="h-4 w-4 text-[#CC3300]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z" /></svg>
-                    <h2 className="text-sm font-bold text-[#1A1A1A] dark:text-white uppercase tracking-wide">
-                      Las Mejores Ofertas
-                    </h2>
-                  </div>
-                  <DesktopDealTiles dealTiles={data.dealTiles} />
-                </div>
+              {/* CENTER COLUMN: Hero Banners */}
+              <div className="flex-1 min-w-0">
+                <HomeCenterHero
+                  heroBanners={data.heroBanners}
+                  brandPromoBanners={data.brandPromoBanners}
+                  promoBanners={data.promoBanners}
+                />
               </div>
 
-              {/* RIGHT SIDEBAR */}
+              {/* RIGHT SIDEBAR: Tool Crib of the North */}
               <div className="w-[280px] xl:w-[300px] shrink-0">
                 <div className="sticky top-[120px]">
-                  <ToolCribSidebar products={data.products?.filter(p => p.showInToolCrib)?.length ? data.products.filter(p => p.showInToolCrib) : (data.featuredProducts || data.products?.slice(0, 8))} />
+                  <ToolCribSidebar
+                    products={
+                      data.products?.filter((p: any) => p.showInToolCrib)?.length
+                        ? data.products.filter((p: any) => p.showInToolCrib)
+                        : data.featuredProducts || data.products?.slice(0, 7)
+                    }
+                  />
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Videos de Productos y Demostraciones (TikTok / Drive Vertical) */}
+          {/* ── IMAGE 1: Categorías Principales (Duo Chambeador + Combos) ── */}
+          <MainCategoriesSection categories={data.categories} dealTiles={data.dealTiles} />
+
+          {/* ── IMAGE 1: Full-Width DeWalt Powerstack Banner ── */}
+          <DewaltPowerstackBanner />
+
+          {/* ── IMAGE 1: Red Moving Marquee (Envíos a todo el Perú) ── */}
+          <RedMarqueeBar />
+
+          {/* ── IMAGE 2: Ofertas en Tendencia (TikTok/Reels Vertical Videos) ── */}
           <VideoSection data={data.videoSection} />
 
+          {/* ── IMAGE 2: Las Mejores Marcas Para Tu Trabajo (18 Marcas Grid) ── */}
           <BrandShowcase brands={data.brandShowcase} />
-          <FeaturedSection products={data.featuredProducts?.length ? data.featuredProducts : data.products?.slice(0, 8)} />
-          <NewArrivalsSection products={data.newArrivals?.length ? data.newArrivals : data.products?.slice(8, 16)} />
+
+          {/* ── IMAGE 2: Los Más Vendidos (Fondo Taller + 4 Cards) ── */}
+          <BestSellersWorkshopSection products={bestSellers.length ? bestSellers : allProducts.slice(0, 4)} />
+
+          {/* ── IMAGE 2: Servicio Técnico de Tus Marcas Favoritas ── */}
+          <TechnicalServiceBanner />
+
+          {/* ── IMAGE 3: Promociones Exclusivas (50/50 + Hot Sale Cocina) ── */}
+          <ExclusivePromosSection />
+
+          {/* ── IMAGE 3: Ofertas Para Profesionales (50/50 DeWalt vs Milwaukee + 4 Cards) ── */}
+          <ProDealsSection products={proProducts.length ? proProducts : allProducts.slice(4, 8)} />
+
+          {/* ── IMAGE 4: Equipa Tu Taller (Auto Style + 3 Banners + 5 Cards) ── */}
+          <EquipWorkshopSection products={workshopProducts.length ? workshopProducts : allProducts.slice(8, 13)} />
+
+          {/* ── IMAGE 4: Favoritos de los Profesionales (SATA 380 piezas) ── */}
+          <SataFavoritesBanner />
+
+          {/* ── IMAGE 4: Vive la Experiencia iTools (4 Cards) ── */}
+          <ExperienceSection />
+
+          {/* ── IMAGE 5: ¿Por Qué Comprar en iTools.pe? (Tractor + 3 Banners) ── */}
+          <WhyBuySection />
         </div>
       </main>
+
       {/* Global: Promo Popup */}
       <PromoPopup data={data.promoPopup} />
     </div>
-  );
-}
-
-/* ── Desktop deal tiles — brand-colored cards with dark bottom gradient ── */
-const fallbackDealTiles = [
-  { _id: "dt1", brand: "BOSCH", brandColor: "#1e4b8f", title: "Batería de 18 V de regalo", subtitle: "Consigue una batería GRATIS con kits BOSCH.", href: "/marca/bosch" },
-  { _id: "dt2", brand: "MILWAUKEE", brandColor: "#c61010", title: "Herramienta gratuita de elección", subtitle: "Con la compra de kits Milwaukee M18 seleccionados.", href: "/marca/milwaukee" },
-  { _id: "dt3", brand: "DEWALT", brandColor: "#e6a817", textColor: "#1A1A1A", title: "Herramienta gratuita por nuestra cuenta", subtitle: "Con kit de batería DEWALT 20V MAX XR seleccionado.", href: "/marca/dewalt" },
-  { _id: "dt4", brand: "MAKITA", brandColor: "#0077C8", title: "18V LXT — 15% adicional", subtitle: "15% extra en herramientas Makita 18V.", href: "/marca/makita" },
-  { _id: "dt5", brand: "STANLEY", brandColor: "#E35205", title: "Envío Gratis en Manuales", subtitle: "Herramientas manuales Stanley envío gratis.", href: "/categoria/herramientas-manuales" },
-  { _id: "dt6", brand: "3M", brandColor: "#CC3300", title: "Seguridad — 10% extra", subtitle: "EPP 3M con 10% de descuento adicional.", href: "/categoria/equipos-de-proteccion" },
-];
-
-function DesktopDealTiles({ dealTiles }: { dealTiles: any[] }) {
-  const rawTiles = (dealTiles && dealTiles.length > 0) ? dealTiles : fallbackDealTiles;
-  const safeTiles = rawTiles.filter(t => t && t.brand);
-
-
-  return (
-    <>
-      <div className="grid grid-cols-3 gap-2.5 mb-2.5">
-        {safeTiles.map((tile) => {
-          const textCol = tile.textColor || "#FFFFFF";
-          return (
-            <a
-              key={tile._id}
-              href={tile.href}
-              className="group relative overflow-hidden rounded-lg h-[200px] transition-shadow hover:shadow-lg"
-            >
-              <div className="absolute inset-0" style={{ backgroundColor: tile.brandColor || "#000" }} />
-              {(tile.image?.asset?.url || (tile.brand && VALID_LOCAL_BRANDS.includes(tile.brand.toLowerCase()))) && (
-                <img 
-                  src={tile.image?.asset?.url || `/brands/${tile.brand?.toLowerCase()}.webp`} 
-                  alt="" 
-                  className="absolute inset-0 w-full h-full object-cover opacity-50 transition-transform duration-500" 
-                />
-              )}
-              <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.45) 100%)" }} />
-              <div className="relative z-10 flex flex-col justify-between h-full p-4">
-                <span className="text-[11px] font-bold tracking-[0.08em] uppercase" style={{ color: textCol, opacity: 0.85 }}>{tile.brand}</span>
-                <div>
-                  <p className="font-bold text-sm sm:text-base leading-snug tracking-tight mb-1 drop-shadow-sm" style={{ color: textCol }}>{tile.title}</p>
-                  <p className="text-[11px] sm:text-xs leading-relaxed mb-2 line-clamp-2 font-medium opacity-90" style={{ color: textCol }}>{tile.subtitle}</p>
-                  <span className="inline-flex items-center justify-center w-6 h-6 rounded-full transition-all" style={{ backgroundColor: `${textCol}20`, color: textCol }}>
-                    <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
-                  </span>
-                </div>
-              </div>
-            </a>
-          );
-        })}
-      </div>
-      <a href="/categoria/herramientas-electricas" className="block w-full text-center bg-[#E35205] hover:bg-[#CC4400] text-white py-2.5 rounded-lg text-sm font-bold uppercase tracking-wide transition-colors">Ver Todas Las Ofertas</a>
-    </>
   );
 }
