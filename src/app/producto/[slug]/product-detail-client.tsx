@@ -685,21 +685,23 @@ export function ProductDetailClient({ product, relatedProducts, reviews }: { pro
                   </div>
 
                   <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto shrink-0">
-                    <Link
+                    <a
                       href={(product as any).technicalSheetUrl || `/api/pdf/ficha-tecnica?sku=${product.sku}`}
                       target="_blank"
+                      rel="noopener noreferrer"
                       className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-sm font-bold bg-[#D1001C] text-white hover:bg-[#b00018] transition-colors shadow-sm"
                     >
                       <FileDown className="h-4 w-4" />
                       Descargar PDF
-                    </Link>
-                    <Link
+                    </a>
+                    <a
                       href={`/api/pdf/ficha-tecnica?sku=${product.sku}`}
                       target="_blank"
+                      rel="noopener noreferrer"
                       className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-sm font-medium border border-border hover:bg-black/5 dark:hover:bg-white/5 text-foreground transition-colors"
                     >
                       Imprimir Ficha
-                    </Link>
+                    </a>
                   </div>
                 </div>
               </div>

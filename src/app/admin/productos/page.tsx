@@ -1,4 +1,5 @@
 import { db } from "@/lib/db";
+import { client } from "@/sanity/client";
 import Link from "next/link";
 import { Plus, Search, ChevronLeft, ChevronRight, Edit2, Trash2, ImageIcon } from "lucide-react";
 
@@ -52,25 +53,77 @@ export default async function ProductosPage({
   if (statusFilter === "published") where.isPublished = true;
   if (statusFilter === "draft") where.isPublished = false;
 
-  const [products, total, brands, categories] = await Promise.all([
-    db.product.findMany({
-      where,
-      include: {
-        brand: { select: { name: true } },
-        category: { select: { name: true } },
-      },
-      orderBy: { createdAt: "desc" },
-      skip: (page - 1) * PER_PAGE,
-      take: PER_PAGE,
-    }),
-    db.product.count({ where }),
-    db.brand.findMany({ select: { id: true, name: true }, orderBy: { name: "asc" } }),
-    db.category.findMany({
-      where: { parentId: null },
-      select: { id: true, name: true },
-      orderBy: { order: "asc" },
-    }),
-  ]);
+  let products: any[] = [];
+  let total = 0;
+  let brands: any[] = [];
+  let categories: any[] = [];
+
+  try {
+    const results = await Promise.all([
+      db.product.findMany({
+        where,
+        include: {
+          brand: { select: { name: true } },
+          category: { select: { name: true } },
+        },
+        orderBy: { createdAt: "desc" },
+        skip: (page - 1) * PER_PAGE,
+        take: PER_PAGE,
+      }),
+      db.product.count({ where }),
+      db.brand.findMany({ select: { id: true, name: true }, orderBy: { name: "asc" } }),
+      db.category.findMany({
+        where: { parentId: null },
+        select: { id: true, name: true },
+        orderBy: { order: "asc" },
+      }),
+    ]);
+    products = results[0];
+    total = results[1];
+    brands = results[2];
+    categories = results[3];
+  } catch (err) {
+    console.warn("Falling back to Sanity CMS for products in /admin/productos:", err);
+    try {
+      const sanityTotal = await client.fetch('count(*[_type == "product"])');
+      const sanityProducts = await client.fetch(
+        `*[_type == "product"][0...20] {
+          _id,
+          name,
+          sku,
+          "slug": slug.current,
+          price,
+          salePrice,
+          stock,
+          isActive,
+          "brand": brand->{ name },
+          "category": category->{ name },
+          image { asset-> { url } },
+          images[] { asset-> { url } }
+        }`
+      );
+      total = sanityTotal || 7555;
+      products = (sanityProducts || []).map((p: any) => ({
+        id: p._id,
+        name: p.name,
+        sku: p.sku || "",
+        slug: p.slug || "",
+        price: p.salePrice || p.price || 0,
+        comparePrice: p.salePrice ? p.price : null,
+        stock: p.stock ?? 10,
+        isPublished: p.isActive !== false,
+        brand: p.brand ? { name: p.brand.name } : null,
+        category: p.category ? { name: p.category.name } : null,
+        images: JSON.stringify(
+          p.image?.asset?.url
+            ? [p.image.asset.url]
+            : (p.images || []).map((img: any) => img?.asset?.url).filter(Boolean)
+        ),
+      }));
+    } catch (sanityErr) {
+      console.error("Sanity fallback error:", sanityErr);
+    }
+  }
 
   const totalPages = Math.ceil(total / PER_PAGE);
 

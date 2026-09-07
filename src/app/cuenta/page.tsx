@@ -51,17 +51,53 @@ export default async function CuentaPage() {
   const session = await getServerSession()
   if (!session?.user?.id) redirect('/login')
 
-  const [orders, addresses, wishlist] = await Promise.all([
-    getOrdersByUserId(session.user.id),
-    getAddresses(session.user.id),
-    getWishlist(session.user.id),
-  ])
+  let orders: any[] = []
+  let addresses: any[] = []
+  let wishlist: any[] = []
+
+  try {
+    const results = await Promise.allSettled([
+      getOrdersByUserId(session.user.id),
+      getAddresses(session.user.id),
+      getWishlist(session.user.id),
+    ])
+    orders = results[0].status === 'fulfilled' ? results[0].value || [] : []
+    addresses = results[1].status === 'fulfilled' ? results[1].value || [] : []
+    wishlist = results[2].status === 'fulfilled' ? results[2].value || [] : []
+  } catch (err) {
+    console.warn('Error retrieving account data:', err)
+  }
 
   const defaultAddress = addresses.find((a) => a.isDefault) || addresses[0]
   const recentOrders = orders.slice(0, 3)
 
   return (
     <div className="space-y-6">
+      {/* Super Admin God Mode Banner */}
+      {session.user.role === 'ADMIN' && (
+        <div className="rounded-xl p-4 bg-gradient-to-r from-amber-500/20 via-orange-500/20 to-red-500/20 border border-amber-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-lg">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-xl shrink-0">
+              👑
+            </div>
+            <div>
+              <p className="text-sm font-bold text-amber-300">
+                Super Administrador — Modo Dios Activo
+              </p>
+              <p className="text-xs text-white/70">
+                Control total de ventas, clientes, pedidos y sincronización Bsale ERP.
+              </p>
+            </div>
+          </div>
+          <Link
+            href="/admin"
+            className="px-4 py-2 rounded-lg text-xs font-bold text-black bg-gradient-to-r from-amber-400 to-orange-400 hover:from-amber-300 hover:to-orange-300 transition-all shrink-0 shadow-sm"
+          >
+            Abrir Panel Super Admin →
+          </Link>
+        </div>
+      )}
+
       {/* Page header */}
       <div>
         <h1 className="text-xl font-bold text-white">Mi Perfil</h1>
@@ -81,8 +117,12 @@ export default async function CuentaPage() {
               <h2 className="text-base font-bold text-white truncate">
                 {session.user.name || 'Sin nombre'}
               </h2>
-              <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-[#1A1A1A] text-[#888] border border-[#222]">
-                {session.user.role === 'ADMIN' ? 'Administrador' : 'Cliente'}
+              <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold border ${
+                session.user.role === 'ADMIN'
+                  ? 'bg-amber-500/20 text-amber-300 border-amber-500/30'
+                  : 'bg-[#1A1A1A] text-[#888] border-[#222]'
+              }`}>
+                {session.user.role === 'ADMIN' ? '👑 Super Admin (Modo Dios)' : 'Cliente'}
               </span>
             </div>
             <p className="text-sm text-[#888]">{session.user.email}</p>

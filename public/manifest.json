@@ -1,4 +1,4 @@
-﻿{
+{
   "name": "iTools",
   "short_name": "iTools",
   "description": "Tu tienda de herramientas profesionales",
@@ -7,6 +7,12 @@
   "background_color": "#ffffff",
   "theme_color": "#D1001C",
   "icons": [
+    {
+      "src": "/icon.png",
+      "sizes": "192x192 512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
     {
       "src": "/icon.svg",
       "sizes": "192x192 512x512",

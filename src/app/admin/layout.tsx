@@ -1,12 +1,15 @@
 import type { Metadata } from "next";
 import { getServerSession } from "@/lib/auth";
 import AdminShell from "./AdminShell";
+import AdminLoginModal from "./components/AdminLoginModal";
+import Link from "next/link";
+import { Shield, Sparkles, ExternalLink } from "lucide-react";
 
 // Force dynamic rendering — admin pages query the DB and must not be prerendered at build time
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Panel de Administración | iTools Perú",
+  title: "Panel de Administración (Modo Dios) | iTools Perú",
   robots: { index: false, follow: false },
 };
 
@@ -17,31 +20,12 @@ export default async function AdminLayout({
 }) {
   const session = await getServerSession();
 
-  // Not authenticated or not admin
+  // Not authenticated or not admin -> Show Super Admin Modo Dios Access Portal
   if (!session?.user || session.user.role !== "ADMIN") {
-    return (
-      <div className="min-h-screen bg-[#0A0A0A] text-white flex flex-col items-center justify-center px-4">
-        <div className="w-16 h-16 rounded-2xl bg-[#E35205]/10 border border-[#E35205]/20 flex items-center justify-center mb-6">
-          <svg className="w-8 h-8 text-[#E35205]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-          </svg>
-        </div>
-        <h1 className="text-2xl font-bold mb-2">Acceso denegado</h1>
-        <p className="text-sm text-[#888] mb-6 text-center max-w-md">
-          No tienes permisos para acceder al panel de administración. Inicia sesión con una cuenta de administrador.
-        </p>
-        <a
-          href="/login"
-          className="px-6 py-2.5 rounded-lg text-sm font-semibold text-white transition-colors"
-          style={{ background: "linear-gradient(135deg, #E35205, #CC3300)" }}
-        >
-          Iniciar sesión
-        </a>
-      </div>
-    );
+    return <AdminLoginModal />;
   }
 
-  const userName = session.user.name || "Admin";
+  const userName = session.user.name || "Super Administrador";
 
   return (
     <div className="min-h-screen bg-[#0A0A0A] text-white">
@@ -49,35 +33,57 @@ export default async function AdminLayout({
       <header className="bg-[#111] border-b border-[#1A1A1A] px-4 py-3 flex items-center justify-between sticky top-0 z-50">
         <div className="flex items-center gap-3">
           <div
-            className="w-8 h-8 rounded-lg flex items-center justify-center"
+            className="w-8 h-8 rounded-lg flex items-center justify-center shadow-md shadow-orange-500/20"
             style={{ background: "linear-gradient(135deg, #E35205, #CC3300)" }}
           >
             <span className="text-xs font-black text-white">iT</span>
           </div>
           <div>
-            <h1 className="text-sm font-bold uppercase tracking-wider">
-              iTools Admin
-            </h1>
-            <p className="text-[10px] text-[#555]">
-              Panel de Administración
+            <div className="flex items-center gap-2">
+              <h1 className="text-sm font-bold uppercase tracking-wider">
+                iTools Admin
+              </h1>
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-extrabold bg-gradient-to-r from-amber-500/20 to-orange-500/20 text-amber-400 border border-amber-500/30 shadow-sm animate-pulse">
+                <Sparkles className="w-2.5 h-2.5" />
+                MODO DIOS
+              </span>
+            </div>
+            <p className="text-[10px] text-[#777]">
+              Control Maestro de Ventas, Clientes y Bsale ERP
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-3">
-          <a
+
+        <div className="flex items-center gap-2 sm:gap-4">
+          <Link
+            href="/cms"
+            target="_blank"
+            className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-purple-500/10 text-purple-300 border border-purple-500/20 hover:bg-purple-500/20 transition-colors"
+          >
+            <span>Sanity CMS Studio</span>
+            <ExternalLink className="w-3 h-3" />
+          </Link>
+
+          <Link
             href="/"
-            className="text-[10px] text-[#E35205] font-semibold hover:underline"
+            className="text-xs text-[#E35205] font-semibold hover:underline"
           >
             ← Ver Tienda
-          </a>
-          <div className="w-8 h-8 rounded-full bg-[#E35205] flex items-center justify-center">
-            <span className="text-[10px] font-bold text-white">
-              {userName
-                .split(" ")
-                .map((n) => n[0])
-                .join("")
-                .toUpperCase()
-                .slice(0, 2)}
+          </Link>
+
+          <div className="flex items-center gap-2 pl-2 border-l border-[#222]">
+            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center shadow-sm">
+              <span className="text-[10px] font-black text-black">
+                {userName
+                  .split(" ")
+                  .map((n) => n[0])
+                  .join("")
+                  .toUpperCase()
+                  .slice(0, 2)}
+              </span>
+            </div>
+            <span className="text-xs font-medium text-[#CCC] hidden md:inline truncate max-w-[120px]">
+              {userName}
             </span>
           </div>
         </div>

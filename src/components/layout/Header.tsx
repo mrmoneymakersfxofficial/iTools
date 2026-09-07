@@ -1,5 +1,6 @@
-
 "use client";
+
+import Link from "next/link";
 
 async function querySearchApi(term: string) {
   if (!term || term.trim().length < 2) return [];
@@ -740,24 +741,26 @@ export function Header() {
                 <ThemeToggle />
               </div>
 
-              <Button
-                variant="ghost"
-                size="icon"
-                className="relative text-itools-dark dark:text-white/90 hover:text-itools-red dark:hover:text-itools-red transition-colors"
-                aria-label={`Lista de deseos (${wishlistCount} artÃ­culos)`}
-              >
-                <Heart
-                  className={cn(
-                    "h-5 w-5 transition-all duration-200",
-                    wishlistCount > 0 && "fill-itools-red text-itools-red"
+              <Link href="/favoritos" aria-label={`Lista de deseos (${wishlistCount} artículos)`}>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="relative text-itools-dark dark:text-white/90 hover:text-itools-red dark:hover:text-itools-red transition-colors"
+                  aria-label={`Lista de deseos (${wishlistCount} artículos)`}
+                >
+                  <Heart
+                    className={cn(
+                      "h-5 w-5 transition-all duration-200",
+                      wishlistCount > 0 && "fill-itools-red text-itools-red"
+                    )}
+                  />
+                  {wishlistCount > 0 && (
+                    <Badge className="absolute -top-1 -right-1 h-4 min-w-4 px-1 text-[10px] flex items-center justify-center bg-itools-red text-white border-0 rounded-full">
+                      {wishlistCount > 99 ? "99+" : wishlistCount}
+                    </Badge>
                   )}
-                />
-                {wishlistCount > 0 && (
-                  <Badge className="absolute -top-1 -right-1 h-4 min-w-4 px-1 text-[10px] flex items-center justify-center bg-itools-red text-white border-0 rounded-full">
-                    {wishlistCount > 99 ? "99+" : wishlistCount}
-                  </Badge>
-                )}
-              </Button>
+                </Button>
+              </Link>
 
               <Button
                 variant="ghost"

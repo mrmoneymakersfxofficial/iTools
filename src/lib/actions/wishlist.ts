@@ -72,7 +72,7 @@ export async function getWishlist(userId: string): Promise<WishlistItem[]> {
       createdAt: item.createdAt,
       product: {
         ...item.product,
-        images: parseImages(item.product.images),
+        images: parseImages(typeof item.product.images === 'string' ? item.product.images : JSON.stringify(item.product.images || [])),
       },
     }))
   } catch (error) {

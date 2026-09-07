@@ -12,6 +12,7 @@ import {
   Menu,
   X,
   LogIn,
+  Shield,
 } from 'lucide-react'
 
 const navItems = [
@@ -123,6 +124,19 @@ export default function CuentaLayout({ children }: { children: React.ReactNode }
                 </Link>
               )
             })}
+
+            {session?.user?.role === 'ADMIN' && (
+              <div className="pt-4 mt-4 border-t border-[#1A1A1A]">
+                <Link
+                  href="/admin"
+                  onClick={() => setSidebarOpen(false)}
+                  className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-bold text-amber-400 bg-amber-500/10 border border-amber-500/20 hover:bg-amber-500/20 transition-all shadow-sm"
+                >
+                  <Shield className="h-4 w-4 shrink-0 text-amber-400" />
+                  👑 Modo Dios Admin
+                </Link>
+              </div>
+            )}
           </nav>
         </div>
 

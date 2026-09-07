@@ -14,14 +14,17 @@ import {
   X,
   Search,
   Bell,
+  Layers,
+  Sparkles,
 } from "lucide-react";
 
 const navItems = [
   { name: "Dashboard", icon: BarChart3, href: "/admin" },
-  { name: "Productos", icon: Package, href: "/admin/productos" },
-  { name: "Pedidos", icon: ShoppingBag, href: "/admin/pedidos" },
-  { name: "Clientes", icon: Users, href: "/admin/clientes" },
-  { name: "Cupones", icon: Tag, href: "/admin/cupones" },
+  { name: "Productos (Sanity)", icon: Package, href: "/admin/productos" },
+  { name: "Pedidos y Ventas", icon: ShoppingBag, href: "/admin/pedidos" },
+  { name: "Clientes (Modo Dios)", icon: Users, href: "/admin/clientes" },
+  { name: "Cupones y Descuentos", icon: Tag, href: "/admin/cupones" },
+  { name: "Sanity Studio CMS", icon: Layers, href: "/cms" },
   { name: "Configuración", icon: Settings, href: "/admin/configuracion" },
 ];
 
@@ -75,8 +78,9 @@ export default function AdminShell({
               <p className="text-sm font-semibold text-white truncate">
                 {userName || "Admin"}
               </p>
-              <p className="text-[10px] text-[#666] font-medium uppercase tracking-wider">
-                Administrador
+              <p className="text-[10px] text-amber-400 font-bold uppercase tracking-wider flex items-center gap-1">
+                <Sparkles className="w-2.5 h-2.5" />
+                Super Admin Modo Dios
               </p>
             </div>
           </div>
