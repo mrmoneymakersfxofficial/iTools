@@ -132,6 +132,33 @@ export default defineType({
     defineField({ name: "order", title: "Orden", type: "number", validation: (r) => r.required().min(0) }),
     defineField({ name: "isActive", title: "Activo", type: "boolean", initialValue: true }),
     defineField({
+      name: "features",
+      title: "Principales Características",
+      type: "array",
+      of: [{ type: "string" }],
+      description: "Lista de características clave y ventajas destacadas del producto",
+    }),
+    defineField({
+      name: "includes",
+      title: "Qué Incluye",
+      type: "array",
+      of: [{ type: "string" }],
+      description: "Lista de accesorios, baterías o componentes incluidos en el paquete",
+    }),
+    defineField({
+      name: "recommendations",
+      title: "Recomendaciones de Uso y Seguridad",
+      type: "text",
+      rows: 4,
+      description: "Consejos de aplicación, mantenimiento preventivo y seguridad",
+    }),
+    defineField({
+      name: "warranty",
+      title: "Garantía",
+      type: "string",
+      description: "Periodo y condiciones de garantía oficial (ej: 3 años de garantía oficial Milwaukee)",
+    }),
+    defineField({
       name: "technicalSheetUrl",
       title: "Ficha Técnica (PDF URL)",
       type: "url",

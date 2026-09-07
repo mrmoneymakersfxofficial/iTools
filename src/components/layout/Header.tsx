@@ -1,8 +1,23 @@
+
 "use client";
+
+async function querySearchApi(term: string) {
+  if (!term || term.trim().length < 2) return [];
+  try {
+    const res = await fetch(`/api/search?q=${encodeURIComponent(term.trim())}`);
+    if (!res.ok) return [];
+    const data = await res.json();
+    return data.results || [];
+  } catch (e) {
+    console.error("Search API error:", e);
+    return [];
+  }
+}
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import {
   Search,
+  Loader2,
   ShoppingCart,
   Heart,
   User,
@@ -482,11 +497,13 @@ export function Header() {
   const config = headerConfig || {};
   const phone = config.phone || "01 234 5678";
   const phoneUrl = config.phoneUrl || "tel:+5112345678";
-  const location = config.location || "Lima, PerÃº";
-  const badge1 = config.badge1 || "Servicio TÃ©cnico Oficial Milwaukee";
-  const badge2 = config.badge2 || "EnvÃ­o a todo PerÃº";
+  const location = config.location || "Lima, Perú";
+  const badge1 = config.badge1 || "Servicio Técnico Oficial Milwaukee";
+  const badge2 = config.badge2 || "Envío a todo el Perú";
   const showBrandLogos = config.showBrandLogos !== false; // default true
   const brandLogos = config.brandLogos || [];
+
+  const [desktopLoading, setDesktopLoading] = useState(false);
 
   const handleDesktopSearch = useCallback((value: string) => {
     setDesktopQuery(value);
@@ -494,13 +511,16 @@ export function Header() {
     if (!value.trim()) {
       setDesktopResults([]);
       setDesktopResultsOpen(false);
+      setDesktopLoading(false);
       return;
     }
-    debounceRef.current = setTimeout(() => {
-      const res = searchProducts(value);
+    setDesktopLoading(true);
+    debounceRef.current = setTimeout(async () => {
+      const res = await querySearchApi(value);
       setDesktopResults(res);
-      setDesktopResultsOpen(res.length > 0);
-    }, 300);
+      setDesktopResultsOpen(true);
+      setDesktopLoading(false);
+    }, 250);
   }, []);
 
   useEffect(() => {
@@ -609,13 +629,19 @@ export function Header() {
             {/* Center: Desktop search */}
             <div className="hidden md:flex flex-1 max-w-2xl relative" ref={desktopSearchRef}>
               <div className="relative w-full">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
                 <Input
                   type="search"
-                  placeholder={uiConfig?.searchPlaceholder || "Buscar herramientas..."}
-                  className="w-full h-10 pl-10 pr-4 bg-surface dark:bg-[#1a1a1a] dark:text-white border-0 rounded-xl text-sm focus-visible:ring-itools-blue/30 focus-visible:border-itools-blue/50"
+                  placeholder={uiConfig?.searchPlaceholder || "Buscar por SKU (ej: THMFK0156), nombre o marca..."}
+                  className="w-full h-11 pl-10 pr-10 bg-surface dark:bg-[#1a1a1a] dark:text-white border border-border dark:border-[#262626] rounded-xl text-sm focus-visible:ring-[#0056D2]/30 focus-visible:border-[#0056D2]"
                   value={desktopQuery}
                   onChange={(e) => handleDesktopSearch(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && desktopQuery.trim()) {
+                      setDesktopResultsOpen(false);
+                      window.location.href = `/buscar?q=${encodeURIComponent(desktopQuery.trim())}`;
+                    }
+                  }}
                   onFocus={() => {
                     if (desktopResults.length > 0) setDesktopResultsOpen(true);
                   }}
@@ -623,54 +649,77 @@ export function Header() {
                   aria-expanded={desktopResultsOpen}
                   role="combobox"
                 />
+                {desktopLoading && (
+                  <Loader2 className="absolute right-3.5 top-1/2 -translate-y-1/2 h-4 w-4 animate-spin text-muted-foreground" />
+                )}
               </div>
 
-              {desktopResultsOpen && desktopResults.length > 0 && (
-                <div className="absolute top-full left-0 right-0 mt-1 z-50 bg-white dark:bg-[#1a1a1a] rounded-xl border border-border dark:border-[#333] shadow-xl max-h-96 overflow-y-auto">
-                  <div className="divide-y divide-border dark:divide-[#222]">
-                    {desktopResults.slice(0, 8).map((product) => (
-                      <a
-                        key={product.id}
-                        href={`/producto/${product.slug}`}
-                        className="flex items-start gap-3 px-4 py-3 hover:bg-surface dark:hover:bg-[#222] transition-colors"
-                        onClick={() => {
-                          setDesktopResultsOpen(false);
-                          setDesktopQuery("");
-                          setDesktopResults([]);
-                        }}
-                      >
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-foreground truncate">
-                            {product.name}
-                          </p>
-                          <p className="text-xs text-muted-foreground mt-0.5">
-                            {product.brand?.name} &middot; {product.sku}
-                          </p>
-                        </div>
-                        <div className="text-right shrink-0">
-                          <p className="text-sm text-itools-red">
-                            {formatPrice(product.price)}
-                          </p>
-                          {product.comparePrice && (
-                            <p className="text-xs text-muted-foreground line-through">
-                              {formatPrice(product.comparePrice)}
-                            </p>
-                          )}
-                        </div>
-                      </a>
-                    ))}
-                  </div>
-                  {desktopResults.length > 8 && (
-                    <div className="px-4 py-2.5 border-t border-border dark:border-[#222] text-center">
-                      <a
-                        href={`/buscar?q=${encodeURIComponent(desktopQuery)}`}
-                        className="text-xs font-medium text-itools-blue hover:underline"
-                        onClick={() => setDesktopResultsOpen(false)}
-                      >
-                        Ver todos los resultados ({desktopResults.length})
-                      </a>
+              {desktopResultsOpen && desktopQuery.trim() && (
+                <div className="absolute top-full left-0 right-0 mt-1.5 z-50 bg-white dark:bg-[#141414] rounded-2xl border border-border dark:border-[#262626] shadow-2xl max-h-[460px] overflow-y-auto">
+                  {desktopResults.length > 0 ? (
+                    <>
+                      <div className="divide-y divide-border dark:divide-[#222]">
+                        {desktopResults.slice(0, 8).map((product) => (
+                          <a
+                            key={product.id || product.slug}
+                            href={`/producto/${product.slug}`}
+                            className="flex items-center gap-3.5 px-4 py-3 hover:bg-surface dark:hover:bg-[#1c1c1c] transition-colors"
+                            onClick={() => {
+                              setDesktopResultsOpen(false);
+                              setDesktopQuery("");
+                              setDesktopResults([]);
+                            }}
+                          >
+                            {product.image ? (
+                              <img
+                                src={product.image}
+                                alt=""
+                                className="w-12 h-12 object-contain rounded-lg bg-surface dark:bg-[#1e1e1e] p-1 border border-border dark:border-[#262626] shrink-0"
+                              />
+                            ) : (
+                              <div className="w-12 h-12 rounded-lg bg-surface dark:bg-[#1e1e1e] flex items-center justify-center border border-border dark:border-[#262626] shrink-0 text-muted-foreground">
+                                <Search className="h-5 w-5 opacity-40" />
+                              </div>
+                            )}
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm font-semibold text-foreground truncate">
+                                {product.name}
+                              </p>
+                              <p className="text-xs text-muted-foreground mt-0.5 font-mono">
+                                {product.brand?.name ? `${product.brand.name} · ` : ""}SKU: {product.sku}
+                              </p>
+                            </div>
+                            <div className="text-right shrink-0">
+                              <p className="text-sm font-bold text-itools-red">
+                                {formatPrice(product.price)}
+                              </p>
+                              {product.comparePrice && (
+                                <p className="text-xs text-muted-foreground line-through">
+                                  {formatPrice(product.comparePrice)}
+                                </p>
+                              )}
+                            </div>
+                          </a>
+                        ))}
+                      </div>
+
+                      <div className="p-3 bg-surface/50 dark:bg-[#181818]/50 border-t border-border dark:border-[#222] text-center">
+                        <a
+                          href={`/buscar?q=${encodeURIComponent(desktopQuery)}`}
+                          className="text-xs font-bold text-[#0056D2] hover:underline inline-flex items-center gap-1"
+                          onClick={() => setDesktopResultsOpen(false)}
+                        >
+                          Ver todos los resultados ({desktopResults.length}) →
+                        </a>
+                      </div>
+                    </>
+                  ) : !desktopLoading ? (
+                    <div className="p-6 text-center text-sm text-muted-foreground">
+                      No se encontraron resultados para &ldquo;{desktopQuery}&rdquo;.
+                      <br />
+                      <span className="text-xs opacity-70">Presiona Enter para buscar en todo el catálogo.</span>
                     </div>
-                  )}
+                  ) : null}
                 </div>
               )}
             </div>

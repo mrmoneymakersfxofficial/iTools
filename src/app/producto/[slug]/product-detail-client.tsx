@@ -18,6 +18,9 @@ import {
   Share2,
   FileDown,
   GitCompare,
+  Check,
+  Package,
+  HelpCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -75,7 +78,7 @@ const SECTION_RELATED = "Productos Relacionados";
 
 export function ProductDetailClient({ product, relatedProducts, reviews }: { product: Product; relatedProducts: Product[]; reviews?: any[] }) {
   const [quantity, setQuantity] = useState(1);
-  const [activeTab, setActiveTab] = useState<"specs" | "description" | "reviews">("specs");
+  const [activeTab, setActiveTab] = useState<"features" | "specs" | "includes" | "recommendations" | "warranty" | "datasheet" | "reviews">("features");
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const addToCart = useCartStore((s) => s.addItem);
   const openCart = useCartStore((s) => s.openCart);
@@ -281,71 +284,89 @@ export function ProductDetailClient({ product, relatedProducts, reviews }: { pro
                 {product.description}
               </p>
 
-              {/* Quantity + Add to Cart */}
-              <div className="flex flex-col sm:flex-row gap-3 mt-2">
-                <div className="flex items-center border border-input rounded-lg">
-                  <button
-                    type="button"
-                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    className="h-12 w-12 flex items-center justify-center hover:bg-surface transition-colors rounded-l-lg"
+              {/* Actions: Primary Red Buy Now, Secondary Blue Add to Cart, WhatsApp */}
+              <div className="space-y-3 mt-4">
+                {/* Row 1: Quantity selector & Add to Cart (Secondary iTools Blue) */}
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <div className="flex items-center border border-input rounded-lg bg-surface dark:bg-[#1a1a1a]">
+                    <button
+                      type="button"
+                      onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                      className="h-12 w-12 flex items-center justify-center hover:bg-black/5 dark:hover:bg-white/5 transition-colors rounded-l-lg"
+                      aria-label="Disminuir cantidad"
+                    >
+                      <Minus className="h-4 w-4" />
+                    </button>
+                    <span className="w-14 text-center text-base font-semibold tabular-nums">
+                      {quantity}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setQuantity(quantity + 1)}
+                      className="h-12 w-12 flex items-center justify-center hover:bg-black/5 dark:hover:bg-white/5 transition-colors rounded-r-lg"
+                      aria-label="Aumentar cantidad"
+                    >
+                      <Plus className="h-4 w-4" />
+                    </button>
+                  </div>
+
+                  {/* Botón Secundario: Azul logo iTools */}
+                  <Button
+                    onClick={handleAddToCart}
+                    disabled={product.stock === 0}
+                    className="flex-1 bg-[#0056D2] hover:bg-[#0047BA] text-white font-bold h-12 text-base shadow-sm transition-all active:scale-[0.98]"
                   >
-                    <Minus className="h-4 w-4" />
-                  </button>
-                  <span className="w-14 text-center text-base font-medium tabular-nums">
-                    {quantity}
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => setQuantity(quantity + 1)}
-                    className="h-12 w-12 flex items-center justify-center hover:bg-surface transition-colors rounded-r-lg"
-                  >
-                    <Plus className="h-4 w-4" />
-                  </button>
+                    <ShoppingCart className="mr-2 h-5 w-5" />
+                    Agregar al Carrito
+                  </Button>
                 </div>
-                <Button
-                  onClick={handleAddToCart}
-                  disabled={product.stock === 0}
-                  className="flex-1 bg-itools-red hover:bg-itools-red-dark text-white font-impact h-12 text-base tracking-wide transition-colors"
-                >
-                  <ShoppingCart className="mr-2 h-5 w-5" />
-                  Añadir al Carrito
-                </Button>
-              </div>
 
-              {/* Buy Now + Wishlist actions */}
-              <div className="flex gap-2 mt-1">
-                <Button
-                  onClick={() => {
-                    for (let i = 0; i < quantity; i++) addToCart(product);
-                    window.location.href = "/checkout";
-                  }}
-                  disabled={product.stock === 0}
-                  className="flex-1 bg-itools-dark hover:bg-gray-800 text-white font-impact h-12 text-base tracking-wide transition-colors"
-                >
-                  Comprar Ahora
-                </Button>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className={cn(
-                    "h-12 w-12 border-2 transition-colors",
-                    wishlisted ? "border-itools-red text-itools-red" : "border-gray-300 dark:border-gray-600 text-gray-400 hover:text-itools-red hover:border-itools-red"
-                  )}
-                  onClick={() => toggleItem(product.id)}
-                  title={wishlisted ? "En tu lista de deseos" : "Agregar a lista de deseos"}
-                >
-                  <Heart className={cn("h-5 w-5", wishlisted && "fill-itools-red")} />
-                </Button>
-              </div>
+                {/* Row 2: Buy Now (Primary Red) & Wishlist */}
+                <div className="flex gap-2">
+                  <Button
+                    onClick={() => {
+                      for (let i = 0; i < quantity; i++) addToCart(product);
+                      window.location.href = "/checkout";
+                    }}
+                    disabled={product.stock === 0}
+                    className="flex-1 bg-[#D1001C] hover:bg-[#b00018] text-white font-bold h-12 text-base shadow-sm transition-all active:scale-[0.98]"
+                  >
+                    Comprar Ahora
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className={cn(
+                      "h-12 w-12 border-2 transition-colors",
+                      wishlisted ? "border-[#D1001C] text-[#D1001C]" : "border-gray-300 dark:border-gray-600 text-gray-400 hover:text-[#D1001C] hover:border-[#D1001C]"
+                    )}
+                    onClick={() => toggleItem(product.id)}
+                    title={wishlisted ? "En tu lista de deseos" : "Agregar a lista de deseos"}
+                  >
+                    <Heart className={cn("h-5 w-5", wishlisted && "fill-[#D1001C]")} />
+                  </Button>
+                </div>
 
-              {/* Share, Compare & Downloadable Resources */}
-              <div className="space-y-3 mt-2">
-                <div className="flex items-center gap-2 flex-wrap">
+                {/* Row 3: WhatsApp direct purchase */}
+                <a
+                  href={`https://wa.me/51999999999?text=${encodeURIComponent(`Hola iTools Perú, deseo consultar disponibilidad y comprar: ${product.name} (SKU: ${product.sku}) - Precio: ${formatPrice(finalPrice)}`)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold h-11 rounded-lg text-sm shadow-sm transition-all hover:scale-[1.01] active:scale-[0.98]"
+                >
+                  <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                    <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+                  </svg>
+                  Comprar por WhatsApp
+                </a>
+
+                {/* Share & Compare */}
+                <div className="flex items-center gap-3 pt-2">
                   <ShareDialog productName={product.name} productUrl={`/producto/${product.slug}`} />
                   <Button
                     variant="ghost"
                     size="sm"
-                    className={cn("gap-1.5", inCompare ? "text-primary" : "text-muted-foreground hover:text-primary")}
+                    className={cn("gap-1.5 text-xs", inCompare ? "text-[#0056D2]" : "text-muted-foreground hover:text-foreground")}
                     onClick={() =>
                       addToCompare({
                         slug: product.slug || product.id,
@@ -357,50 +378,11 @@ export function ProductDetailClient({ product, relatedProducts, reviews }: { pro
                         specs: product.specs,
                       })
                     }
-                    title={inCompare ? "Ya en comparación" : "Comparar producto"}
                   >
                     <GitCompare className="h-4 w-4" />
-                    Comparar
+                    {inCompare ? "En comparación" : "Comparar"}
                   </Button>
                 </div>
-
-                {/* Downloadable Resources Section */}
-                {(product as any).technicalSheetUrl && (
-                  <div className="border-t border-border pt-3">
-                    <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">
-                      Archivos descargables
-                    </p>
-                    <div className="flex gap-2 flex-wrap">
-                      <Link href={(product as any).technicalSheetUrl} target="_blank">
-                        <Button variant="outline" size="sm" className="gap-1.5 bg-red-50 dark:bg-red-950/20 border-red-200 dark:border-red-900 text-red-700 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-950/30">
-                          <FileDown className="h-4 w-4" />
-                          Ficha Técnica (PDF)
-                        </Button>
-                      </Link>
-                      <Link href={`/api/pdf/ficha-tecnica?sku=${product.sku}`} target="_blank">
-                        <Button variant="outline" size="sm" className="gap-1.5">
-                          <FileDown className="h-4 w-4" />
-                          Imprimir Ficha
-                        </Button>
-                      </Link>
-                    </div>
-                  </div>
-                )}
-                {!(product as any).technicalSheetUrl && (
-                  <PdfDownloadButton
-                    product={{
-                      name: product.name,
-                      slug: product.slug || product.id,
-                      sku: product.sku,
-                      brand: product.brand?.name,
-                      price: product.price,
-                      description: product.description || product.shortDescription,
-                      specs: (product as any).specs,
-                    }}
-                    variant="outline"
-                    size="sm"
-                  />
-                )}
               </div>
             </div>
           </div>
@@ -440,99 +422,303 @@ export function ProductDetailClient({ product, relatedProducts, reviews }: { pro
           </div>
         </section>
 
-        {/* ── Tab Navigation (acts as section anchor links) ── */}
+        {/* ── 6 Pestañas Informativas Ordenadas ── */}
         <div className="mt-12">
-          <div className="flex gap-0 border-b border-border overflow-x-auto">
+          {/* Navigation Bar */}
+          <div className="flex gap-1 border-b border-border overflow-x-auto scrollbar-hide pb-px">
             {[
-              { key: "specs" as const, label: SECTION_SPECS },
-              { key: "description" as const, label: SECTION_DESC },
-              { key: "reviews" as const, label: `${SECTION_REVIEWS} (${product.reviewCount})` },
+              { key: "features" as const, label: "1. Principales Características" },
+              { key: "specs" as const, label: "2. Datos Técnicos" },
+              { key: "includes" as const, label: "3. Qué Incluye" },
+              { key: "recommendations" as const, label: "4. Recomendaciones" },
+              { key: "warranty" as const, label: "5. Garantía" },
+              { key: "datasheet" as const, label: "6. Ficha Técnica" },
+              { key: "reviews" as const, label: `Reseñas (${product.reviewCount || 0})` },
             ].map((tab) => (
-              <a
+              <button
                 key={tab.key}
-                href={`#${sectionId(tab.label)}`}
-                onClick={(e) => {
-                  e.preventDefault();
-                  setActiveTab(tab.key);
-                  const el = document.getElementById(sectionId(tab.label));
-                  if (el) {
-                    const offset = 120;
-                    const top = el.getBoundingClientRect().top + window.scrollY - offset;
-                    window.scrollTo({ top, behavior: "smooth" });
-                  }
-                }}
-                className={`px-6 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ${
+                type="button"
+                onClick={() => setActiveTab(tab.key)}
+                className={`px-4 sm:px-6 py-3 text-xs sm:text-sm font-semibold whitespace-nowrap border-b-2 transition-all cursor-pointer ${
                   activeTab === tab.key
-                    ? "border-itools-blue text-itools-blue"
-                    : "border-transparent text-muted-foreground hover:text-foreground"
+                    ? "border-[#0056D2] text-[#0056D2] bg-blue-50/40 dark:bg-blue-950/20"
+                    : "border-transparent text-muted-foreground hover:text-foreground hover:border-gray-300"
                 }`}
               >
                 {tab.label}
-              </a>
+              </button>
             ))}
           </div>
 
-          {/* ── Section: Specs ── */}
-          <section
-            data-section={SECTION_SPECS}
-            id={sectionId(SECTION_SPECS)}
-            className="bg-white dark:bg-[#111111] rounded-b-xl border border-t-0 dark:border-[#333] p-6"
-          >
-            {activeTab === "specs" && (
-              Object.keys(product.specs || {}).length > 0 ? (
-                <div className="divide-y divide-border">
-                  {Object.entries(product.specs || {}).map(([key, value]) => (
-                    <div key={key} className="flex justify-between py-3">
-                      <span className="text-sm text-muted-foreground">{key}</span>
-                      <span className="text-sm font-medium text-foreground">{value}</span>
-                    </div>
-                  ))}
+          {/* Container for tab contents */}
+          <div className="bg-white dark:bg-[#111111] rounded-b-2xl border border-t-0 border-border dark:border-[#262626] p-6 sm:p-8 shadow-sm">
+            {/* 1. Principales Características */}
+            {activeTab === "features" && (
+              <div className="space-y-6">
+                <div>
+                  <h3 className="text-lg font-bold text-foreground mb-3 flex items-center gap-2">
+                    <span className="w-2.5 h-2.5 rounded-full bg-[#0056D2]" />
+                    Principales Características y Ventajas
+                  </h3>
+                  {product.shortDescription && (
+                    <p className="text-sm text-foreground/90 font-medium leading-relaxed mb-4">
+                      {product.shortDescription}
+                    </p>
+                  )}
                 </div>
-              ) : (
-                <p className="text-sm text-muted-foreground text-center py-8">
-                  No hay especificaciones disponibles para este producto.
-                </p>
-              )
-            )}
-          </section>
 
-          {/* ── Section: Description ── */}
-          <section
-            data-section={SECTION_DESC}
-            id={sectionId(SECTION_DESC)}
-            className="bg-white rounded-b-xl border border-t-0 p-6 mt-px"
-          >
-            {activeTab === "description" && (
-              <div className="prose prose-sm max-w-none">
-                <p className="leading-relaxed text-foreground">{product.description}</p>
-                {product.brand && (
-                  <p className="mt-4 text-sm text-muted-foreground">
-                    Marca: <span className="font-medium text-foreground">{product.brand.name}</span> — Distribuidor autorizado en Perú.
-                  </p>
+                {Array.isArray((product as any).features) && (product as any).features.length > 0 ? (
+                  <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {(product as any).features.map((feat: string, i: number) => (
+                      <li key={i} className="flex items-start gap-2.5 text-sm text-foreground/80 bg-surface dark:bg-[#181818] p-3.5 rounded-xl border border-border dark:border-[#262626]">
+                        <Check className="h-5 w-5 text-green-600 shrink-0 mt-0.5" />
+                        <span>{feat}</span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <div className="prose prose-sm max-w-none text-foreground/80 space-y-4">
+                    <p className="leading-relaxed whitespace-pre-line">{product.description || product.shortDescription}</p>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-4">
+                      <div className="bg-surface dark:bg-[#181818] p-4 rounded-xl border border-border dark:border-[#262626]">
+                        <p className="text-xs font-bold text-[#0056D2] uppercase tracking-wider mb-1">Rendimiento</p>
+                        <p className="text-xs text-muted-foreground">Diseñado para soportar jornadas intensivas de trabajo profesional e industrial.</p>
+                      </div>
+                      <div className="bg-surface dark:bg-[#181818] p-4 rounded-xl border border-border dark:border-[#262626]">
+                        <p className="text-xs font-bold text-[#0056D2] uppercase tracking-wider mb-1">Ergonomía</p>
+                        <p className="text-xs text-muted-foreground">Empuñadura y balance optimizados para minimizar la fatiga durante el uso continuo.</p>
+                      </div>
+                      <div className="bg-surface dark:bg-[#181818] p-4 rounded-xl border border-border dark:border-[#262626]">
+                        <p className="text-xs font-bold text-[#0056D2] uppercase tracking-wider mb-1">Durabilidad</p>
+                        <p className="text-xs text-muted-foreground">Componentes internos de alta calidad resistentes al polvo y caídas en obra.</p>
+                      </div>
+                    </div>
+                  </div>
                 )}
-                <p className="mt-4 text-sm text-muted-foreground">
-                  <strong>Envío:</strong> A todo el Perú. Tiempo estimado 2-5 días hábiles en Lima, 5-10 días en provincias.
-                </p>
-                <p className="mt-2 text-sm text-muted-foreground">
-                  <strong>Garantía:</strong> {product.specs["Garantía"] || "Garantía del fabricante"}.
-                </p>
               </div>
             )}
-          </section>
 
-          {/* ── Section: Reviews ── */}
-          <section
-            data-section={SECTION_REVIEWS}
-            id={sectionId(SECTION_REVIEWS)}
-            className="bg-white rounded-b-xl border border-t-0 p-6 mt-px"
-          >
-            {activeTab === "reviews" && (
-              <ProductReviews
-                reviews={reviews || []}
-                productSlug={product.slug || product.id}
-              />
+            {/* 2. Datos Técnicos */}
+            {activeTab === "specs" && (
+              <div className="space-y-4">
+                <h3 className="text-lg font-bold text-foreground mb-3 flex items-center gap-2">
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#0056D2]" />
+                  Especificaciones Técnicas
+                </h3>
+                <div className="divide-y divide-border border border-border dark:border-[#262626] rounded-xl overflow-hidden">
+                  <div className="flex justify-between py-3 px-4 bg-surface/50 dark:bg-[#181818]/50">
+                    <span className="text-sm font-semibold text-muted-foreground">SKU / Código</span>
+                    <span className="text-sm font-bold text-foreground font-mono">{product.sku}</span>
+                  </div>
+                  {product.brand && (
+                    <div className="flex justify-between py-3 px-4">
+                      <span className="text-sm font-semibold text-muted-foreground">Marca</span>
+                      <span className="text-sm font-medium text-foreground">{product.brand.name}</span>
+                    </div>
+                  )}
+                  {Object.entries(product.specs || {}).map(([key, value]) => (
+                    <div key={key} className="flex justify-between py-3 px-4 hover:bg-surface/30 dark:hover:bg-[#181818]/30 transition-colors">
+                      <span className="text-sm text-muted-foreground">{key}</span>
+                      <span className="text-sm font-medium text-foreground text-right">{value}</span>
+                    </div>
+                  ))}
+                  {Object.keys(product.specs || {}).length === 0 && (
+                    <div className="py-6 text-center text-sm text-muted-foreground">
+                      Especificaciones estandarizadas según catálogo oficial del fabricante.
+                    </div>
+                  )}
+                </div>
+              </div>
             )}
-          </section>
+
+            {/* 3. Qué Incluye */}
+            {activeTab === "includes" && (
+              <div className="space-y-4">
+                <h3 className="text-lg font-bold text-foreground mb-3 flex items-center gap-2">
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#0056D2]" />
+                  Contenido del Paquete
+                </h3>
+                {Array.isArray((product as any).includes) && (product as any).includes.length > 0 ? (
+                  <ul className="space-y-2.5">
+                    {(product as any).includes.map((item: string, idx: number) => (
+                      <li key={idx} className="flex items-center gap-3 text-sm text-foreground bg-surface dark:bg-[#181818] p-3 rounded-xl border border-border dark:border-[#262626]">
+                        <Package className="h-4 w-4 text-[#0056D2]" />
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <div className="space-y-3">
+                    <p className="text-sm text-muted-foreground">El producto se entrega completamente nuevo en su empaque original e incluye:</p>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div className="flex items-center gap-3 text-sm text-foreground bg-surface dark:bg-[#181818] p-3.5 rounded-xl border border-border dark:border-[#262626]">
+                        <Package className="h-4 w-4 text-[#0056D2]" />
+                        <span>1x {product.name}</span>
+                      </div>
+                      <div className="flex items-center gap-3 text-sm text-foreground bg-surface dark:bg-[#181818] p-3.5 rounded-xl border border-border dark:border-[#262626]">
+                        <FileDown className="h-4 w-4 text-[#0056D2]" />
+                        <span>1x Manual de instrucciones y certificado de garantía oficial</span>
+                      </div>
+                      <div className="flex items-center gap-3 text-sm text-foreground bg-surface dark:bg-[#181818] p-3.5 rounded-xl border border-border dark:border-[#262626]">
+                        <Shield className="h-4 w-4 text-[#0056D2]" />
+                        <span>Accesorios estándar de empaque oficial</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* 4. Recomendaciones */}
+            {activeTab === "recommendations" && (
+              <div className="space-y-4">
+                <h3 className="text-lg font-bold text-foreground mb-3 flex items-center gap-2">
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#0056D2]" />
+                  Recomendaciones de Uso y Seguridad
+                </h3>
+                {(product as any).recommendations ? (
+                  <p className="text-sm text-foreground/80 leading-relaxed whitespace-pre-line">
+                    {(product as any).recommendations}
+                  </p>
+                ) : (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="p-4 rounded-xl border border-border dark:border-[#262626] bg-surface dark:bg-[#181818]">
+                      <h4 className="text-sm font-bold text-foreground mb-1.5 flex items-center gap-2">
+                        <Shield className="h-4 w-4 text-amber-500" />
+                        Seguridad Personal (EPP)
+                      </h4>
+                      <p className="text-xs text-muted-foreground leading-relaxed">
+                        Utilice siempre lentes de protección ocular, guantes de trabajo adecuados y protección auditiva durante el funcionamiento.
+                      </p>
+                    </div>
+                    <div className="p-4 rounded-xl border border-border dark:border-[#262626] bg-surface dark:bg-[#181818]">
+                      <h4 className="text-sm font-bold text-foreground mb-1.5 flex items-center gap-2">
+                        <Wrench className="h-4 w-4 text-blue-500" />
+                        Mantenimiento Preventivo
+                      </h4>
+                      <p className="text-xs text-muted-foreground leading-relaxed">
+                        Limpie las ranuras de ventilación después de cada jornada para evitar la acumulación de virutas o polvo en el motor.
+                      </p>
+                    </div>
+                    <div className="p-4 rounded-xl border border-border dark:border-[#262626] bg-surface dark:bg-[#181818]">
+                      <h4 className="text-sm font-bold text-foreground mb-1.5 flex items-center gap-2">
+                        <Package className="h-4 w-4 text-green-500" />
+                        Almacenamiento
+                      </h4>
+                      <p className="text-xs text-muted-foreground leading-relaxed">
+                        Guarde la herramienta en un lugar seco y limpio, lejos del alcance de niños o de la intemperie húmeda.
+                      </p>
+                    </div>
+                    <div className="p-4 rounded-xl border border-border dark:border-[#262626] bg-surface dark:bg-[#181818]">
+                      <h4 className="text-sm font-bold text-foreground mb-1.5 flex items-center gap-2">
+                        <HelpCircle className="h-4 w-4 text-purple-500" />
+                        Servicio Oficial
+                      </h4>
+                      <p className="text-xs text-muted-foreground leading-relaxed">
+                        Para cualquier reparación o cambio de carbones/repuestos, recurra a los centros de servicio técnico autorizados iTools.
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* 5. Garantía */}
+            {activeTab === "warranty" && (
+              <div className="space-y-4">
+                <h3 className="text-lg font-bold text-foreground mb-3 flex items-center gap-2">
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#0056D2]" />
+                  Garantía y Respaldo Oficial
+                </h3>
+                <div className="bg-blue-50/50 dark:bg-blue-950/20 border border-blue-100 dark:border-blue-900/30 p-5 rounded-2xl">
+                  <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 rounded-xl bg-[#0056D2] text-white flex items-center justify-center shrink-0">
+                      <Shield className="h-6 w-6" />
+                    </div>
+                    <div className="space-y-1">
+                      <h4 className="text-base font-bold text-foreground">
+                        {(product as any).warranty || (product.brand?.name ? `Garantía Oficial ${product.brand.name} Perú` : "Garantía Oficial del Fabricante")}
+                      </h4>
+                      <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                        Todos los productos comercializados en iTools Perú cuentan con respaldo directo del fabricante contra defectos de fabricación y mano de obra.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-4 pt-4 border-t border-blue-200/50 dark:border-blue-900/30 text-xs text-foreground/80">
+                    <div>
+                      <strong>Cobertura:</strong> Defectos de fabricación en motor y componentes mecánicos.
+                    </div>
+                    <div>
+                      <strong>Repuestos:</strong> 100% legítimos y certificados.
+                    </div>
+                    <div>
+                      <strong>Soporte:</strong> Asistencia técnica a nivel nacional.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* 6. Ficha Técnica */}
+            {activeTab === "datasheet" && (
+              <div className="space-y-4">
+                <h3 className="text-lg font-bold text-foreground mb-3 flex items-center gap-2">
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#0056D2]" />
+                  Ficha Técnica Oficial del Producto
+                </h3>
+                <div className="border border-border dark:border-[#262626] rounded-2xl p-6 sm:p-8 bg-surface dark:bg-[#181818] flex flex-col sm:flex-row items-center justify-between gap-6">
+                  <div className="flex items-center gap-4 text-left w-full sm:w-auto">
+                    <div className="w-16 h-16 rounded-2xl bg-red-100 dark:bg-red-950/40 text-[#D1001C] flex items-center justify-center shrink-0">
+                      <FileDown className="h-8 w-8" />
+                    </div>
+                    <div>
+                      <h4 className="text-base font-bold text-foreground mb-1">
+                        Ficha Técnica Oficial — {product.name}
+                      </h4>
+                      <p className="text-xs text-muted-foreground">
+                        Documento PDF con todas las especificaciones, diagramas y recomendaciones técnicas oficiales.
+                      </p>
+                      <p className="text-[11px] text-muted-foreground/70 mt-1">
+                        SKU: {product.sku} &bull; Idioma: Español &bull; Formato: PDF
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto shrink-0">
+                    <Link
+                      href={(product as any).technicalSheetUrl || `/api/pdf/ficha-tecnica?sku=${product.sku}`}
+                      target="_blank"
+                      className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-sm font-bold bg-[#D1001C] text-white hover:bg-[#b00018] transition-colors shadow-sm"
+                    >
+                      <FileDown className="h-4 w-4" />
+                      Descargar PDF
+                    </Link>
+                    <Link
+                      href={`/api/pdf/ficha-tecnica?sku=${product.sku}`}
+                      target="_blank"
+                      className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-sm font-medium border border-border hover:bg-black/5 dark:hover:bg-white/5 text-foreground transition-colors"
+                    >
+                      Imprimir Ficha
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Reseñas (Sub-sección complementaria) */}
+            {activeTab === "reviews" && (
+              <div>
+                <h3 className="text-lg font-bold text-foreground mb-4 flex items-center gap-2">
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#0056D2]" />
+                  Opiniones de Clientes Verificados
+                </h3>
+                <ProductReviews
+                  reviews={reviews || []}
+                  productSlug={product.slug || product.id}
+                />
+              </div>
+            )}
+          </div>
         </div>
 
         {/* ── Section: Related Products ── */}

@@ -173,8 +173,8 @@ function DesktopDealTiles({ dealTiles }: { dealTiles: any[] }) {
               <div className="relative z-10 flex flex-col justify-between h-full p-4">
                 <span className="text-[11px] font-bold tracking-[0.08em] uppercase" style={{ color: textCol, opacity: 0.85 }}>{tile.brand}</span>
                 <div>
-                  <p className="font-impact text-sm leading-tight mb-1" style={{ color: textCol }}>{tile.title}</p>
-                  <p className="text-[10px] leading-relaxed mb-2 line-clamp-2" style={{ color: textCol, opacity: 0.8 }}>{tile.subtitle}</p>
+                  <p className="font-bold text-sm sm:text-base leading-snug tracking-tight mb-1 drop-shadow-sm" style={{ color: textCol }}>{tile.title}</p>
+                  <p className="text-[11px] sm:text-xs leading-relaxed mb-2 line-clamp-2 font-medium opacity-90" style={{ color: textCol }}>{tile.subtitle}</p>
                   <span className="inline-flex items-center justify-center w-6 h-6 rounded-full transition-all" style={{ backgroundColor: `${textCol}20`, color: textCol }}>
                     <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
                   </span>

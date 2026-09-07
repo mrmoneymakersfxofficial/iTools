@@ -26,6 +26,10 @@ export const productBySlugQuery = `*[_type == "product" && slug.current == $slug
   image { asset-> { url, metadata { dimensions { width, height }, lqip } } },
   images[] { asset-> { url, metadata { dimensions { width, height }, lqip } } },
   specs[] { key, value },
+  features,
+  includes,
+  recommendations,
+  warranty,
   technicalSheetUrl,
   videoUrl
 }`;

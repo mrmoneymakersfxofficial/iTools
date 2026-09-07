@@ -366,18 +366,20 @@ html {
     );
 }
 
-/* ── Impact Font Utility Classes ── */
+/* ── Impact / Heavy Headline Font Utility Classes ── */
 .font-impact {
-  font-family: 'Impact', 'Arial Narrow Bold', sans-serif;
-  font-weight: 400;
-  letter-spacing: 0.02em;
+  font-family: 'Arial Black', Impact, var(--font-inter), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  text-rendering: optimizeLegibility;
 }
 
 .font-impact-italic {
-  font-family: 'Impact', 'Arial Narrow Bold', sans-serif;
-  font-weight: 400;
+  font-family: 'Arial Black', Impact, var(--font-inter), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-weight: 800;
   font-style: italic;
-  letter-spacing: 0.02em;
+  letter-spacing: -0.01em;
+  text-rendering: optimizeLegibility;
 }
 
 /* ── Brand Marquee Animation ── */

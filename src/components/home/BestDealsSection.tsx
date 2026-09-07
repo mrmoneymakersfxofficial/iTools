@@ -43,14 +43,14 @@ function DealCard({ tile }: { tile: any }) {
         {/* Bottom: title, subtitle, arrow */}
         <div>
           <p
-            className="font-impact text-base sm:text-lg leading-tight mb-1.5"
+            className="font-bold text-sm sm:text-base leading-snug tracking-tight mb-1.5 drop-shadow-sm"
             style={{ color: textCol }}
           >
             {tile.title}
           </p>
           <p
-            className="text-[10px] sm:text-xs leading-relaxed mb-3 line-clamp-2"
-            style={{ color: textCol, opacity: 0.8 }}
+            className="text-xs leading-relaxed mb-3 line-clamp-2 font-medium opacity-90"
+            style={{ color: textCol }}
           >
             {tile.subtitle}
           </p>
@@ -138,14 +138,14 @@ export function BestDealsSection({ dealTiles }: { dealTiles: any[] }) {
                 </span>
                 <div>
                   <p
-                    className="font-impact text-sm leading-tight mb-1"
+                    className="font-bold text-sm sm:text-base leading-snug tracking-tight mb-1 drop-shadow-sm"
                     style={{ color: tile.textColor || "#FFFFFF" }}
                   >
                     {tile.title}
                   </p>
                   <p
-                    className="text-[10px] leading-relaxed mb-2 line-clamp-2"
-                    style={{ color: tile.textColor || "#FFFFFF", opacity: 0.8 }}
+                    className="text-xs leading-relaxed mb-2 line-clamp-2 font-medium opacity-90"
+                    style={{ color: tile.textColor || "#FFFFFF" }}
                   >
                     {tile.subtitle}
                   </p>
