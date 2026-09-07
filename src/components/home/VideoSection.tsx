@@ -83,6 +83,15 @@ const fallbackVideos: VideoItem[] = [
   { title: "SATA TOOLS - Herramientas manuales y dados de precisión profesional", googleDriveUrl: "https://www.tiktok.com/@itoolsperu" },
 ];
 
+function getThumbnailUrl(thumbnail: any): string | null {
+  if (!thumbnail?.asset?.url) return null;
+  try {
+    return urlFor(thumbnail).width(360).height(640).format("webp").url() || thumbnail.asset.url;
+  } catch {
+    return thumbnail.asset.url;
+  }
+}
+
 export function VideoSection({ data }: { data: VideoSectionData | null }) {
   const [activeVideo, setActiveVideo] = useState<VideoItem | null>(null);
   const videos = (data?.videos && data.videos.length > 0) ? data.videos : fallbackVideos;
@@ -109,6 +118,8 @@ export function VideoSection({ data }: { data: VideoSectionData | null }) {
         <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide sm:grid sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 sm:overflow-visible">
           {videos.map((video, i) => {
             const platform = getVideoPlatform(video.googleDriveUrl);
+            const thumbUrl = getThumbnailUrl(video.thumbnail);
+
             return (
               <button
                 key={i}
@@ -116,9 +127,9 @@ export function VideoSection({ data }: { data: VideoSectionData | null }) {
                 className="group relative shrink-0 w-[140px] sm:w-auto aspect-[9/16] rounded-2xl overflow-hidden bg-[#1A1A1A] border border-border dark:border-[#333] shadow-sm hover:shadow-lg hover:border-[#D1001C] transition-all duration-300 text-left cursor-pointer"
               >
                 {/* Thumbnail Image */}
-                {video.thumbnail?.asset?.url ? (
+                {thumbUrl ? (
                   <Image
-                    src={urlFor(video.thumbnail).width(360).height(640).format("webp").url()!}
+                    src={thumbUrl}
                     alt={video.title}
                     fill
                     className="object-cover group-hover:scale-105 transition-transform duration-500"

@@ -14,14 +14,15 @@ interface ProDealsSectionProps {
 
 export function ProDealsSection({ products }: ProDealsSectionProps) {
   const { addItem } = useCartStore();
-  const { isInWishlist, addItem: addWishlist, removeItem: removeWishlist } = useWishlistStore();
+  const { toggleItem, isWishlisted } = useWishlistStore();
   const displayProducts = (products && products.length > 0) ? products.slice(0, 4) : [];
 
   const handleQuickAdd = (e: React.MouseEvent, product: any) => {
     e.preventDefault();
     e.stopPropagation();
     addItem({
-      _id: product._id,
+      id: product._id || product.id,
+      _id: product._id || product.id,
       name: product.name,
       slug: product.slug,
       price: product.salePrice || product.price,
@@ -38,22 +39,14 @@ export function ProDealsSection({ products }: ProDealsSectionProps) {
   const handleToggleWishlist = (e: React.MouseEvent, product: any) => {
     e.preventDefault();
     e.stopPropagation();
-    const inWish = isInWishlist(product._id);
-    if (inWish) {
-      removeWishlist(product._id);
-      toast({ title: "Eliminado de favoritos", description: product.name });
-    } else {
-      addWishlist({
-        _id: product._id,
-        name: product.name,
-        slug: product.slug,
-        price: product.price,
-        salePrice: product.salePrice,
-        image: product.image?.asset?.url,
-        brand: product.brand?.name,
-      });
-      toast({ title: "Añadido a favoritos", description: product.name });
-    }
+    const id = product._id || product.id;
+    if (!id) return;
+    const currentlyInWish = isWishlisted(id);
+    toggleItem(id);
+    toast({
+      title: currentlyInWish ? "Eliminado de favoritos" : "Añadido a favoritos",
+      description: product.name,
+    });
   };
 
   return (
@@ -100,7 +93,7 @@ export function ProDealsSection({ products }: ProDealsSectionProps) {
             const comparePrice = salePrice ? price : (product.comparePrice || null);
             const displayPrice = salePrice || price || 0;
             const discount = comparePrice ? Math.round(((comparePrice - displayPrice) / comparePrice) * 100) : (product.discountBadge ? parseInt(product.discountBadge) : 0);
-            const inWish = isInWishlist(product._id);
+            const inWish = isWishlisted(product._id);
 
             return (
               <Link

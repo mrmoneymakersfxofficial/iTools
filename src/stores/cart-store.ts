@@ -26,20 +26,22 @@ export const useCartStore = create<CartState>()(
       toggleCart: () => set((s) => ({ isOpen: !s.isOpen })),
 
       addItem: (product, quantity = 1) => {
+        const prodId = product.id || (product as any)._id || "";
+        const normalizedProduct: Product = { ...(product as any), id: prodId, _id: prodId };
         set((state) => {
           const existing = state.items.find(
-            (i) => i.product.id === product.id
+            (i) => (i.product.id || (i.product as any)._id) === prodId
           );
           if (existing) {
             return {
               items: state.items.map((i) =>
-                i.product.id === product.id
+                (i.product.id || (i.product as any)._id) === prodId
                   ? { ...i, quantity: i.quantity + quantity }
                   : i
               ),
             };
           }
-          return { items: [...state.items, { product, quantity }] };
+          return { items: [...state.items, { product: normalizedProduct, quantity }] };
         });
       },
 

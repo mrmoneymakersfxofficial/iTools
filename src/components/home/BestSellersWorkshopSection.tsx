@@ -19,7 +19,8 @@ export function BestSellersWorkshopSection({ products }: BestSellersWorkshopSect
     e.preventDefault();
     e.stopPropagation();
     addItem({
-      _id: product._id,
+      id: product._id || product.id,
+      _id: product._id || product.id,
       name: product.name,
       slug: product.slug,
       price: product.salePrice || product.price,

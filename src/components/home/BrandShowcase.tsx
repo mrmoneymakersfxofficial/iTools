@@ -73,8 +73,9 @@ function mergeBrands(sanityBrands: SanityBrand[]): Array<SanityBrand & { localCo
   return merged.filter((b) => b.isActive !== false);
 }
 
-export function BrandShowcase({ brands }: { brands: any[] }) {
-  const safeBrands = mergeBrands(brands || []);
+export function BrandShowcase({ brands }: { brands: any }) {
+  const rawList = Array.isArray(brands) ? brands : (brands?.brands && Array.isArray(brands.brands) ? brands.brands : []);
+  const safeBrands = mergeBrands(rawList);
 
   if (safeBrands.length === 0) {
     const fallback = BRAND_SHOWCASE_ORDER.map((slug) => ({
