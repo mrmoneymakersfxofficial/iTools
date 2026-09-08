@@ -46,8 +46,8 @@ export function ProductCard({ product, index = 0, quickView, quickViewColor }: P
   const { toggleItem, isWishlisted } = useWishlistStore();
   const openQuickView = useQuickViewStore((s) => s.openQuickView);
   
-  const id = product._id || product.id;
-  const wishlisted = isWishlisted(id);
+  const id = product._id || product.id || product.slug;
+  const wishlisted = isWishlisted(id) || (product.slug && isWishlisted(product.slug)) || (product.id && isWishlisted(product.id));
 
   const price = product.price || 0;
   const comparePrice = product.salePrice ? product.price : (product.comparePrice || null);

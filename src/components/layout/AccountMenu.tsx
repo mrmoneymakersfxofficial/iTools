@@ -21,15 +21,16 @@ import {
   ChevronDown,
 } from "lucide-react";
 import Link from "next/link";
+import { useSession, signOut } from "next-auth/react";
 import { useWishlistStore } from "@/stores/wishlist-store";
 import { useCartStore } from "@/stores/cart-store";
 
 export function AccountMenu() {
-  // TODO: Replace with NextAuth useSession when auth is implemented
-  const [isLoggedIn] = useState(false);
-  const [userName] = useState("Usuario");
-  const [userEmail] = useState("usuario@itools.pe");
-  const isAdmin = false;
+  const { data: session, status } = useSession();
+  const isLoggedIn = status === "authenticated";
+  const userName = session?.user?.name || "Usuario";
+  const userEmail = session?.user?.email || "usuario@itools.pe";
+  const isAdmin = (session?.user as any)?.role === "ADMIN";
 
   const wishlistCount = useWishlistStore((s) => s.getCount());
   const cartItemCount = useCartStore((s) => s.getItemCount());
@@ -110,7 +111,10 @@ export function AccountMenu() {
             )}
 
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="cursor-pointer py-2.5 text-red-600 focus:bg-red-50 dark:focus:bg-red-950 focus:text-red-700">
+            <DropdownMenuItem
+              onClick={() => signOut({ callbackUrl: "/" })}
+              className="cursor-pointer py-2.5 text-red-600 focus:bg-red-50 dark:focus:bg-red-950 focus:text-red-700"
+            >
               <LogOut className="h-4 w-4 mr-2.5" />
               <span className="text-sm">Cerrar Sesión</span>
             </DropdownMenuItem>
@@ -180,7 +184,11 @@ export function AccountMenu() {
 
 /** Desktop version with text label */
 export function AccountMenuDesktop() {
-  const [isLoggedIn] = useState(false);
+  const { data: session, status } = useSession();
+  const isLoggedIn = status === "authenticated";
+  const userName = session?.user?.name || "Usuario";
+  const userEmail = session?.user?.email || "usuario@itools.pe";
+  const isAdmin = (session?.user as any)?.role === "ADMIN";
 
   return (
     <DropdownMenu>
@@ -190,7 +198,7 @@ export function AccountMenuDesktop() {
           className="flex items-center gap-1.5 text-sm font-medium text-itools-dark hover:text-itools-blue transition-colors py-2 px-1"
         >
           <User className="h-4 w-4" />
-          <span>Mi Cuenta</span>
+          <span>{isLoggedIn ? (userName.split(" ")[0] || "Mi Cuenta") : "Mi Cuenta"}</span>
           <ChevronDown className="h-3 w-3" />
         </button>
       </DropdownMenuTrigger>
@@ -207,8 +215,8 @@ export function AccountMenuDesktop() {
                     <User className="h-4 w-4 text-white" />
                   </div>
                   <div>
-                    <p className="text-sm font-semibold leading-none text-foreground">Usuario</p>
-                    <p className="text-xs leading-none text-muted-foreground mt-0.5">usuario@itools.pe</p>
+                    <p className="text-sm font-semibold leading-none text-foreground">{userName}</p>
+                    <p className="text-xs leading-none text-muted-foreground mt-0.5">{userEmail}</p>
                   </div>
                 </div>
               </div>
@@ -220,6 +228,14 @@ export function AccountMenuDesktop() {
                 <span className="text-sm">Mi Cuenta</span>
               </Link>
             </DropdownMenuItem>
+            {isAdmin && (
+              <DropdownMenuItem asChild className="cursor-pointer py-2.5 focus:bg-itools-blue/5">
+                <Link href="/admin" className="flex items-center gap-2.5">
+                  <Shield className="h-4 w-4 text-amber-500" />
+                  <span className="text-sm text-amber-600 font-medium">Panel Admin</span>
+                </Link>
+              </DropdownMenuItem>
+            )}
             <DropdownMenuItem asChild className="cursor-pointer py-2.5 focus:bg-itools-blue/5">
               <Link href="/pedidos" className="flex items-center gap-2.5">
                 <ShoppingBag className="h-4 w-4 text-muted-foreground" />
@@ -233,7 +249,10 @@ export function AccountMenuDesktop() {
               </Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="cursor-pointer py-2.5 text-red-600 focus:bg-red-50 dark:focus:bg-red-950">
+            <DropdownMenuItem
+              onClick={() => signOut({ callbackUrl: "/" })}
+              className="cursor-pointer py-2.5 text-red-600 focus:bg-red-50 dark:focus:bg-red-950"
+            >
               <LogOut className="h-4 w-4 mr-2.5" />
               <span className="text-sm">Cerrar Sesión</span>
             </DropdownMenuItem>

@@ -492,6 +492,12 @@ export function Header() {
   const { uiConfig, headerConfig, categories } = useGlobalSettings();
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    useWishlistStore.getState().syncFromDb();
+  }, []);
   const [desktopQuery, setDesktopQuery] = useState("");
   const [desktopResults, setDesktopResults] = useState<Product[]>([]);
   const [desktopResultsOpen, setDesktopResultsOpen] = useState(false);
@@ -759,10 +765,10 @@ export function Header() {
                   <Heart
                     className={cn(
                       "h-5 w-5 transition-all duration-200",
-                      wishlistCount > 0 && "fill-itools-red text-itools-red"
+                      mounted && wishlistCount > 0 && "fill-itools-red text-itools-red"
                     )}
                   />
-                  {wishlistCount > 0 && (
+                  {mounted && wishlistCount > 0 && (
                     <Badge className="absolute -top-1 -right-1 h-4 min-w-4 px-1 text-[10px] flex items-center justify-center bg-itools-red text-white border-0 rounded-full">
                       {wishlistCount > 99 ? "99+" : wishlistCount}
                     </Badge>
@@ -778,7 +784,7 @@ export function Header() {
                 aria-label={`Carrito de compras (${cartItemCount} artículos)`}
               >
                 <ShoppingCart className="h-5 w-5" />
-                {cartItemCount > 0 && (
+                {mounted && cartItemCount > 0 && (
                   <Badge className="absolute -top-1 -right-1 h-4 min-w-4 px-1 text-[10px] flex items-center justify-center bg-itools-red text-white border-0 rounded-full">
                     {cartItemCount > 99 ? "99+" : cartItemCount}
                   </Badge>
@@ -806,7 +812,6 @@ export function Header() {
 
       {mobileSearchOpen && (
         <MobileSearchOverlay
-          key={Date.now()}
           onClose={() => setMobileSearchOpen(false)}
         />
       )}

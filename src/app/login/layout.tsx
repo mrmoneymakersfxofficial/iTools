@@ -96,7 +96,8 @@ export function AuthForm({ mode }: { mode: "login" | "register" | "recover" }) {
         setError("Credenciales incorrectas. Verifica tu correo y contraseña.");
         setLoading(false);
       } else {
-        router.push("/");
+        router.push("/cuenta");
+        router.refresh();
       }
       return;
     }
@@ -116,7 +117,8 @@ export function AuthForm({ mode }: { mode: "login" | "register" | "recover" }) {
         setError("Cuenta creada pero hubo un error al iniciar sesión. Intenta ingresar manualmente.");
         setLoading(false);
       } else {
-        router.push("/");
+        router.push("/cuenta");
+        router.refresh();
       }
     }
   };
@@ -407,7 +409,7 @@ export function AuthForm({ mode }: { mode: "login" | "register" | "recover" }) {
             </span>
             <span className="flex items-center gap-1">
               <CheckCircle2 className="h-3.5 w-3.5 text-primary" />
-              RUC: 20610613749
+              RUC: 20610613748
             </span>
           </div>
         </div>

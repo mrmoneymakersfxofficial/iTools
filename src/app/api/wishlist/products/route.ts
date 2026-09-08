@@ -86,8 +86,44 @@ export async function POST(request: NextRequest) {
         images[] { asset-> { url } }
       }`;
 
-      const rawProducts = await client.fetch(query, { ids });
-      products = (rawProducts || []).map(mapSanityProduct);
+      try {
+        const rawProducts = await client.fetch(query, { ids });
+        products = (rawProducts || []).map(mapSanityProduct);
+      } catch (err) {
+        console.warn("Sanity fetch error in wishlist:", err);
+      }
+
+      // Check if any requested ID was not in Sanity, load from local catalog
+      const foundIds = new Set(
+        products.flatMap((p) => [p.id, p._id, p.slug, p.sku].filter(Boolean))
+      );
+      const missingIds = ids.filter((id) => !foundIds.has(id));
+
+      if (missingIds.length > 0) {
+        const { products: staticProducts } = await import("@/lib/data");
+        const matched = staticProducts.filter(
+          (p) =>
+            missingIds.includes(p.id) ||
+            missingIds.includes(p.slug) ||
+            missingIds.includes(p.sku)
+        );
+        for (const m of matched) {
+          products.push({
+            id: m.id,
+            _id: m.id,
+            name: m.name,
+            slug: m.slug,
+            sku: m.sku,
+            price: m.price,
+            comparePrice: m.comparePrice,
+            stock: m.stock,
+            rating: m.rating || 4.8,
+            reviews: m.reviewCount || 16,
+            brand: m.brand ? { name: m.brand.name, slug: m.brand.slug } : null,
+            image: m.images?.[0] || null,
+          });
+        }
+      }
     }
 
     // Always fetch popular recommendations from real Sanity database

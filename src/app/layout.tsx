@@ -136,7 +136,7 @@ export default async function RootLayout({
 
   return (
     <html lang="es" suppressHydrationWarning>
-      <body className={`${inter.variable} font-sans min-h-screen antialiased bg-background text-foreground flex flex-col`}>
+      <body className={`${inter.variable} font-sans min-h-screen antialiased bg-background text-foreground flex flex-col`} suppressHydrationWarning>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
           <GlobalSettingsProvider settings={settings}>
             <AuthProvider>

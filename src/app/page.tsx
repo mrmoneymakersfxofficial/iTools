@@ -105,7 +105,7 @@ export default async function Home() {
                     products={
                       data.products?.filter((p: any) => p.showInToolCrib)?.length
                         ? data.products.filter((p: any) => p.showInToolCrib)
-                        : data.featuredProducts || data.products?.slice(0, 7)
+                        : data.featuredProducts || data.products?.slice(0, 5)
                     }
                   />
                 </div>

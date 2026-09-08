@@ -83,12 +83,10 @@ export function ProductDetailClient({ product, relatedProducts, reviews }: { pro
   const addToCart = useCartStore((s) => s.addItem);
   const openCart = useCartStore((s) => s.openCart);
   const { toggleItem, isWishlisted } = useWishlistStore();
-  const wishlisted = isWishlisted(product.id);
+  const productIdentifier = product.id || (product as any)._id || product.slug;
+  const wishlisted = isWishlisted(product.id) || isWishlisted(product.slug) || isWishlisted((product as any)._id);
   const { addItem: addToCompare, isInCompare } = useCompareStore();
   const inCompare = isInCompare(product.slug || product.id);
-
-  // Enable section deep linking on this page
-  useSectionDeepLinking();
 
   const regularPrice = product.price || 0;
   const promoPrice = (product.salePrice && product.salePrice < regularPrice)
@@ -177,7 +175,7 @@ export function ProductDetailClient({ product, relatedProducts, reviews }: { pro
                   </div>
                   <button
                     type="button"
-                    onClick={() => toggleItem(product.id)}
+                    onClick={() => toggleItem(productIdentifier)}
                     className="absolute top-3 right-3 z-10 h-10 w-10 rounded-full bg-white/90 dark:bg-[#1a1a1a]/90 backdrop-blur-sm flex items-center justify-center shadow-sm hover:bg-white dark:hover:bg-[#222] transition-colors"
                   >
                     <Heart className={`h-5 w-5 transition-colors ${wishlisted ? "fill-itools-red text-itools-red" : "text-gray-400"}`} />

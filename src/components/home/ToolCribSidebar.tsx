@@ -47,7 +47,7 @@ function SidebarProductCard({ product }: { product: any }) {
 }
 
 export function ToolCribSidebar({ products }: { products: any[] }) {
-  const trendingProducts = (products || []).slice(0, 7);
+  const trendingProducts = (products || []).slice(0, 5);
   if (trendingProducts.length === 0) return null;
   return (
     <aside className="bg-white dark:bg-[#111111] border border-[#E0E0E0] dark:border-[#333] rounded-lg overflow-hidden" data-section="Productos de Moda">

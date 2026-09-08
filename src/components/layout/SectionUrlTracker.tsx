@@ -73,31 +73,6 @@ export function SectionUrlTracker() {
     };
   }, []);
 
-  if (!activeSection) return null;
-
-  return (
-    <aside
-      aria-label="Identificador de sección"
-      className="fixed bottom-16 left-4 z-40 hidden md:flex items-center gap-2 bg-black/85 backdrop-blur-md text-white px-3 py-1.5 rounded-full text-xs font-semibold shadow-lg border border-white/20 transition-all duration-200 pointer-events-auto"
-    >
-      <span className="h-2 w-2 rounded-full bg-[#E60000] animate-pulse" />
-      <span className="text-gray-300 font-medium truncate max-w-[200px]">
-        {activeSection.name}
-      </span>
-      <span className="text-[#0056D2] font-mono text-[11px] bg-white/10 px-1.5 py-0.5 rounded">
-        #{activeSection.id}
-      </span>
-      {isCmsUser && (
-        <Link
-          href={`/cms/structure/${activeSection.docType || "homeSettings"}`}
-          target="_blank"
-          className="flex items-center gap-1 bg-[#0056D2] hover:bg-[#0047AB] text-white px-2 py-0.5 rounded-full text-[10px] font-bold uppercase transition-colors"
-          title="Editar en CMS Sanity"
-        >
-          <Edit3 className="h-3 w-3" />
-          CMS
-        </Link>
-      )}
-    </aside>
-  );
+  // Visual badge hidden per user request — URL hash tracking remains active in background
+  return null;
 }
