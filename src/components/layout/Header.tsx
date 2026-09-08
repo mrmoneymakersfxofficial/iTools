@@ -268,7 +268,7 @@ function MobileSearchOverlay({
           size="icon"
           onClick={onClose}
           className="shrink-0 text-muted-foreground hover:text-foreground"
-          aria-label="Cerrar bÃºsqueda"
+          aria-label="Cerrar búsqueda"
         >
           <X className="h-5 w-5" />
         </Button>
@@ -344,113 +344,120 @@ function MobileMenuContent({ onClose }: { onClose: () => void }) {
     });
   };
 
-  const topLevelCategories = categories.filter((c) => !c.parentId);
+  const filtered = (categories || []).filter((c) => !c.parentId && c.name && c.slug);
+  const topLevelCategories = filtered.length > 0 ? filtered : fallbackHeaderCategories;
 
   return (
     <div className="flex flex-col h-full bg-gradient-to-b from-[#0d0d1a] to-[#111128] text-white">
       <div className="px-5 pt-6 pb-5">
-        <div className="flex items-center justify-between mb-5">
-          <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-2xl bg-gradient-to-br from-itools-blue to-indigo-600 flex items-center justify-center shadow-lg shadow-itools-blue/20">
-              <Sparkles className="h-5 w-5 text-white" />
-            </div>
-            <div>
-              <p className="text-[15px] font-semibold tracking-tight">iTools PerÃº</p>
-              <p className="text-[11px] text-white/50">Tu tienda de herramientas</p>
-            </div>
-          </div>
+        <div className="flex items-center justify-between mb-5 pr-6">
+          <Link href="/" onClick={onClose} className="flex flex-col items-start gap-1">
+            <img
+              src="/logo.png"
+              alt="iTools.Pe — Herramientas profesionales en Perú"
+              className="h-9 w-auto object-contain"
+              width={150}
+              height={46}
+            />
+            <span className="text-[11px] text-white/50 font-medium pl-0.5">Tu tienda de herramientas</span>
+          </Link>
         </div>
 
         <div className="grid grid-cols-3 gap-2">
-          <a
+          <Link
             href="/cuenta"
-            onClick={() => onClose()}
+            onClick={onClose}
             className="flex flex-col items-center gap-1.5 py-3 rounded-2xl bg-white/5 hover:bg-white/10 transition-colors"
           >
             <div className="h-9 w-9 rounded-xl bg-white/10 flex items-center justify-center">
               <User className="h-4 w-4 text-white/80" />
             </div>
             <span className="text-[10px] text-white/60 font-medium">Mi Cuenta</span>
-          </a>
-          <a
+          </Link>
+          <Link
             href="/categoria/herramientas-electricas"
-            onClick={() => onClose()}
+            onClick={onClose}
             className="flex flex-col items-center gap-1.5 py-3 rounded-2xl bg-white/5 hover:bg-white/10 transition-colors"
           >
             <div className="h-9 w-9 rounded-xl bg-white/10 flex items-center justify-center">
               <Package className="h-4 w-4 text-white/80" />
             </div>
-            <span className="text-[10px] text-white/60 font-medium">CategorÃ­as</span>
-          </a>
-          <a
+            <span className="text-[10px] text-white/60 font-medium">Categorías</span>
+          </Link>
+          <Link
             href="/contacto"
-            onClick={() => onClose()}
+            onClick={onClose}
             className="flex flex-col items-center gap-1.5 py-3 rounded-2xl bg-white/5 hover:bg-white/10 transition-colors"
           >
             <div className="h-9 w-9 rounded-xl bg-white/10 flex items-center justify-center">
               <HelpCircle className="h-4 w-4 text-white/80" />
             </div>
             <span className="text-[10px] text-white/60 font-medium">Ayuda</span>
-          </a>
+          </Link>
         </div>
       </div>
 
-      <nav className="flex-1 overflow-y-auto px-3" aria-label="MenÃº de navegaciÃ³n">
+      <nav className="flex-1 overflow-y-auto px-3" aria-label="Menú de navegación">
         <p className="px-3 pb-2 pt-2 text-[10px] font-semibold uppercase tracking-widest text-white/30">
-          CategorÃ­as
+          Categorías
         </p>
         <div className="space-y-0.5">
-          {topLevelCategories.map((category, idx) => {
-            const hasChildren = category.children && category.children.length > 0;
+          {topLevelCategories.map((category) => {
+            const hasChildren = Boolean(category.children && category.children.length > 0);
             const isExpanded = expanded.has(category.id);
 
             return (
-              <div key={category.id}>
-                <button
-                  type="button"
-                  onClick={() =>
-                    hasChildren
-                      ? toggleCategory(category.id)
-                      : onClose()
-                  }
-                  className="flex items-center justify-between w-full px-3 py-3 text-sm font-medium text-white/85 hover:text-white hover:bg-white/5 rounded-xl transition-all duration-200 group"
-                >
-                  <a
+              <div key={category.id || category.slug}>
+                <div className="flex items-center justify-between w-full px-3 py-2.5 text-sm font-medium text-white/85 hover:text-white hover:bg-white/5 rounded-xl transition-all duration-200 group">
+                  <Link
                     href={`/categoria/${category.slug}`}
-                    onClick={(e) => {
-                      if (!hasChildren) {
-                        e.preventDefault();
-                        onClose();
-                      }
-                    }}
-                    className="group-hover:text-itools-blue-light transition-colors"
+                    onClick={onClose}
+                    className="flex-1 text-left group-hover:text-itools-blue-light transition-colors py-0.5"
                   >
                     {category.name}
-                  </a>
+                  </Link>
                   {hasChildren ? (
-                    <ChevronDown
-                      className={cn(
-                        "h-4 w-4 text-white/30 group-hover:text-white/60 transition-all duration-300",
-                        isExpanded && "rotate-180"
-                      )}
-                    />
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        toggleCategory(category.id);
+                      }}
+                      className="p-1.5 rounded-lg text-white/40 hover:text-white hover:bg-white/10 transition-colors ml-2"
+                      aria-label={isExpanded ? "Colapsar subcategorías" : "Expandir subcategorías"}
+                    >
+                      <ChevronDown
+                        className={cn(
+                          "h-4 w-4 transition-transform duration-300",
+                          isExpanded && "rotate-180"
+                        )}
+                      />
+                    </button>
                   ) : (
-                    <ChevronRight className="h-4 w-4 text-white/20 group-hover:text-white/50 transition-colors" />
+                    <Link
+                      href={`/categoria/${category.slug}`}
+                      onClick={onClose}
+                      className="p-1.5 text-white/20 group-hover:text-white/50 transition-colors ml-2"
+                      aria-label={`Ver ${category.name}`}
+                    >
+                      <ChevronRight className="h-4 w-4" />
+                    </Link>
                   )}
-                </button>
+                </div>
 
                 {hasChildren && isExpanded && (
                   <div className="ml-2 mt-0.5 mb-1 space-y-0.5 pl-2 border-l border-white/10">
-                    {category.children!.map((child, childIdx) => (
-                      <a
-                        key={child.id}
+                    {category.children!.map((child) => (
+                      <Link
+                        key={child.id || child.slug}
                         href={`/categoria/${child.slug}`}
-                        onClick={() => onClose()}
-                        className="flex items-center gap-2 px-3 py-2.5 text-[13px] text-white/55 hover:text-white hover:bg-white/5 rounded-lg transition-all duration-200"
+                        onClick={onClose}
+                        className="flex items-center gap-2 px-3 py-2 text-[13px] text-white/55 hover:text-white hover:bg-white/5 rounded-lg transition-all duration-200"
                       >
                         <span className="h-1 w-1 rounded-full bg-itools-blue/60" />
                         {child.name}
-                      </a>
+                      </Link>
                     ))}
                   </div>
                 )}
@@ -461,8 +468,8 @@ function MobileMenuContent({ onClose }: { onClose: () => void }) {
       </nav>
 
       <div className="px-4 pb-4">
-          <PwaInstallButton className="w-full justify-center" />
-        </div>
+        <PwaInstallButton className="w-full justify-center" />
+      </div>
 
         <div className="px-4 py-4 border-t border-white/5">
         <div className="flex items-center justify-between">
@@ -484,6 +491,7 @@ function MobileMenuContent({ onClose }: { onClose: () => void }) {
 export function Header() {
   const { uiConfig, headerConfig, categories } = useGlobalSettings();
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [desktopQuery, setDesktopQuery] = useState("");
   const [desktopResults, setDesktopResults] = useState<Product[]>([]);
   const [desktopResultsOpen, setDesktopResultsOpen] = useState(false);
@@ -595,13 +603,13 @@ export function Header() {
             {/* Left: Mobile hamburger / Desktop logo */}
             <div className="flex items-center gap-3 shrink-0">
               {/* Mobile hamburger */}
-              <Sheet>
+              <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
                 <SheetTrigger asChild>
                   <Button
                     variant="ghost"
                     size="icon"
                     className="md:hidden -ml-1 text-itools-dark dark:text-white/90 hover:text-itools-blue"
-                    aria-label="Abrir menÃº"
+                    aria-label="Abrir menú"
                   >
                     <Menu className="h-5 w-5" />
                   </Button>
@@ -611,7 +619,7 @@ export function Header() {
                   className="w-[300px] sm:w-[340px] p-0 border-0 rounded-r-3xl"
                   style={{ backgroundColor: "transparent" }}
                 >
-                  <MobileMenuContent onClose={() => {}} />
+                  <MobileMenuContent onClose={() => setMobileMenuOpen(false)} />
                 </SheetContent>
               </Sheet>
 
@@ -619,7 +627,7 @@ export function Header() {
               <a href="/" className="flex items-center">
                 <img
                   src="/logo.png"
-                  alt="iTools.Pe â€” Herramientas profesionales en PerÃº"
+                  alt="iTools.Pe — Herramientas profesionales en Perú"
                   className="h-10 lg:h-12 w-auto object-contain"
                   width={180}
                   height={56}
@@ -767,7 +775,7 @@ export function Header() {
                 size="icon"
                 className="relative text-itools-dark dark:text-white/90 hover:text-itools-blue"
                 onClick={openCart}
-                aria-label={`Carrito de compras (${cartItemCount} artÃ­culos)`}
+                aria-label={`Carrito de compras (${cartItemCount} artículos)`}
               >
                 <ShoppingCart className="h-5 w-5" />
                 {cartItemCount > 0 && (

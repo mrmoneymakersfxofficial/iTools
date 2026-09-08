@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -52,7 +52,7 @@ export function BottomNav() {
   const [showCategories, setShowCategories] = useState(false);
   
   const [chatMessages, setChatMessages] = useState<{ role: "user" | "bot"; text: string }[]>([
-    { role: "bot", text: "Â¡Hola! Soy Asistente IA, tu asistente de herramientas. Â¿En quÃ© puedo ayudarte?" },
+    { role: "bot", text: "¡Hola! Soy Asistente IA, tu asistente de herramientas. ¿En qué puedo ayudarte?" },
   ]);
   
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -77,7 +77,7 @@ export function BottomNav() {
     setTimeout(() => {
       setChatMessages((prev) => [
         ...prev,
-        { role: "bot", text: "Gracias por tu mensaje. Un especialista iTools te contactarÃ¡ pronto. Mientras tanto, explora nuestras marcas y categorÃ­as en el menÃº inferior." },
+        { role: "bot", text: "Gracias por tu mensaje. Un especialista iTools te contactará pronto. Mientras tanto, explora nuestras marcas y categorías en el menú inferior." },
       ]);
     }, 1000);
   };
@@ -126,7 +126,7 @@ export function BottomNav() {
             }`}
           >
             <Search className="h-5 w-5" />
-            <span className="text-[8px] font-bold uppercase tracking-wider">CategorÃ­as</span>
+            <span className="text-[8px] font-bold uppercase tracking-wider">Categorías</span>
             {(isCategoryPage || showCategories) && <div className="w-4 h-0.5 rounded-full bg-[#E35205]" />}
           </button>
 
@@ -283,7 +283,7 @@ export function BottomNav() {
             {/* Header */}
             <div className="px-4 pb-3 flex items-center justify-between">
               <div>
-                <h3 className="text-base font-bold text-white uppercase tracking-wide">CategorÃ­as</h3>
+                <h3 className="text-base font-bold text-white uppercase tracking-wide">Categorías</h3>
                 <p className="text-[10px] text-[#666] mt-0.5">Explora por tipo de herramienta</p>
               </div>
               <button onClick={() => setShowCategories(false)} className="w-8 h-8 rounded-full bg-[#1A1A1A] flex items-center justify-center">
@@ -301,7 +301,7 @@ export function BottomNav() {
                     className="mx-4 mb-3 flex items-center gap-1.5 text-[11px] text-[#D1001C] font-semibold"
                   >
                     <ArrowLeft className="h-3.5 w-3.5" />
-                    Todas las CategorÃ­as
+                    Todas las Categorías
                   </button>
                   {/* Subcategories and products */}
                   {(() => {
@@ -352,7 +352,7 @@ export function BottomNav() {
                           </div>
                         ) : (
                           <div className="px-4 py-8 text-center">
-                            <p className="text-[#555] text-xs">PrÃ³ximamente mÃ¡s productos en esta categorÃ­a.</p>
+                            <p className="text-[#555] text-xs">Próximamente más productos en esta categoría.</p>
                           </div>
                         )}
                         {/* Link to full category */}
@@ -363,7 +363,7 @@ export function BottomNav() {
                             className="block w-full text-center py-3 rounded-xl text-xs font-bold uppercase tracking-wider text-white transition-all active:scale-[0.98]"
                             style={{ background: "linear-gradient(135deg, #D1001C, #990000)" }}
                           >
-                            Ver Toda la CategorÃ­a
+                            Ver Toda la Categoría
                           </Link>
                         </div>
                       </div>
@@ -418,9 +418,9 @@ export function BottomNav() {
               <div className="flex items-center gap-2">
                 <div className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-white/15">
                   <div className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
-                  <span className="text-[9px] text-white/80 font-medium">En lÃ­nea</span>
+                  <span className="text-[9px] text-white/80 font-medium">En línea</span>
                 </div>
-                <button onClick={() => setfalse(false)} className="w-7 h-7 rounded-full bg-white/15 flex items-center justify-center">
+                <button onClick={() => {}} className="w-7 h-7 rounded-full bg-white/15 flex items-center justify-center">
                   <X className="h-3.5 w-3.5 text-white" />
                 </button>
               </div>
@@ -442,7 +442,7 @@ export function BottomNav() {
             </div>
             {/* Quick actions */}
             <div className="px-3 py-2 flex gap-1.5 overflow-x-auto no-scrollbar border-t border-[#1A1A1A]">
-              {["Ver ofertas", "Marcas", "EnvÃ­o", "GarantÃ­a"].map((action) => (
+              {["Ver ofertas", "Marcas", "Envío", "Garantía"].map((action) => (
                 <button
                   key={action}
                   onClick={() => {
