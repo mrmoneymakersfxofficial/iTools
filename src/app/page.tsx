@@ -20,6 +20,7 @@ import { WhyBuySection } from "@/components/home/WhyBuySection";
 import { PromoPopup } from "@/components/layout/PromoPopup";
 import { HorizontalCategoryMenu } from "@/components/home/HorizontalCategoryMenu";
 import { SectionUrlTracker } from "@/components/layout/SectionUrlTracker";
+import { FlashSaleCountdownCard } from "@/components/home/FlashSaleCountdownCard";
 
 import { fetchHomePageData } from "@/lib/sanity/fetch-home";
 
@@ -28,11 +29,11 @@ export default async function Home() {
 
   if (!data) return null;
 
-  // Products subsets for different sections
+  // Products subsets for different sections (passed to auto-rotating carousels)
   const allProducts = data.products || [];
-  const bestSellers = allProducts.filter((p: any) => p.showInTrending || p.showInFeatured || p.stock > 0).slice(0, 4);
-  const proProducts = allProducts.filter((p: any) => p.showInFeatured || p.price > 100).slice(0, 4);
-  const workshopProducts = allProducts.filter((p: any) => p.showInNewArrivals || p.stock > 0).slice(0, 5);
+  const bestSellers = allProducts.filter((p: any) => p.showInTrending || p.showInFeatured || p.stock > 0);
+  const proProducts = allProducts.filter((p: any) => p.showInFeatured || p.price > 100);
+  const workshopProducts = allProducts.filter((p: any) => p.showInNewArrivals || p.stock > 0);
 
   return (
     <div className="flex min-h-screen flex-col bg-[#FDFDFD] dark:bg-[#0A0A0A]">
@@ -51,23 +52,28 @@ export default async function Home() {
             />
           </div>
 
+          {/* Flash Sale Cuadro de Tiempo en Mobile */}
+          <div className="px-3 mb-3">
+            <FlashSaleCountdownCard />
+          </div>
+
           <MainCategoriesSection categories={data.categories} dealTiles={data.dealTiles} />
           <DewaltPowerstackBanner banner={data.promoBanners?.find((b: any) => b._id === "promo-banner-dewalt-powerstack")} />
           <RedMarqueeBar />
           <VideoSection data={data.videoSection} />
           <BrandShowcase brands={data.brandShowcase} />
           <BestSellersWorkshopSection
-            products={bestSellers.length ? bestSellers : allProducts.slice(0, 4)}
+            products={bestSellers.length ? bestSellers : allProducts}
             backgroundBanner={data.promoBanners?.find((b: any) => b._id === "promo-banner-mas-vendidos-bg")}
           />
           <TechnicalServiceBanner banner={data.promoBanners?.find((b: any) => b._id === "promo-banner-servicio-tecnico")} />
           <ExclusivePromosSection banners={data.promoBanners} />
           <ProDealsSection
-            products={proProducts.length ? proProducts : allProducts.slice(4, 8)}
+            products={proProducts.length ? proProducts : allProducts}
             banners={data.promoBanners}
           />
           <EquipWorkshopSection
-            products={workshopProducts.length ? workshopProducts : allProducts.slice(8, 13)}
+            products={workshopProducts.length ? workshopProducts : allProducts}
             banners={data.promoBanners}
           />
           <SataFavoritesBanner banner={data.promoBanners?.find((b: any) => b._id === "promo-banner-sata-380")} />
@@ -82,10 +88,11 @@ export default async function Home() {
           {/* ── IMAGE 1: Hero 3-Column Grid ── */}
           <div className="mx-auto max-w-[1440px] px-2.5 lg:px-4 py-3">
             <div className="flex gap-3">
-              {/* LEFT SIDEBAR: Categorías de Tendencia */}
+              {/* LEFT SIDEBAR: Categorías de Tendencia + Cuadro de Tiempo Flash Sale */}
               <div className="w-[240px] xl:w-[260px] shrink-0">
-                <div className="sticky top-[120px]">
+                <div className="sticky top-[120px] flex flex-col gap-2.5">
                   <TrendingSidebar categories={data.trendingCategories} />
+                  <FlashSaleCountdownCard />
                 </div>
               </div>
 
@@ -128,9 +135,9 @@ export default async function Home() {
           {/* ── IMAGE 2: Las Mejores Marcas Para Tu Trabajo (18 Marcas Grid) ── */}
           <BrandShowcase brands={data.brandShowcase} />
 
-          {/* ── IMAGE 2: Los Más Vendidos (Fondo Taller + 4 Cards) ── */}
+          {/* ── IMAGE 2: Los Más Vendidos (Carrusel en Rotación) ── */}
           <BestSellersWorkshopSection
-            products={bestSellers.length ? bestSellers : allProducts.slice(0, 4)}
+            products={bestSellers.length ? bestSellers : allProducts}
             backgroundBanner={data.promoBanners?.find((b: any) => b._id === "promo-banner-mas-vendidos-bg")}
           />
 
@@ -140,15 +147,15 @@ export default async function Home() {
           {/* ── IMAGE 3: Promociones Exclusivas (50/50 + Hot Sale Cocina) ── */}
           <ExclusivePromosSection banners={data.promoBanners} />
 
-          {/* ── IMAGE 3: Ofertas Para Profesionales (50/50 DeWalt vs Milwaukee + 4 Cards) ── */}
+          {/* ── IMAGE 3: Ofertas Para Profesionales (Carrusel en Rotación) ── */}
           <ProDealsSection
-            products={proProducts.length ? proProducts : allProducts.slice(4, 8)}
+            products={proProducts.length ? proProducts : allProducts}
             banners={data.promoBanners}
           />
 
-          {/* ── IMAGE 4: Equipa Tu Taller (Auto Style + 3 Banners + 5 Cards) ── */}
+          {/* ── IMAGE 4: Equipa Tu Taller (Carrusel en Rotación) ── */}
           <EquipWorkshopSection
-            products={workshopProducts.length ? workshopProducts : allProducts.slice(8, 13)}
+            products={workshopProducts.length ? workshopProducts : allProducts}
             banners={data.promoBanners}
           />
 
