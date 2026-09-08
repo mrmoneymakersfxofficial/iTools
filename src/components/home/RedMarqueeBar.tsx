@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import Link from "next/link";
 import { getSanityAttr } from "@/lib/sanity/visual-attributes";
@@ -72,27 +72,29 @@ export function RedMarqueeBar({
   ];
 
   const renderButtonGroup = (keyPrefix: string) => (
-    <div key={keyPrefix} className="flex shrink-0 items-center gap-5 sm:gap-8 px-4 sm:px-6">
-      {buttons.map((b) => (
-        <Link
-          key={`${keyPrefix}-${b.id}`}
-          href={b.href}
-          aria-label={b.ariaLabel}
-          className="group/btn relative inline-flex items-center -skew-x-[14deg] bg-[#FFDD00] hover:bg-[#FFE833] active:scale-95 px-5 sm:px-7 py-2 sm:py-2.5 rounded-lg shadow-[3px_3.5px_0px_#FFFFFF] border border-yellow-300 transition-all duration-200 hover:scale-105 shrink-0"
-        >
-          {/* Inner content unskewed so text and icon stay upright */}
-          <div className="flex items-center gap-2.5 sm:gap-3 skew-x-[14deg]">
-            {/* Red Circle with Yellow Icon */}
-            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#E60000] flex items-center justify-center shrink-0 shadow-sm">
-              {b.icon}
+    <div key={keyPrefix} className="flex shrink-0 items-center gap-5 sm:gap-8 px-2.5 sm:px-4">
+      {[0, 1, 2, 3].flatMap((repeatIdx) =>
+        buttons.map((b) => (
+          <Link
+            key={`${keyPrefix}-${repeatIdx}-${b.id}`}
+            href={b.href}
+            aria-label={b.ariaLabel}
+            className="group/btn relative inline-flex items-center -skew-x-[14deg] bg-[#FFDD00] hover:bg-[#FFE833] active:scale-95 px-5 sm:px-7 py-2 sm:py-2.5 rounded-lg shadow-[3px_3.5px_0px_#FFFFFF] border border-yellow-300 transition-all duration-200 hover:scale-105 shrink-0"
+          >
+            {/* Inner content unskewed so text and icon stay upright */}
+            <div className="flex items-center gap-2.5 sm:gap-3 skew-x-[14deg]">
+              {/* Red Circle with Yellow Icon */}
+              <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#E60000] flex items-center justify-center shrink-0 shadow-sm">
+                {b.icon}
+              </div>
+              {/* Bold Condensed Red Text */}
+              <span className="font-black text-sm sm:text-base uppercase tracking-tight text-[#E60000] whitespace-nowrap">
+                {b.text}
+              </span>
             </div>
-            {/* Bold Condensed Red Text */}
-            <span className="font-black text-sm sm:text-base uppercase tracking-tight text-[#E60000] whitespace-nowrap">
-              {b.text}
-            </span>
-          </div>
-        </Link>
-      ))}
+          </Link>
+        ))
+      )}
     </div>
   );
 
@@ -105,7 +107,7 @@ export function RedMarqueeBar({
       {...sanityAttr}
     >
       {/* Moving ticker: 50% shift marquee for seamless infinite continuous scroll with pause on hover */}
-      <div className="flex w-max animate-[marquee_25s_linear_infinite] group-hover:[animation-play-state:paused]">
+      <div className="flex w-max animate-[marquee_35s_linear_infinite] group-hover:[animation-play-state:paused]">
         {renderButtonGroup("set-1")}
         {renderButtonGroup("set-2")}
       </div>
