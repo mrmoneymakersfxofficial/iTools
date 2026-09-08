@@ -342,5 +342,6 @@ export const homePageQuery = `{
   "headerConfig": ${headerConfigQuery},
   "footerConfig": ${footerConfigQuery},
   "packoutComponents": ${packoutComponentsQuery},
-  "featuredReviews": ${featuredReviewsQuery}
+  "featuredReviews": ${featuredReviewsQuery},
+  "uiConfig": *[_type == "uiConfig"][0]
 }`;

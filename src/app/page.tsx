@@ -59,7 +59,7 @@ export default async function Home() {
 
           <MainCategoriesSection categories={data.categories} dealTiles={data.dealTiles} />
           <DewaltPowerstackBanner banner={data.promoBanners?.find((b: any) => b._id === "promo-banner-dewalt-powerstack")} />
-          <RedMarqueeBar />
+          <RedMarqueeBar uiConfig={data.uiConfig} />
           <VideoSection data={data.videoSection} />
           <BrandShowcase brands={data.brandShowcase} />
           <BestSellersWorkshopSection
@@ -127,7 +127,7 @@ export default async function Home() {
           <DewaltPowerstackBanner banner={data.promoBanners?.find((b: any) => b._id === "promo-banner-dewalt-powerstack")} />
 
           {/* ── IMAGE 1: Red Moving Marquee (Envíos a todo el Perú) ── */}
-          <RedMarqueeBar />
+          <RedMarqueeBar uiConfig={data.uiConfig} />
 
           {/* ── IMAGE 2: Ofertas en Tendencia (TikTok/Reels Vertical Videos) ── */}
           <VideoSection data={data.videoSection} />

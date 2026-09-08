@@ -53,5 +53,41 @@ export default defineType({
       type: "string",
       initialValue: "Devolución en 30 días",
     }),
+    defineField({
+      name: "marqueeBtn1Text",
+      title: "Franja Envíos - Texto Botón 1",
+      type: "string",
+      initialValue: "¡¡ ENVIOS A TODO EL PERÚ !!",
+    }),
+    defineField({
+      name: "marqueeBtn1Link",
+      title: "Franja Envíos - Enlace Botón 1",
+      type: "string",
+      initialValue: "/buscar?q=envios",
+    }),
+    defineField({
+      name: "marqueeBtn2Text",
+      title: "Franja Envíos - Texto Botón 2",
+      type: "string",
+      initialValue: "¡¡ DESPACHO EN 24H !!",
+    }),
+    defineField({
+      name: "marqueeBtn2Link",
+      title: "Franja Envíos - Enlace Botón 2",
+      type: "string",
+      initialValue: "/buscar?q=despacho",
+    }),
+    defineField({
+      name: "marqueeBtn3Text",
+      title: "Franja Envíos - Texto Botón 3",
+      type: "string",
+      initialValue: "¡¡ RECOJO EN TIENDA !!",
+    }),
+    defineField({
+      name: "marqueeBtn3Link",
+      title: "Franja Envíos - Enlace Botón 3",
+      type: "string",
+      initialValue: "/contacto",
+    }),
   ],
 });

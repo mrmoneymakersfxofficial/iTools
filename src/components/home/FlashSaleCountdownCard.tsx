@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
@@ -49,11 +49,11 @@ export function FlashSaleCountdownCard() {
         <div className="flex items-center justify-center gap-1.5 text-center">
           {/* Hours */}
           <div className="flex-1 bg-white text-[#111] rounded-lg py-1 px-1 shadow-sm">
-            <span className="text-base font-black leading-none block font-mono">
+            <span className="text-base sm:text-lg font-black leading-none block font-mono">
               {pad(timeLeft.hours)}
             </span>
-            <span className="text-[8px] font-extrabold text-gray-500 uppercase tracking-tight">
-              Hrs
+            <span className="text-[8px] font-black text-gray-500 uppercase tracking-tight">
+              HRS
             </span>
           </div>
 
@@ -61,11 +61,11 @@ export function FlashSaleCountdownCard() {
 
           {/* Minutes */}
           <div className="flex-1 bg-white text-[#111] rounded-lg py-1 px-1 shadow-sm">
-            <span className="text-base font-black leading-none block font-mono">
+            <span className="text-base sm:text-lg font-black leading-none block font-mono">
               {pad(timeLeft.minutes)}
             </span>
-            <span className="text-[8px] font-extrabold text-gray-500 uppercase tracking-tight">
-              Min
+            <span className="text-[8px] font-black text-gray-500 uppercase tracking-tight">
+              MIN
             </span>
           </div>
 
@@ -73,11 +73,11 @@ export function FlashSaleCountdownCard() {
 
           {/* Seconds */}
           <div className="flex-1 bg-white text-[#111] rounded-lg py-1 px-1 shadow-sm">
-            <span className="text-base font-black leading-none block font-mono">
+            <span className="text-base sm:text-lg font-black leading-none block font-mono">
               {pad(timeLeft.seconds)}
             </span>
-            <span className="text-[8px] font-extrabold text-gray-500 uppercase tracking-tight">
-              Seg
+            <span className="text-[8px] font-black text-gray-500 uppercase tracking-tight">
+              SEG
             </span>
           </div>
         </div>
