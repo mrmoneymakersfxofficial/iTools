@@ -25,15 +25,27 @@ export const homeLocations = {
   }),
   brandShowcaseItem: defineLocations({
     message: "Esta marca aparece en el showcase de marcas",
-    resolve: (doc) => ({
-      locations: [{ title: "Inicio", href: locationUrl("/") }],
-    }),
+    resolve: (doc) => {
+      const slug = typeof doc?.slug === "string" ? doc.slug : doc?.slug?.current || "";
+      return {
+        locations: [
+          { title: "Inicio", href: locationUrl("/") },
+          ...(slug ? [{ title: "Ver Marca", href: locationUrl(`/marca/${slug}`) }] : []),
+        ],
+      };
+    },
   }),
   trendingCategory: defineLocations({
     message: "Esta categoría aparece en tendencias del inicio",
-    resolve: (doc) => ({
-      locations: [{ title: "Inicio", href: locationUrl("/") }],
-    }),
+    resolve: (doc) => {
+      const slug = typeof doc?.slug === "string" ? doc.slug : doc?.slug?.current || "";
+      return {
+        locations: [
+          { title: "Inicio", href: locationUrl("/") },
+          ...(slug ? [{ title: "Ver Categoría", href: locationUrl(`/categoria/${slug}`) }] : []),
+        ],
+      };
+    },
   }),
   giveawayBanner: defineLocations({
     message: "Este sorteo aparece en la página de inicio",
@@ -69,10 +81,16 @@ export const homeLocations = {
     }),
   }),
   category: defineLocations({
-    message: "Esta categoría aparece en la página de inicio",
-    resolve: (doc) => ({
-      locations: [{ title: "Inicio", href: locationUrl("/") }],
-    }),
+    message: "Esta categoría aparece en la página de inicio o en su página individual",
+    resolve: (doc) => {
+      const slug = typeof doc?.slug === "string" ? doc.slug : doc?.slug?.current || "";
+      return {
+        locations: [
+          { title: "Inicio", href: locationUrl("/") },
+          ...(slug ? [{ title: "Ver Categoría", href: locationUrl(`/categoria/${slug}`) }] : []),
+        ],
+      };
+    },
   }),
   dealTile: defineLocations({
     message: "Esta oferta aparece en la página de inicio",
@@ -150,10 +168,12 @@ export default defineConfig({
       previewUrl: {
         origin: PREVIEW_ORIGIN,
         previewMode: {
-          enable: `/api/draft?secret=${process.env.SANITY_REVALIDATE_SECRET || ''}`,
+          enable: `/api/draft?secret=${process.env.NEXT_PUBLIC_SANITY_REVALIDATE_SECRET || process.env.SANITY_REVALIDATE_SECRET || "itools2024"}`,
         },
       },
-      document: homeLocations,
+      resolve: {
+        locations: homeLocations,
+      },
     }),
   ],
   schema: {

@@ -9,7 +9,7 @@ import { ThemeProvider } from "next-themes";
 import { AuthProvider } from "@/components/providers/AuthProvider";
 import { BottomNav } from "@/components/layout/BottomNav";
 import { draftMode } from "next/headers";
-import { SanityVisualEditing } from "@/components/sanity/SanityVisualEditing";
+import { VisualEditingWrapper } from "@/components/sanity/SanityVisualEditing";
 import { Header } from "@/components/layout/Header";
 import { AgentIA } from "@/components/chat/AgentIA";
 import { Footer } from "@/components/layout/Footer";
@@ -150,7 +150,7 @@ export default async function RootLayout({
               <Toaster />
               <AgentIA />
               <ClientLayoutEffects />
-              {mode.isEnabled && <SanityVisualEditing />}
+              <VisualEditingWrapper isDraft={mode.isEnabled} />
             </AuthProvider>
           </GlobalSettingsProvider>
         </ThemeProvider>

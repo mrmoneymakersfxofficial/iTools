@@ -6,7 +6,13 @@ export default defineType({
   type: "document",
   fields: [
     defineField({ name: "name", title: "Nombre", type: "string", validation: (r) => r.required() }),
-    defineField({ name: "slug", title: "Slug", type: "string", validation: (r) => r.required() }),
+    defineField({
+      name: "slug",
+      title: "Slug",
+      type: "slug",
+      options: { source: "name", maxLength: 96 },
+      validation: (r) => r.required(),
+    }),
     defineField({
       name: "parent",
       title: "Categoría Padre",
@@ -32,5 +38,14 @@ export default defineType({
     defineField({ name: "isActive", title: "Activo", type: "boolean", initialValue: true }),
   ],
   orderings: [{ title: "Orden", name: "orderAsc", by: [{ field: "order", direction: "asc" }] }],
-  preview: { select: { title: "name", subtitle: "slug" } },
+  preview: {
+    select: { title: "name", slug: "slug" },
+    prepare({ title, slug }: { title?: string; slug?: { current?: string } | string }) {
+      const slugText = typeof slug === "string" ? slug : slug?.current || "";
+      return {
+        title: title || "Sin nombre",
+        subtitle: slugText ? `/${slugText}` : "",
+      };
+    },
+  },
 });
