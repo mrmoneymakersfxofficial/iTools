@@ -9,12 +9,12 @@ interface ExclusivePromosSectionProps {
 }
 
 export function ExclusivePromosSection({ banners }: ExclusivePromosSectionProps) {
-  const b1 = banners?.find((b: any) => b._id === "promo-banner-taller-milwaukee") || banners?.[0];
-  const b2 = banners?.find((b: any) => b._id === "promo-banner-taller-makita") || banners?.[1];
+  const b1 = banners?.find((b: any) => b._id === "promo-banner-exclusiva-1") || banners?.[0];
+  const b2 = banners?.find((b: any) => b._id === "promo-banner-exclusiva-2") || banners?.[1];
   const b3 = banners?.find((b: any) => b._id === "promo-banner-hotsale-cocina") || banners?.[2];
 
-  const attr1 = getSanityAttr(b1?._id || "promo-banner-taller-milwaukee", "promoBanner", "image");
-  const attr2 = getSanityAttr(b2?._id || "promo-banner-taller-makita", "promoBanner", "image");
+  const attr1 = getSanityAttr(b1?._id || "promo-banner-exclusiva-1", "promoBanner", "image");
+  const attr2 = getSanityAttr(b2?._id || "promo-banner-exclusiva-2", "promoBanner", "image");
   const attr3 = getSanityAttr(b3?._id || "promo-banner-hotsale-cocina", "promoBanner", "image");
 
   return (

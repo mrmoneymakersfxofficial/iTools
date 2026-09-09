@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState } from "react";
 import { Play, X, ExternalLink } from "lucide-react";
@@ -58,7 +58,7 @@ function getEmbedInfo(url: string | null | undefined): { embedUrl: string; isDir
   const tiktokIdMatch = clean.match(/video\/(\d+)/) || clean.match(/tiktok\.com\/v\/(\d+)/) || clean.match(/\/(\d{15,25})/);
   if (tiktokIdMatch) {
     return {
-      embedUrl: `https://www.tiktok.com/embed/v2/${tiktokIdMatch[1]}`,
+      embedUrl: `https://www.tiktok.com/player/v1/${tiktokIdMatch[1]}`,
       isDirectVideo: false,
       platform: "tiktok",
     };
@@ -124,13 +124,21 @@ const fallbackVideos: VideoItem[] = [
   { title: "MAKITA 18V LXT - Atornillador de impacto", videoUrl: "https://www.tiktok.com/@itoolsperu" },
 ];
 
-function getThumbnailUrl(thumbnail: any): string | null {
-  if (!thumbnail?.asset?.url) return null;
-  try {
-    return urlFor(thumbnail).width(360).height(640).format("webp").url() || thumbnail.asset.url;
-  } catch {
-    return thumbnail.asset.url;
+function getThumbnailUrl(thumbnail: any, rawUrl?: string): string | null {
+  if (thumbnail?.asset?.url) {
+    try {
+      return urlFor(thumbnail).width(360).height(640).format("webp").url() || thumbnail.asset.url;
+    } catch {
+      return thumbnail.asset.url;
+    }
   }
+  if (rawUrl) {
+    const ytMatch = rawUrl.match(/(?:youtu\.be\/|youtube\.com\/(?:shorts\/|watch\?v=|embed\/))([a-zA-Z0-9_-]{11})/);
+    if (ytMatch) {
+      return `https://img.youtube.com/vi/${ytMatch[1]}/hqdefault.jpg`;
+    }
+  }
+  return null;
 }
 
 export function VideoSection({ data }: { data: VideoSectionData | null }) {
@@ -166,7 +174,7 @@ export function VideoSection({ data }: { data: VideoSectionData | null }) {
           {videos.map((video, i) => {
             const rawUrl = getEffectiveUrl(video);
             const platform = getVideoPlatform(rawUrl);
-            const thumbUrl = getThumbnailUrl(video.thumbnail);
+            const thumbUrl = getThumbnailUrl(video.thumbnail, rawUrl);
             const sanityAttr = getSanityAttr("videoSection", "videoSection", `videos[${i}]`);
 
             return (
@@ -187,10 +195,19 @@ export function VideoSection({ data }: { data: VideoSectionData | null }) {
                     className="object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                 ) : (
-                  <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-b from-[#222] to-[#111] p-3 text-center">
-                    <div className="h-10 w-10 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-[#D1001C] transition-colors mb-2">
-                      <Play className="h-5 w-5 text-white fill-white ml-0.5" />
+                  <div className="w-full h-full flex flex-col items-center justify-between bg-gradient-to-b from-[#181818] via-[#111111] to-[#0a0a0a] p-3 text-center border-t-2 border-[#FE2C55]/80">
+                    <div className="w-full flex justify-end">
+                      <span className="text-[10px] font-black tracking-widest text-[#25F4EE] drop-shadow-[0_0_8px_rgba(37,244,238,0.5)]">
+                        TIK<span className="text-[#FE2C55]">TOK</span>
+                      </span>
                     </div>
+                    <div className="flex flex-col items-center">
+                      <div className="h-11 w-11 rounded-full bg-white/10 group-hover:bg-[#FE2C55] transition-all flex items-center justify-center shadow-lg group-hover:scale-110 mb-1">
+                        <Play className="h-5 w-5 text-white fill-white ml-0.5" />
+                      </div>
+                      <span className="text-[10px] text-gray-400 font-medium">Ver video</span>
+                    </div>
+                    <div className="h-2" />
                   </div>
                 )}
 
@@ -263,15 +280,15 @@ export function VideoSection({ data }: { data: VideoSectionData | null }) {
 
               {/* Botón de respaldo en la parte inferior para abrir directamente */}
               {activeUrl && (
-                <div className="absolute bottom-2 left-2 right-2 z-20 flex justify-center">
+                <div className="absolute bottom-3 left-3 right-3 z-20 flex justify-center">
                   <a
                     href={activeUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 bg-black/80 hover:bg-[#D1001C] text-white text-[11px] font-bold px-3 py-1 rounded-full shadow-md backdrop-blur-sm transition-colors border border-white/20"
+                    className="inline-flex items-center gap-2 bg-[#FE2C55] hover:bg-[#E60000] text-white text-xs font-bold px-4 py-2 rounded-full shadow-xl transition-all hover:scale-105 border border-white/20"
                   >
-                    <ExternalLink className="h-3 w-3" />
-                    <span>Ver en {embedInfo.platform === "tiktok" ? "TikTok" : "fuente original"}</span>
+                    <ExternalLink className="h-3.5 w-3.5" />
+                    <span>Ver en {embedInfo.platform === "tiktok" ? "TikTok Oficial ↗" : "Fuente Original ↗"}</span>
                   </a>
                 </div>
               )}

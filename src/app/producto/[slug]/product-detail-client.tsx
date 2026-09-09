@@ -209,22 +209,38 @@ export function ProductDetailClient({ product, relatedProducts, reviews }: { pro
 
             {/* RIGHT: Product Info */}
             <div className="flex flex-col gap-4">
-              {product.brand && (
-                <span
-                  className="text-xs font-medium px-2.5 py-1 rounded-sm text-white self-start"
-                  style={{
-                    backgroundColor:
-                      product.brand.slug === "milwaukee" ? "#D1001C"
-                      : product.brand.slug === "dewalt" ? "#FFD700"
-                      : product.brand.slug === "bosch" ? "#005691"
-                      : product.brand.slug === "makita" ? "#0077C8"
-                      : "#555",
-                    color: product.brand.slug === "dewalt" ? "#1A1A2E" : "#FFFFFF",
-                  }}
-                >
-                  {product.brand.name}
-                </span>
-              )}
+              {/* Brand Header with Logo & Link */}
+              {product.brand && (() => {
+                const brandSlug = (typeof product.brand.slug === "string" ? product.brand.slug : product.brand.slug?.current) || product.brand.name?.toLowerCase().replace(/\s+/g, "-") || "";
+                const brandLogo = product.brand.logo?.asset?.url || (brandSlug ? `/brands/${brandSlug}.webp` : null);
+                
+                return (
+                  <Link
+                    href={`/marca/${brandSlug}`}
+                    className="group inline-flex items-center gap-2.5 px-3 py-1.5 rounded-lg bg-surface dark:bg-[#1A1A1A] border border-border dark:border-[#333] hover:border-[#0056D2] hover:bg-blue-50/50 dark:hover:bg-blue-950/20 transition-all w-fit shadow-xs"
+                    title={`Ver todos los productos de ${product.brand.name}`}
+                  >
+                    {brandLogo && (
+                      <div className="relative h-6 sm:h-7 w-auto min-w-[40px] flex items-center">
+                        <img
+                          src={brandLogo}
+                          alt={product.brand.name}
+                          className="h-full w-auto object-contain max-w-[85px]"
+                          onError={(e) => {
+                            (e.target as HTMLElement).style.display = "none";
+                          }}
+                        />
+                      </div>
+                    )}
+                    <span className="text-xs font-bold uppercase tracking-wider text-foreground group-hover:text-[#0056D2] transition-colors">
+                      {product.brand.name}
+                    </span>
+                    <span className="text-[11px] font-semibold text-[#0056D2] group-hover:translate-x-0.5 transition-transform">
+                      Ver tienda →
+                    </span>
+                  </Link>
+                );
+              })()}
 
               <h1 className="text-2xl md:text-3xl font-semibold text-foreground leading-tight">
                 {product.name}
@@ -266,9 +282,15 @@ export function ProductDetailClient({ product, relatedProducts, reviews }: { pro
                 <Badge variant="destructive" className="w-fit">Agotado</Badge>
               )}
 
-              <p className="text-sm text-muted-foreground">
-                SKU: <span className="font-mono">{product.sku}</span>
-              </p>
+              {/* SKU & Code (Larger & Clearer) */}
+              <div className="flex items-center gap-2.5 py-1">
+                <span className="text-sm sm:text-base font-bold text-foreground uppercase tracking-wide">
+                  SKU:
+                </span>
+                <span className="text-sm sm:text-base font-mono font-black text-[#0056D2] dark:text-[#3B82F6] bg-blue-50 dark:bg-blue-950/50 px-3 py-1 rounded-md border border-blue-200 dark:border-blue-900 tracking-wider select-all shadow-xs">
+                  {product.sku}
+                </span>
+              </div>
 
               <Separator />
 

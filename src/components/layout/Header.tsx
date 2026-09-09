@@ -136,7 +136,209 @@ function CategoryNavItem({ category }: { category: Category }) {
   );
 }
 
+interface SubmenuColumn {
+  title: string;
+  slug?: string;
+  items: { name: string; href: string }[];
+}
+
+const defaultSubmenusBySlug: Record<string, SubmenuColumn[]> = {
+  "herramientas-inalambricas": [
+    {
+      title: "Sistemas a Batería",
+      items: [
+        { name: "Taladros Inalámbricos 18V / 20V", href: "/buscar?q=taladro+inalambrico" },
+        { name: "Atornilladores de Impacto 1/4\"", href: "/buscar?q=atornillador+impacto" },
+        { name: "Rotomartillos a Batería", href: "/buscar?q=rotomartillo+bateria" },
+      ],
+    },
+    {
+      title: "Corte & Desbaste Inalámbrico",
+      items: [
+        { name: "Amoladoras Inalámbricas Brushless", href: "/buscar?q=amoladora+inalambrica" },
+        { name: "Sierras Circulares Inalámbricas", href: "/buscar?q=sierra+inalambrica" },
+        { name: "Multiherramientas Oscilantes", href: "/buscar?q=multiherramienta" },
+      ],
+    },
+    {
+      title: "Baterías & Ecosistema",
+      slug: "baterias-cargadores",
+      items: [
+        { name: "Baterías Milwaukee M18 & M12", href: "/marca/milwaukee" },
+        { name: "Baterías DeWalt 20V MAX & FlexVolt", href: "/marca/dewalt" },
+        { name: "Kits con Cargador Rápido", href: "/buscar?q=cargador+rapido" },
+      ],
+    },
+  ],
+  "herramientas-electricas": [
+    {
+      title: "Taladros & Percutores",
+      slug: "taladros",
+      items: [
+        { name: "Taladro Percutor 1/2\"", href: "/buscar?q=taladro+percutor" },
+        { name: "Taladro Inalámbrico 20V", href: "/buscar?q=taladro+inalambrico" },
+        { name: "Taladro Angular Compacto", href: "/buscar?q=taladro+angular" },
+      ],
+    },
+    {
+      title: "Rotomartillos & Demoledores",
+      slug: "rotomartillos",
+      items: [
+        { name: "Rotomartillo SDS-Plus", href: "/buscar?q=rotomartillo+sds+plus" },
+        { name: "Rotomartillo SDS-Max", href: "/buscar?q=rotomartillo+sds+max" },
+        { name: "Martillo Demoledor Hex", href: "/buscar?q=martillo+demoledor" },
+      ],
+    },
+    {
+      title: "Esmeriles & Amoladoras",
+      items: [
+        { name: "Amoladora Angular 4-1/2\"", href: "/buscar?q=amoladora+4.5" },
+        { name: "Amoladora Industrial 7\"", href: "/buscar?q=amoladora+7" },
+        { name: "Esmeril de Banco", href: "/buscar?q=esmeril+banco" },
+      ],
+    },
+    {
+      title: "Sierras & Corte",
+      slug: "sierras",
+      items: [
+        { name: "Sierra Circular 7-1/4\"", href: "/buscar?q=sierra+circular" },
+        { name: "Sierra Caladora Pendular", href: "/buscar?q=sierra+caladora" },
+        { name: "Sierra Sable Reciprocante", href: "/buscar?q=sierra+sable" },
+      ],
+    },
+  ],
+  "rotomartillos": [
+    {
+      title: "Por Encastre & Trabajo",
+      items: [
+        { name: "Rotomartillos SDS-Plus (Perforación)", href: "/buscar?q=rotomartillo+sds+plus" },
+        { name: "Rotomartillos SDS-Max (Demolición pesada)", href: "/buscar?q=rotomartillo+sds+max" },
+        { name: "Demoledores Hexagonales", href: "/buscar?q=demoledor" },
+      ],
+    },
+    {
+      title: "Accesorios para Rotomartillo",
+      slug: "accesorios",
+      items: [
+        { name: "Juegos de Brocas SDS-Plus", href: "/buscar?q=brocas+sds" },
+        { name: "Puntas & Cinceles Planos", href: "/buscar?q=cinceles" },
+        { name: "Grasa para Encastre SDS", href: "/buscar?q=grasa+sds" },
+      ],
+    },
+  ],
+  "atornilladores": [
+    {
+      title: "Atornilladores de Impacto",
+      items: [
+        { name: "Atornillador de Impacto 1/4\" Hex", href: "/buscar?q=atornillador+impacto" },
+        { name: "Atornillador para Drywall / Yeso", href: "/buscar?q=atornillador+drywall" },
+        { name: "Destornillador Inalámbrico Compacto", href: "/buscar?q=destornillador+inalambrico" },
+      ],
+    },
+    {
+      title: "Llaves de Impacto",
+      items: [
+        { name: "Llave de Impacto 1/2\" Alto Torque", href: "/buscar?q=llave+impacto+1/2" },
+        { name: "Llave de Impacto Compacta 3/8\"", href: "/buscar?q=llave+impacto+3/8" },
+        { name: "Juego de Dados de Impacto Cr-Mo", href: "/buscar?q=dados+impacto" },
+      ],
+    },
+  ],
+  "sierras": [
+    {
+      title: "Sierras para Madera & Metal",
+      items: [
+        { name: "Sierras Circulares de Mano 7-1/4\"", href: "/buscar?q=sierra+circular" },
+        { name: "Sierras Caladoras de Velocidad Variable", href: "/buscar?q=sierra+caladora" },
+        { name: "Sierras Sable Reciprocantes", href: "/buscar?q=sierra+sable" },
+      ],
+    },
+    {
+      title: "Sierras de Banco e Ingletadoras",
+      items: [
+        { name: "Ingletadoras Telescópicas Compuestas", href: "/buscar?q=ingletadora" },
+        { name: "Sierras de Banco para Carpintería", href: "/buscar?q=sierra+banco" },
+        { name: "Discos de Sierra con Dientes de Widia", href: "/buscar?q=disco+sierra" },
+      ],
+    },
+  ],
+  "baterias-cargadores": [
+    {
+      title: "Baterías de Litio",
+      items: [
+        { name: "Baterías Milwaukee M18 Redlithium", href: "/marca/milwaukee" },
+        { name: "Baterías DeWalt 20V MAX Powerstack", href: "/marca/dewalt" },
+        { name: "Baterías Total / Ingco P20S 20V", href: "/marca/total" },
+      ],
+    },
+    {
+      title: "Cargadores & Estaciones",
+      items: [
+        { name: "Cargadores Rápidos Monofásicos", href: "/buscar?q=cargador+rapido" },
+        { name: "Cargadores Múltiples de 2 y 4 Bahías", href: "/buscar?q=cargador+doble" },
+        { name: "Inversores de Corriente Portátiles", href: "/buscar?q=inversor" },
+      ],
+    },
+  ],
+  "almacenamiento": [
+    {
+      title: "Sistemas PACKOUT Modulares",
+      slug: "packout-builder",
+      items: [
+        { name: "Cajas con Ruedas Base PACKOUT", href: "/packout-builder" },
+        { name: "Cajas Portaherramientas Medianas / Grandes", href: "/packout-builder" },
+        { name: "Mochilas & Bolsas Balísticas PACKOUT", href: "/buscar?q=mochila+packout" },
+      ],
+    },
+    {
+      title: "Organizadores & Maletines",
+      items: [
+        { name: "Organizadores de Tornillería con Divisores", href: "/buscar?q=organizador" },
+        { name: "Cinturones & Cartucheras de Cuero / Lona", href: "/buscar?q=cinturon+herramientas" },
+        { name: "Carretillas Plegables de Taller", href: "/buscar?q=carretilla" },
+      ],
+    },
+  ],
+  "accesorios": [
+    {
+      title: "Brocas para Todo Material",
+      items: [
+        { name: "Brocas SDS-Plus para Concreto Armado", href: "/buscar?q=brocas+concreto" },
+        { name: "Brocas HSS Cobalto para Acero Inoxidable", href: "/buscar?q=brocas+metal" },
+        { name: "Brocas Copa Diamantadas para Porcelanato", href: "/buscar?q=broca+copa" },
+      ],
+    },
+    {
+      title: "Discos & Puntas Profesionales",
+      items: [
+        { name: "Discos de Corte Extra Fino 4-1/2\"", href: "/buscar?q=disco+corte" },
+        { name: "Discos Flap de Zirconio para Desbaste", href: "/buscar?q=disco+flap" },
+        { name: "Puntas de Impacto PH2, Torx y Pozidriv", href: "/buscar?q=puntas+impacto" },
+      ],
+    },
+  ],
+  "medicion": [
+    {
+      title: "Niveles Láser",
+      items: [
+        { name: "Nivel Láser 360° Autonivelante", href: "/buscar?q=nivel+laser" },
+        { name: "Distanciómetros Láser Digitales", href: "/buscar?q=distanciometro" },
+        { name: "Trípodes Ajustables de Aluminio", href: "/buscar?q=tripode+laser" },
+      ],
+    },
+    {
+      title: "Medición Manual",
+      items: [
+        { name: "Cintas Métricas de Impacto 5m / 8m", href: "/buscar?q=cinta+metrica" },
+        { name: "Calibradores Vernier y Micrómetros", href: "/buscar?q=calibrador" },
+        { name: "Niveles de Mano Anticaída con Imán", href: "/buscar?q=nivel+mano" },
+      ],
+    },
+  ],
+};
+
 const fallbackHeaderCategories: Category[] = [
+  { id: "cat-inalambricas", name: "Herramientas Inalámbricas", slug: "herramientas-inalambricas" },
   { id: "cat-1", name: "Taladros", slug: "taladros" },
   { id: "cat-2", name: "Rotomartillos", slug: "rotomartillos" },
   { id: "cat-3", name: "Impacto & Atornilladores", slug: "atornilladores" },
@@ -150,39 +352,103 @@ const fallbackHeaderCategories: Category[] = [
   { id: "cat-11", name: "Medición & Niveles", slug: "medicion" },
 ];
 
-/** Category Nav Bar - horizontal list of categories from Sanity CMS */
+/** Category Nav Bar - horizontal list of categories with rich submenus on click and hover */
 function HeaderCategoryBar({ categories }: { categories: Category[] }) {
-  const filtered = (categories || []).filter((c) => !c.parentId && c.name && c.slug);
-  const topCategories = filtered.length > 0 ? filtered : fallbackHeaderCategories;
+  const [activeSlug, setActiveSlug] = useState<string | null>(null);
+  const barRef = useRef<HTMLDivElement>(null);
+
+  // Close when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (barRef.current && !barRef.current.contains(e.target as Node)) {
+        setActiveSlug(null);
+      }
+    };
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setActiveSlug(null);
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
+  const rawList = categories && categories.length > 0 ? categories : fallbackHeaderCategories;
+  
+  // Ensure "Herramientas Inalámbricas" is present at the front of the category list
+  const listWithInalambricas = rawList.some(c => c.slug === "herramientas-inalambricas")
+    ? rawList
+    : [{ id: "cat-inalambricas", name: "Herramientas Inalámbricas", slug: "herramientas-inalambricas" }, ...rawList];
+
+  const rootCategories = listWithInalambricas.filter((c) => !c.parentId && c.name && c.slug);
+
+  const topCategories = rootCategories.map((root) => {
+    const children = listWithInalambricas.filter(
+      (child) => child.parentId && (child.parentId === root._id || child.parentId === root.id)
+    );
+    return {
+      ...root,
+      children: children.length > 0 ? children : root.children,
+    };
+  });
 
   return (
     <nav
-      className="hidden md:block bg-white dark:bg-[#111111] border-b border-border dark:border-[#222]"
+      ref={barRef}
+      className="hidden md:block bg-white dark:bg-[#111111] border-b border-border dark:border-[#222] relative z-40"
       aria-label="Categorías principales"
     >
       <div className="mx-auto max-w-7xl px-4 flex items-center gap-1 py-1.5 overflow-x-auto scrollbar-hide">
         {topCategories.map((cat) => (
-          <HeaderCategoryItem key={cat.id || cat.slug} category={cat} />
+          <HeaderCategoryItem
+            key={cat.id || cat.slug}
+            category={cat}
+            isOpen={activeSlug === cat.slug}
+            onToggle={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setActiveSlug((prev) => (prev === cat.slug ? null : cat.slug));
+            }}
+            onOpen={() => setActiveSlug(cat.slug)}
+            onClose={() => setActiveSlug((prev) => (prev === cat.slug ? null : prev))}
+          />
         ))}
       </div>
     </nav>
   );
 }
 
-function HeaderCategoryItem({ category }: { category: Category }) {
-  const [open, setOpen] = useState(false);
+function HeaderCategoryItem({
+  category,
+  isOpen,
+  onToggle,
+  onOpen,
+  onClose,
+}: {
+  category: Category;
+  isOpen: boolean;
+  onToggle: (e: React.MouseEvent) => void;
+  onOpen: () => void;
+  onClose: () => void;
+}) {
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const handleEnter = () => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    setOpen(true);
+    onOpen();
   };
 
   const handleLeave = () => {
-    timeoutRef.current = setTimeout(() => setOpen(false), 150);
+    timeoutRef.current = setTimeout(() => {
+      onClose();
+    }, 200);
   };
 
-  const hasChildren = category.children && category.children.length > 0;
+  const staticSubmenus = defaultSubmenusBySlug[category.slug] || [];
+  const cmsChildren = category.children || [];
+  const hasSubmenu = staticSubmenus.length > 0 || cmsChildren.length > 0;
 
   return (
     <div
@@ -190,25 +456,116 @@ function HeaderCategoryItem({ category }: { category: Category }) {
       onMouseEnter={handleEnter}
       onMouseLeave={handleLeave}
     >
-      <a
-        href={`/categoria/${category.slug}`}
-        className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold text-muted-foreground hover:text-itools-blue dark:hover:text-blue-400 hover:bg-surface dark:hover:bg-[#222] transition-colors whitespace-nowrap"
+      <button
+        type="button"
+        onClick={(e) => {
+          if (hasSubmenu) {
+            onToggle(e);
+          } else {
+            window.location.href = `/categoria/${category.slug}`;
+          }
+        }}
+        aria-expanded={isOpen}
+        aria-haspopup={hasSubmenu}
+        className={cn(
+          "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all whitespace-nowrap cursor-pointer",
+          isOpen
+            ? "bg-[#0056D2] text-white shadow-xs"
+            : "text-muted-foreground hover:text-itools-blue dark:hover:text-blue-400 hover:bg-surface dark:hover:bg-[#222]"
+        )}
       >
         <span>{category.name}</span>
-        {hasChildren && <ChevronDown className="h-3 w-3 opacity-60" />}
-      </a>
+        {hasSubmenu && (
+          <ChevronDown
+            className={cn(
+              "h-3 w-3 transition-transform duration-200 opacity-70",
+              isOpen && "rotate-180 opacity-100"
+            )}
+          />
+        )}
+      </button>
 
-      {hasChildren && open && (
-        <div className="absolute left-0 top-full z-50 min-w-[200px] rounded-xl border border-border dark:border-[#333] bg-white dark:bg-[#1a1a1a] shadow-xl p-1.5 animate-in fade-in-0 slide-in-from-top-1 duration-150">
-          {category.children!.map((child) => (
+      {/* Submenu Dropdown Panel */}
+      {hasSubmenu && isOpen && (
+        <div
+          className="absolute left-0 top-full mt-1 z-50 min-w-[320px] max-w-[640px] rounded-2xl border border-border dark:border-[#333] bg-white dark:bg-[#161616] shadow-2xl p-4 animate-in fade-in-0 slide-in-from-top-1 duration-150"
+        >
+          {/* Header of Dropdown */}
+          <div className="flex items-center justify-between pb-3 mb-3 border-b border-border dark:border-[#2a2a2a]">
+            <div>
+              <span className="text-xs font-black uppercase tracking-wider text-[#1A1A1A] dark:text-white">
+                {category.name}
+              </span>
+              <p className="text-[10px] text-muted-foreground">
+                Explora las subcategorías y productos disponibles
+              </p>
+            </div>
             <a
-              key={child.id || child.slug}
-              href={`/categoria/${child.slug}`}
-              className="block px-3 py-2 rounded-lg text-xs font-medium text-foreground hover:bg-surface dark:hover:bg-[#222] hover:text-itools-blue transition-colors"
+              href={`/categoria/${category.slug}`}
+              className="text-[11px] font-bold text-[#0056D2] dark:text-[#3B82F6] hover:underline flex items-center gap-1 whitespace-nowrap ml-4"
             >
-              {child.name}
+              Ver toda la categoría →
             </a>
-          ))}
+          </div>
+
+          {/* CMS Children (if any) */}
+          {cmsChildren.length > 0 && (
+            <div className="mb-3">
+              <span className="text-[10px] font-bold text-[#E60000] uppercase tracking-wider block mb-1.5">
+                Subcategorías CMS
+              </span>
+              <div className="grid grid-cols-2 gap-1.5">
+                {cmsChildren.map((child) => (
+                  <a
+                    key={child.id || child.slug}
+                    href={`/categoria/${child.slug}`}
+                    className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium text-foreground bg-surface dark:bg-[#202020] hover:bg-[#0056D2] hover:text-white transition-colors"
+                  >
+                    <span className="h-1.5 w-1.5 rounded-full bg-[#E60000]" />
+                    <span className="truncate">{child.name}</span>
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Submenu Columns & Products */}
+          {staticSubmenus.length > 0 && (
+            <div className={cn(
+              "grid gap-4",
+              staticSubmenus.length >= 3 ? "grid-cols-3 min-w-[540px]" : staticSubmenus.length === 2 ? "grid-cols-2 min-w-[420px]" : "grid-cols-1"
+            )}>
+              {staticSubmenus.map((col, idx) => (
+                <div key={idx} className="space-y-1.5">
+                  <div className="flex items-center justify-between pb-1 border-b border-border/60 dark:border-[#2a2a2a]">
+                    <span className="text-[11px] font-bold text-foreground">
+                      {col.title}
+                    </span>
+                    {col.slug && (
+                      <a
+                        href={`/categoria/${col.slug}`}
+                        className="text-[10px] text-[#0056D2] hover:underline"
+                      >
+                        Ver →
+                      </a>
+                    )}
+                  </div>
+                  <ul className="space-y-1">
+                    {col.items.map((item, itemIdx) => (
+                      <li key={itemIdx}>
+                        <a
+                          href={item.href}
+                          className="block px-2 py-1 rounded text-[11px] text-muted-foreground hover:text-foreground hover:bg-surface dark:hover:bg-[#222] transition-colors truncate"
+                        >
+                          {item.name}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
     </div>
