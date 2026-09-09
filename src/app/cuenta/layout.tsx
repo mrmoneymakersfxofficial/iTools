@@ -22,7 +22,8 @@ const navItems = [
   { name: 'Favoritos', href: '/cuenta/favoritos', icon: Heart },
 ]
 
-function isActive(pathname: string, href: string, exact?: boolean) {
+function isActive(pathname: string | null | undefined, href: string, exact?: boolean) {
+  if (!pathname) return false
   if (exact) return pathname === href
   return pathname.startsWith(href)
 }

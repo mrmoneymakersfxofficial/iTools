@@ -66,8 +66,8 @@ export function BottomNav() {
     setShowCategories(false);
   }, [pathname]);
 
-  const isBrandPage = pathname.startsWith("/marca/");
-  const isCategoryPage = pathname.startsWith("/categoria/");
+  const isBrandPage = pathname?.startsWith("/marca/") ?? false;
+  const isCategoryPage = pathname?.startsWith("/categoria/") ?? false;
 
   const sendChat = () => {
     if (!chatInput.trim()) return;

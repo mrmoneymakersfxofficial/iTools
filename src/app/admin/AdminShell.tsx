@@ -28,7 +28,8 @@ const navItems = [
   { name: "Configuración", icon: Settings, href: "/admin/configuracion" },
 ];
 
-function isActive(href: string, pathname: string) {
+function isActive(href: string, pathname?: string | null) {
+  if (!pathname) return false;
   if (href === "/admin") return pathname === "/admin";
   return pathname.startsWith(href);
 }
