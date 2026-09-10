@@ -17,8 +17,8 @@ export function HomeCenterHero({
 }: HomeCenterHeroProps) {
   const topBanner = heroBanners?.find((b: any) => b._id === "hero-1") || heroBanners?.[0];
   const midBanner = brandPromoBanners?.find((b: any) => b._id === "brand-promo-milwaukee") || brandPromoBanners?.[0];
-  const bottomBannerLeft = promoBanners?.find((b: any) => b._id === "promo-banner-hero-rotomartillo") || promoBanners?.[0];
-  const bottomBannerRight = promoBanners?.find((b: any) => b._id === "promo-banner-hero-electricista") || promoBanners?.[1];
+  const bottomBannerLeft = promoBanners?.find((b: any) => b._id === "promo-banner-hero-rotomartillo");
+  const bottomBannerRight = promoBanners?.find((b: any) => b._id === "promo-banner-hero-electricista");
 
   const topSanityAttr = getSanityAttr(topBanner?._id || "hero-1", topBanner?._type || "heroSlide", "image");
   const midSanityAttr = getSanityAttr(midBanner?._id || "brand-promo-milwaukee", midBanner?._type || "brandPromoSlide", "image");

@@ -35,6 +35,24 @@ export default defineType({
     defineField({ name: "bannerImage", title: "Banner Horizontal de la Categoría", type: "image", options: { hotspot: true } }),
     defineField({ name: "bannerLink", title: "Enlace del Banner", type: "string" }),
     defineField({ name: "order", title: "Orden", type: "number", validation: (r) => r.required().min(0) }),
+    defineField({
+      name: "subcategories",
+      title: "Subcategorías del Desplegable (Menú Superior)",
+      type: "array",
+      of: [
+        {
+          type: "object",
+          fields: [
+            { name: "name", title: "Nombre", type: "string", validation: (r) => r.required() },
+            { name: "link", title: "Enlace o Búsqueda", type: "string" },
+          ],
+          preview: {
+            select: { title: "name", subtitle: "link" },
+          },
+        },
+      ],
+      description: "Subcategorías administrables desde Sanity que se muestran en el menú desplegable superior.",
+    }),
     defineField({ name: "isActive", title: "Activo", type: "boolean", initialValue: true }),
   ],
   orderings: [{ title: "Orden", name: "orderAsc", by: [{ field: "order", direction: "asc" }] }],

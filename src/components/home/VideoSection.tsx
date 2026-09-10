@@ -1,10 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import { Play, X, ExternalLink } from "lucide-react";
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
-import { urlFor } from "@/sanity/image";
-import Image from "next/image";
+import { ExternalLink } from "lucide-react";
 import { getSanityAttr } from "@/lib/sanity/visual-attributes";
 
 interface VideoItem {
@@ -151,11 +147,7 @@ function getThumbnailUrl(thumbnail: any, rawUrl?: string): string | null {
 }
 
 export function VideoSection({ data }: { data: VideoSectionData | null }) {
-  const [activeVideo, setActiveVideo] = useState<VideoItem | null>(null);
   const videos = data?.videos && data.videos.length > 0 ? data.videos : fallbackVideos;
-
-  const activeUrl = activeVideo ? getEffectiveUrl(activeVideo) : null;
-  const embedInfo = activeUrl ? getEmbedInfo(activeUrl) : null;
 
   return (
     <section
@@ -178,133 +170,80 @@ export function VideoSection({ data }: { data: VideoSectionData | null }) {
           </p>
         </div>
 
-        {/* Carrusel / Grid de Videos */}
-        <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide sm:grid sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 sm:overflow-visible">
+        {/* Carrusel / Grid de Videos Directamente Embebidos */}
+        <div className="flex gap-3.5 overflow-x-auto pb-3 scrollbar-hide sm:grid sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 sm:overflow-visible">
           {videos.map((video, i) => {
             const rawUrl = getEffectiveUrl(video);
+            const embed = getEmbedInfo(rawUrl);
             const platform = getVideoPlatform(rawUrl);
-            const thumbUrl = getThumbnailUrl(video.thumbnail, rawUrl);
             const sanityAttr = getSanityAttr("videoSection", "videoSection", `videos[${i}]`);
 
             return (
-              <button
+              <div
                 key={i}
-                type="button"
-                onClick={() => setActiveVideo(video)}
                 {...sanityAttr}
-                className="group relative shrink-0 w-[140px] sm:w-auto aspect-[9/16] rounded-2xl overflow-hidden bg-[#1A1A1A] border border-border dark:border-[#333] shadow-sm hover:shadow-lg hover:border-[#D1001C] transition-all duration-300 text-left cursor-pointer"
+                className="relative shrink-0 w-[220px] sm:w-auto aspect-[9/16] rounded-2xl overflow-hidden bg-[#111] border border-border dark:border-[#333] shadow-md hover:shadow-xl hover:border-[#D1001C] transition-all duration-300 flex flex-col"
               >
-                {/* Miniatura */}
-                {thumbUrl ? (
-                  <Image
-                    src={thumbUrl}
-                    alt={video.title}
-                    fill
-                    sizes="(max-width: 640px) 140px, (max-width: 1024px) 25vw, 20vw"
-                    className="object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                ) : (
-                  <div className="w-full h-full flex flex-col items-center justify-between bg-gradient-to-b from-[#181818] via-[#111111] to-[#0a0a0a] p-3 text-center border-t-2 border-[#FE2C55]/80">
-                    <div className="w-full flex justify-end">
-                      <span className="text-[10px] font-black tracking-widest text-[#25F4EE] drop-shadow-[0_0_8px_rgba(37,244,238,0.5)]">
-                        TIK<span className="text-[#FE2C55]">TOK</span>
+                {/* Reproductor Embebido Directo */}
+                <div className="relative w-full flex-1 bg-black overflow-hidden">
+                  {embed.isDirectVideo ? (
+                    <video
+                      src={embed.embedUrl}
+                      controls
+                      playsInline
+                      preload="metadata"
+                      className="w-full h-full object-cover"
+                    />
+                  ) : embed.embedUrl ? (
+                    <iframe
+                      src={embed.embedUrl}
+                      className="w-full h-full border-0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      loading="lazy"
+                      title={video.title}
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-muted-foreground text-xs">
+                      Video no disponible
+                    </div>
+                  )}
+
+                  {/* Badge de Plataforma */}
+                  {platform && (
+                    <div className="absolute top-2.5 left-2.5 z-10 pointer-events-none">
+                      <span
+                        className="inline-flex items-center gap-1 text-[9px] font-bold text-white px-2 py-0.5 rounded-full shadow-sm backdrop-blur-md"
+                        style={{ backgroundColor: `${platform.color}dd` }}
+                      >
+                        {platform.name}
                       </span>
                     </div>
-                    <div className="flex flex-col items-center">
-                      <div className="h-11 w-11 rounded-full bg-white/10 group-hover:bg-[#FE2C55] transition-all flex items-center justify-center shadow-lg group-hover:scale-110 mb-1">
-                        <Play className="h-5 w-5 text-white fill-white ml-0.5" />
-                      </div>
-                      <span className="text-[10px] text-gray-400 font-medium">Ver video</span>
-                    </div>
-                    <div className="h-2" />
-                  </div>
-                )}
-
-                {/* Overlay oscuro */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-black/30 group-hover:via-black/10 transition-colors" />
-
-                {/* Botón de Play Central */}
-                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                  <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-full bg-white/80 group-hover:bg-[#D1001C] text-[#111] group-hover:text-white flex items-center justify-center shadow-lg transition-transform duration-300 group-hover:scale-110">
-                    <Play className="h-5 w-5 fill-current ml-0.5" />
-                  </div>
+                  )}
                 </div>
 
-                {/* Badge de Plataforma */}
-                {platform && (
-                  <div className="absolute top-2.5 left-2.5 z-10">
-                    <span
-                      className="inline-flex items-center gap-1 text-[9px] font-bold text-white px-2 py-0.5 rounded-full shadow-sm backdrop-blur-md"
-                      style={{ backgroundColor: `${platform.color}dd` }}
-                    >
-                      {platform.name}
-                    </span>
-                  </div>
-                )}
-
-                {/* Título inferior */}
-                <div className="absolute bottom-0 left-0 right-0 p-2.5 sm:p-3 z-10">
-                  <p className="text-white text-[11px] sm:text-xs font-semibold line-clamp-2 leading-tight drop-shadow">
+                {/* Título inferior con enlace externo directo */}
+                <div className="p-2.5 bg-white dark:bg-[#181818] border-t border-border dark:border-[#262626] flex items-center justify-between gap-2">
+                  <p className="text-[11px] sm:text-xs font-semibold text-foreground line-clamp-1 flex-1" title={video.title}>
                     {video.title}
                   </p>
+                  {rawUrl && (
+                    <a
+                      href={rawUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-gray-400 hover:text-[#E60000] p-1 rounded-md hover:bg-gray-100 dark:hover:bg-[#262626] transition-colors shrink-0"
+                      title="Abrir en TikTok / Fuente oficial"
+                      aria-label="Abrir enlace"
+                    >
+                      <ExternalLink className="h-3.5 w-3.5" />
+                    </a>
+                  )}
                 </div>
-              </button>
+              </div>
             );
           })}
         </div>
       </div>
-
-      {/* Modal Reproductor */}
-      <Dialog open={!!activeVideo} onOpenChange={(open) => !open && setActiveVideo(null)}>
-        <DialogContent className="max-w-[420px] p-0 overflow-hidden bg-black border border-white/10 rounded-2xl shadow-2xl">
-          <DialogTitle className="sr-only">{activeVideo?.title || "Video"}</DialogTitle>
-          <button
-            type="button"
-            onClick={() => setActiveVideo(null)}
-            aria-label="Cerrar video"
-            className="absolute right-3 top-3 z-30 rounded-full bg-black/70 p-2 text-white hover:bg-[#D1001C] transition-colors cursor-pointer"
-          >
-            <X className="h-4 w-4" />
-          </button>
-
-          {activeVideo && embedInfo && embedInfo.embedUrl && (
-            <div className="relative aspect-[9/16] w-full bg-black flex flex-col items-center justify-center overflow-hidden">
-              {embedInfo.isDirectVideo ? (
-                <video
-                  src={embedInfo.embedUrl}
-                  controls
-                  autoPlay
-                  playsInline
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <iframe
-                  src={embedInfo.embedUrl}
-                  className="w-full h-full border-0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  allowFullScreen
-                  title={activeVideo.title}
-                />
-              )}
-
-              {/* Botón de respaldo en la parte inferior para abrir directamente */}
-              {activeUrl && (
-                <div className="absolute bottom-3 left-3 right-3 z-20 flex justify-center">
-                  <a
-                    href={activeUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 bg-[#FE2C55] hover:bg-[#E60000] text-white text-xs font-bold px-4 py-2 rounded-full shadow-xl transition-all hover:scale-105 border border-white/20"
-                  >
-                    <ExternalLink className="h-3.5 w-3.5" />
-                    <span>Ver en {embedInfo.platform === "tiktok" ? "TikTok Oficial ↗" : "Fuente Original ↗"}</span>
-                  </a>
-                </div>
-              )}
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
     </section>
   );
 }

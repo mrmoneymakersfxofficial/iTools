@@ -475,14 +475,15 @@ function HeaderCategoryBar({ categories }: { categories: Category[] }) {
   return (
     <nav
       ref={barRef}
-      className="hidden md:block bg-white dark:bg-[#111111] border-b border-border dark:border-[#222] relative z-40"
+      className="hidden md:block bg-white dark:bg-[#111111] border-b border-border dark:border-[#222] relative z-50 overflow-visible"
       aria-label="Categorías principales"
     >
-      <div className="mx-auto max-w-7xl px-4 flex items-center justify-between gap-1 py-1 overflow-x-auto scrollbar-hide">
-        {topCategories.map((cat) => (
+      <div className="mx-auto max-w-7xl px-4 flex items-center justify-between gap-1 py-1 overflow-visible relative">
+        {topCategories.map((cat, index) => (
           <HeaderCategoryItem
             key={cat.id || cat.slug}
             category={cat}
+            isLastItems={index >= topCategories.length - 2}
             isOpen={activeSlug === cat.slug}
             onToggle={(e) => {
               e.preventDefault();
@@ -501,12 +502,14 @@ function HeaderCategoryBar({ categories }: { categories: Category[] }) {
 function HeaderCategoryItem({
   category,
   isOpen,
+  isLastItems = false,
   onToggle,
   onOpen,
   onClose,
 }: {
   category: Category;
   isOpen: boolean;
+  isLastItems?: boolean;
   onToggle: (e: React.MouseEvent) => void;
   onOpen: () => void;
   onClose: () => void;
@@ -524,7 +527,11 @@ function HeaderCategoryItem({
     }, 200);
   };
 
-  const verticalItems = verticalSubmenusBySlug[category.slug] || [];
+  // Check CMS subcategories first, then fallback to verticalSubmenusBySlug
+  const cmsSubcategories = (category as any).subcategories;
+  const verticalItems = Array.isArray(cmsSubcategories) && cmsSubcategories.length > 0
+    ? cmsSubcategories.map((s: any) => ({ name: s.name, href: s.link || `/buscar?q=${encodeURIComponent(s.name)}` }))
+    : (verticalSubmenusBySlug[category.slug] || []);
   const cmsChildren = category.children || [];
   const hasSubmenu = verticalItems.length > 0 || cmsChildren.length > 0;
 
@@ -566,7 +573,10 @@ function HeaderCategoryItem({
       {/* Submenu Vertical Dropdown Panel — Exact Image 2 */}
       {hasSubmenu && isOpen && (
         <div
-          className="absolute left-0 top-full z-50 w-72 bg-white dark:bg-[#161616] rounded-b-xl shadow-2xl border border-gray-200/80 dark:border-[#333] py-2 max-h-[72vh] overflow-y-auto animate-in fade-in-0 slide-in-from-top-1 duration-150 scrollbar-thin"
+          className={cn(
+            "absolute top-full z-[100] w-72 bg-white dark:bg-[#161616] rounded-b-xl shadow-2xl border border-gray-200/90 dark:border-[#333] py-2 max-h-[72vh] overflow-y-auto animate-in fade-in-0 slide-in-from-top-1 duration-150 scrollbar-thin",
+            isLastItems ? "right-0" : "left-0"
+          )}
         >
           {verticalItems.map((sub, idx) => (
             <a

@@ -33,7 +33,14 @@ export const structure: StructureResolver = (S) =>
               S.listItem()
                 .title("Cuadrícula de Marcas (Orden Fijo)")
                 .child(S.document().schemaType("brandShowcaseSettings").documentId("brandShowcaseSettings")),
-              S.documentTypeListItem("heroSlide").title("Hero Banners"),
+              S.documentTypeListItem("heroSlide").title("Hero Banners (Carrusel Superior)"),
+              S.listItem()
+                .title("Hero - Banners Inferiores (2 Banners)")
+                .child(
+                  S.documentList()
+                    .title("Hero - Banners Inferiores")
+                    .filter('_type == "promoBanner" && _id in ["promo-banner-hero-rotomartillo", "promo-banner-hero-electricista"]')
+                ),
               S.listItem()
                 .title("Promociones Exclusivas (3 Banners)")
                 .child(
@@ -54,6 +61,13 @@ export const structure: StructureResolver = (S) =>
                   S.documentList()
                     .title("Ofertas Para Profesionales")
                     .filter('_type == "promoBanner" && _id in ["promo-banner-pro-dewalt", "promo-banner-pro-milwaukee"]')
+                ),
+              S.listItem()
+                .title("Fondo Los Más Vendidos (1 Banner)")
+                .child(
+                  S.documentList()
+                    .title("Fondo Los Más Vendidos")
+                    .filter('_type == "promoBanner" && _id == "promo-banner-mas-vendidos-bg"')
                 ),
               S.documentTypeListItem("promoBanner").title("Todos los Promo Banners"),
               S.documentTypeListItem("giveawayBanner").title("Sorteos (Giveaway)"),

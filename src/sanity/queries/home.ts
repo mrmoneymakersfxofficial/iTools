@@ -57,6 +57,10 @@ export const categoriesQuery = `*[_type == "category" && isActive == true] | ord
   color,
   showInSidebar,
   showInGrid,
+  subcategories[] {
+    name,
+    link
+  },
   order
 }`;
 

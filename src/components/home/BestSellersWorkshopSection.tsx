@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
@@ -98,7 +98,12 @@ const fallbackBestSellers = [
 
 export function BestSellersWorkshopSection({ products, backgroundBanner }: BestSellersWorkshopSectionProps) {
   const { addItem } = useCartStore();
-  const bgUrl = backgroundBanner?.image?.asset?.url || "/banners/sections/mas-vendidos-taller-full.webp";
+  const defaultBg = "/banners/sections/mas-vendidos-bg.webp";
+  const bgUrl =
+    backgroundBanner?.image?.asset?.url &&
+    !backgroundBanner.image.asset.url.includes("f3d54967ec4593bb9cb9164a469fbd16f782e4b5")
+      ? backgroundBanner.image.asset.url
+      : defaultBg;
   const bgSanityAttr = getSanityAttr(backgroundBanner?._id || "promo-banner-mas-vendidos-bg", "promoBanner", "image");
 
   // Combine provided products with fallbacks ensuring at least 8 products for carousel
@@ -169,32 +174,26 @@ export function BestSellersWorkshopSection({ products, backgroundBanner }: BestS
 
   return (
     <section
-      className="relative py-8 md:py-10 w-full overflow-hidden group/section"
+      className="relative pt-24 sm:pt-28 md:pt-36 pb-8 w-full overflow-hidden group/section bg-neutral-900"
       id="los-mas-vendidos"
       data-section="Los Más Vendidos"
       data-sanity-doc="product"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* ── Background Workshop Graphic with 3 drills & White Gradient ── */}
+      {/* ── Background Workshop Graphic with 3 drills (Clear & Crisp, Image 4) ── */}
       <div className="absolute inset-0 z-0" {...bgSanityAttr}>
         <img
           src={bgUrl}
           alt="Fondo Taller Los Más Vendidos"
-          className="w-full h-full object-cover object-top opacity-95"
+          className="w-full h-full object-cover object-top"
         />
-        {/* Soft white gradient at bottom & sides */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#FDFDFD] via-[#FDFDFD]/75 to-transparent dark:from-[#0A0A0A] dark:via-[#0A0A0A]/75 dark:to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#FDFDFD]/60 via-transparent to-[#FDFDFD]/60 dark:from-[#0A0A0A]/60 dark:to-[#0A0A0A]/60 pointer-events-none" />
+        {/* Subtle bottom fade only to ground the cards */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
       </div>
 
       <div className="relative z-10 mx-auto max-w-[1440px] px-3 sm:px-4 lg:px-6">
-        {/* Section Title centered */}
-        <div className="text-center mb-6 pt-2">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-white uppercase tracking-widest drop-shadow-[0_2px_8px_rgba(0,0,0,0.85)]">
-            LOS MAS VENDIDOS
-          </h2>
-        </div>
+        <h2 className="sr-only">LOS MAS VENDIDOS</h2>
 
         {/* Carousel Container with Controls */}
         <div className="relative">
