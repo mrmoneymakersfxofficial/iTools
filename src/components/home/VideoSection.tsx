@@ -54,11 +54,20 @@ function getEmbedInfo(url: string | null | undefined): { embedUrl: string; isDir
     };
   }
 
-  // 3. TikTok (Web standard / mobile / con o sin query params)
+  // 3. TikTok (Web standard / mobile / short / embed)
   const tiktokIdMatch = clean.match(/video\/(\d+)/) || clean.match(/tiktok\.com\/v\/(\d+)/) || clean.match(/\/(\d{15,25})/);
   if (tiktokIdMatch) {
     return {
-      embedUrl: `https://www.tiktok.com/player/v1/${tiktokIdMatch[1]}`,
+      embedUrl: `https://www.tiktok.com/embed/v2/${tiktokIdMatch[1]}`,
+      isDirectVideo: false,
+      platform: "tiktok",
+    };
+  }
+
+  // Fallback para URLs de perfil TikTok sin ID directo
+  if (clean.includes("tiktok.com/@")) {
+    return {
+      embedUrl: `https://www.tiktok.com/embed/v2/7681826524290551061`,
       isDirectVideo: false,
       platform: "tiktok",
     };
@@ -117,11 +126,11 @@ function getVideoPlatform(url: string | null | undefined): { name: string; color
 }
 
 const fallbackVideos: VideoItem[] = [
-  { title: "MILWAUKEE M18 FUEL - Taladro percutor 158 nm en acción", videoUrl: "https://www.tiktok.com/@itoolsperu" },
-  { title: "TOTAL TOOLS - Rotomartillo inalámbrico 20V industrial brushless", videoUrl: "https://www.tiktok.com/@itoolsperu" },
-  { title: "DEWALT XR 20V MAX - Atornillador brushless de alta potencia", videoUrl: "https://www.tiktok.com/@itoolsperu" },
-  { title: "BOSCH Professional - Rotomartillo SDS-Plus", videoUrl: "https://www.tiktok.com/@itoolsperu" },
-  { title: "MAKITA 18V LXT - Atornillador de impacto", videoUrl: "https://www.tiktok.com/@itoolsperu" },
+  { title: "TOTAL TOOLS - Las 7 Bestias 4.0 en Acción", videoUrl: "https://www.tiktok.com/@itools.pe/video/7681826524290551061" },
+  { title: "MILWAUKEE M18 FUEL - Taladro percutor 158 nm en acción", videoUrl: "https://www.tiktok.com/@itools.pe/video/7681826524290551061" },
+  { title: "DEWALT XR 20V MAX - Atornillador brushless de alta potencia", videoUrl: "https://www.tiktok.com/@itools.pe/video/7681826524290551061" },
+  { title: "BOSCH Professional - Rotomartillo SDS-Plus", videoUrl: "https://www.tiktok.com/@itools.pe/video/7681826524290551061" },
+  { title: "PACKOUT Milwaukee - Configura tu sistema de transporte", videoUrl: "https://www.tiktok.com/@itools.pe/video/7681826524290551061" },
 ];
 
 function getThumbnailUrl(thumbnail: any, rawUrl?: string): string | null {

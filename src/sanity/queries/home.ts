@@ -126,7 +126,7 @@ export const giveawayBannerQuery = `*[_type == "giveawayBanner" && isActive == t
   bgGradient
 }`;
 
-export const promoBannersQuery = `*[_type == "promoBanner" && isActive == true && !(_id in path('drafts.**'))] | order(order asc) {
+export const promoBannersQuery = `*[_type == "promoBanner" && coalesce(isActive, true) == true && !(_id in path('drafts.**'))] | order(order asc) {
   _id,
   _type,
   title,
@@ -149,7 +149,7 @@ export const sectionHeadersQuery = `*[_type == "sectionHeader"] {
 }`;
 
 // Promo Popup - enhanced with new fields
-export const promoPopupQuery = `*[_type == "promoPopup" && isActive == true][0]{
+export const promoPopupQuery = `*[_type == "promoPopup" && coalesce(isActive, true) == true][0]{
   title,
   subtitle,
   "image": image { asset-> { url, metadata { dimensions { width, height }, lqip } } },
@@ -164,7 +164,8 @@ export const promoPopupQuery = `*[_type == "promoPopup" && isActive == true][0]{
 }`;
 
 // Video Section - enhanced with TikTok/social support
-export const videoSectionQuery = `*[_type == "videoSection" && isActive == true][0]{
+export const videoSectionQuery = `*[_type == "videoSection" && coalesce(isActive, true) == true][0]{
+  _id,
   sectionTitle,
   sectionSubtitle,
   videoSourceType,

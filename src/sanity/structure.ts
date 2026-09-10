@@ -34,7 +34,28 @@ export const structure: StructureResolver = (S) =>
                 .title("Cuadrícula de Marcas (Orden Fijo)")
                 .child(S.document().schemaType("brandShowcaseSettings").documentId("brandShowcaseSettings")),
               S.documentTypeListItem("heroSlide").title("Hero Banners"),
-              S.documentTypeListItem("promoBanner").title("Promo Banners"),
+              S.listItem()
+                .title("Promociones Exclusivas (3 Banners)")
+                .child(
+                  S.documentList()
+                    .title("Promociones Exclusivas")
+                    .filter('_type == "promoBanner" && _id in ["promo-banner-exclusiva-1", "promo-banner-exclusiva-2", "promo-banner-hotsale-cocina"]')
+                ),
+              S.listItem()
+                .title("Equipa Tu Taller (4 Banners)")
+                .child(
+                  S.documentList()
+                    .title("Equipa Tu Taller")
+                    .filter('_type == "promoBanner" && _id in ["promo-banner-taller-autostyle", "promo-banner-total-530w", "promo-banner-taller-card2", "promo-banner-taller-card3"]')
+                ),
+              S.listItem()
+                .title("Ofertas Para Profesionales (2 Banners)")
+                .child(
+                  S.documentList()
+                    .title("Ofertas Para Profesionales")
+                    .filter('_type == "promoBanner" && _id in ["promo-banner-pro-dewalt", "promo-banner-pro-milwaukee"]')
+                ),
+              S.documentTypeListItem("promoBanner").title("Todos los Promo Banners"),
               S.documentTypeListItem("giveawayBanner").title("Sorteos (Giveaway)"),
               S.documentTypeListItem("brandPromoSlide").title("Banners de Marcas"),
               S.documentTypeListItem("brandShowcaseItem").title("Marcas"),
@@ -44,7 +65,9 @@ export const structure: StructureResolver = (S) =>
               S.documentTypeListItem("product").title("Productos"),
               S.documentTypeListItem("sectionHeader").title("Encabezados de Sección"),
               S.documentTypeListItem("promoPopup").title("Popup Emergente"),
-              S.documentTypeListItem("videoSection").title("Videos"),
+              S.listItem()
+                .title("Videos (TikTok / Reels)")
+                .child(S.document().schemaType("videoSection").documentId("videoSection")),
               S.documentTypeListItem("packoutComponent").title("PACKOUT Builder"),
               S.documentTypeListItem("productReview").title("Reseñas"),
             ])

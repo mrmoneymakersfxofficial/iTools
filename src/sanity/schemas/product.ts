@@ -28,6 +28,13 @@ export default defineType({
       description: "Referencia a la marca del producto",
     }),
     defineField({
+      name: "brandLogo",
+      title: "Logo de Marca (Personalizado / CMS)",
+      type: "image",
+      options: { hotspot: true },
+      description: "Logo de la marca visible en la tarjeta derecha del producto. Si no se sube, se tomará automáticamente de la marca asociada.",
+    }),
+    defineField({
       name: "category",
       title: "Categoría",
       type: "reference",

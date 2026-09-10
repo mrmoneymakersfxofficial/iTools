@@ -12,10 +12,11 @@ export const productBySlugQuery = `*[_type == "product" && slug.current == $slug
   rating,
   "reviewCount": reviews,
   isNewArrival,
+  brandLogo { asset-> { url } },
   brand-> {
     _id,
     name,
-    slug,
+    "slug": coalesce(slug.current, slug),
     logo { asset-> { url } }
   },
   category-> {
@@ -34,14 +35,15 @@ export const productBySlugQuery = `*[_type == "product" && slug.current == $slug
   videoUrl
 }`;
 
-export const relatedProductsQuery = `*[_type == "product" && isActive == true && category->slug.current == $categorySlug && slug.current != $currentSlug] | order(_createdAt desc)[0...4] {
+export const relatedProductsQuery = `*[_type == "product" && isActive == true && category->slug.current == $categorySlug && slug.current != $currentSlug] | order(_createdAt desc)[0...12] {
   _id,
   "id": _id,
   name,
   "slug": slug.current,
   sku,
-  brand-> { _id, name, slug },
+  brand-> { _id, name, "slug": coalesce(slug.current, slug), logo { asset-> { url } } },
   price,
+  salePrice,
   "comparePrice": salePrice,
   discountBadge,
   rating,

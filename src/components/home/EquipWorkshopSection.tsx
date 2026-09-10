@@ -131,10 +131,10 @@ export function EquipWorkshopSection({ products, banners }: EquipWorkshopSection
   const { addItem } = useCartStore();
   const { toggleItem, isWishlisted } = useWishlistStore();
 
-  const bAuto = banners?.find((b: any) => b._id === "promo-banner-taller-autostyle") || banners?.[0];
-  const bTotal = banners?.find((b: any) => b._id === "promo-banner-total-530w") || banners?.[1];
-  const bMakita = banners?.find((b: any) => b._id === "promo-banner-taller-card2") || banners?.find((b: any) => b._id === "promo-banner-taller-makita") || banners?.[2];
-  const bMilwaukee = banners?.find((b: any) => b._id === "promo-banner-taller-card3") || banners?.find((b: any) => b._id === "promo-banner-taller-milwaukee") || banners?.[3];
+  const bAuto = banners?.find((b: any) => b._id === "promo-banner-taller-autostyle");
+  const bTotal = banners?.find((b: any) => b._id === "promo-banner-total-530w");
+  const bMakita = banners?.find((b: any) => b._id === "promo-banner-taller-card2") || banners?.find((b: any) => b._id === "promo-banner-taller-makita");
+  const bMilwaukee = banners?.find((b: any) => b._id === "promo-banner-taller-card3") || banners?.find((b: any) => b._id === "promo-banner-taller-milwaukee");
 
   const attrAuto = getSanityAttr(bAuto?._id || "promo-banner-taller-autostyle", "promoBanner", "image");
   const attrTotal = getSanityAttr(bTotal?._id || "promo-banner-total-530w", "promoBanner", "image");

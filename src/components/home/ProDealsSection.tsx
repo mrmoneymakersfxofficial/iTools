@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
@@ -109,8 +109,8 @@ export function ProDealsSection({ products, banners }: ProDealsSectionProps) {
   const { addItem } = useCartStore();
   const { toggleItem, isWishlisted } = useWishlistStore();
 
-  const b1 = banners?.find((b: any) => b._id === "promo-banner-pro-dewalt") || banners?.[0];
-  const b2 = banners?.find((b: any) => b._id === "promo-banner-pro-milwaukee") || banners?.[1];
+  const b1 = banners?.find((b: any) => b._id === "promo-banner-pro-dewalt");
+  const b2 = banners?.find((b: any) => b._id === "promo-banner-pro-milwaukee");
 
   const attr1 = getSanityAttr(b1?._id || "promo-banner-pro-dewalt", "promoBanner", "image");
   const attr2 = getSanityAttr(b2?._id || "promo-banner-pro-milwaukee", "promoBanner", "image");
