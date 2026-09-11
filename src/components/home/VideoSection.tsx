@@ -51,7 +51,7 @@ function getEmbedInfo(url: string | null | undefined): { embedUrl: string; isDir
     };
   }
 
-  // 3. TikTok (Web standard / mobile / short / embed / player)
+  // 3. TikTok (Web standard / mobile / short / embed)
   const tiktokIdMatch =
     clean.match(/video\/(\d+)/) ||
     clean.match(/tiktok\.com\/v\/(\d+)/) ||
@@ -61,7 +61,7 @@ function getEmbedInfo(url: string | null | undefined): { embedUrl: string; isDir
 
   if (tiktokIdMatch) {
     return {
-      embedUrl: `https://www.tiktok.com/player/v1/${tiktokIdMatch[1]}?autoplay=0&music_info=0&description=0`,
+      embedUrl: `https://www.tiktok.com/embed/v2/${tiktokIdMatch[1]}`,
       isDirectVideo: false,
       platform: "tiktok",
     };
@@ -70,7 +70,7 @@ function getEmbedInfo(url: string | null | undefined): { embedUrl: string; isDir
   // Fallback para URLs de perfil TikTok sin ID directo
   if (clean.includes("tiktok.com/@")) {
     return {
-      embedUrl: `https://www.tiktok.com/player/v1/7681826524290551061?autoplay=0&music_info=0&description=0`,
+      embedUrl: `https://www.tiktok.com/embed/v2/7675136933642702100`,
       isDirectVideo: false,
       platform: "tiktok",
     };
@@ -185,21 +185,15 @@ function VideoPlayerCard({ video, index }: { video: VideoItem; index: number }) 
           />
         ) : embed.embedUrl ? (
           isReady ? (
-            <div className="relative w-full h-full overflow-hidden">
-              <iframe
-                src={embed.embedUrl}
-                className="w-full border-0 absolute inset-x-0"
-                style={{
-                  top: embed.platform === "tiktok" ? "-44px" : "0px",
-                  height: embed.platform === "tiktok" ? "calc(100% + 44px)" : "100%",
-                }}
-                scrolling="no"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen; unload"
-                allowFullScreen
-                loading="lazy"
-                title={video.title}
-              />
-            </div>
+            <iframe
+              src={embed.embedUrl}
+              className="w-full h-full border-0 absolute inset-0"
+              scrolling="no"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
+              allowFullScreen
+              loading="lazy"
+              title={video.title}
+            />
           ) : (
             <div className="w-full h-full flex flex-col items-center justify-center bg-[#151515] animate-pulse">
               <div className="w-10 h-10 rounded-full bg-neutral-800 flex items-center justify-center text-neutral-400 font-bold text-sm">
