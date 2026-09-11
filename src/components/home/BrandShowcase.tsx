@@ -111,30 +111,32 @@ function renderGrid(brands: Array<{ _id: string; name: string; slug: string; loc
 
         <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-1.5 md:gap-2">
           {brands.map((brand) => {
-            const slug = brand.slug || brand.name.toLowerCase();
+            const rawSlug = brand.slug || brand.name?.toLowerCase() || "";
+            const slug = typeof rawSlug === "string" ? rawSlug : (rawSlug.current || "");
             const config = brand.localConfig || BRAND_CONFIGS[slug];
-            const hasLocalImg = !!config;
+            const hasCustomLogo = !!brand.logo?.asset?.url;
+            const hasLocalImg = !hasCustomLogo && !!config;
             const fallbackExt = config ? config.logoExt : "webp";
-            const imgSrc = hasLocalImg
-              ? `/brands/${slug}.${fallbackExt}`
-              : brand.logo?.asset?.url || null;
+            const imgSrc = hasCustomLogo
+              ? brand.logo!.asset!.url
+              : (hasLocalImg ? `/brands/${slug}.${fallbackExt}` : null);
             const showImg = !!imgSrc;
 
             const brandSanityAttr = getSanityAttr(brand._id || "brandShowcaseSettings", "brandShowcaseItem", "logo");
 
             return (
               <Link
-                key={brand._id || brand.slug}
-                href={`/marca/${brand.slug || "#"}`}
+                key={brand._id || slug}
+                href={`/marca/${slug || "#"}`}
                 {...brandSanityAttr}
-                className="group flex items-center justify-center h-[88px] transition-opacity hover:opacity-80 rounded-md overflow-hidden"
-                style={config ? { backgroundColor: config.bg } : undefined}
+                className="group flex items-center justify-center h-[88px] transition-opacity hover:opacity-80 rounded-md overflow-hidden bg-transparent"
+                style={!hasCustomLogo && config ? { backgroundColor: config.bg } : undefined}
               >
                 {showImg ? (
                   <img
                     src={imgSrc}
                     alt={brand.name}
-                    className="w-full h-full object-contain p-2"
+                    className={`w-full h-full ${hasCustomLogo ? "object-cover p-0" : "object-contain p-2"}`}
                     loading="lazy"
                     onError={(e) => {
                       e.currentTarget.style.display = "none";
@@ -145,7 +147,7 @@ function renderGrid(brands: Array<{ _id: string; name: string; slug: string; loc
                 ) : null}
                 <span
                   className={`text-sm font-bold ${
-                    config ? "text-white" : "text-gray-800 dark:text-white"
+                    config && !hasCustomLogo ? "text-white" : "text-gray-800 dark:text-white"
                   } ${showImg ? "hidden" : "block"}`}
                 >
                   {brand.name}

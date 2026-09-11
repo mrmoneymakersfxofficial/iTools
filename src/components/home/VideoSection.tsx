@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { ExternalLink } from "lucide-react";
 import { getSanityAttr } from "@/lib/sanity/visual-attributes";
 
@@ -152,6 +153,101 @@ function getThumbnailUrl(thumbnail: any, rawUrl?: string): string | null {
   return null;
 }
 
+function VideoPlayerCard({ video, index }: { video: VideoItem; index: number }) {
+  const [isReady, setIsReady] = useState(false);
+  const rawUrl = getEffectiveUrl(video);
+  const embed = getEmbedInfo(rawUrl);
+  const platform = getVideoPlatform(rawUrl);
+  const sanityAttr = getSanityAttr("videoSection", "videoSection", `videos[${index}]`);
+
+  // Stagger iframe loading (350ms per video) so TikTok's API is not hammered simultaneously (fixes 429 errors)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsReady(true);
+    }, index * 350);
+    return () => clearTimeout(timer);
+  }, [index]);
+
+  return (
+    <div
+      {...sanityAttr}
+      className="relative shrink-0 w-[220px] sm:w-auto aspect-[9/16] rounded-2xl overflow-hidden bg-[#111] border border-border dark:border-[#333] shadow-md hover:shadow-xl hover:border-[#D1001C] transition-all duration-300 flex flex-col"
+    >
+      {/* Reproductor Embebido Directo */}
+      <div className="relative w-full flex-1 bg-black overflow-hidden">
+        {embed.isDirectVideo ? (
+          <video
+            src={embed.embedUrl}
+            controls
+            playsInline
+            preload="metadata"
+            className="w-full h-full object-cover"
+          />
+        ) : embed.embedUrl ? (
+          isReady ? (
+            <div className="relative w-full h-full overflow-hidden">
+              <iframe
+                src={embed.embedUrl}
+                className="w-full border-0 absolute inset-x-0"
+                style={{
+                  top: embed.platform === "tiktok" ? "-44px" : "0px",
+                  height: embed.platform === "tiktok" ? "calc(100% + 44px)" : "100%",
+                }}
+                scrolling="no"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen; unload"
+                allowFullScreen
+                loading="lazy"
+                title={video.title}
+              />
+            </div>
+          ) : (
+            <div className="w-full h-full flex flex-col items-center justify-center bg-[#151515] animate-pulse">
+              <div className="w-10 h-10 rounded-full bg-neutral-800 flex items-center justify-center text-neutral-400 font-bold text-sm">
+                ▶
+              </div>
+            </div>
+          )
+        ) : (
+          <div className="w-full h-full flex items-center justify-center text-muted-foreground text-xs">
+            Video no disponible
+          </div>
+        )}
+
+        {/* Badge de Plataforma */}
+        {platform && (
+          <div className="absolute top-2.5 left-2.5 z-10 pointer-events-none">
+            <span
+              className="inline-flex items-center gap-1 text-[9px] font-bold text-white px-2 py-0.5 rounded-full shadow-sm backdrop-blur-md"
+              style={{ backgroundColor: `${platform.color}dd` }}
+            >
+              {platform.name}
+            </span>
+          </div>
+        )}
+      </div>
+
+      {/* Título inferior con enlace externo directo */}
+      <div className="p-2.5 bg-white dark:bg-[#181818] border-t border-border dark:border-[#262626] flex items-center justify-between gap-2">
+        <p className="text-[11px] sm:text-xs font-semibold text-foreground line-clamp-1 flex-1" title={video.title}>
+          {video.title}
+        </p>
+        {rawUrl && (
+          <a
+            href={rawUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-gray-400 hover:text-[#E60000] p-1 rounded-md hover:bg-gray-100 dark:hover:bg-[#262626] transition-colors shrink-0"
+            title="Abrir en TikTok / Fuente oficial"
+            aria-label="Abrir enlace"
+          >
+            <ExternalLink className="h-3.5 w-3.5" />
+          </a>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export function VideoSection({ data }: { data: VideoSectionData | null }) {
   const videos = data?.videos && data.videos.length > 0 ? data.videos : fallbackVideos;
 
@@ -178,79 +274,9 @@ export function VideoSection({ data }: { data: VideoSectionData | null }) {
 
         {/* Carrusel / Grid de Videos Directamente Embebidos */}
         <div className="flex gap-3.5 overflow-x-auto pb-3 scrollbar-hide sm:grid sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 sm:overflow-visible">
-          {videos.map((video, i) => {
-            const rawUrl = getEffectiveUrl(video);
-            const embed = getEmbedInfo(rawUrl);
-            const platform = getVideoPlatform(rawUrl);
-            const sanityAttr = getSanityAttr("videoSection", "videoSection", `videos[${i}]`);
-
-            return (
-              <div
-                key={i}
-                {...sanityAttr}
-                className="relative shrink-0 w-[220px] sm:w-auto aspect-[9/16] rounded-2xl overflow-hidden bg-[#111] border border-border dark:border-[#333] shadow-md hover:shadow-xl hover:border-[#D1001C] transition-all duration-300 flex flex-col"
-              >
-                {/* Reproductor Embebido Directo */}
-                <div className="relative w-full flex-1 bg-black overflow-hidden">
-                  {embed.isDirectVideo ? (
-                    <video
-                      src={embed.embedUrl}
-                      controls
-                      playsInline
-                      preload="metadata"
-                      className="w-full h-full object-cover"
-                    />
-                  ) : embed.embedUrl ? (
-                    <iframe
-                      src={embed.embedUrl}
-                      className="w-full h-full border-0 absolute inset-0"
-                      scrolling="no"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
-                      allowFullScreen
-                      loading="lazy"
-                      title={video.title}
-                      style={{ overflow: "hidden" }}
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-muted-foreground text-xs">
-                      Video no disponible
-                    </div>
-                  )}
-
-                  {/* Badge de Plataforma */}
-                  {platform && (
-                    <div className="absolute top-2.5 left-2.5 z-10 pointer-events-none">
-                      <span
-                        className="inline-flex items-center gap-1 text-[9px] font-bold text-white px-2 py-0.5 rounded-full shadow-sm backdrop-blur-md"
-                        style={{ backgroundColor: `${platform.color}dd` }}
-                      >
-                        {platform.name}
-                      </span>
-                    </div>
-                  )}
-                </div>
-
-                {/* Título inferior con enlace externo directo */}
-                <div className="p-2.5 bg-white dark:bg-[#181818] border-t border-border dark:border-[#262626] flex items-center justify-between gap-2">
-                  <p className="text-[11px] sm:text-xs font-semibold text-foreground line-clamp-1 flex-1" title={video.title}>
-                    {video.title}
-                  </p>
-                  {rawUrl && (
-                    <a
-                      href={rawUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-gray-400 hover:text-[#E60000] p-1 rounded-md hover:bg-gray-100 dark:hover:bg-[#262626] transition-colors shrink-0"
-                      title="Abrir en TikTok / Fuente oficial"
-                      aria-label="Abrir enlace"
-                    >
-                      <ExternalLink className="h-3.5 w-3.5" />
-                    </a>
-                  )}
-                </div>
-              </div>
-            );
-          })}
+          {videos.map((video, i) => (
+            <VideoPlayerCard key={i} video={video} index={i} />
+          ))}
         </div>
       </div>
     </section>

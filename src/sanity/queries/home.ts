@@ -33,7 +33,7 @@ export const brandShowcaseSettingsQuery = `*[_type == "brandShowcaseSettings"][0
 export const brandShowcaseQuery = `*[_type == "brandShowcaseItem" && isActive == true] | order(order asc) {
   _id,
   name,
-  slug,
+  "slug": coalesce(slug.current, slug),
   showInGrid,
   logo { asset-> { url, metadata { dimensions { width, height } } } },
   order

@@ -39,6 +39,8 @@ export default async function Home() {
   const proProducts = allProducts.filter((p: any) => p.showInFeatured || p.price > 100);
   const workshopProducts = allProducts.filter((p: any) => p.showInNewArrivals || p.stock > 0);
 
+  const countdownTile = data.dealTiles?.find((t: any) => t._id === "deal-tile-duo-countdown") || data.dealTiles?.find((t: any) => t.title?.toLowerCase().includes("chambeador"));
+
   return (
     <div className="flex min-h-screen flex-col bg-[#FDFDFD] dark:bg-[#0A0A0A]">
       <main className="flex-1">
@@ -58,7 +60,7 @@ export default async function Home() {
 
           {/* Flash Sale Cuadro de Tiempo en Mobile */}
           <div className="px-3 mb-3">
-            <FlashSaleCountdownCard />
+            <FlashSaleCountdownCard tile={countdownTile} />
           </div>
 
           <MainCategoriesSection categories={data.categories} dealTiles={data.dealTiles} />
@@ -91,17 +93,17 @@ export default async function Home() {
         <div className="hidden lg:block">
           {/* ── IMAGE 1: Hero 3-Column Grid ── */}
           <div className="mx-auto max-w-[1440px] px-2.5 lg:px-4 py-3">
-            <div className="flex gap-3">
+            <div className="flex gap-3 items-stretch">
               {/* LEFT SIDEBAR: Categorías de Tendencia + Cuadro de Tiempo Flash Sale */}
-              <div className="w-[240px] xl:w-[260px] shrink-0">
+              <div className="w-[240px] xl:w-[260px] shrink-0 flex flex-col">
                 <div className="sticky top-[120px] flex flex-col gap-2.5">
                   <TrendingSidebar categories={data.trendingCategories} />
-                  <FlashSaleCountdownCard />
+                  <FlashSaleCountdownCard tile={countdownTile} />
                 </div>
               </div>
 
               {/* CENTER COLUMN: Hero Banners */}
-              <div className="flex-1 min-w-0">
+              <div className="flex-1 min-w-0 flex flex-col">
                 <HomeCenterHero
                   heroBanners={data.heroBanners}
                   brandPromoBanners={data.brandPromoBanners}
@@ -110,7 +112,7 @@ export default async function Home() {
               </div>
 
               {/* RIGHT SIDEBAR: Tool Crib of the North */}
-              <div className="w-[280px] xl:w-[300px] shrink-0">
+              <div className="w-[280px] xl:w-[300px] shrink-0 flex flex-col">
                 <div className="sticky top-[120px]">
                   <ToolCribSidebar
                     products={

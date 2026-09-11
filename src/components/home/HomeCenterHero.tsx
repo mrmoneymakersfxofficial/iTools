@@ -26,12 +26,12 @@ export function HomeCenterHero({
   const rightSanityAttr = getSanityAttr(bottomBannerRight?._id || "promo-banner-hero-electricista", bottomBannerRight?._type || "promoBanner", "image");
 
   return (
-    <div className="flex flex-col gap-2.5 w-full" id="hero" data-section="Hero Principal">
+    <div className="flex flex-col gap-2.5 w-full h-full justify-between" id="hero" data-section="Hero Principal">
       {/* ── 1. Top Large Banner: DeWalt Toughcase / Hero ── */}
       <Link
         href={topBanner?.link || "/marca/dewalt"}
         {...topSanityAttr}
-        className="group relative block w-full h-[220px] sm:h-[260px] md:h-[280px] rounded-lg overflow-hidden border border-[#E0E0E0] dark:border-[#333] shadow-sm transition-transform duration-300 hover:scale-[1.005]"
+        className="group relative block w-full h-[220px] sm:h-[260px] md:h-[280px] shrink-0 rounded-lg overflow-hidden border border-[#E0E0E0] dark:border-[#333] shadow-sm transition-transform duration-300 hover:scale-[1.005]"
       >
         {topBanner?.image?.asset?.url ? (
           <Image
@@ -55,7 +55,7 @@ export function HomeCenterHero({
       <Link
         href={midBanner?.link || "/marca/milwaukee"}
         {...midSanityAttr}
-        className="group relative block w-full h-[75px] sm:h-[88px] rounded-lg overflow-hidden border border-[#E0E0E0] dark:border-[#333] shadow-sm transition-transform duration-300 hover:scale-[1.005]"
+        className="group relative block w-full h-[75px] sm:h-[88px] shrink-0 rounded-lg overflow-hidden border border-[#E0E0E0] dark:border-[#333] shadow-sm transition-transform duration-300 hover:scale-[1.005]"
       >
         {midBanner?.image?.asset?.url ? (
           <Image
@@ -75,12 +75,12 @@ export function HomeCenterHero({
       </Link>
 
       {/* ── 3. Bottom 2 Banners: TALL CARDS (Image 2 style) ── */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 flex-1 min-h-[260px] sm:min-h-[300px]">
         {/* Left: Milwaukee Rotomartillo 2.7J */}
         <Link
           href={bottomBannerLeft?.link || "/categoria/rotomartillos"}
           {...leftSanityAttr}
-          className="group relative block w-full h-[260px] sm:h-[300px] md:h-[340px] rounded-lg overflow-hidden border border-[#E0E0E0] dark:border-[#333] shadow-sm transition-transform duration-300 hover:scale-[1.01]"
+          className="group relative block w-full h-full min-h-[260px] sm:min-h-[300px] md:min-h-[340px] rounded-lg overflow-hidden border border-[#E0E0E0] dark:border-[#333] shadow-sm transition-transform duration-300 hover:scale-[1.01]"
         >
           {bottomBannerLeft?.image?.asset?.url ? (
             <Image
@@ -103,7 +103,7 @@ export function HomeCenterHero({
         <Link
           href={bottomBannerRight?.link || "/categoria/equipos-especializados"}
           {...rightSanityAttr}
-          className="group relative block w-full h-[260px] sm:h-[300px] md:h-[340px] rounded-lg overflow-hidden border border-[#E0E0E0] dark:border-[#333] shadow-sm transition-transform duration-300 hover:scale-[1.01]"
+          className="group relative block w-full h-full min-h-[260px] sm:min-h-[300px] md:min-h-[340px] rounded-lg overflow-hidden border border-[#E0E0E0] dark:border-[#333] shadow-sm transition-transform duration-300 hover:scale-[1.01]"
         >
           {bottomBannerRight?.image?.asset?.url ? (
             <Image

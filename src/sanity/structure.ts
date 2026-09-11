@@ -82,7 +82,21 @@ export const structure: StructureResolver = (S) =>
               S.documentTypeListItem("brandShowcaseItem").title("Marcas"),
               S.documentTypeListItem("category").title("Categorías"),
               S.documentTypeListItem("trendingCategory").title("Categorías en Tendencia (Sidebar)"),
-              S.documentTypeListItem("dealTile").title("Ofertas Especiales"),
+              S.listItem()
+                .title("Cuadro Cuenta Regresiva (Flash Sale / Dúo)")
+                .child(
+                  S.document()
+                    .schemaType("dealTile")
+                    .documentId("deal-tile-duo-countdown")
+                ),
+              S.listItem()
+                .title("Categorías Principales (5 Combos)")
+                .child(
+                  S.documentList()
+                    .title("5 Combos Categorías Principales")
+                    .filter('_type == "dealTile" && _id != "deal-tile-duo-countdown" && !(_id in path("drafts.**"))')
+                ),
+              S.documentTypeListItem("dealTile").title("Todos los Deal Tiles / Ofertas"),
               S.documentTypeListItem("product").title("Productos"),
               S.documentTypeListItem("sectionHeader").title("Encabezados de Sección"),
               S.documentTypeListItem("promoPopup").title("Popup Emergente"),
