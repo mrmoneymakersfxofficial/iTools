@@ -31,7 +31,11 @@ export default async function Home() {
 
   // Products subsets for different sections (passed to auto-rotating carousels)
   const allProducts = data.products || [];
-  const bestSellers = allProducts.filter((p: any) => p.showInTrending || p.showInFeatured || p.stock > 0);
+  const bestSellersFromSettings = (data.homeSettings?.bestSellersProducts || []).filter(Boolean);
+  const bestSellersFromFlags = allProducts.filter((p: any) => p.showInBestSellers === true);
+  const bestSellers = bestSellersFromSettings.length > 0
+    ? bestSellersFromSettings
+    : (bestSellersFromFlags.length > 0 ? bestSellersFromFlags : []);
   const proProducts = allProducts.filter((p: any) => p.showInFeatured || p.price > 100);
   const workshopProducts = allProducts.filter((p: any) => p.showInNewArrivals || p.stock > 0);
 

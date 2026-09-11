@@ -45,6 +45,7 @@ export const trendingCategoriesQuery = `*[_type == "trendingCategory" && isActiv
   "slug": coalesce(slug.current, slug),
   viewCount,
   iconType,
+  image { asset-> { url, metadata { dimensions { width, height }, lqip } } },
   order
 }`;
 
@@ -64,7 +65,7 @@ export const categoriesQuery = `*[_type == "category" && isActive == true] | ord
   order
 }`;
 
-export const productsQuery = `*[_type == "product" && isActive == true && (showInTrending == true || showInFeatured == true || showInToolCrib == true || showInNewArrivals == true || defined(salePrice))][0...60] | order(order asc) {
+export const productsQuery = `*[_type == "product" && isActive == true && (showInTrending == true || showInFeatured == true || showInToolCrib == true || showInNewArrivals == true || showInBestSellers == true || defined(salePrice))][0...60] | order(order asc) {
   _id,
   name,
   "slug": slug.current,
@@ -87,6 +88,7 @@ export const productsQuery = `*[_type == "product" && isActive == true && (showI
   showInToolCrib,
   showInFeatured,
   showInNewArrivals,
+  showInBestSellers,
   technicalSheetUrl,
   videoUrl
 }`;
@@ -113,7 +115,30 @@ export const homeSettingsQuery = `*[_type == "homeSettings"][0] {
   toolCribTitle,
   toolCribLink,
   exploreProductsTitle,
-  exploreProductsSubtitle
+  exploreProductsSubtitle,
+  bestSellersProducts[]-> {
+    _id,
+    name,
+    "slug": slug.current,
+    sku,
+    brand-> { _id, name, slug, logo { asset-> { url } } },
+    category-> { _id, name, "slug": slug.current },
+    shortDescription,
+    image { asset-> { url, metadata { dimensions { width, height }, lqip } } },
+    images[] { asset-> { url, metadata { dimensions { width, height }, lqip } } },
+    price,
+    salePrice,
+    discountBadge,
+    stock,
+    rating,
+    reviews,
+    isNewArrival,
+    showInTrending,
+    showInToolCrib,
+    showInFeatured,
+    showInNewArrivals,
+    showInBestSellers
+  }
 }`;
 
 export const giveawayBannerQuery = `*[_type == "giveawayBanner" && isActive == true][0] {

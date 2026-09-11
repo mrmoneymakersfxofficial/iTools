@@ -253,19 +253,32 @@ export function BestSellersWorkshopSection({ products, backgroundBanner }: BestS
                       )}
 
                       {/* Product Image */}
-                      <div className="relative w-full aspect-square rounded-lg bg-white overflow-hidden flex items-center justify-center p-2 mb-2">
-                        {product.image?.asset?.url ? (
-                          <img
-                            src={product.image.asset.url}
-                            alt={product.name}
-                            className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
-                          />
-                        ) : (
-                          <div className="w-full h-full bg-gray-100 flex items-center justify-center text-gray-400 font-bold text-xs">
-                            iTools.pe
+                      {(() => {
+                        const productImageUrl =
+                          product.image?.asset?.url ||
+                          fallbackBestSellers.find(
+                            (f) =>
+                              f.slug === product.slug ||
+                              f._id === product._id ||
+                              (product._id && product._id.includes(f._id.replace("bs-", "")))
+                          )?.image?.asset?.url;
+
+                        return (
+                          <div className="relative w-full aspect-square rounded-lg bg-white overflow-hidden flex items-center justify-center p-2 mb-2">
+                            {productImageUrl ? (
+                              <img
+                                src={productImageUrl}
+                                alt={product.name}
+                                className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
+                              />
+                            ) : (
+                              <div className="w-full h-full bg-gray-100 flex items-center justify-center text-gray-400 font-bold text-xs">
+                                iTools.pe
+                              </div>
+                            )}
                           </div>
-                        )}
-                      </div>
+                        );
+                      })()}
 
                       {/* Info */}
                       <div>

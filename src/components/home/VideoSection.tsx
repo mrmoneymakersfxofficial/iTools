@@ -50,11 +50,17 @@ function getEmbedInfo(url: string | null | undefined): { embedUrl: string; isDir
     };
   }
 
-  // 3. TikTok (Web standard / mobile / short / embed)
-  const tiktokIdMatch = clean.match(/video\/(\d+)/) || clean.match(/tiktok\.com\/v\/(\d+)/) || clean.match(/\/(\d{15,25})/);
+  // 3. TikTok (Web standard / mobile / short / embed / player)
+  const tiktokIdMatch =
+    clean.match(/video\/(\d+)/) ||
+    clean.match(/tiktok\.com\/v\/(\d+)/) ||
+    clean.match(/tiktok\.com\/embed\/v2\/(\d+)/) ||
+    clean.match(/tiktok\.com\/player\/v1\/(\d+)/) ||
+    clean.match(/\/(\d{15,25})/);
+
   if (tiktokIdMatch) {
     return {
-      embedUrl: `https://www.tiktok.com/embed/v2/${tiktokIdMatch[1]}`,
+      embedUrl: `https://www.tiktok.com/player/v1/${tiktokIdMatch[1]}?autoplay=0&music_info=0&description=0`,
       isDirectVideo: false,
       platform: "tiktok",
     };
@@ -63,7 +69,7 @@ function getEmbedInfo(url: string | null | undefined): { embedUrl: string; isDir
   // Fallback para URLs de perfil TikTok sin ID directo
   if (clean.includes("tiktok.com/@")) {
     return {
-      embedUrl: `https://www.tiktok.com/embed/v2/7681826524290551061`,
+      embedUrl: `https://www.tiktok.com/player/v1/7681826524290551061?autoplay=0&music_info=0&description=0`,
       isDirectVideo: false,
       platform: "tiktok",
     };
@@ -197,10 +203,13 @@ export function VideoSection({ data }: { data: VideoSectionData | null }) {
                   ) : embed.embedUrl ? (
                     <iframe
                       src={embed.embedUrl}
-                      className="w-full h-full border-0"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      className="w-full h-full border-0 absolute inset-0"
+                      scrolling="no"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
+                      allowFullScreen
                       loading="lazy"
                       title={video.title}
+                      style={{ overflow: "hidden" }}
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center text-muted-foreground text-xs">

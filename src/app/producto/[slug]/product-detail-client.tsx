@@ -509,37 +509,52 @@ export function ProductDetailClient({ product, relatedProducts, reviews }: { pro
             )}
 
             {/* 2. Datos Técnicos */}
-            {activeTab === "specs" && (
-              <div className="space-y-4">
-                <h3 className="text-lg font-bold text-foreground mb-3 flex items-center gap-2">
-                  <span className="w-2.5 h-2.5 rounded-full bg-[#0056D2]" />
-                  Especificaciones Técnicas
-                </h3>
-                <div className="divide-y divide-border border border-border dark:border-[#262626] rounded-xl overflow-hidden">
-                  <div className="flex justify-between py-3 px-4 bg-surface/50 dark:bg-[#181818]/50">
-                    <span className="text-sm font-semibold text-muted-foreground">SKU / Código</span>
-                    <span className="text-sm font-bold text-foreground font-mono">{product.sku}</span>
+            {activeTab === "specs" && (() => {
+              // Normalize specs from Sanity (array of { key, value }) or Record<string, string>
+              const specsList: { key: string; value: string }[] = Array.isArray(product.specs)
+                ? (product.specs as any[]).map((item: any) => ({
+                    key: typeof item === "object" && item !== null ? (item.key || item.name || "") : String(item),
+                    value: typeof item === "object" && item !== null ? (typeof item.value === "object" ? JSON.stringify(item.value) : String(item.value ?? "")) : "",
+                  })).filter((s) => s.key || s.value)
+                : (typeof product.specs === "object" && product.specs !== null)
+                ? Object.entries(product.specs).map(([k, v]) => ({
+                    key: k,
+                    value: typeof v === "object" ? JSON.stringify(v) : String(v ?? ""),
+                  }))
+                : [];
+
+              return (
+                <div className="space-y-4">
+                  <h3 className="text-lg font-bold text-foreground mb-3 flex items-center gap-2">
+                    <span className="w-2.5 h-2.5 rounded-full bg-[#0056D2]" />
+                    Especificaciones Técnicas
+                  </h3>
+                  <div className="divide-y divide-border border border-border dark:border-[#262626] rounded-xl overflow-hidden">
+                    <div className="flex justify-between py-3 px-4 bg-surface/50 dark:bg-[#181818]/50">
+                      <span className="text-sm font-semibold text-muted-foreground">SKU / Código</span>
+                      <span className="text-sm font-bold text-foreground font-mono">{product.sku}</span>
+                    </div>
+                    {product.brand && (
+                      <div className="flex justify-between py-3 px-4">
+                        <span className="text-sm font-semibold text-muted-foreground">Marca</span>
+                        <span className="text-sm font-medium text-foreground">{product.brand.name}</span>
+                      </div>
+                    )}
+                    {specsList.map((item, idx) => (
+                      <div key={idx} className="flex justify-between py-3 px-4 hover:bg-surface/30 dark:hover:bg-[#181818]/30 transition-colors">
+                        <span className="text-sm text-muted-foreground">{item.key}</span>
+                        <span className="text-sm font-medium text-foreground text-right">{item.value}</span>
+                      </div>
+                    ))}
+                    {specsList.length === 0 && (
+                      <div className="py-6 text-center text-sm text-muted-foreground">
+                        Especificaciones estandarizadas según catálogo oficial del fabricante.
+                      </div>
+                    )}
                   </div>
-                  {product.brand && (
-                    <div className="flex justify-between py-3 px-4">
-                      <span className="text-sm font-semibold text-muted-foreground">Marca</span>
-                      <span className="text-sm font-medium text-foreground">{product.brand.name}</span>
-                    </div>
-                  )}
-                  {Object.entries(product.specs || {}).map(([key, value]) => (
-                    <div key={key} className="flex justify-between py-3 px-4 hover:bg-surface/30 dark:hover:bg-[#181818]/30 transition-colors">
-                      <span className="text-sm text-muted-foreground">{key}</span>
-                      <span className="text-sm font-medium text-foreground text-right">{value}</span>
-                    </div>
-                  ))}
-                  {Object.keys(product.specs || {}).length === 0 && (
-                    <div className="py-6 text-center text-sm text-muted-foreground">
-                      Especificaciones estandarizadas según catálogo oficial del fabricante.
-                    </div>
-                  )}
                 </div>
-              </div>
-            )}
+              );
+            })()}
 
             {/* 3. Qué Incluye */}
             {activeTab === "includes" && (

@@ -314,45 +314,69 @@ export function ProductQuickView() {
                   </div>
                 )}
 
-                {activeSection === "specs" && (
-                  <div className="py-2">
-                    {Object.keys(product.specs || {}).length > 0 ? (
-                      <div className="space-y-0 divide-y divide-[#1A1A1A]">
-                        {Object.entries(product.specs || {}).map(([key, value]) => (
-                          <div key={key} className="flex justify-between py-2.5">
-                            <span className="text-xs text-[#888]">{key}</span>
-                            <span className="text-xs text-[#CCC] font-medium">{value}</span>
-                          </div>
-                        ))}
-                      </div>
-                    ) : (
-                      <p className="text-xs text-[#666] text-center py-6">
-                        No hay especificaciones disponibles.
-                      </p>
-                    )}
-                  </div>
-                )}
+                {activeSection === "specs" && (() => {
+                  const specsList: { key: string; value: string }[] = Array.isArray(product.specs)
+                    ? (product.specs as any[]).map((item: any) => ({
+                        key: typeof item === "object" && item !== null ? (item.key || item.name || "") : String(item),
+                        value: typeof item === "object" && item !== null ? (typeof item.value === "object" ? JSON.stringify(item.value) : String(item.value ?? "")) : "",
+                      })).filter((s) => s.key || s.value)
+                    : (typeof product.specs === "object" && product.specs !== null)
+                    ? Object.entries(product.specs).map(([k, v]) => ({
+                        key: k,
+                        value: typeof v === "object" ? JSON.stringify(v) : String(v ?? ""),
+                      }))
+                    : [];
 
-                {activeSection === "shipping" && (
-                  <div className="space-y-4 py-2">
-                    <div className="flex items-start gap-3">
-                      <div className="h-8 w-8 rounded-lg flex items-center justify-center shrink-0" style={{ backgroundColor: `${effectiveBrandColor}20` }}>
-                        <Truck className="h-4 w-4" style={{ color: effectiveBrandColor }} />
+                  return (
+                    <div className="py-2">
+                      {specsList.length > 0 ? (
+                        <div className="space-y-0 divide-y divide-[#1A1A1A]">
+                          {specsList.map((item, idx) => (
+                            <div key={idx} className="flex justify-between py-2.5">
+                              <span className="text-xs text-[#888]">{item.key}</span>
+                              <span className="text-xs text-[#CCC] font-medium">{item.value}</span>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="text-xs text-[#666] text-center py-6">
+                          No hay especificaciones disponibles.
+                        </p>
+                      )}
+                    </div>
+                  );
+                })()}
+
+                {activeSection === "shipping" && (() => {
+                  const warrantyVal = Array.isArray(product.specs)
+                    ? (product.specs as any[]).find((s: any) => s.key?.toLowerCase() === "garant\u00eda" || s.key?.toLowerCase() === "garantia")?.value
+                    : (product.specs && typeof product.specs === "object")
+                    ? (product.specs["Garant\u00eda"] || product.specs["Garantia"])
+                    : undefined;
+
+                  return (
+                    <div className="space-y-4 py-2">
+                      <div className="flex items-start gap-3">
+                        <div className="h-8 w-8 rounded-lg flex items-center justify-center shrink-0" style={{ backgroundColor: `${effectiveBrandColor}20` }}>
+                          <Truck className="h-4 w-4" style={{ color: effectiveBrandColor }} />
+                        </div>
+                        <div>
+                          <p className="text-sm text-white font-medium">Envío a todo Perú</p>
+                          <p className="text-xs text-[#888] mt-0.5">Lima: 2-5 días hábiles. Provincias: 5-10 días hábiles.</p>
+                        </div>
                       </div>
-                      <div>
-                        <p className="text-sm text-white font-medium">Envío a todo Perú</p>
-                        <p className="text-xs text-[#888] mt-0.5">Lima: 2-5 días hábiles. Provincias: 5-10 días hábiles.</p>
+                      <div className="flex items-start gap-3">
+                        <div className="h-8 w-8 rounded-lg flex items-center justify-center shrink-0" style={{ backgroundColor: `${effectiveBrandColor}20` }}>
+                          <Shield className="h-4 w-4" style={{ color: effectiveBrandColor }} />
+                        </div>
+                        <div>
+                          <p className="text-sm text-white font-medium">Garantía Oficial</p>
+                          <p className="text-xs text-[#888] mt-0.5">{warrantyVal || "Garantía del fabricante"}. Servicio técnico autorizado.</p>
+                        </div>
                       </div>
                     </div>
-                    <div className="flex items-start gap-3">
-                      <div className="h-8 w-8 rounded-lg flex items-center justify-center shrink-0" style={{ backgroundColor: `${effectiveBrandColor}20` }}>
-                        <Shield className="h-4 w-4" style={{ color: effectiveBrandColor }} />
-                      </div>
-                      <div>
-                        <p className="text-sm text-white font-medium">Garantía Oficial</p>
-                        <p className="text-xs text-[#888] mt-0.5">{product.specs["Garantía"] || "Garantía del fabricante"}. Servicio técnico autorizado.</p>
-                      </div>
-                    </div>
+                  );
+                })()}
                     <div className="flex items-start gap-3">
                       <div className="h-8 w-8 rounded-lg flex items-center justify-center shrink-0" style={{ backgroundColor: `${effectiveBrandColor}20` }}>
                         <RotateCcw className="h-4 w-4" style={{ color: effectiveBrandColor }} />

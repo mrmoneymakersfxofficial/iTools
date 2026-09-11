@@ -9,8 +9,15 @@ export default defineType({
     defineField({ name: "slug", title: "Slug", type: "string", validation: (r) => r.required() }),
     defineField({ name: "viewCount", title: "Texto de vistas (ej: 18.8K)", type: "string" }),
     defineField({
+      name: "image",
+      title: "Miniatura del Producto / Categoría",
+      type: "image",
+      options: { hotspot: true },
+      description: "Miniatura pequeña del producto real o categoría que acompaña al texto en la barra lateral",
+    }),
+    defineField({
       name: "iconType",
-      title: "Tipo de ícono",
+      title: "Tipo de ícono (Fallback)",
       type: "string",
       options: {
         list: [
@@ -33,5 +40,5 @@ export default defineType({
     defineField({ name: "isActive", title: "Activo", type: "boolean", initialValue: true }),
   ],
   orderings: [{ title: "Orden", name: "orderAsc", by: [{ field: "order", direction: "asc" }] }],
-  preview: { select: { title: "name", subtitle: "viewCount" } },
+  preview: { select: { title: "name", subtitle: "viewCount", media: "image" } },
 });

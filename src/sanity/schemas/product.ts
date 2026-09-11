@@ -136,6 +136,13 @@ export default defineType({
     defineField({ name: "showInToolCrib", title: "Mostrar en Tool Crib", type: "boolean", initialValue: false }),
     defineField({ name: "showInFeatured", title: "Mostrar en Destacados", type: "boolean", initialValue: false }),
     defineField({ name: "showInNewArrivals", title: "Mostrar en Nuevos Ingresos", type: "boolean", initialValue: false }),
+    defineField({
+      name: "showInBestSellers",
+      title: "Mostrar en Los Más Vendidos",
+      type: "boolean",
+      initialValue: false,
+      description: "Marcar para incluir este producto en la sección 'Los Más Vendidos' de la página de inicio",
+    }),
     defineField({ name: "order", title: "Orden", type: "number", validation: (r) => r.required().min(0) }),
     defineField({ name: "isActive", title: "Activo", type: "boolean", initialValue: true }),
     defineField({

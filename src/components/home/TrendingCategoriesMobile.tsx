@@ -35,33 +35,49 @@ export function TrendingCategoriesMobile({ categories }: { categories: any[] }) 
               Icon = (LucideIcons as any)["Settings"] || Wrench;
             }
 
+            const thumbUrl =
+              cat.image?.asset?.url ||
+              (cat.slug?.includes("taladro")
+                ? "/products/dewalt-drill.webp"
+                : cat.slug?.includes("impact")
+                ? "/products/bosch-flexiclick.webp"
+                : cat.slug?.includes("sierra")
+                ? "/products/makita-grinder.webp"
+                : cat.slug?.includes("combo")
+                ? "/products/dongcheng-combo.webp"
+                : cat.slug?.includes("milwaukee")
+                ? "/products/milwaukee-m18.webp"
+                : "/products/paint-sprayer.webp");
+
             return (
               <Link
                 key={cat._id}
                 href={`/categoria/${cat.slug}`}
-                className="group flex items-center gap-2.5 p-3 bg-white dark:bg-[#1a1a1a] border border-[#E0E0E0] dark:border-[#333] rounded-lg hover:shadow-md hover:border-[#ccc] dark:hover:border-[#444] transition-all"
+                className="group flex items-center gap-2 p-2.5 bg-white dark:bg-[#1a1a1a] border border-[#E0E0E0] dark:border-[#333] rounded-xl hover:shadow-md hover:border-[#ccc] dark:hover:border-[#444] transition-all"
               >
-                {/* Icon circle */}
-                <div className="shrink-0 w-10 h-10 rounded-full bg-[#F5F6F8] dark:bg-[#2a2a2a] flex items-center justify-center group-hover:bg-[#E8EDF2] dark:group-hover:bg-[#333] transition-colors">
-                  <Icon className="h-5 w-5 text-[#555] dark:text-gray-300" />
+                {/* Product Thumbnail */}
+                <div className="shrink-0 w-9 h-9 rounded-lg bg-[#F5F6F8] dark:bg-[#252525] p-1 flex items-center justify-center overflow-hidden">
+                  <img
+                    src={thumbUrl}
+                    alt={cat.name}
+                    className="w-full h-full object-contain"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = "/products/dewalt-drill.webp";
+                    }}
+                  />
                 </div>
 
-                {/* Text */}
+                {/* Text & Blue Eye */}
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs font-semibold text-[#333] dark:text-gray-200 group-hover:text-[#E35205] transition-colors leading-tight line-clamp-2">
+                  <p className="text-xs font-semibold text-[#333] dark:text-gray-200 group-hover:text-[#E35205] transition-colors leading-tight line-clamp-1">
                     {cat.name}
                   </p>
                   {cat.viewCount && (
-                    <span className="inline-flex items-center gap-0.5 mt-0.5">
-                      <span className="text-[10px] text-[#0071C5] dark:text-[#3399FF] font-bold bg-[#E8F4FD] dark:bg-[#0a2a44] px-1.5 py-0.5 rounded-full">
-                        {cat.viewCount}
-                      </span>
-                    </span>
+                    <div className="flex items-center gap-1 mt-0.5">
+                      <span className="text-[10px] text-[#0080FF] font-bold">👁 {cat.viewCount}</span>
+                    </div>
                   )}
                 </div>
-
-                {/* Arrow */}
-                <ChevronRight className="h-3.5 w-3.5 text-[#ccc] dark:text-gray-500 group-hover:text-[#E35205] shrink-0 transition-colors" />
               </Link>
             );
           })}

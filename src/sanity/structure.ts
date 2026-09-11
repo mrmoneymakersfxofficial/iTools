@@ -69,6 +69,13 @@ export const structure: StructureResolver = (S) =>
                     .title("Fondo Los Más Vendidos")
                     .filter('_type == "promoBanner" && _id == "promo-banner-mas-vendidos-bg"')
                 ),
+              S.listItem()
+                .title("Los Más Vendidos (Productos)")
+                .child(
+                  S.documentList()
+                    .title("Productos - Los Más Vendidos")
+                    .filter('_type == "product" && (showInBestSellers == true || isBestSeller == true)')
+                ),
               S.documentTypeListItem("promoBanner").title("Todos los Promo Banners"),
               S.documentTypeListItem("giveawayBanner").title("Sorteos (Giveaway)"),
               S.documentTypeListItem("brandPromoSlide").title("Banners de Marcas"),
