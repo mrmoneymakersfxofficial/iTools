@@ -13,6 +13,7 @@ export default defineType({
       type: "image",
       options: { hotspot: true },
       validation: (r) => r.required(),
+      description: "📐 Resolución recomendada: 1200 x 88 px (o 2400 x 176 px @2x). Banner horizontal delgado intermedio (ej: Milwaukee Combo Kit).",
     }),
     defineField({ name: "order", title: "Orden", type: "number", validation: (r) => r.required().min(0) }),
     defineField({ name: "isActive", title: "Activo", type: "boolean", initialValue: true }),

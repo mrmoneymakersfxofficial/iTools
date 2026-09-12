@@ -13,7 +13,7 @@ export default defineType({
       title: "Miniatura del Producto / Categoría",
       type: "image",
       options: { hotspot: true },
-      description: "Miniatura pequeña del producto real o categoría que acompaña al texto en la barra lateral",
+      description: "Miniatura del producto o categoría en la barra lateral. 📐 Resolución recomendada: 120 x 120 px (cuadrada 1:1, fondo transparente o blanco, WebP/PNG).",
     }),
     defineField({
       name: "iconType",

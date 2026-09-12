@@ -171,10 +171,10 @@ function VideoPlayerCard({ video, index }: { video: VideoItem; index: number }) 
   return (
     <div
       {...sanityAttr}
-      className="relative shrink-0 w-[220px] sm:w-auto aspect-[9/16] rounded-2xl overflow-hidden bg-[#111] border border-border dark:border-[#333] shadow-md hover:shadow-xl hover:border-[#D1001C] transition-all duration-300 flex flex-col"
+      className="relative shrink-0 w-[220px] sm:w-auto rounded-2xl overflow-hidden bg-[#111] border border-border dark:border-[#333] shadow-md hover:shadow-xl hover:border-[#D1001C] transition-all duration-300 flex flex-col"
     >
-      {/* Reproductor Embebido Directo */}
-      <div className="relative w-full flex-1 bg-black overflow-hidden">
+      {/* Reproductor Embebido Directo con ratio EXACTO 9:16 sin recortes */}
+      <div className="relative w-full aspect-[9/16] bg-black overflow-hidden">
         {embed.isDirectVideo ? (
           <video
             src={embed.embedUrl}
@@ -221,7 +221,7 @@ function VideoPlayerCard({ video, index }: { video: VideoItem; index: number }) 
       </div>
 
       {/* Título inferior con enlace externo directo */}
-      <div className="p-2.5 bg-white dark:bg-[#181818] border-t border-border dark:border-[#262626] flex items-center justify-between gap-2">
+      <div className="p-2.5 bg-white dark:bg-[#181818] border-t border-border dark:border-[#262626] flex items-center justify-between gap-2 mt-auto">
         <p className="text-[11px] sm:text-xs font-semibold text-foreground line-clamp-1 flex-1" title={video.title}>
           {video.title}
         </p>

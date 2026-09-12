@@ -32,7 +32,7 @@ export default defineType({
       title: "Logo de Marca (Personalizado / CMS)",
       type: "image",
       options: { hotspot: true },
-      description: "Logo de la marca visible en la tarjeta derecha del producto. Si no se sube, se tomará automáticamente de la marca asociada.",
+      description: "Logo de la marca visible en la tarjeta derecha del producto. 📐 Resolución recomendada: 120 x 50 px (PNG transparente o SVG). Si no se sube, se tomará automáticamente de la marca asociada.",
     }),
     defineField({
       name: "category",
@@ -59,7 +59,7 @@ export default defineType({
       title: "Imagen Principal",
       type: "image",
       options: { hotspot: true },
-      description: "Imagen principal del producto (se usa como fallback si no hay imágenes adicionales)",
+      description: "Imagen principal del producto. 📐 Resolución recomendada: 800 x 800 px (cuadrada 1:1, fondo blanco puro o transparente, WebP/PNG). Se usa como fallback si no hay imágenes adicionales.",
     }),
     defineField({
       name: "images",
@@ -67,6 +67,7 @@ export default defineType({
       type: "array",
       of: [{ type: "image", options: { hotspot: true } }],
       validation: (r) => r.max(10).error("Puedes subir hasta un máximo de 10 imágenes."),
+      description: "Fotos de la galería del producto. 📐 Resolución recomendada: 800 x 800 px (cuadrada 1:1, fondo blanco puro o transparente).",
     }),
     defineField({
       name: "price",

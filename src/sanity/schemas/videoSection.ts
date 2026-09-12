@@ -63,6 +63,7 @@ export default defineType({
               title: "Miniatura",
               type: "image",
               options: { hotspot: true },
+              description: "Miniatura opcional de portada para el video. 📐 Resolución recomendada: 1080 x 1920 px (formato vertical 9:16) o 720 x 1280 px.",
             }),
             defineField({
               name: "isVertical",

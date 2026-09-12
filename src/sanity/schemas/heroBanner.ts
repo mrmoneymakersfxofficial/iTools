@@ -15,6 +15,7 @@ export default defineType({
       type: "image",
       options: { hotspot: true },
       validation: (r) => r.required(),
+      description: "📐 Resolución recomendada: 1200 x 280 px (o 2400 x 560 px para pantallas Retina 2x). Formato panorámico horizontal.",
     }),
     defineField({ name: "bgGradient", title: "Gradiente de fallback (CSS)", type: "string" }),
     defineField({

@@ -32,7 +32,13 @@ export default defineType({
     defineField({ name: "productsLimit", title: "Cantidad de productos a mostrar", type: "number", initialValue: 24, description: "Número de productos a mostrar por página en esta categoría" }),
     defineField({ name: "bannerTitle", title: "Título del Banner Separador (ej: OFERTAS)", type: "string" }),
     defineField({ name: "bannerSubtitle", title: "Texto / Subtítulo del Banner", type: "string" }),
-    defineField({ name: "bannerImage", title: "Banner Horizontal de la Categoría", type: "image", options: { hotspot: true } }),
+    defineField({
+      name: "bannerImage",
+      title: "Banner Horizontal de la Categoría",
+      type: "image",
+      options: { hotspot: true },
+      description: "📐 Resolución recomendada: 1200 x 300 px (horizontal panorámico).",
+    }),
     defineField({ name: "bannerLink", title: "Enlace del Banner", type: "string" }),
     defineField({ name: "order", title: "Orden", type: "number", validation: (r) => r.required().min(0) }),
     defineField({
