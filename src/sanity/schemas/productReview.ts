@@ -23,7 +23,7 @@ export default defineType({
       title: "Avatar del Autor",
       type: "image",
       options: { hotspot: true },
-      description: "Foto de perfil del revisor (opcional)",
+      description: "Foto de perfil del revisor (opcional). 📐 Resolución recomendada: 120 x 120 px (1:1 circular/cuadrada).",
     }),
     defineField({
       name: "rating",

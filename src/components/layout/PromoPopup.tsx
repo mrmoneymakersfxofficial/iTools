@@ -75,20 +75,23 @@ export function PromoPopup({ data }: { data: PromoPopupData | null }) {
   useEffect(() => {
     if (!data) return;
     if (data.showOnEntry === false) return;
+    if ((data as any).isActive === false) return;
 
-    // Check if popup was dismissed recently
-    const dismissed = localStorage.getItem("promo-popup-dismissed");
-    if (dismissed) {
-      const dismissedDate = new Date(dismissed);
-      // Show again after 24 hours
-      if (Date.now() - dismissedDate.getTime() < 24 * 60 * 60 * 1000) return;
+    // Check if in preview mode (e.g. ?preview-popup=true or inside Sanity iframe)
+    const isPreview = typeof window !== "undefined" &&
+      (window.location.search.includes("preview-popup") || window.location.search.includes("sanity"));
+
+    if (!isPreview) {
+      // Check if popup was dismissed recently (12 hours instead of 24)
+      const dismissed = localStorage.getItem("promo-popup-dismissed");
+      if (dismissed) {
+        const dismissedDate = new Date(dismissed);
+        if (Date.now() - dismissedDate.getTime() < 12 * 60 * 60 * 1000) return;
+      }
     }
 
-    // Check if countdown expired
-    if (data.countdownEnd && new Date(data.countdownEnd) < new Date()) return;
-
-    // Show popup after configurable delay (default 3 seconds)
-    const delay = (data.delaySeconds || 3) * 1000;
+    // Show popup after configurable delay (default 2 seconds)
+    const delay = Math.max(1, data.delaySeconds ?? 2) * 1000;
     const timer = setTimeout(() => setOpen(true), delay);
     return () => clearTimeout(timer);
   }, [data]);

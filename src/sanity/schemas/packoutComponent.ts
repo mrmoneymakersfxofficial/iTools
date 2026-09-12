@@ -36,6 +36,7 @@ export default defineType({
       title: "Imagen",
       type: "image",
       options: { hotspot: true },
+      description: "📐 Resolución recomendada: 600 x 600 px (formato cuadrado 1:1, fondo blanco o transparente PNG/WebP).",
       validation: (r) => r.required(),
     }),
     defineField({

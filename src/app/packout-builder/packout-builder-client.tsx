@@ -22,6 +22,77 @@ interface PackoutItem {
   specs?: Record<string, string>;
 }
 
+function getImageSrc(image: any, width = 200, height = 200): string {
+  if (!image) return "";
+  if (typeof image === "string") return image;
+  if (image?.asset?.url) return image.asset.url;
+  try {
+    return urlFor(image).width(width).height(height).format("webp").url() || "";
+  } catch {
+    return image?.asset?.url || "";
+  }
+}
+
+const fallbackBases: PackoutItem[] = [
+  {
+    _id: "packout-base-1",
+    name: "Caja con Ruedas PACKOUT™ 238L",
+    slug: "caja-con-ruedas-packout",
+    price: 1399.0,
+    salePrice: 1199.0,
+    image: { asset: { url: "/products/milwaukee-m18.webp" } },
+    specs: { Dimensiones: "56 x 41 x 48 cm", Capacidad: "113 kg" },
+  },
+  {
+    _id: "packout-base-2",
+    name: "Caja Rodante PACKOUT™ Compacta",
+    slug: "caja-rodante-packout-compacta",
+    price: 1099.0,
+    salePrice: 949.0,
+    image: { asset: { url: "/products/dewalt-drill.webp" } },
+    specs: { Dimensiones: "48 x 38 x 40 cm", Capacidad: "90 kg" },
+  },
+];
+
+const fallbackStackables: PackoutItem[] = [
+  {
+    _id: "packout-mod-1",
+    name: "Caja de Herramientas Mediana PACKOUT™",
+    slug: "caja-herramientas-mediana-packout",
+    price: 459.0,
+    salePrice: 389.0,
+    image: { asset: { url: "/products/makita-grinder.webp" } },
+    specs: { Dimensiones: "56 x 41 x 16 cm" },
+  },
+  {
+    _id: "packout-mod-2",
+    name: "Organizador Compacto con 5 Gavetas PACKOUT™",
+    slug: "organizador-compacto-packout",
+    price: 299.0,
+    salePrice: 249.0,
+    image: { asset: { url: "/products/electrical-kit.webp" } },
+    specs: { Dimensiones: "25 x 38 x 12 cm" },
+  },
+  {
+    _id: "packout-mod-3",
+    name: "Mochila Balística Resistente PACKOUT™",
+    slug: "mochila-balistica-packout",
+    price: 649.0,
+    salePrice: 549.0,
+    image: { asset: { url: "/products/ingco-combo.webp" } },
+    specs: { Dimensiones: "48 x 30 x 38 cm" },
+  },
+  {
+    _id: "packout-mod-4",
+    name: "Hielera Cooler PACKOUT™ 15L",
+    slug: "cooler-packout",
+    price: 499.0,
+    salePrice: 429.0,
+    image: { asset: { url: "/products/dongcheng-combo.webp" } },
+    specs: { Dimensiones: "41 x 25 x 33 cm" },
+  },
+];
+
 export function PackoutBuilderClient({
   bases,
   stackables,
@@ -29,13 +100,12 @@ export function PackoutBuilderClient({
   bases: PackoutItem[];
   stackables: PackoutItem[];
 }) {
-  const [selectedBase, setSelectedBase] = useState<PackoutItem | null>(null);
+  const safeBases = Array.isArray(bases) && bases.length > 0 ? bases : fallbackBases;
+  const safeStackables = Array.isArray(stackables) && stackables.length > 0 ? stackables : fallbackStackables;
+  const [selectedBase, setSelectedBase] = useState<PackoutItem | null>(safeBases[0] || null);
   const [stack, setStack] = useState<PackoutItem[]>([]);
   const addToCart = useCartStore((s) => s.addItem);
   const openCart = useCartStore((s) => s.openCart);
-
-  const safeBases = Array.isArray(bases) ? bases : [];
-  const safeStackables = Array.isArray(stackables) ? stackables : [];
 
   // Filter stackables compatible with selected base
   const compatibleModules = selectedBase
@@ -142,7 +212,7 @@ export function PackoutBuilderClient({
                         <div className="relative aspect-square mb-2 bg-muted/30 rounded-lg overflow-hidden flex items-center justify-center">
                           {base.image ? (
                             <img
-                              src={urlFor(base.image).width(200).height(200).format("webp").url()}
+                              src={getImageSrc(base.image, 200, 200)}
                               alt={base.name || ""}
                               className="w-full h-full object-contain"
                             />
@@ -185,7 +255,7 @@ export function PackoutBuilderClient({
                             <div className="relative aspect-square mb-2 bg-muted/30 rounded-lg overflow-hidden flex items-center justify-center">
                               {mod.image ? (
                                 <img
-                                  src={urlFor(mod.image).width(200).height(200).format("webp").url()}
+                                  src={getImageSrc(mod.image, 200, 200)}
                                   alt={mod.name || ""}
                                   className="w-full h-full object-contain"
                                 />
@@ -238,7 +308,7 @@ export function PackoutBuilderClient({
                         <div className="relative w-full h-16 rounded-lg bg-primary/10 border-2 border-primary flex items-center justify-center overflow-hidden">
                           {selectedBase.image && (
                             <img
-                              src={urlFor(selectedBase.image).width(120).height(60).format("webp").url()}
+                              src={getImageSrc(selectedBase.image, 120, 60)}
                               alt=""
                               className="absolute inset-0 w-full h-full object-contain opacity-30"
                             />

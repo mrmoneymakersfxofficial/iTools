@@ -98,8 +98,9 @@ export const structure: StructureResolver = (S) =>
                 ),
               S.documentTypeListItem("dealTile").title("Todos los Deal Tiles / Ofertas"),
               S.documentTypeListItem("product").title("Productos"),
-              S.documentTypeListItem("sectionHeader").title("Encabezados de Sección"),
-              S.documentTypeListItem("promoPopup").title("Popup Emergente"),
+              S.listItem()
+                .title("Popup Emergente (Promoción de Entrada)")
+                .child(S.document().schemaType("promoPopup").documentId("promo-popup-main")),
               S.listItem()
                 .title("Videos (TikTok / Reels)")
                 .child(S.document().schemaType("videoSection").documentId("videoSection")),

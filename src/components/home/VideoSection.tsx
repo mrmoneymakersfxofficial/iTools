@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { ExternalLink } from "lucide-react";
+import { ExternalLink, Play } from "lucide-react";
 import { getSanityAttr } from "@/lib/sanity/visual-attributes";
+import { urlFor } from "@/sanity/image";
 
 interface VideoItem {
   title: string;
@@ -155,12 +156,14 @@ function getThumbnailUrl(thumbnail: any, rawUrl?: string): string | null {
 
 function VideoPlayerCard({ video, index }: { video: VideoItem; index: number }) {
   const [isReady, setIsReady] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
   const rawUrl = getEffectiveUrl(video);
   const embed = getEmbedInfo(rawUrl);
   const platform = getVideoPlatform(rawUrl);
+  const thumbnailUrl = getThumbnailUrl(video.thumbnail, rawUrl);
   const sanityAttr = getSanityAttr("videoSection", "videoSection", `videos[${index}]`);
 
-  // Stagger iframe loading (350ms per video) so TikTok's API is not hammered simultaneously (fixes 429 errors)
+  // Stagger iframe loading (350ms per video) so TikTok's API is not hammered simultaneously
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsReady(true);
@@ -171,20 +174,41 @@ function VideoPlayerCard({ video, index }: { video: VideoItem; index: number }) 
   return (
     <div
       {...sanityAttr}
-      className="relative shrink-0 w-[220px] sm:w-auto rounded-2xl overflow-hidden bg-[#111] border border-border dark:border-[#333] shadow-md hover:shadow-xl hover:border-[#D1001C] transition-all duration-300 flex flex-col"
+      className="group relative shrink-0 w-[220px] sm:w-auto rounded-xl overflow-hidden bg-[#0E0E0E] border border-border dark:border-[#282828] shadow-md hover:shadow-xl hover:border-[#D1001C] transition-all duration-300 flex flex-col"
     >
-      {/* Reproductor Embebido Directo con ratio EXACTO 9:16 sin recortes */}
-      <div className="relative w-full aspect-[9/16] bg-black overflow-hidden">
-        {embed.isDirectVideo ? (
+      {/* Contenedor de Video con ratio 9:16 y bordes limpios sin recortar controles de TikTok */}
+      <div className="relative w-full aspect-[9/16] bg-black overflow-hidden flex items-center justify-center">
+        {/* Si hay miniatura y aún no se ha dado play (Estilo lámina Wiha / Autoland) */}
+        {thumbnailUrl && !isPlaying ? (
+          <button
+            type="button"
+            onClick={() => setIsPlaying(true)}
+            className="relative w-full h-full group/btn cursor-pointer block text-left"
+            aria-label={`Reproducir ${video.title}`}
+          >
+            <img
+              src={thumbnailUrl}
+              alt={video.title}
+              className="w-full h-full object-cover group-hover/btn:scale-105 transition-transform duration-500"
+            />
+            <div className="absolute inset-0 bg-black/25 group-hover/btn:bg-black/10 transition-colors" />
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-13 h-13 rounded-full bg-[#E60000] text-white flex items-center justify-center shadow-xl group-hover/btn:scale-110 group-hover/btn:bg-[#ff1a1a] transition-all duration-300">
+                <Play className="h-6 w-6 fill-white text-white translate-x-0.5" />
+              </div>
+            </div>
+          </button>
+        ) : embed.isDirectVideo ? (
           <video
             src={embed.embedUrl}
             controls
+            autoPlay={isPlaying}
             playsInline
             preload="metadata"
-            className="w-full h-full object-cover"
+            className="w-full h-full object-contain bg-black"
           />
         ) : embed.embedUrl ? (
-          isReady ? (
+          isReady || isPlaying ? (
             <iframe
               src={embed.embedUrl}
               className="w-full h-full border-0 absolute inset-0"
@@ -209,10 +233,10 @@ function VideoPlayerCard({ video, index }: { video: VideoItem; index: number }) 
 
         {/* Badge de Plataforma */}
         {platform && (
-          <div className="absolute top-2.5 left-2.5 z-10 pointer-events-none">
+          <div className="absolute top-2 left-2 z-10 pointer-events-none">
             <span
-              className="inline-flex items-center gap-1 text-[9px] font-bold text-white px-2 py-0.5 rounded-full shadow-sm backdrop-blur-md"
-              style={{ backgroundColor: `${platform.color}dd` }}
+              className="inline-flex items-center gap-1 text-[9px] font-bold text-white px-2 py-0.5 rounded-full shadow-md backdrop-blur-md"
+              style={{ backgroundColor: `${platform.color}ee` }}
             >
               {platform.name}
             </span>
@@ -231,7 +255,7 @@ function VideoPlayerCard({ video, index }: { video: VideoItem; index: number }) 
             target="_blank"
             rel="noopener noreferrer"
             className="text-gray-400 hover:text-[#E60000] p-1 rounded-md hover:bg-gray-100 dark:hover:bg-[#262626] transition-colors shrink-0"
-            title="Abrir en TikTok / Fuente oficial"
+            title="Abrir en fuente oficial"
             aria-label="Abrir enlace"
           >
             <ExternalLink className="h-3.5 w-3.5" />
