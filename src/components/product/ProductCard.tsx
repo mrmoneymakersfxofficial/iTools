@@ -11,6 +11,32 @@ import { urlFor } from "@/sanity/image";
 import { useQuickViewStore } from "@/stores/quickview-store";
 
 import { formatPrice } from "@/lib/format";
+import { getSanityAttr } from "@/lib/sanity/visual-attributes";
+
+const PRODUCT_FALLBACK_IMAGES: Record<string, string> = {
+  "super-combo-inicio-tio-cheng": "/products/dongcheng-combo.webp",
+  "esmeriladora-angular-18v-makita-dga452z": "/products/makita-grinder.webp",
+  "super-kit-pistola-pintar-total": "/products/paint-sprayer.webp",
+  "pack-electrico-16pzs-total": "/products/electrical-kit.webp",
+  "combo-dupli-amoladora-ingco": "/products/ingco-combo.webp",
+  "rotomartillo-sds-plus-dewalt-d25133k": "/products/dewalt-drill.webp",
+  "taladro-percutor-m18-fuel-milwaukee": "/products/milwaukee-m18.webp",
+  "atornillador-12v-flexiclick-bosch": "/products/bosch-flexiclick.webp",
+};
+
+function getProductCardImage(product: any): string {
+  const img = product.images?.[0] || product.image;
+  if (!img) return PRODUCT_FALLBACK_IMAGES[product.slug] || "";
+  if (typeof img === "string") return img;
+  if (img?.asset?.url) return img.asset.url;
+  if (img?.url) return img.url;
+  try {
+    if (img?.asset?._ref || img?._ref || img?.asset?._id) {
+      return urlFor(img).width(400).format("webp").url();
+    }
+  } catch {}
+  return PRODUCT_FALLBACK_IMAGES[product.slug] || "";
+}
 
 function StarRating({ rating, count }: { rating: number; count: number }) {
   return (
@@ -117,14 +143,17 @@ export function ProductCard({ product, index = 0, quickView, quickViewColor }: P
       </button>
 
       {/* Image area */}
-      <div className="relative aspect-square bg-[#F9FAFB] dark:bg-[#222] flex items-center justify-center p-6 overflow-hidden shrink-0">
+      <div {...getSanityAttr(id, "product", "image")} className="relative aspect-square bg-[#F9FAFB] dark:bg-[#222] flex items-center justify-center p-6 overflow-hidden shrink-0">
         <div className="absolute inset-0 bg-gradient-to-b from-transparent to-gray-100/50 dark:to-gray-800/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         
-        {((product.images?.[0] as any)?.asset || (product.image as any)?.asset) ? (
-          <img src={urlFor((product.images?.[0] as any)?.asset ? product.images![0] : product.image!).width(400).format("webp").url()} alt={product.name} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
-        ) : (
-          <Wrench className="h-16 w-16 text-gray-300 dark:text-gray-500 group-hover:scale-110 transition-transform duration-300" />
-        )}
+        {(() => {
+          const imgSrc = getProductCardImage(product);
+          return imgSrc ? (
+            <img src={imgSrc} alt={product.name} className="absolute inset-0 w-full h-full object-contain group-hover:scale-105 transition-transform duration-300" />
+          ) : (
+            <Wrench className="h-16 w-16 text-gray-300 dark:text-gray-500 group-hover:scale-110 transition-transform duration-300" />
+          );
+        })()}
 
         {/* Brand label */}
         {product.brand && (
@@ -140,12 +169,12 @@ export function ProductCard({ product, index = 0, quickView, quickViewColor }: P
 
       {/* Content */}
       <div className="flex flex-col flex-1 p-3 sm:p-4">
-        <h3 className="text-sm font-medium text-foreground leading-snug line-clamp-2 mb-1.5 group-hover:text-itools-blue dark:group-hover:text-[#3399FF] transition-colors min-h-[2.5rem]">
+        <h3 {...getSanityAttr(id, "product", "name")} className="text-sm font-medium text-foreground leading-snug line-clamp-2 mb-1.5 group-hover:text-itools-blue dark:group-hover:text-[#3399FF] transition-colors min-h-[2.5rem]">
           {product.name}
         </h3>
 
         {product.shortDescription && (
-          <p className="text-xs text-muted-foreground dark:text-gray-400 line-clamp-1 mb-2 hidden sm:block">
+          <p {...getSanityAttr(id, "product", "shortDescription")} className="text-xs text-muted-foreground dark:text-gray-400 line-clamp-1 mb-2 hidden sm:block">
             {product.shortDescription}
           </p>
         )}
@@ -154,7 +183,7 @@ export function ProductCard({ product, index = 0, quickView, quickViewColor }: P
 
         {/* Price + Add to Cart */}
         <div className="mt-auto pt-3 flex items-end justify-between gap-2">
-          <div className="flex flex-col">
+          <div {...getSanityAttr(id, "product", "price")} className="flex flex-col">
             {comparePrice && (
               <span className="text-xs text-muted-foreground line-through">
                 {formatPrice(comparePrice)}

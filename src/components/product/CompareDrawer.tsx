@@ -8,9 +8,8 @@ import { formatPrice } from "@/lib/format";
 import Image from "next/image";
 
 export function CompareDrawer() {
-  const { items, removeItem, clearAll } = useCompareStore();
-
-  if (items.length === 0) return null;
+  return null;
+}
 
   return (
     <Sheet>

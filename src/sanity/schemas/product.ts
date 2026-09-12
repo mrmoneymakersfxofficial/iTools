@@ -59,6 +59,7 @@ export default defineType({
       title: "Imagen Principal",
       type: "image",
       options: { hotspot: true },
+      readOnly: false,
       description: "Imagen principal del producto. 📐 Resolución recomendada: 800 x 800 px (cuadrada 1:1, fondo blanco puro o transparente, WebP/PNG). Se usa como fallback si no hay imágenes adicionales.",
     }),
     defineField({
@@ -66,6 +67,7 @@ export default defineType({
       title: "Galería de Imágenes",
       type: "array",
       of: [{ type: "image", options: { hotspot: true } }],
+      readOnly: false,
       validation: (r) => r.max(10).error("Puedes subir hasta un máximo de 10 imágenes."),
       description: "Fotos de la galería del producto. 📐 Resolución recomendada: 800 x 800 px (cuadrada 1:1, fondo blanco puro o transparente).",
     }),

@@ -15,7 +15,7 @@ interface BestSellersWorkshopSectionProps {
 
 const fallbackBestSellers = [
   {
-    _id: "bs-total-pistola",
+    _id: "product-bs-total-pistola",
     name: "SUPER KIT PISTOLA DE PINTAR TOTAL + BATERÍA 5AH + CARGADOR",
     slug: "super-kit-pistola-pintar-total",
     price: 449.90,
@@ -25,7 +25,7 @@ const fallbackBestSellers = [
     image: { asset: { url: "/products/paint-sprayer.webp" } },
   },
   {
-    _id: "bs-dongcheng-combo",
+    _id: "product-bs-dongcheng-combo",
     name: "EL SUPER COMBO DE INICIO EL TIO CHENG DONGCHENG",
     slug: "super-combo-inicio-tio-cheng",
     price: 519.90,
@@ -35,7 +35,7 @@ const fallbackBestSellers = [
     image: { asset: { url: "/products/dongcheng-combo.webp" } },
   },
   {
-    _id: "bs-total-pack-electrico",
+    _id: "product-bs-total-pack-electrico",
     name: "PACK ELECTRICO 16PZS/SET 1000V TOTAL HERRAMIENTAS",
     slug: "pack-electrico-16pzs-total",
     price: 599.90,
@@ -45,7 +45,7 @@ const fallbackBestSellers = [
     image: { asset: { url: "/products/electrical-kit.webp" } },
   },
   {
-    _id: "bs-ingco-combo-amoladora",
+    _id: "product-bs-ingco-combo-amoladora",
     name: "COMBO DUPLI AMOLADORA INGCO P20S 1200W BRUSHLESS",
     slug: "combo-dupli-amoladora-ingco",
     price: 609.90,
@@ -55,7 +55,7 @@ const fallbackBestSellers = [
     image: { asset: { url: "/products/ingco-combo.webp" } },
   },
   {
-    _id: "bs-dewalt-d25133k",
+    _id: "product-bs-dewalt-d25133k",
     name: "ROTOMARTILLO SDS PLUS 800W DEWALT D25133K",
     slug: "rotomartillo-sds-plus-dewalt-d25133k",
     price: 549.90,
@@ -65,7 +65,7 @@ const fallbackBestSellers = [
     image: { asset: { url: "/products/dewalt-drill.webp" } },
   },
   {
-    _id: "bs-milwaukee-m18-fuel",
+    _id: "product-bs-milwaukee-m18-fuel",
     name: "TALADRO PERCUTOR M18 FUEL 1/2\" MILWAUKEE 2804-20",
     slug: "taladro-percutor-m18-fuel-milwaukee",
     price: 899.00,
@@ -75,7 +75,7 @@ const fallbackBestSellers = [
     image: { asset: { url: "/products/milwaukee-m18.webp" } },
   },
   {
-    _id: "bs-makita-dga452",
+    _id: "product-bs-makita-dga452",
     name: "ESMERILADORA ANGULAR 18V LXT 4-1/2 MAKITA DGA452Z",
     slug: "esmeriladora-angular-18v-makita-dga452z",
     price: 529.00,
@@ -85,7 +85,7 @@ const fallbackBestSellers = [
     image: { asset: { url: "/products/makita-grinder.webp" } },
   },
   {
-    _id: "bs-bosch-gsr-12v",
+    _id: "product-bs-bosch-gsr-12v",
     name: "ATORNILLADOR 12V FLEXICLICK 5 EN 1 GSR 12V-15 FC BOSCH",
     slug: "atornillador-12v-flexiclick-bosch",
     price: 899.00,

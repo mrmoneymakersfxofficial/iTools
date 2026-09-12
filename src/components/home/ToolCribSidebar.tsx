@@ -4,12 +4,24 @@ import { Wrench, Star, TrendingUp } from "lucide-react";
 import { formatPrice } from "@/lib/format";
 import { getSanityAttr } from "@/lib/sanity/visual-attributes";
 
+const PRODUCT_FALLBACK_IMAGES: Record<string, string> = {
+  "super-combo-inicio-tio-cheng": "/products/dongcheng-combo.webp",
+  "esmeriladora-angular-18v-makita-dga452z": "/products/makita-grinder.webp",
+  "super-kit-pistola-pintar-total": "/products/paint-sprayer.webp",
+  "pack-electrico-16pzs-total": "/products/electrical-kit.webp",
+  "combo-dupli-amoladora-ingco": "/products/ingco-combo.webp",
+  "rotomartillo-sds-plus-dewalt-d25133k": "/products/dewalt-drill.webp",
+  "taladro-percutor-m18-fuel-milwaukee": "/products/milwaukee-m18.webp",
+  "atornillador-12v-flexiclick-bosch": "/products/bosch-flexiclick.webp",
+};
+
 function SidebarProductCard({ product }: { product: any }) {
   const price = product.price || 0;
   const comparePrice = product.salePrice ? product.price : (product.comparePrice || null);
   const displayPrice = product.salePrice || product.price || 0;
   const discount = comparePrice ? Math.round(((comparePrice - displayPrice) / comparePrice) * 100) : 0;
   const sanityAttr = getSanityAttr(product._id || product.id, "product", "image");
+  const imgUrl = product.image?.asset?.url || (typeof product.image === "string" ? product.image : null) || PRODUCT_FALLBACK_IMAGES[product.slug];
   
   return (
     <Link
@@ -18,8 +30,8 @@ function SidebarProductCard({ product }: { product: any }) {
       className="group flex gap-3 p-3 hover:bg-[#F5F6F8] dark:bg-[#1a1a1a] transition-colors border-b border-[#F0F0F0] last:border-b-0"
     >
       <div className="relative shrink-0 w-16 h-16 rounded bg-[#F5F5F5] dark:bg-[#1a1a1a] flex items-center justify-center border border-[#E8E8E8] dark:border-[#333]">
-        {product.image?.asset?.url ? (
-          <img src={product.image.asset.url} alt={product.name} className="absolute inset-0 w-full h-full object-cover rounded" />
+        {imgUrl ? (
+          <img src={imgUrl} alt={product.name} className="absolute inset-0 w-full h-full object-cover rounded" />
         ) : (
           <Wrench className="h-7 w-7 text-gray-300 dark:text-gray-500" />
         )}

@@ -40,16 +40,32 @@ import { useSectionDeepLinking } from "@/hooks/useSectionDeepLinking";
 import { sectionId } from "@/hooks/useSectionDeepLinking";
 import { urlFor } from "@/sanity/image";
 import { formatPrice } from "@/lib/format";
+import { getSanityAttr } from "@/lib/sanity/visual-attributes";
 
-/** Safe wrapper for urlFor — returns empty string if asset is missing */
+const PRODUCT_FALLBACK_IMAGES: Record<string, string> = {
+  "super-combo-inicio-tio-cheng": "/products/dongcheng-combo.webp",
+  "esmeriladora-angular-18v-makita-dga452z": "/products/makita-grinder.webp",
+  "super-kit-pistola-pintar-total": "/products/paint-sprayer.webp",
+  "pack-electrico-16pzs-total": "/products/electrical-kit.webp",
+  "combo-dupli-amoladora-ingco": "/products/ingco-combo.webp",
+  "rotomartillo-sds-plus-dewalt-d25133k": "/products/dewalt-drill.webp",
+  "taladro-percutor-m18-fuel-milwaukee": "/products/milwaukee-m18.webp",
+  "atornillador-12v-flexiclick-bosch": "/products/bosch-flexiclick.webp",
+};
+
+/** Safe wrapper for urlFor — returns empty string if asset is missing, handles strings and URLs directly */
 function safeUrlFor(img: any, width: number, height?: number): string {
+  if (!img) return "";
+  if (typeof img === "string") return img;
+  if (img?.asset?.url && typeof img.asset.url === "string") return img.asset.url;
+  if (img?.url && typeof img.url === "string") return img.url;
   try {
-    if (!img?.asset) return "";
-    const builder = urlFor(img).width(width).format("webp");
-    return height ? builder.height(height).url() : builder.url();
-  } catch {
-    return "";
-  }
+    if (img?.asset?._ref || img?._ref || img?.asset?._id) {
+      const builder = urlFor(img).width(width).format("webp");
+      return height ? builder.height(height).url() : builder.url();
+    }
+  } catch {}
+  return "";
 }
 
 
@@ -151,15 +167,18 @@ export function ProductDetailClient({ product, relatedProducts, reviews }: { pro
         </nav>
 
         {/* ── Section: Product Overview ── */}
-        <section data-section={product.name}>
+        <section data-section={product.name} data-sanity-doc="product">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
             {/* LEFT: Image */}
             <div className="bg-white dark:bg-[#111111] rounded-xl border border-border dark:border-[#333] p-4 lg:p-6">
               <div className="flex flex-col gap-4">
-                <div className="relative aspect-square bg-surface rounded-lg flex items-center justify-center overflow-hidden">
+                <div
+                  {...getSanityAttr(productIdentifier, "product", "image")}
+                  className="relative aspect-square bg-surface rounded-lg flex items-center justify-center overflow-hidden"
+                >
                   {(() => {
                     const activeImg = product.images?.[activeImageIndex] || product.images?.[0] || product.image;
-                    const src = safeUrlFor(activeImg, 800, 800);
+                    const src = safeUrlFor(activeImg, 800, 800) || PRODUCT_FALLBACK_IMAGES[product.slug] || "";
                     return src ? (
                       <img
                         src={src}
@@ -220,7 +239,10 @@ export function ProductDetailClient({ product, relatedProducts, reviews }: { pro
             {/* RIGHT: Product Info — Exact Image 3 Layout */}
             <div className="flex flex-col gap-3">
               {/* Product Title */}
-              <h1 className="text-2xl sm:text-3xl font-extrabold uppercase text-[#1A1A1A] dark:text-white leading-tight">
+              <h1
+                {...getSanityAttr(productIdentifier, "product", "name")}
+                className="text-2xl sm:text-3xl font-extrabold uppercase text-[#1A1A1A] dark:text-white leading-tight"
+              >
                 {product.name}
               </h1>
 
@@ -237,7 +259,7 @@ export function ProductDetailClient({ product, relatedProducts, reviews }: { pro
                   <div className="flex items-start justify-between gap-4 pt-1">
                     <div className="flex-1 space-y-2">
                       {/* Price row */}
-                      <div className="flex items-baseline gap-3 flex-wrap">
+                      <div {...getSanityAttr(productIdentifier, "product", "price")} className="flex items-baseline gap-3 flex-wrap">
                         <span className="text-3xl sm:text-4xl font-extrabold text-[#E60000] tracking-tight">
                           {formatPrice(finalPrice)}
                         </span>
@@ -266,7 +288,7 @@ export function ProductDetailClient({ product, relatedProducts, reviews }: { pro
                       )}
 
                       {/* SKU & Code (Prominent & Larger font) */}
-                      <div className="flex items-center gap-2 pt-1">
+                      <div {...getSanityAttr(productIdentifier, "product", "sku")} className="flex items-center gap-2 pt-1">
                         <span className="text-base font-bold text-gray-500 dark:text-gray-400">
                           SKU:
                         </span>
@@ -302,7 +324,7 @@ export function ProductDetailClient({ product, relatedProducts, reviews }: { pro
 
               {/* Short Description */}
               {product.shortDescription && (
-                <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed pt-1">
+                <p {...getSanityAttr(productIdentifier, "product", "shortDescription")} className="text-xs sm:text-sm text-muted-foreground leading-relaxed pt-1">
                   {product.shortDescription}
                 </p>
               )}

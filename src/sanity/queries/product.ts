@@ -24,8 +24,8 @@ export const productBySlugQuery = `*[_type == "product" && slug.current == $slug
     name,
     "slug": slug.current
   },
-  image { asset-> { url, metadata { dimensions { width, height }, lqip } } },
-  images[] { asset-> { url, metadata { dimensions { width, height }, lqip } } },
+  image { asset-> { _id, url, metadata { dimensions { width, height }, lqip } } },
+  images[] { asset-> { _id, url, metadata { dimensions { width, height }, lqip } } },
   specs[] { key, value },
   features,
   includes,
@@ -48,8 +48,8 @@ export const relatedProductsQuery = `*[_type == "product" && isActive == true &&
   discountBadge,
   rating,
   "reviewCount": reviews,
-  image { asset-> { url, metadata { dimensions { width, height }, lqip } } },
-  images[] { asset-> { url, metadata { dimensions { width, height }, lqip } } }
+  image { asset-> { _id, url, metadata { dimensions { width, height }, lqip } } },
+  images[] { asset-> { _id, url, metadata { dimensions { width, height }, lqip } } }
 }`;
 
 export const productReviewsQuery = `*[_type == "productReview" && isActive == true && productName == $productSlug] | order(order asc){
