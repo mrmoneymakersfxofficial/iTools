@@ -117,8 +117,8 @@ export default async function Home() {
                   <ToolCribSidebar
                     products={
                       data.products?.filter((p: any) => p.showInToolCrib)?.length
-                        ? data.products.filter((p: any) => p.showInToolCrib)
-                        : data.featuredProducts || data.products?.slice(0, 5)
+                        ? data.products.filter((p: any) => p.showInToolCrib).slice(0, 6)
+                        : (data.featuredProducts || data.products || []).slice(0, 6)
                     }
                   />
                 </div>

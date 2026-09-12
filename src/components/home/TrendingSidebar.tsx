@@ -65,8 +65,8 @@ export function TrendingSidebar({ categories }: { categories: any[] }) {
                 {...sanityAttr}
                 className="flex items-center justify-between px-3.5 py-2.5 hover:bg-[#F8F9FA] dark:hover:bg-[#1F1F1F] transition-colors group"
               >
-                {/* Left: Thumbnail Image */}
-                <div className="w-8 h-8 shrink-0 flex items-center justify-center rounded-md bg-neutral-100 dark:bg-[#252525] p-1 overflow-hidden">
+                {/* Left: Thumbnail Image (Sin fondo plomo) */}
+                <div className="w-8 h-8 shrink-0 flex items-center justify-center rounded-md bg-transparent p-0.5 overflow-hidden">
                   <img
                     src={thumbUrl}
                     alt={cat.name}

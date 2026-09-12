@@ -77,21 +77,23 @@ function getEmbedInfo(url: string | null | undefined): { embedUrl: string; isDir
     };
   }
 
-  // 4. YouTube Shorts
+  // 4. YouTube Shorts (bucle infinito sin videos relacionados de otros usuarios)
   const shortsMatch = clean.match(/youtube\.com\/shorts\/([a-zA-Z0-9_-]+)/);
   if (shortsMatch) {
+    const id = shortsMatch[1];
     return {
-      embedUrl: `https://www.youtube.com/embed/${shortsMatch[1]}?autoplay=1&rel=0&loop=1`,
+      embedUrl: `https://www.youtube.com/embed/${id}?autoplay=1&rel=0&loop=1&playlist=${id}`,
       isDirectVideo: false,
       platform: "shorts",
     };
   }
 
-  // 5. YouTube Standard
+  // 5. YouTube Standard (bucle infinito sin videos recomendados externos)
   const ytWatchMatch = clean.match(/youtube\.com\/watch\?v=([a-zA-Z0-9_-]+)/) || clean.match(/youtu\.be\/([a-zA-Z0-9_-]+)/);
   if (ytWatchMatch) {
+    const id = ytWatchMatch[1];
     return {
-      embedUrl: `https://www.youtube.com/embed/${ytWatchMatch[1]}?autoplay=1&rel=0`,
+      embedUrl: `https://www.youtube.com/embed/${id}?autoplay=1&rel=0&loop=1&playlist=${id}`,
       isDirectVideo: false,
       platform: "youtube",
     };
@@ -204,12 +206,24 @@ function VideoPlayerCard({ video, index }: { video: VideoItem; index: number }) 
             controls
             autoPlay={isPlaying}
             playsInline
+            loop
             preload="metadata"
             className="w-full h-full object-contain bg-black"
           />
         ) : embed.embedUrl ? (
-          isReady || isPlaying ? (
-            <iframe
+          <>
+            {thumbnailUrl && isPlaying && (
+              <button
+                type="button"
+                onClick={() => setIsPlaying(false)}
+                className="absolute top-2 right-2 z-20 bg-black/70 hover:bg-black text-white rounded-full py-0.5 px-2 text-[10px] font-bold flex items-center gap-1 backdrop-blur-md shadow-md transition-all cursor-pointer"
+                title="Volver a portada"
+              >
+                ✕ Portada
+              </button>
+            )}
+            {isReady || isPlaying ? (
+              <iframe
               src={embed.embedUrl}
               className="w-full h-full border-0 absolute inset-0"
               scrolling="no"
@@ -219,12 +233,13 @@ function VideoPlayerCard({ video, index }: { video: VideoItem; index: number }) 
               title={video.title}
             />
           ) : (
-            <div className="w-full h-full flex flex-col items-center justify-center bg-[#151515] animate-pulse">
-              <div className="w-10 h-10 rounded-full bg-neutral-800 flex items-center justify-center text-neutral-400 font-bold text-sm">
-                ▶
+              <div className="w-full h-full flex flex-col items-center justify-center bg-[#151515] animate-pulse">
+                <div className="w-10 h-10 rounded-full bg-neutral-800 flex items-center justify-center text-neutral-400 font-bold text-sm">
+                  ▶
+                </div>
               </div>
-            </div>
-          )
+            )}
+          </>
         ) : (
           <div className="w-full h-full flex items-center justify-center text-muted-foreground text-xs">
             Video no disponible
