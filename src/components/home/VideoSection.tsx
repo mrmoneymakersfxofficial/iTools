@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { ExternalLink, Play } from "lucide-react";
+import { ExternalLink, Play, RotateCcw } from "lucide-react";
 import { getSanityAttr } from "@/lib/sanity/visual-attributes";
 import { urlFor } from "@/sanity/image";
 
@@ -159,6 +159,7 @@ function getThumbnailUrl(thumbnail: any, rawUrl?: string): string | null {
 function VideoPlayerCard({ video, index }: { video: VideoItem; index: number }) {
   const [isReady, setIsReady] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [reloadKey, setReloadKey] = useState(0);
   const rawUrl = getEffectiveUrl(video);
   const embed = getEmbedInfo(rawUrl);
   const platform = getVideoPlatform(rawUrl);
@@ -176,7 +177,7 @@ function VideoPlayerCard({ video, index }: { video: VideoItem; index: number }) 
   return (
     <div
       {...sanityAttr}
-      className="group relative shrink-0 w-[220px] sm:w-auto rounded-xl overflow-hidden bg-[#0E0E0E] border border-border dark:border-[#282828] shadow-md hover:shadow-xl hover:border-[#D1001C] transition-all duration-300 flex flex-col"
+      className="group relative shrink-0 w-[260px] sm:w-auto min-w-[240px] rounded-xl overflow-hidden bg-[#0E0E0E] border border-border dark:border-[#282828] shadow-md hover:shadow-xl hover:border-[#D1001C] transition-all duration-300 flex flex-col"
     >
       {/* Contenedor de Video con ratio 9:16 y bordes limpios sin recortar controles de TikTok */}
       <div className="relative w-full aspect-[9/16] bg-black overflow-hidden flex items-center justify-center">
@@ -212,27 +213,40 @@ function VideoPlayerCard({ video, index }: { video: VideoItem; index: number }) 
           />
         ) : embed.embedUrl ? (
           <>
-            {thumbnailUrl && isPlaying && (
+            {/* Controles superiores (Volver a portada / Reiniciar video para limpiar videos relacionados) */}
+            <div className="absolute top-2 right-2 z-20 flex items-center gap-1.5">
+              {thumbnailUrl && isPlaying && (
+                <button
+                  type="button"
+                  onClick={() => setIsPlaying(false)}
+                  className="bg-black/75 hover:bg-black text-white rounded-full py-0.5 px-2 text-[10px] font-bold flex items-center gap-1 backdrop-blur-md shadow-md transition-all cursor-pointer"
+                  title="Volver a portada"
+                >
+                  ✕ Portada
+                </button>
+              )}
               <button
                 type="button"
-                onClick={() => setIsPlaying(false)}
-                className="absolute top-2 right-2 z-20 bg-black/70 hover:bg-black text-white rounded-full py-0.5 px-2 text-[10px] font-bold flex items-center gap-1 backdrop-blur-md shadow-md transition-all cursor-pointer"
-                title="Volver a portada"
+                onClick={() => setReloadKey((k) => k + 1)}
+                className="bg-black/75 hover:bg-black text-white/90 hover:text-white rounded-full p-1.5 backdrop-blur-md shadow-md transition-all cursor-pointer"
+                title="Reiniciar video desde el inicio"
+                aria-label="Reiniciar video"
               >
-                ✕ Portada
+                <RotateCcw className="h-3 w-3" />
               </button>
-            )}
+            </div>
             {isReady || isPlaying ? (
               <iframe
-              src={embed.embedUrl}
-              className="w-full h-full border-0 absolute inset-0"
-              scrolling="no"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
-              allowFullScreen
-              loading="lazy"
-              title={video.title}
-            />
-          ) : (
+                key={reloadKey}
+                src={embed.embedUrl}
+                className="w-full h-full border-0 absolute inset-0"
+                scrolling="no"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
+                allowFullScreen
+                loading="lazy"
+                title={video.title}
+              />
+            ) : (
               <div className="w-full h-full flex flex-col items-center justify-center bg-[#151515] animate-pulse">
                 <div className="w-10 h-10 rounded-full bg-neutral-800 flex items-center justify-center text-neutral-400 font-bold text-sm">
                   ▶
@@ -246,8 +260,8 @@ function VideoPlayerCard({ video, index }: { video: VideoItem; index: number }) 
           </div>
         )}
 
-        {/* Badge de Plataforma */}
-        {platform && (
+        {/* Badge de Plataforma (oculto en TikTok para no superponerse con su avatar y cabecera oficial) */}
+        {platform && platform.name !== "TikTok" && (
           <div className="absolute top-2 left-2 z-10 pointer-events-none">
             <span
               className="inline-flex items-center gap-1 text-[9px] font-bold text-white px-2 py-0.5 rounded-full shadow-md backdrop-blur-md"
@@ -306,7 +320,7 @@ export function VideoSection({ data }: { data: VideoSectionData | null }) {
         </div>
 
         {/* Carrusel / Grid de Videos Directamente Embebidos */}
-        <div className="flex gap-3.5 overflow-x-auto pb-3 scrollbar-hide sm:grid sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 sm:overflow-visible">
+        <div className="flex gap-3.5 overflow-x-auto pb-3 scrollbar-hide sm:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 sm:overflow-visible">
           {videos.map((video, i) => (
             <VideoPlayerCard key={i} video={video} index={i} />
           ))}

@@ -129,14 +129,14 @@ function renderGrid(brands: Array<{ _id: string; name: string; slug: string; loc
                 key={brand._id || slug}
                 href={`/marca/${slug || "#"}`}
                 {...brandSanityAttr}
-                className="group flex items-center justify-center h-[88px] transition-opacity hover:opacity-80 rounded-md overflow-hidden bg-transparent"
-                style={!hasCustomLogo && config ? { backgroundColor: config.bg } : undefined}
+                className="group flex items-center justify-center h-[76px] sm:h-[84px] transition-all duration-200 hover:scale-[1.02] hover:shadow-md rounded-lg overflow-hidden"
+                style={config ? { backgroundColor: config.bg } : undefined}
               >
                 {showImg ? (
                   <img
                     src={imgSrc}
                     alt={brand.name}
-                    className={`w-full h-full ${hasCustomLogo ? "object-cover p-0" : "object-contain p-2"}`}
+                    className="w-full h-full object-cover p-0"
                     loading="lazy"
                     onError={(e) => {
                       e.currentTarget.style.display = "none";

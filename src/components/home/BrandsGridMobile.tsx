@@ -62,7 +62,7 @@ export function BrandsGridMobile({ brands }: { brands: any[] }) {
                   <img
                     src={imgSrc}
                     alt={brand.name}
-                    className="w-full h-full object-contain p-2"
+                    className="w-full h-full object-cover p-0"
                     loading="lazy"
                     onError={(e) => {
                       e.currentTarget.style.display = 'none';
