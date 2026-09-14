@@ -466,10 +466,10 @@ function HeaderCategoryBar({ categories }: { categories: Category[] }) {
 
   const rawList = categories && categories.length > 0 ? categories : fallbackHeaderCategories;
   
-  // Ensure the 8 standard top-level categories are prioritized
+  // Ensure the 8 standard top-level categories are prioritized and use names from CMS if edited
   const topCategories = fallbackHeaderCategories.map((fallbackCat) => {
     const matched = rawList.find(c => c.slug === fallbackCat.slug);
-    return matched ? { ...matched, name: fallbackCat.name } : fallbackCat;
+    return matched ? { ...fallbackCat, ...matched, name: matched.name || fallbackCat.name } : fallbackCat;
   });
 
   return (
@@ -478,7 +478,7 @@ function HeaderCategoryBar({ categories }: { categories: Category[] }) {
       className="hidden md:block bg-white dark:bg-[#111111] border-b border-border dark:border-[#222] relative z-50 overflow-visible"
       aria-label="Categorías principales"
     >
-      <div className="mx-auto max-w-7xl px-4 flex items-center justify-between gap-1 py-1 overflow-visible relative">
+      <div className="w-full mx-auto max-w-[1440px] px-4 flex items-center justify-center gap-2 sm:gap-3 md:gap-4 lg:gap-6 py-1 overflow-visible relative">
         {topCategories.map((cat, index) => (
           <HeaderCategoryItem
             key={cat.id || cat.slug}

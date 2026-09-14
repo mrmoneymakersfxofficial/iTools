@@ -5,6 +5,8 @@ import { getSanityAttr } from "@/lib/sanity/visual-attributes";
 interface MainCategoriesSectionProps {
   categories?: any[];
   dealTiles?: any[];
+  homeSettings?: any;
+  title?: string;
 }
 
 const fallbackCombos = [
@@ -15,20 +17,25 @@ const fallbackCombos = [
   { title: "Accesorios de Herramientas", price: "S/ 899.00", href: "/categoria/accesorios" },
 ];
 
-export function MainCategoriesSection({ categories, dealTiles }: MainCategoriesSectionProps) {
+export function MainCategoriesSection({ categories, dealTiles, homeSettings, title }: MainCategoriesSectionProps) {
   // STRICTLY filter out deal-tile-duo-countdown so it NEVER appears in the 5 combo cards
   const nonCountdownTiles = (dealTiles || []).filter(
     (t: any) => t._id !== "deal-tile-duo-countdown" && t._id !== "drafts.deal-tile-duo-countdown"
   );
 
+  const sectionTitle = title || homeSettings?.mainCategoriesTitle || "CATEGORIAS PRINCIPALES";
+
   return (
     <section className="py-4 md:py-6" id="categorias-principales" data-section="Categorías Principales" data-sanity-doc="dealTile">
       <div className="mx-auto max-w-[1440px] px-3 sm:px-4 lg:px-6">
-        {/* Section Title */}
+        {/* Section Title — 100% editable from Sanity CMS */}
         <div className="flex items-center gap-2 mb-3">
           <span className="text-[#E60000] font-black text-lg tracking-tighter">▶▶</span>
-          <h2 className="text-base sm:text-lg font-black text-[#1A1A1A] dark:text-white uppercase tracking-wider">
-            CATEGORIAS PRINCIPALES
+          <h2
+            {...getSanityAttr("homeSettings", "homeSettings", "mainCategoriesTitle")}
+            className="text-base sm:text-lg font-black text-[#1A1A1A] dark:text-white uppercase tracking-wider cursor-pointer hover:text-[#E60000] transition-colors"
+          >
+            {sectionTitle}
           </h2>
         </div>
 

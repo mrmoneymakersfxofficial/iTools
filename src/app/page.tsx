@@ -63,7 +63,7 @@ export default async function Home() {
             <FlashSaleCountdownCard tile={countdownTile} />
           </div>
 
-          <MainCategoriesSection categories={data.categories} dealTiles={data.dealTiles} />
+          <MainCategoriesSection categories={data.categories} dealTiles={data.dealTiles} homeSettings={data.homeSettings} />
           <DewaltPowerstackBanner banner={data.promoBanners?.find((b: any) => b._id === "promo-banner-dewalt-powerstack")} />
           <RedMarqueeBar uiConfig={data.uiConfig} />
           <VideoSection data={data.videoSection} />
@@ -127,7 +127,7 @@ export default async function Home() {
           </div>
 
           {/* ── IMAGE 1: Categorías Principales (Duo Chambeador + Combos) ── */}
-          <MainCategoriesSection categories={data.categories} dealTiles={data.dealTiles} />
+          <MainCategoriesSection categories={data.categories} dealTiles={data.dealTiles} homeSettings={data.homeSettings} />
 
           {/* ── IMAGE 1: Full-Width DeWalt Powerstack Banner ── */}
           <DewaltPowerstackBanner banner={data.promoBanners?.find((b: any) => b._id === "promo-banner-dewalt-powerstack")} />

@@ -18,6 +18,13 @@ export default defineType({
       initialValue: "/ofertas/tool-crib" 
     }),
     defineField({
+      name: "mainCategoriesTitle",
+      title: "Título de la sección Categorías Principales",
+      type: "string",
+      initialValue: "CATEGORIAS PRINCIPALES",
+      description: "Título editable para la sección de las 5 tarjetas de combos / categorías principales (ej: CATEGORIAS PRINCIPALES)",
+    }),
+    defineField({
       name: "exploreProductsTitle",
       title: "Título de la sección Explorar Productos",
       type: "string",

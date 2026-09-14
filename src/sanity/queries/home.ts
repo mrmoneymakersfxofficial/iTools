@@ -112,6 +112,7 @@ export const dealTilesQuery = `*[_type == "dealTile" && isActive == true] | orde
 
 export const homeSettingsQuery = `*[_type == "homeSettings"][0] {
   _id,
+  mainCategoriesTitle,
   toolCribTitle,
   toolCribLink,
   exploreProductsTitle,
