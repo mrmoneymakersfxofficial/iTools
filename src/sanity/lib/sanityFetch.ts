@@ -7,9 +7,13 @@ import { serverClient } from "../client.server";
 export async function sanityFetch<QueryResponse>({
   query,
   params = {},
+  revalidate = 0,
+  tags = ["sanity"],
 }: {
   query: string;
   params?: any;
+  revalidate?: number | false;
+  tags?: string[];
 }): Promise<QueryResponse> {
   const isDraftMode = (await draftMode()).isEnabled;
 
@@ -21,5 +25,11 @@ export async function sanityFetch<QueryResponse>({
     });
   }
 
-  return client.fetch<QueryResponse>(query, params);
+  return client.fetch<QueryResponse>(query, params, {
+    useCdn: false,
+    next: {
+      revalidate: revalidate === false ? false : revalidate,
+      tags,
+    },
+  });
 }

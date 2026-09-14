@@ -73,20 +73,28 @@ export default defineType({
     }),
     defineField({
       name: "price",
-      title: "Precio de Venta (S/)",
+      title: "Precio de Venta Actual (S/)",
       type: "number",
-      description: "Precio actual de venta en soles",
+      description: "Precio real que el cliente pagará (ej: 189.90). Este es el precio principal que se muestra en grande.",
+      validation: (r) => r.required().min(0),
+    }),
+    defineField({
+      name: "comparePrice",
+      title: "Precio de Lista / Antes (Tachado) (S/)",
+      type: "number",
+      description: "Precio anterior de referencia (ej: 219.90). Si se completa, aparecerá tachado al costado y calculará el porcentaje de descuento automáticamente.",
     }),
     defineField({
       name: "salePrice",
-      title: "Precio Oferta (S/)",
+      title: "Precio Oferta Especial (S/) [Opcional]",
       type: "number",
-      description: "Precio en oferta (si aplica). Si está vacío, se usa el precio normal.",
+      description: "Si deseas aplicar un precio de oferta aún más bajo temporalmente. Si está vacío, se usará 'Precio de Venta Actual'.",
     }),
     defineField({
       name: "discountBadge",
-      title: "Badge de Descuento (ej: -17%)",
+      title: "Badge de Descuento Manual (ej: -15%)",
       type: "string",
+      description: "Opcional. Si se deja vacío, el sistema calcula el porcentaje automáticamente si hay precio tachado.",
     }),
     defineField({
       name: "stock",
@@ -188,6 +196,28 @@ export default defineType({
       description: "URL del video del producto (YouTube, TikTok, etc.)",
     }),
   ],
-  orderings: [{ title: "Orden", name: "orderAsc", by: [{ field: "order", direction: "asc" }] }],
-  preview: { select: { title: "name", subtitle: "sku", media: "image" } },
+  orderings: [
+    { title: "Última Modificación (Recientes primero)", name: "updatedAtDesc", by: [{ field: "_updatedAt", direction: "desc" }] },
+    { title: "Nombre (A-Z)", name: "nameAsc", by: [{ field: "name", direction: "asc" }] },
+    { title: "Precio (Menor a Mayor)", name: "priceAsc", by: [{ field: "price", direction: "asc" }] },
+    { title: "Precio (Mayor a Menor)", name: "priceDesc", by: [{ field: "price", direction: "desc" }] },
+  ],
+  preview: {
+    select: {
+      title: "name",
+      sku: "sku",
+      price: "price",
+      comparePrice: "comparePrice",
+      media: "image",
+    },
+    prepare({ title, sku, price, comparePrice, media }) {
+      const priceText = price ? `S/ ${price.toFixed(2)}` : "Sin precio";
+      const compareText = comparePrice ? ` (Antes S/ ${comparePrice.toFixed(2)})` : "";
+      return {
+        title: title || "Sin nombre",
+        subtitle: `SKU: ${sku || "S/N"} • ${priceText}${compareText}`,
+        media,
+      };
+    },
+  },
 });

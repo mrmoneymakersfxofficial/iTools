@@ -53,6 +53,66 @@ const PRODUCT_FALLBACK_IMAGES: Record<string, string> = {
   "atornillador-12v-flexiclick-bosch": "/products/bosch-flexiclick.webp",
 };
 
+interface ResolvedBrand {
+  name: string;
+  slug: string;
+  logoUrl: string | null;
+}
+
+const KNOWN_BRANDS_MAP: Array<{ name: string; slug: string; match: RegExp }> = [
+  { name: "Bosch", slug: "bosch", match: /\bbosch\b/i },
+  { name: "Milwaukee", slug: "milwaukee", match: /\bmilwaukee\b/i },
+  { name: "Total", slug: "total", match: /\btotal\b/i },
+  { name: "DeWalt", slug: "dewalt", match: /\b(dewalt|de\s*walt)\b/i },
+  { name: "Makita", slug: "makita", match: /\bmakita\b/i },
+  { name: "Ingco", slug: "ingco", match: /\bingco\b/i },
+  { name: "DongCheng", slug: "dong-cheng", match: /\b(dong\s*cheng|dongcheng)\b/i },
+  { name: "DCA", slug: "dca", match: /\bdca\b/i },
+  { name: "Truper", slug: "truper", match: /\btruper\b/i },
+  { name: "Stanley", slug: "stanley", match: /\bstanley\b/i },
+  { name: "Bahco", slug: "bahco", match: /\bbahco\b/i },
+  { name: "Sata", slug: "sata", match: /\bsata\b/i },
+  { name: "Toptul", slug: "toptul", match: /\btoptul\b/i },
+  { name: "Tramontina", slug: "tramontina", match: /\btramontina\b/i },
+  { name: "Kaili", slug: "kaili", match: /\bkaili\b/i },
+  { name: "Kamasa", slug: "kamasa", match: /\bkamasa\b/i },
+  { name: "Emtop", slug: "emtop", match: /\bemtop\b/i },
+  { name: "Wagner", slug: "wagner", match: /\bwagner\b/i },
+];
+
+function resolveProductBrand(product: Product): ResolvedBrand {
+  const customLogoUrl = (product as any).brandLogo?.asset?.url || null;
+  const sanityBrandSlug = (typeof product.brand?.slug === "string" ? product.brand.slug : product.brand?.slug?.current) || "";
+  const sanityBrandName = product.brand?.name || "";
+  const sanityBrandLogo = product.brand?.logo?.asset?.url || null;
+
+  if (sanityBrandSlug || sanityBrandName) {
+    const slug = sanityBrandSlug || sanityBrandName.toLowerCase().replace(/\s+/g, "-");
+    return {
+      name: sanityBrandName || "Marca Oficial",
+      slug,
+      logoUrl: customLogoUrl || sanityBrandLogo || `/brands/${slug}.webp`,
+    };
+  }
+
+  const searchStr = `${product.name || ""} ${product.sku || ""}`;
+  for (const item of KNOWN_BRANDS_MAP) {
+    if (item.match.test(searchStr)) {
+      return {
+        name: item.name,
+        slug: item.slug,
+        logoUrl: customLogoUrl || `/brands/${item.slug}.webp`,
+      };
+    }
+  }
+
+  return {
+    name: "iTools",
+    slug: "itools",
+    logoUrl: customLogoUrl || "/brands/total.webp",
+  };
+}
+
 /** Safe wrapper for urlFor — returns empty string if asset is missing, handles strings and URLs directly */
 function safeUrlFor(img: any, width: number, height?: number): string {
   if (!img) return "";
@@ -115,14 +175,16 @@ export function ProductDetailClient({ product, relatedProducts, reviews }: { pro
   const inCompare = isInCompare(product.slug || product.id);
 
   const regularPrice = product.price || 0;
-  const promoPrice = (product.salePrice && product.salePrice < regularPrice)
+  // Active promo price: only if salePrice is positive and lower than regularPrice
+  const promoPrice = (product.salePrice && product.salePrice > 0 && product.salePrice < regularPrice)
     ? product.salePrice
-    : ((product.comparePrice && product.comparePrice < regularPrice) ? product.comparePrice : null);
-  const compareOriginalPrice = (product.comparePrice && product.comparePrice > regularPrice)
+    : null;
+  // Final selling price
+  const finalPrice = promoPrice || regularPrice;
+  // Reference price to strike through: comparePrice if higher than finalPrice, or regularPrice if promoPrice is active
+  const originalStrikethrough = (product.comparePrice && product.comparePrice > finalPrice)
     ? product.comparePrice
     : (promoPrice ? regularPrice : null);
-  const finalPrice = promoPrice || regularPrice;
-  const originalStrikethrough = promoPrice ? regularPrice : compareOriginalPrice;
 
   const discount = (originalStrikethrough && originalStrikethrough > finalPrice)
     ? Math.round(((originalStrikethrough - finalPrice) / originalStrikethrough) * 100)
@@ -251,9 +313,7 @@ export function ProductDetailClient({ product, relatedProducts, reviews }: { pro
 
               {/* Price, Stock, SKU on Left + Dedicated Brand Logo Card on Right */}
               {(() => {
-                const brandSlug = (typeof product.brand?.slug === "string" ? product.brand.slug : product.brand?.slug?.current) || product.brand?.name?.toLowerCase().replace(/\s+/g, "-") || "";
-                const brandName = product.brand?.name || "iTools";
-                const brandLogoUrl = (product as any).brandLogo?.asset?.url || product.brand?.logo?.asset?.url || (brandSlug ? `/brands/${brandSlug}.webp` : null);
+                const brand = resolveProductBrand(product);
 
                 return (
                   <div className="flex items-start justify-between gap-4 pt-1">
@@ -299,21 +359,25 @@ export function ProductDetailClient({ product, relatedProducts, reviews }: { pro
                     </div>
 
                     {/* Brand Logo Box on Right (Image 3) */}
-                    {brandSlug && (
+                    {brand.slug && (
                       <Link
-                        href={`/marca/${brandSlug}`}
-                        title={`Ver todo el catálogo de ${brandName}`}
+                        {...getSanityAttr(productIdentifier, "product", "brandLogo")}
+                        href={`/marca/${brand.slug}`}
+                        title={`Ver todo el catálogo de ${brand.name}`}
                         className="w-28 sm:w-32 h-28 sm:h-32 rounded-2xl border border-gray-200 dark:border-[#333] p-3 flex items-center justify-center bg-white dark:bg-[#1A1A1A] shadow-xs hover:border-[#0056D2] hover:shadow-md transition-all shrink-0 group"
                       >
-                        {brandLogoUrl ? (
+                        {brand.logoUrl ? (
                           <img
-                            src={brandLogoUrl}
-                            alt={brandName}
+                            src={brand.logoUrl}
+                            alt={brand.name}
                             className="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform"
+                            onError={(e) => {
+                              (e.target as HTMLElement).style.display = "none";
+                            }}
                           />
                         ) : (
                           <span className="text-sm font-black uppercase text-[#1A1A1A] dark:text-white group-hover:text-[#0056D2]">
-                            {brandName}
+                            {brand.name}
                           </span>
                         )}
                       </Link>
@@ -414,8 +478,8 @@ export function ProductDetailClient({ product, relatedProducts, reviews }: { pro
                       addToCompare({
                         slug: product.slug || product.id,
                         name: product.name,
-                        price: product.price,
-                        salePrice: product.comparePrice,
+                        price: finalPrice,
+                        salePrice: originalStrikethrough || undefined,
                         image: safeUrlFor(product.image, 100),
                         brand: product.brand?.name,
                         specs: product.specs,
