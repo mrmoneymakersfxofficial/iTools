@@ -1,4 +1,6 @@
 export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+export const fetchCache = 'force-no-store';
 
 /* ── Desktop-only & Shared components ── */
 import { TrendingSidebar } from "@/components/home/TrendingSidebar";

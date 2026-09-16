@@ -88,7 +88,7 @@ export default defineType({
       name: "salePrice",
       title: "Precio Oferta Especial (S/) [Opcional]",
       type: "number",
-      description: "Si deseas aplicar un precio de oferta aún más bajo temporalmente. Si está vacío, se usará 'Precio de Venta Actual'.",
+      description: "⚠️ NOTA: Si este campo tiene un valor menor a 'Precio de Venta Actual', se mostrará este precio como oferta final y el precio regular se tachará. Para vender al 'Precio de Venta Actual' sin oferta, DEJA ESTE CAMPO VACÍO (borra el número).",
     }),
     defineField({
       name: "discountBadge",

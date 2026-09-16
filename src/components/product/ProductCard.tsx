@@ -76,8 +76,13 @@ export function ProductCard({ product, index = 0, quickView, quickViewColor }: P
   const wishlisted = isWishlisted(id) || (product.slug && isWishlisted(product.slug)) || (product.id && isWishlisted(product.id));
 
   const price = product.price || 0;
-  const comparePrice = product.salePrice ? product.price : (product.comparePrice || null);
-  const displayPrice = product.salePrice || product.price || 0;
+  const hasExplicitCompare = Boolean(product.comparePrice && product.comparePrice > price);
+  const comparePrice = hasExplicitCompare
+    ? product.comparePrice
+    : (product.salePrice && product.salePrice < price ? price : null);
+  const displayPrice = hasExplicitCompare
+    ? price
+    : (product.salePrice && product.salePrice < price ? product.salePrice : price);
 
   const discount = comparePrice
     ? Math.round(((comparePrice - displayPrice) / comparePrice) * 100)

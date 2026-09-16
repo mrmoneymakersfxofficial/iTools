@@ -5,10 +5,9 @@ import { BrandPageClient } from "./brand-page-client";
 
 const SITE_URL = "https://itools.pe";
 
-export async function generateStaticParams() {
-  const brands = await fetchAllBrandSlugs();
-  return brands.map((b: any) => ({ slug: b.slug }));
-}
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+export const fetchCache = "force-no-store";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;

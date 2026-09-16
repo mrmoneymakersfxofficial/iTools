@@ -4,17 +4,10 @@ import { fetchProductBySlug, fetchRelatedProducts, fetchAllProductSlugs, fetchPr
 import { urlFor } from "@/sanity/image";
 
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
+export const fetchCache = "force-no-store";
 
 const SITE_URL = "https://itools.pe";
-
-export async function generateStaticParams() {
-  try {
-    const products = await fetchAllProductSlugs();
-    return products.map((p: any) => ({ slug: p.slug }));
-  } catch {
-    return [];
-  }
-}
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   try {

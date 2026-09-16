@@ -175,14 +175,19 @@ export function ProductDetailClient({ product, relatedProducts, reviews }: { pro
   const inCompare = isInCompare(product.slug || product.id);
 
   const regularPrice = product.price || 0;
-  // Active promo price: only if salePrice is positive and lower than regularPrice
-  const promoPrice = (product.salePrice && product.salePrice > 0 && product.salePrice < regularPrice)
+  // If comparePrice is explicitly set and higher than price, price IS the selling price
+  const hasExplicitCompare = Boolean(product.comparePrice && product.comparePrice > regularPrice);
+
+  // Active promo price: only if salePrice is positive and lower than regularPrice, and not overridden by explicit comparePrice
+  const promoPrice = (!hasExplicitCompare && product.salePrice && product.salePrice > 0 && product.salePrice < regularPrice)
     ? product.salePrice
     : null;
+
   // Final selling price
-  const finalPrice = promoPrice || regularPrice;
+  const finalPrice = hasExplicitCompare ? regularPrice : (promoPrice || regularPrice);
+
   // Reference price to strike through: comparePrice if higher than finalPrice, or regularPrice if promoPrice is active
-  const originalStrikethrough = (product.comparePrice && product.comparePrice > finalPrice)
+  const originalStrikethrough = hasExplicitCompare
     ? product.comparePrice
     : (promoPrice ? regularPrice : null);
 

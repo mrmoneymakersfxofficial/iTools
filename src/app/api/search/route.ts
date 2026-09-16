@@ -1,4 +1,4 @@
-﻿import { NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { client } from "@/sanity/client";
 
 export const dynamic = "force-dynamic";
@@ -28,6 +28,7 @@ export async function GET(request: Request) {
       sku,
       price,
       salePrice,
+      comparePrice,
       "brand": brand->name,
       image {
         asset-> {
@@ -39,16 +40,26 @@ export async function GET(request: Request) {
     const results = await client.fetch(groqQuery, { wildcard });
 
     return NextResponse.json({
-      results: (results || []).map((p: any) => ({
-        id: p._id,
-        name: p.name,
-        slug: p.slug,
-        sku: p.sku || "",
-        price: p.salePrice || p.price || 0,
-        comparePrice: p.salePrice ? p.price : null,
-        brand: p.brand ? { name: p.brand } : undefined,
-        image: p.image?.asset?.url || null,
-      })),
+      results: (results || []).map((p: any) => {
+        const hasExplicitCompare = Boolean(p.comparePrice && p.comparePrice > (p.price || 0));
+        const price = hasExplicitCompare
+          ? (p.price || 0)
+          : (p.salePrice && p.salePrice < (p.price || 0) ? p.salePrice : (p.price || 0));
+        const comparePrice = hasExplicitCompare
+          ? p.comparePrice
+          : (p.salePrice && p.salePrice < (p.price || 0) ? p.price : null);
+
+        return {
+          id: p._id,
+          name: p.name,
+          slug: p.slug,
+          sku: p.sku || "",
+          price,
+          comparePrice,
+          brand: p.brand ? { name: p.brand } : undefined,
+          image: p.image?.asset?.url || null,
+        };
+      }),
     });
   } catch (error) {
     console.error("Search API error:", error);

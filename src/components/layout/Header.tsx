@@ -475,7 +475,7 @@ function HeaderCategoryBar({ categories }: { categories: Category[] }) {
   return (
     <nav
       ref={barRef}
-      className="hidden md:block bg-white dark:bg-[#111111] border-b border-border dark:border-[#222] relative z-50 overflow-visible"
+      className="hidden md:block bg-white dark:bg-[#111111] border-b border-border dark:border-[#222] relative z-20 overflow-visible"
       aria-label="Categorías principales"
     >
       <div className="w-full mx-auto max-w-[1440px] px-4 flex items-center justify-center gap-2 sm:gap-3 md:gap-4 lg:gap-6 py-1 overflow-visible relative">
@@ -993,7 +993,7 @@ export function Header() {
         </div>
 
         {/* â”€â”€ Main Bar â”€â”€ */}
-        <div className="bg-white dark:bg-[#111111] border-b border-border dark:border-[#222] shadow-sm">
+        <div className="relative z-40 bg-white dark:bg-[#111111] border-b border-border dark:border-[#222] shadow-sm">
           <div className="mx-auto max-w-7xl px-4 h-16 flex items-center gap-3 lg:gap-6">
             {/* Left: Mobile hamburger / Desktop logo */}
             <div className="flex items-center gap-3 shrink-0">
@@ -1031,7 +1031,7 @@ export function Header() {
             </div>
 
             {/* Center: Desktop search */}
-            <div className="hidden md:flex flex-1 max-w-2xl relative" ref={desktopSearchRef}>
+            <div className="hidden md:flex flex-1 max-w-2xl relative z-50" ref={desktopSearchRef}>
               <div className="relative w-full">
                 <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
                 <Input
@@ -1059,7 +1059,7 @@ export function Header() {
               </div>
 
               {desktopResultsOpen && desktopQuery.trim() && (
-                <div className="absolute top-full left-0 right-0 mt-1.5 z-50 bg-white dark:bg-[#141414] rounded-2xl border border-border dark:border-[#262626] shadow-2xl max-h-[460px] overflow-y-auto">
+                <div className="absolute top-full left-0 right-0 mt-1.5 z-[100] bg-white dark:bg-[#141414] rounded-2xl border border-border dark:border-[#262626] shadow-2xl max-h-[460px] overflow-y-auto">
                   {desktopResults.length > 0 ? (
                     <>
                       <div className="divide-y divide-border dark:divide-[#222]">
