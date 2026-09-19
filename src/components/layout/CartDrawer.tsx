@@ -112,16 +112,26 @@ export function CartDrawer() {
                           <span className="w-8 text-center text-sm font-medium tabular-nums">
                             {item.quantity}
                           </span>
-                          <button
-                            type="button"
-                            className="w-8 h-8 flex items-center justify-center border border-input rounded hover:bg-gray-100 dark:bg-[#222] transition-colors"
-                            onClick={() =>
-                              updateQuantity(item.product.id, item.quantity + 1)
-                            }
-                            aria-label="Aumentar cantidad"
-                          >
-                            <Plus className="h-3 w-3" />
-                          </button>
+                          {(() => {
+                            const maxStock = typeof item.product.stock === "number" && item.product.stock >= 0 ? item.product.stock : Infinity;
+                            const isAtMax = item.quantity >= maxStock;
+                            return (
+                              <button
+                                type="button"
+                                disabled={isAtMax}
+                                className={cn(
+                                  "w-8 h-8 flex items-center justify-center border border-input rounded transition-colors",
+                                  isAtMax ? "opacity-30 cursor-not-allowed" : "hover:bg-gray-100 dark:hover:bg-[#222]"
+                                )}
+                                onClick={() =>
+                                  updateQuantity(item.product.id, item.quantity + 1)
+                                }
+                                aria-label="Aumentar cantidad"
+                              >
+                                <Plus className="h-3 w-3" />
+                              </button>
+                            );
+                          })()}
                         </div>
                       </div>
                     </div>

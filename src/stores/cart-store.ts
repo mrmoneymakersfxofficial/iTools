@@ -27,27 +27,31 @@ export const useCartStore = create<CartState>()(
 
       addItem: (product, quantity = 1) => {
         const prodId = product.id || (product as any)._id || "";
+        const maxStock = typeof product.stock === "number" && product.stock >= 0 ? product.stock : Infinity;
+        if (maxStock === 0) return;
         const normalizedProduct: Product = { ...(product as any), id: prodId, _id: prodId };
         set((state) => {
           const existing = state.items.find(
             (i) => (i.product.id || (i.product as any)._id) === prodId
           );
           if (existing) {
+            const newQty = Math.min(existing.quantity + quantity, maxStock);
             return {
               items: state.items.map((i) =>
                 (i.product.id || (i.product as any)._id) === prodId
-                  ? { ...i, quantity: i.quantity + quantity }
+                  ? { ...i, quantity: newQty }
                   : i
               ),
             };
           }
-          return { items: [...state.items, { product: normalizedProduct, quantity }] };
+          const initialQty = Math.min(quantity, maxStock);
+          return { items: [...state.items, { product: normalizedProduct, quantity: initialQty }] };
         });
       },
 
       removeItem: (productId) => {
         set((state) => ({
-          items: state.items.filter((i) => i.product.id !== productId),
+          items: state.items.filter((i) => (i.product.id || (i.product as any)._id) !== productId),
         }));
       },
 
@@ -56,11 +60,20 @@ export const useCartStore = create<CartState>()(
           get().removeItem(productId);
           return;
         }
-        set((state) => ({
-          items: state.items.map((i) =>
-            i.product.id === productId ? { ...i, quantity } : i
-          ),
-        }));
+        set((state) => {
+          const item = state.items.find(
+            (i) => (i.product.id || (i.product as any)._id) === productId
+          );
+          const maxStock = item && typeof item.product.stock === "number" && item.product.stock >= 0 ? item.product.stock : Infinity;
+          const cappedQty = Math.min(quantity, maxStock);
+          return {
+            items: state.items.map((i) =>
+              (i.product.id || (i.product as any)._id) === productId
+                ? { ...i, quantity: cappedQty }
+                : i
+            ),
+          };
+        });
       },
 
       clearCart: () => set({ items: [] }),

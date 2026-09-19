@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { ProductDetailClient } from "./product-detail-client";
-import { fetchProductBySlug, fetchRelatedProducts, fetchAllProductSlugs, fetchProductReviews } from "@/lib/sanity/fetch-product";
+import { fetchProductBySlug, fetchRelatedProducts, fetchProductReviews } from "@/lib/sanity/fetch-product";
+import { getLiveBsaleStock } from "@/lib/bsale/live-stock";
 import { urlFor } from "@/sanity/image";
 
 export const dynamic = "force-dynamic";
@@ -49,6 +50,20 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     notFound();
   }
   if (!product) notFound();
+
+  // Resolve real-time stock from Bsale if configured
+  if (product.sku) {
+    try {
+      const bsaleStock = await getLiveBsaleStock(product.sku);
+      if (typeof bsaleStock === "number") {
+        product.stock = bsaleStock;
+        product.inStock = bsaleStock > 0;
+      }
+    } catch {
+      // Fallback to Sanity product.stock gracefully
+    }
+  }
+
   try {
     if (product.category?.slug) {
       relatedProducts = await fetchRelatedProducts(product.category.slug, product.slug);

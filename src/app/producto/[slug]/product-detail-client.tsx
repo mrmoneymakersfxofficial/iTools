@@ -156,7 +156,12 @@ const SECTION_BENEFITS = "Beneficios de Compra";
 const SECTION_RELATED = "Productos Relacionados";
 
 export function ProductDetailClient({ product, relatedProducts, reviews }: { product: Product; relatedProducts: Product[]; reviews?: any[] }) {
-  const [quantity, setQuantity] = useState(1);
+  const availableStock = typeof product.stock === "number"
+    ? Math.max(0, product.stock)
+    : (product.inStock === false ? 0 : 99);
+  const isOutOfStock = availableStock === 0;
+
+  const [quantity, setQuantity] = useState(isOutOfStock ? 0 : 1);
   const [activeTab, setActiveTab] = useState<"features" | "specs" | "includes" | "recommendations" | "warranty" | "datasheet" | "reviews">("features");
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const carouselRef = useRef<HTMLDivElement>(null);
@@ -168,6 +173,7 @@ export function ProductDetailClient({ product, relatedProducts, reviews }: { pro
   };
   const addToCart = useCartStore((s) => s.addItem);
   const openCart = useCartStore((s) => s.openCart);
+  const cartItems = useCartStore((s) => s.items);
   const { toggleItem, isWishlisted } = useWishlistStore();
   const productIdentifier = product.id || (product as any)._id || product.slug;
   const wishlisted = isWishlisted(product.id) || isWishlisted(product.slug) || isWishlisted((product as any)._id);
@@ -199,12 +205,25 @@ export function ProductDetailClient({ product, relatedProducts, reviews }: { pro
     ...product,
     price: finalPrice,
     comparePrice: originalStrikethrough || undefined,
+    stock: availableStock,
   };
 
   const handleAddToCart = () => {
-    for (let i = 0; i < quantity; i++) {
-      addToCart(cartProduct);
+    if (isOutOfStock) return;
+    const existingCartItem = cartItems.find(
+      (i) => (i.product.id || (i.product as any)._id) === (cartProduct.id || (cartProduct as any)._id)
+    );
+    const currentInCart = existingCartItem?.quantity || 0;
+    const remainingStock = Math.max(0, availableStock - currentInCart);
+
+    if (remainingStock <= 0) {
+      alert(`Ya tienes el stock máximo disponible (${availableStock} und.) en tu carrito.`);
+      openCart();
+      return;
     }
+
+    const qtyToAdd = Math.min(Math.max(1, quantity), remainingStock);
+    addToCart(cartProduct, qtyToAdd);
     openCart();
   };
 
@@ -341,11 +360,11 @@ export function ProductDetailClient({ product, relatedProducts, reviews }: { pro
                       </div>
 
                       {/* Stock status */}
-                      {(product.stock ?? 3) > 0 ? (
+                      {!isOutOfStock ? (
                         <div className="flex items-center gap-2">
                           <span className="inline-block h-2.5 w-2.5 rounded-full bg-[#10B981] animate-pulse" />
                           <span className="text-xs sm:text-sm font-semibold text-[#10B981] dark:text-emerald-400">
-                            En Stock — {product.stock ?? 3} unidades disponibles
+                            Disponible: {availableStock} {availableStock === 1 ? "unidad" : "unidades"}
                           </span>
                         </div>
                       ) : (
@@ -402,22 +421,37 @@ export function ProductDetailClient({ product, relatedProducts, reviews }: { pro
               <div className="space-y-3 mt-2">
                 {/* Row 1: Quantity counter + [ Agregar Carrito ] (RED #E60000) */}
                 <div className="flex gap-3">
-                  <div className="flex items-center border border-gray-300 dark:border-[#333] rounded-xl bg-white dark:bg-[#1a1a1a] h-12 shadow-xs">
+                  <div className={cn(
+                    "flex items-center border border-gray-300 dark:border-[#333] rounded-xl bg-white dark:bg-[#1a1a1a] h-12 shadow-xs",
+                    isOutOfStock && "opacity-50 pointer-events-none"
+                  )}>
                     <button
                       type="button"
+                      disabled={isOutOfStock || quantity <= 1}
                       onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                      className="h-full w-11 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-black/5 dark:hover:bg-white/5 transition-colors rounded-l-xl text-lg font-bold"
+                      className="h-full w-11 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-black/5 dark:hover:bg-white/5 disabled:opacity-30 disabled:cursor-not-allowed transition-colors rounded-l-xl text-lg font-bold"
                       aria-label="Disminuir cantidad"
                     >
                       <Minus className="h-4 w-4" />
                     </button>
-                    <span className="w-10 text-center text-base font-bold tabular-nums text-foreground">
-                      {quantity}
-                    </span>
+                    <input
+                      type="number"
+                      min={1}
+                      max={availableStock}
+                      value={isOutOfStock ? 0 : quantity}
+                      disabled={isOutOfStock}
+                      onChange={(e) => {
+                        const val = parseInt(e.target.value, 10);
+                        if (isNaN(val)) return;
+                        setQuantity(Math.min(availableStock, Math.max(1, val)));
+                      }}
+                      className="w-12 text-center text-base font-bold tabular-nums text-foreground bg-transparent border-0 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                    />
                     <button
                       type="button"
-                      onClick={() => setQuantity(quantity + 1)}
-                      className="h-full w-11 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-black/5 dark:hover:bg-white/5 transition-colors rounded-r-xl text-lg font-bold"
+                      disabled={isOutOfStock || quantity >= availableStock}
+                      onClick={() => setQuantity(Math.min(availableStock, quantity + 1))}
+                      className="h-full w-11 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-black/5 dark:hover:bg-white/5 disabled:opacity-30 disabled:cursor-not-allowed transition-colors rounded-r-xl text-lg font-bold"
                       aria-label="Aumentar cantidad"
                     >
                       <Plus className="h-4 w-4" />
@@ -426,10 +460,10 @@ export function ProductDetailClient({ product, relatedProducts, reviews }: { pro
 
                   <Button
                     onClick={handleAddToCart}
-                    disabled={product.stock === 0}
-                    className="flex-1 bg-[#E60000] hover:bg-[#CC0000] text-white font-bold h-12 text-base sm:text-lg rounded-xl shadow-sm transition-all active:scale-[0.98]"
+                    disabled={isOutOfStock}
+                    className="flex-1 bg-[#E60000] hover:bg-[#CC0000] disabled:bg-gray-300 dark:disabled:bg-gray-700 disabled:cursor-not-allowed text-white font-bold h-12 text-base sm:text-lg rounded-xl shadow-sm transition-all active:scale-[0.98]"
                   >
-                    Agregar Carrito
+                    {isOutOfStock ? "Agotado" : "Agregar Carrito"}
                   </Button>
                 </div>
 
@@ -437,11 +471,12 @@ export function ProductDetailClient({ product, relatedProducts, reviews }: { pro
                 <div className="flex gap-3">
                   <Button
                     onClick={() => {
-                      for (let i = 0; i < quantity; i++) addToCart(cartProduct);
+                      if (isOutOfStock) return;
+                      handleAddToCart();
                       window.location.href = "/checkout";
                     }}
-                    disabled={product.stock === 0}
-                    className="flex-1 bg-[#0056D2] hover:bg-[#0047BA] text-white font-bold h-12 text-base sm:text-lg rounded-xl shadow-sm transition-all active:scale-[0.98]"
+                    disabled={isOutOfStock}
+                    className="flex-1 bg-[#0056D2] hover:bg-[#0047BA] disabled:bg-gray-300 dark:disabled:bg-gray-700 disabled:cursor-not-allowed text-white font-bold h-12 text-base sm:text-lg rounded-xl shadow-sm transition-all active:scale-[0.98]"
                   >
                     Comprar Ahora
                   </Button>
