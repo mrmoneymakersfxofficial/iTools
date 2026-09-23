@@ -25,6 +25,9 @@ export const structure: StructureResolver = (S) =>
       S.documentTypeListItem("brandShowcaseItem").title("🏷️ Marcas"),
       S.documentTypeListItem("category").title("📂 Categorías"),
       S.listItem()
+        .title("⚡ Popup Promocional (Ventana Emergente)")
+        .child(S.document().schemaType("promoPopup").documentId("promo-popup-main")),
+      S.listItem()
         .title("Homepage")
         .child(
           S.list()

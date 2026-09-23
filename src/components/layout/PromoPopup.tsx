@@ -127,14 +127,16 @@ export function PromoPopup({ data }: { data: PromoPopupData | null }) {
           <X className="h-5 w-5" />
         </button>
 
-        {/* Product Image */}
+        {/* Product Image - Full adaptation without cropping */}
         {data.image?.asset?.url && (
-          <div className="relative w-full h-56 overflow-hidden">
+          <div className="relative w-full aspect-[16/9] sm:aspect-[16/9] bg-[#0E0E0E] overflow-hidden flex items-center justify-center">
             <Image
-              src={urlFor(data.image).width(600).height(300).format("webp").url()!}
+              src={urlFor(data.image).width(900).format("webp").url()!}
               alt={data.title || "Promoción"}
               fill
-              className="object-cover"
+              className="object-contain"
+              sizes="(max-width: 640px) 100vw, 450px"
+              priority
             />
           </div>
         )}

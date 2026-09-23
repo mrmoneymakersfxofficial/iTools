@@ -1,4 +1,4 @@
-﻿import { client } from "@/sanity/client";
+import { client } from "@/sanity/client";
 import { SearchPageClient } from "./search-page-client";
 
 export const dynamic = "force-dynamic";
@@ -45,6 +45,25 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
     }`;
 
     products = await client.fetch(groqQuery, { wildcard });
+
+    // Fallback si no hay resultados directos (ej: ADK2101 -> AKD2101 o por código numérico)
+    if ((!products || products.length === 0) && sanitized.length >= 3) {
+      const candidates: string[] = [];
+      if (/adk/i.test(sanitized)) {
+        candidates.push(`*${sanitized.replace(/adk/gi, "AKD")}*`);
+      }
+      const numberMatch = sanitized.match(/\d{3,}/);
+      if (numberMatch) {
+        candidates.push(`*${numberMatch[0]}*`);
+      }
+      for (const cand of candidates) {
+        const fallbackRes = await client.fetch(groqQuery, { wildcard: cand });
+        if (fallbackRes && fallbackRes.length > 0) {
+          products = fallbackRes;
+          break;
+        }
+      }
+    }
   }
 
   const formattedProducts = (products || []).map((p: any) => ({

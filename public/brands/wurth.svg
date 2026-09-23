@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130 50">
+  <rect width="130" height="50" fill="#ffffff" rx="4"/>
+  <g transform="translate(10, 8)">
+    <!-- Würth bracket icon -->
+    <path d="M0 6h4v16H0z" fill="#CC0000"/>
+    <path d="M4 2h4v24H4z" fill="#CC0000"/>
+    <path d="M12 2h4v24h-4z" fill="#CC0000"/>
+    <path d="M16 6h4v16h-4z" fill="#CC0000"/>
+    <!-- WÜRTH text -->
+    <text x="25" y="22" fill="#CC0000" font-family="'Arial Black', Impact, sans-serif" font-weight="900" font-size="18" letter-spacing="0.5">WÜRTH</text>
+  </g>
+</svg>

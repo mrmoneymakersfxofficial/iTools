@@ -78,6 +78,7 @@ const KNOWN_BRANDS_MAP: Array<{ name: string; slug: string; match: RegExp }> = [
   { name: "Kamasa", slug: "kamasa", match: /\bkamasa\b/i },
   { name: "Emtop", slug: "emtop", match: /\bemtop\b/i },
   { name: "Wagner", slug: "wagner", match: /\bwagner\b/i },
+  { name: "Würth", slug: "wurth", match: /\b(wurth|würth)\b/i },
 ];
 
 function resolveProductBrand(product: Product): ResolvedBrand {
@@ -107,9 +108,9 @@ function resolveProductBrand(product: Product): ResolvedBrand {
   }
 
   return {
-    name: "iTools",
-    slug: "itools",
-    logoUrl: customLogoUrl || "/brands/total.webp",
+    name: sanityBrandName || "iTools",
+    slug: sanityBrandSlug || "itools",
+    logoUrl: customLogoUrl || (sanityBrandSlug ? `/brands/${sanityBrandSlug}.webp` : null),
   };
 }
 
