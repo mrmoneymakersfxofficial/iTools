@@ -22,13 +22,14 @@ export default defineType({
       type: "string",
       options: {
         list: [
-          { title: "Google Drive", value: "googleDrive" },
-          { title: "YouTube / YouTube Shorts", value: "youtube" },
+          { title: "Video Subido Directo / MP4 (Recomendado)", value: "direct" },
           { title: "TikTok", value: "tiktok" },
+          { title: "YouTube / YouTube Shorts", value: "youtube" },
+          { title: "Google Drive", value: "googleDrive" },
           { title: "Mixto (URLs variadas)", value: "mixed" },
         ],
       },
-      initialValue: () => "googleDrive",
+      initialValue: () => "direct",
       description: "Selecciona el tipo de videos que se mostrarán.",
     }),
     defineField({
@@ -46,17 +47,29 @@ export default defineType({
               validation: (r) => r.required(),
             }),
             defineField({
+              name: "videoFile",
+              title: "Archivo de Video (Subir MP4 / WebM)",
+              type: "file",
+              options: { accept: "video/*" },
+              description: "Sube el video directamente (MP4, WebM). Permite reproducción nativa limpia sin restricciones ni videos sugeridos externos.",
+            }),
+            defineField({
               name: "videoUrl",
-              title: "URL del Video",
+              title: "URL del Video (opcional si subes archivo)",
               type: "url",
-              description: "URL del video. Google Drive, YouTube, YouTube Shorts, TikTok, Vimeo.",
-              validation: (r) => r.required(),
+              description: "URL externa opcional: MP4 directo, YouTube Shorts, TikTok o Drive.",
             }),
             defineField({
               name: "googleDriveUrl",
               title: "URL de Google Drive (legacy)",
               type: "url",
-              description: "Campo legacy. Usar videoUrl en su lugar.",
+              description: "Campo legacy. Usar videoFile o videoUrl en su lugar.",
+            }),
+            defineField({
+              name: "productLink",
+              title: "Enlace del Producto (Botón Carrito)",
+              type: "string",
+              description: "Ruta o URL del producto a comprar al hacer click en el botón rojo [🛒]. Ej: /producto/akd2101 o /buscar?q=total",
             }),
             defineField({
               name: "thumbnail",
@@ -69,7 +82,7 @@ export default defineType({
               name: "isVertical",
               title: "Video Vertical (Shorts/TikTok)",
               type: "boolean",
-              initialValue: () => false,
+              initialValue: () => true,
               description: "Marcar si el video es formato vertical (9:16)",
             }),
             defineField({

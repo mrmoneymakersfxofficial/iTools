@@ -205,9 +205,11 @@ export const videoSectionQuery = `*[_type == "videoSection" && coalesce(isActive
     title,
     videoUrl,
     googleDriveUrl,
+    "videoFileUrl": videoFile.asset->url,
     "thumbnail": thumbnail { asset-> { url, metadata { dimensions { width, height }, lqip } } },
     isVertical,
     productSlug,
+    productLink,
     order
   }
 }`;

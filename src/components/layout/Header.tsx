@@ -475,10 +475,10 @@ function HeaderCategoryBar({ categories }: { categories: Category[] }) {
   return (
     <nav
       ref={barRef}
-      className="hidden md:block bg-white dark:bg-[#111111] border-b border-border dark:border-[#222] relative z-20 overflow-visible"
+      className="hidden md:block bg-[#0056D2] relative z-20 overflow-visible shadow-sm"
       aria-label="Categorías principales"
     >
-      <div className="w-full mx-auto max-w-[1440px] px-4 flex items-center justify-center gap-2 sm:gap-3 md:gap-4 lg:gap-6 py-1 overflow-visible relative">
+      <div className="w-full mx-auto max-w-[1440px] px-2 sm:px-3 flex items-center justify-center gap-1 md:gap-1.5 lg:gap-2.5 xl:gap-3 py-1 overflow-visible relative">
         {topCategories.map((cat, index) => (
           <HeaderCategoryItem
             key={cat.id || cat.slug}
@@ -553,20 +553,20 @@ function HeaderCategoryItem({
         aria-expanded={isOpen}
         aria-haspopup={hasSubmenu}
         className={cn(
-          "flex items-center gap-1.5 px-3 py-2 text-xs font-black uppercase tracking-wider transition-all whitespace-nowrap cursor-pointer border-b-2",
-          isOpen
-            ? "text-[#E60000] border-[#E60000] bg-red-50/20 dark:bg-red-950/10"
-            : "border-transparent text-[#222] dark:text-gray-200 hover:text-[#E60000] dark:hover:text-[#FF3B30]"
+          "flex items-center gap-1 px-2 lg:px-2.5 py-1.5 text-[11px] lg:text-[12px] xl:text-[12.5px] font-bold uppercase tracking-tight text-white hover:text-white/90 hover:bg-[#0047b3] transition-all whitespace-nowrap cursor-pointer rounded-sm",
+          isOpen && "bg-[#0047b3] text-white"
         )}
       >
         <span>{category.name}</span>
         {hasSubmenu && (
-          <ChevronDown
-            className={cn(
-              "h-3 w-3 transition-transform duration-200 text-[#E60000]",
-              isOpen && "rotate-180"
-            )}
-          />
+          <span className="inline-flex items-center justify-center w-3 h-3 bg-[#E60000] text-white rounded-[2px] ml-0.5 shrink-0">
+            <ChevronDown
+              className={cn(
+                "h-2 w-2 transition-transform duration-200 text-white stroke-[3]",
+                isOpen && "rotate-180"
+              )}
+            />
+          </span>
         )}
       </button>
 
@@ -954,38 +954,41 @@ export function Header() {
     <>
       <header className="sticky top-0 z-50 w-full">
         {/* â”€â”€ Top Bar (desktop only) â”€â”€ */}
-        <div className="hidden md:block bg-itools-dark text-white">
-          <div className="mx-auto max-w-7xl px-4 flex items-center justify-between h-8 text-xs">
+        <div className="hidden md:block bg-[#E60000] text-white">
+          <div className="mx-auto max-w-7xl px-4 flex items-center justify-between h-8 text-xs font-medium">
             <div className="flex items-center gap-4">
               <a
                 href={phoneUrl}
-                className="flex items-center gap-1.5 text-white/80 hover:text-white transition-colors"
+                className="flex items-center gap-1.5 text-white hover:text-white/90 transition-colors font-medium"
               >
                 <Phone className="h-3 w-3" />
                 <span>{phone}</span>
               </a>
-              <span className="text-white/30">|</span>
-              <span className="flex items-center gap-1.5 text-white/80">
+              <span className="text-white/40">|</span>
+              <span className="flex items-center gap-1.5 text-white/90">
                 <MapPin className="h-3 w-3" />
                 <span>{location}</span>
               </span>
             </div>
 
             {/* Announcement bar */}
-            {config.announcementBar && (
-              <div className="hidden lg:flex items-center text-itools-yellow font-medium animate-pulse">
-                {config.announcementBar}
-              </div>
-            )}
+            <div className="hidden lg:flex items-center text-white font-bold tracking-wide">
+              {config.announcementBar || "🔥 OFERTA ESPECIAL: Hasta 34% OFF en herramientas Milwaukee — ¡Solo esta semana!"}
+            </div>
 
             <div className="flex items-center gap-3">
-              <span className="flex items-center gap-1.5 text-white/80">
-                <Shield className="h-3 w-3 text-gold" />
-                <span>{badge1}</span>
+              <span className="flex items-center gap-1.5 text-white font-medium">
+                <Shield className="h-3.5 w-3.5 text-white/90" />
+                <span>{badge1.replace(/milwaukee/i, "").trim() || "Servicio Técnico Oficial"}</span>
+                <img
+                  src="/brands/milwaukee.svg"
+                  alt="Milwaukee"
+                  className="h-4.5 w-auto object-contain inline-block ml-1 rounded-xs"
+                />
               </span>
-              <span className="text-white/30">|</span>
-              <span className="flex items-center gap-1.5 text-white/80">
-                <Truck className="h-3 w-3" />
+              <span className="text-white/40">|</span>
+              <span className="flex items-center gap-1.5 text-white/90 font-medium">
+                <Truck className="h-3.5 w-3.5" />
                 <span>{badge2}</span>
               </span>
             </div>

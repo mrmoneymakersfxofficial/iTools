@@ -102,59 +102,89 @@ export function Footer() {
       {/* ── Brand Marquee Slider (above main footer) ── */}
       <BrandMarquee />
 
-      {/* ── Red Social & Payment Trust Strip (Image 5) ── */}
-      <section className="bg-[#E60000] text-white py-2.5 px-4 shadow-sm" aria-label="Medios de pago y redes sociales">
-        <div className="mx-auto max-w-7xl flex flex-wrap items-center justify-between gap-4 text-xs font-bold">
+      {/* ── Red Social & Payment Trust Strip (Image 4) ── */}
+      <section className="bg-[#E60000] text-white py-3.5 sm:py-4 px-4 shadow-sm" aria-label="Medios de pago y redes sociales">
+        <div className="mx-auto max-w-7xl flex flex-wrap items-center justify-between gap-4 sm:gap-6 text-xs sm:text-sm font-bold">
           {/* Left: Social */}
-          <div className="flex items-center gap-2.5">
-            <span className="uppercase tracking-wider">Síguenos en:</span>
-            <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-3">
+            <span className="text-white text-xs sm:text-sm font-bold uppercase tracking-wider">Síguenos en:</span>
+            <div className="flex items-center gap-2">
               <a
                 href="https://youtube.com/@itoolsperu"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="YouTube"
-                className="h-6 w-6 rounded-full bg-white text-[#E60000] flex items-center justify-center hover:opacity-90 transition-opacity"
+                className="h-8 w-8 rounded-full bg-white text-[#E60000] flex items-center justify-center hover:scale-110 shadow-sm transition-transform"
               >
-                <Youtube className="h-3.5 w-3.5 fill-current" />
+                <Youtube className="h-4.5 w-4.5 fill-current" />
               </a>
               <a
                 href="https://instagram.com/itoolsperu"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Instagram"
-                className="h-6 w-6 rounded-full bg-white text-[#E60000] flex items-center justify-center hover:opacity-90 transition-opacity"
+                className="h-8 w-8 rounded-full bg-white text-[#E60000] flex items-center justify-center hover:scale-110 shadow-sm transition-transform"
               >
-                <Instagram className="h-3.5 w-3.5" />
+                <Instagram className="h-4.5 w-4.5" />
               </a>
               <a
                 href="https://facebook.com/itoolsperu"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Facebook"
-                className="h-6 w-6 rounded-full bg-white text-[#E60000] flex items-center justify-center hover:opacity-90 transition-opacity"
+                className="h-8 w-8 rounded-full bg-white text-[#E60000] flex items-center justify-center hover:scale-110 shadow-sm transition-transform"
               >
-                <Facebook className="h-3.5 w-3.5 fill-current" />
+                <Facebook className="h-4.5 w-4.5 fill-current" />
               </a>
             </div>
           </div>
 
           {/* Center: Medios de pago */}
-          <div className="flex items-center gap-2">
-            <span className="uppercase tracking-wider">Medios de pago:</span>
-            <div className="flex items-center gap-1.5 bg-white px-2.5 py-1 rounded-full text-[#111] text-[10px] font-black shadow-sm">
-              <span className="bg-[#742284] text-white px-1.5 py-0.5 rounded text-[9px]">Yape</span>
-              <span className="bg-[#00D1D5] text-white px-1.5 py-0.5 rounded text-[9px]">Plin</span>
-              <span className="text-[#0056D2] font-black italic">VISA</span>
-              <span className="text-[#EB001B] font-black">MC</span>
-              <span className="text-gray-600 font-bold">AMEX</span>
+          <div className="flex items-center gap-3">
+            <span className="text-white text-xs sm:text-sm font-bold uppercase tracking-wider">Medios de pago:</span>
+            <div className="flex items-center gap-2.5 sm:gap-3.5 bg-white px-4 sm:px-5 py-1.5 sm:py-2 rounded-full shadow-md">
+              {/* Yape */}
+              <svg viewBox="0 0 42 22" className="h-5 sm:h-5.5 w-auto" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Yape">
+                <rect width="42" height="22" rx="4" fill="#742284"/>
+                <text x="21" y="15" fill="white" fontSize="12" fontWeight="900" fontFamily="sans-serif" textAnchor="middle">yape</text>
+              </svg>
+              {/* Plin */}
+              <svg viewBox="0 0 38 22" className="h-5 sm:h-5.5 w-auto" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Plin">
+                <rect width="38" height="22" rx="4" fill="#00D1D5"/>
+                <text x="19" y="15" fill="white" fontSize="12" fontWeight="900" fontFamily="sans-serif" textAnchor="middle">plin</text>
+              </svg>
+              {/* Visa */}
+              <svg viewBox="0 0 50 16" className="h-3.5 sm:h-4 w-auto" xmlns="http://www.w3.org/2000/svg" aria-label="Visa">
+                <path d="M19.3 1.2L13.1 15.6H9.1L5.6 3.6C5.4 2.8 5.2 2.5 4.6 2.2C3.5 1.6 1.7 1.1 0 0.8L0.1 0.4H7.2C8.1 0.4 8.9 1 9.1 2.1L10.8 11.2L15.3 0.4H19.3ZM36.1 10.7C36.1 6.6 30.4 6.4 30.5 4.6C30.5 4 31 3.4 32.2 3.3C32.8 3.2 34.4 3.1 36.2 4L36.9 0.7C35.9 0.3 34.6 0 33 0C28.9 0 26.1 2.2 26 5.3C25.9 7.6 28 8.9 29.5 9.7C31.1 10.5 31.7 11 31.7 11.7C31.7 12.8 30.4 13.3 29.2 13.3C27.1 13.3 25.9 13 24.6 12.4L23.9 15.8C25.1 16.3 27 16.7 28.9 16.7C33.3 16.7 36.1 14.5 36.1 10.7ZM46.7 15.6H50.2L47.1 0.4H43.9C43.1 0.4 42.5 0.9 42.2 1.6L36 15.6H40.2L41 13.3H46L46.7 15.6ZM42.1 10.3L44.2 4.4L45.4 10.3H42.1ZM25.3 0.4L22.2 15.6H18.4L21.5 0.4H25.3Z" fill="#1434CB"/>
+              </svg>
+              {/* Mastercard */}
+              <svg viewBox="0 0 34 22" className="h-4.5 sm:h-5.5 w-auto" xmlns="http://www.w3.org/2000/svg" aria-label="Mastercard">
+                <circle cx="11" cy="11" r="10" fill="#EB001B"/>
+                <circle cx="23" cy="11" r="10" fill="#F79E1B"/>
+                <path d="M17 4.1a10 10 0 0 1 0 13.8 10 10 0 0 1 0-13.8z" fill="#FF5F00"/>
+              </svg>
+              {/* Amex */}
+              <svg viewBox="0 0 28 22" className="h-4.5 sm:h-5.5 w-auto" xmlns="http://www.w3.org/2000/svg" aria-label="American Express">
+                <rect width="28" height="22" rx="3" fill="#006FCF"/>
+                <text x="14" y="14.5" fill="white" fontSize="7" fontWeight="900" fontFamily="sans-serif" textAnchor="middle" letterSpacing="0.5">AMEX</text>
+              </svg>
+              {/* Diners Club */}
+              <svg viewBox="0 0 54 22" className="h-4.5 sm:h-5.5 w-auto" xmlns="http://www.w3.org/2000/svg" aria-label="Diners Club">
+                <rect width="54" height="22" rx="3" fill="#0079BE"/>
+                <circle cx="12" cy="11" r="7" fill="white"/>
+                <path d="M12 4.5a6.5 6.5 0 0 0 0 13V4.5z" fill="#0079BE"/>
+                <text x="33" y="10.5" fill="white" fontSize="5" fontWeight="bold" fontFamily="sans-serif" textAnchor="middle">Diners Club</text>
+                <text x="33" y="16" fill="white" fontSize="3" fontWeight="normal" fontFamily="sans-serif" textAnchor="middle" letterSpacing="0.4">INTERNATIONAL</text>
+              </svg>
             </div>
           </div>
 
-          {/* Right: Tienda 100% Segura */}
-          <div className="flex items-center gap-1.5">
-            <Lock className="h-4 w-4" />
-            <span className="uppercase tracking-wider">Tienda 100% Segura</span>
+          {/* Right: Tienda 100% Segura with Green Shield */}
+          <div className="flex items-center gap-2">
+            <svg viewBox="0 0 24 24" className="w-6 h-6 sm:w-7 sm:h-7 text-[#00C853] shrink-0" fill="currentColor">
+              <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z" />
+            </svg>
+            <span className="text-white text-xs sm:text-sm font-bold uppercase tracking-wider">Tienda 100% Segura</span>
           </div>
         </div>
       </section>
