@@ -284,14 +284,25 @@ export function ProductDetailClient({ product, relatedProducts, reviews }: { pro
                       <img
                         src={src}
                         alt={product.name}
-                        className="absolute inset-0 w-full h-full object-contain pointer-events-none transition-transform will-change-transform duration-75 ease-out"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.src = "/logo.png";
+                          target.className = "w-3/4 max-w-[280px] h-auto object-contain opacity-85";
+                        }}
+                        className="absolute inset-0 w-full h-full object-contain pointer-events-none transition-transform will-change-transform duration-75 ease-out p-4"
                         style={{
                           transformOrigin: isZoomed ? `${zoomPos.x}% ${zoomPos.y}%` : "center center",
                           transform: isZoomed ? "scale(2.2)" : "scale(1)",
                         }}
                       />
                     ) : (
-                      <Wrench className="h-32 w-32 text-gray-200 dark:text-gray-600" />
+                      <div className="flex flex-col items-center justify-center p-8 w-full h-full bg-white dark:bg-[#1a1a1a] select-none">
+                        <img
+                          src="/logo.png"
+                          alt="iTools.Pe"
+                          className="w-3/4 max-w-[280px] h-auto object-contain opacity-85"
+                        />
+                      </div>
                     );
                   })()}
 

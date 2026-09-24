@@ -48,22 +48,22 @@ export default defineType({
             }),
             defineField({
               name: "videoFile",
-              title: "Archivo de Video (Subir MP4 / WebM)",
+              title: "1. 📁 Subir Video Manualmente (Recomendado: MP4 / WebM)",
               type: "file",
               options: { accept: "video/*" },
-              description: "Sube el video directamente (MP4, WebM). Permite reproducción nativa limpia sin restricciones ni videos sugeridos externos.",
-            }),
-            defineField({
-              name: "videoUrl",
-              title: "URL del Video (opcional si subes archivo)",
-              type: "url",
-              description: "URL externa opcional: MP4 directo, YouTube Shorts, TikTok o Drive.",
+              description: "Sube directamente el video desde tu computadora (MP4, WebM o MOV). Es la opción más rápida y recomendada: se reproduce en pantalla completa limpia sin enlaces externos.",
             }),
             defineField({
               name: "googleDriveUrl",
-              title: "URL de Google Drive (legacy)",
+              title: "2. 📁 Enlace de Video de Google Drive",
               type: "url",
-              description: "Campo legacy. Usar videoFile o videoUrl en su lugar.",
+              description: "Pega el enlace de compartir de Google Drive (ej: https://drive.google.com/file/d/XXXX/view?usp=sharing). ⚠️ IMPORTANTE: En Google Drive, da clic derecho al archivo → Compartir → Configurar como 'Cualquier persona que tenga el vínculo puede ver'.",
+            }),
+            defineField({
+              name: "videoUrl",
+              title: "3. 🌐 Enlace Externo (TikTok / YouTube Shorts / MP4 URL)",
+              type: "url",
+              description: "URL pública opcional de TikTok, YouTube Shorts o link directo a un video .mp4 externo.",
             }),
             defineField({
               name: "productLink",

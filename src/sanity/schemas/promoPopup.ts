@@ -23,7 +23,7 @@ export default defineType({
       title: "Imagen del Popup",
       type: "image",
       options: { hotspot: true },
-      description: "📐 Resolución recomendada: 600 x 340 px (formato 16:9) o 600 x 400 px. El popup adaptará la imagen completa sin recortar ningún texto ni borde.",
+      description: "📐 Formato 100% adaptable sin cortes: Se recomienda formato panorámico 16:9 (ej: 800 x 450 px o 600 x 340 px) o 4:3. El diseño del popup se adaptará automáticamente a la imagen completa sin recortar ningún texto, título ni elemento.",
     }),
     defineField({
       name: "originalPrice",

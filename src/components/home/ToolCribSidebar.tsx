@@ -31,9 +31,18 @@ function SidebarProductCard({ product }: { product: any }) {
     >
       <div className="relative shrink-0 w-16 h-16 rounded bg-[#F5F5F5] dark:bg-[#1a1a1a] flex items-center justify-center border border-[#E8E8E8] dark:border-[#333]">
         {imgUrl ? (
-          <img src={imgUrl} alt={product.name} className="absolute inset-0 w-full h-full object-cover rounded" />
+          <img
+            src={imgUrl}
+            alt={product.name}
+            onError={(e) => {
+              const target = e.target as HTMLImageElement;
+              target.src = "/logo.png";
+              target.className = "w-12 h-auto object-contain opacity-85";
+            }}
+            className="absolute inset-0 w-full h-full object-cover rounded"
+          />
         ) : (
-          <Wrench className="h-7 w-7 text-gray-300 dark:text-gray-500" />
+          <img src="/logo.png" alt="iTools.Pe" className="w-12 h-auto object-contain opacity-85" />
         )}
       </div>
       <div className="flex-1 min-w-0">

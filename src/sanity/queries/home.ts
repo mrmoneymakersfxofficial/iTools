@@ -6,6 +6,7 @@ export const heroBannersQuery = `*[_type == "heroSlide" && isActive == true && !
   cta,
   link,
   image { asset-> { url, metadata { dimensions { width, height }, lqip } } },
+  imageMobile { asset-> { url, metadata { dimensions { width, height }, lqip } } },
   bgGradient,
   countdownEnd,
   order
@@ -17,6 +18,7 @@ export const brandPromoBannersQuery = `*[_type == "brandPromoSlide" && isActive 
   brandName,
   brandSlug,
   image { asset-> { url, metadata { dimensions { width, height }, lqip } } },
+  imageMobile { asset-> { url, metadata { dimensions { width, height }, lqip } } },
   order
 }`;
 
@@ -180,6 +182,7 @@ export const promoBannersQuery = `*[_type == "promoBanner" && coalesce(isActive,
   link,
   bgGradient,
   image { asset-> { url, metadata { dimensions { width, height }, lqip } } },
+  imageMobile { asset-> { url, metadata { dimensions { width, height }, lqip } } },
   order
 }`;
 

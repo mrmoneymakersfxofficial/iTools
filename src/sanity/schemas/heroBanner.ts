@@ -11,11 +11,18 @@ export default defineType({
     defineField({ name: "link", title: "Enlace", type: "string" }),
     defineField({
       name: "image",
-      title: "Imagen de fondo",
+      title: "Imagen de fondo (Desktop / Computadora)",
       type: "image",
       options: { hotspot: true },
       validation: (r) => r.required(),
       description: "📐 Resolución recomendada: 1200 x 280 px (o 2400 x 560 px para pantallas Retina 2x). Formato panorámico horizontal.",
+    }),
+    defineField({
+      name: "imageMobile",
+      title: "Imagen para Móvil / Celular (Opcional)",
+      type: "image",
+      options: { hotspot: true },
+      description: "📐 Formato Móvil (ej: 800 x 800 px o 750 x 600 px). Si se sube una imagen aquí, se mostrará en dispositivos móviles evitando que la versión horizontal se distorsione o corte (igual que en Bsale).",
     }),
     defineField({ name: "bgGradient", title: "Gradiente de fallback (CSS)", type: "string" }),
     defineField({

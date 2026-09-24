@@ -154,9 +154,24 @@ export function ProductCard({ product, index = 0, quickView, quickViewColor }: P
         {(() => {
           const imgSrc = getProductCardImage(product);
           return imgSrc ? (
-            <img src={imgSrc} alt={product.name} className="absolute inset-0 w-full h-full object-contain group-hover:scale-105 transition-transform duration-300" />
+            <img
+              src={imgSrc}
+              alt={product.name}
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                target.src = "/logo.png";
+                target.className = "w-3/4 max-w-[150px] h-auto object-contain opacity-85";
+              }}
+              className="absolute inset-0 w-full h-full object-contain group-hover:scale-105 transition-transform duration-300 p-2"
+            />
           ) : (
-            <Wrench className="h-16 w-16 text-gray-300 dark:text-gray-500 group-hover:scale-110 transition-transform duration-300" />
+            <div className="flex items-center justify-center w-full h-full p-6 bg-white dark:bg-[#1a1a1a]">
+              <img
+                src="/logo.png"
+                alt="iTools.Pe"
+                className="w-3/4 max-w-[150px] h-auto object-contain opacity-85 group-hover:scale-105 transition-transform duration-300"
+              />
+            </div>
           );
         })()}
 

@@ -981,9 +981,9 @@ export function Header() {
                 <Shield className="h-3.5 w-3.5 text-white/90" />
                 <span>{badge1.replace(/milwaukee/i, "").trim() || "Servicio Técnico Oficial"}</span>
                 <img
-                  src="/brands/milwaukee.svg"
+                  src="/brands/milwaukee-white-transparent.svg"
                   alt="Milwaukee"
-                  className="h-4.5 w-auto object-contain inline-block ml-1 rounded-xs"
+                  className="h-6 sm:h-7 w-auto object-contain inline-block ml-1.5"
                 />
               </span>
               <span className="text-white/40">|</span>

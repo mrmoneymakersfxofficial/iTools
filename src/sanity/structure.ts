@@ -22,11 +22,14 @@ export const structure: StructureResolver = (S) =>
             ])
         ),
       S.documentTypeListItem("product").title("📦 Productos (Catálogo Completo)"),
-      S.documentTypeListItem("brandShowcaseItem").title("🏷️ Marcas"),
-      S.documentTypeListItem("category").title("📂 Categorías"),
+      S.listItem()
+        .title("🎬 Videos de Productos (Subir Video / Drive / TikTok)")
+        .child(S.document().schemaType("videoSection").documentId("videoSection")),
       S.listItem()
         .title("⚡ Popup Promocional (Ventana Emergente)")
         .child(S.document().schemaType("promoPopup").documentId("promo-popup-main")),
+      S.documentTypeListItem("brandShowcaseItem").title("🏷️ Marcas"),
+      S.documentTypeListItem("category").title("📂 Categorías"),
       S.listItem()
         .title("Homepage")
         .child(
