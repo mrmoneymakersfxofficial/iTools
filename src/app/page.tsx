@@ -68,8 +68,16 @@ export default async function Home() {
           <MainCategoriesSection categories={data.categories} dealTiles={data.dealTiles} homeSettings={data.homeSettings} />
           <DewaltPowerstackBanner banner={data.promoBanners?.find((b: any) => b._id === "promo-banner-dewalt-powerstack")} />
           <RedMarqueeBar uiConfig={data.uiConfig} />
-          <VideoSection data={data.videoSection} />
-          <BrandShowcase brands={data.brandShowcase} />
+          <VideoSection
+            data={data.videoSection}
+            title={data.videoSection?.sectionTitle || data.homeSettings?.videoSectionTitle}
+            subtitle={data.videoSection?.sectionSubtitle || data.homeSettings?.videoSectionSubtitle}
+          />
+          <BrandShowcase
+            brands={data.brandShowcase}
+            title={data.homeSettings?.brandShowcaseTitle}
+            subtitle={data.homeSettings?.brandShowcaseSubtitle}
+          />
           <BestSellersWorkshopSection
             products={bestSellers.length ? bestSellers : allProducts}
             backgroundBanner={data.promoBanners?.find((b: any) => b._id === "promo-banner-mas-vendidos-bg")}
@@ -138,10 +146,18 @@ export default async function Home() {
           <RedMarqueeBar uiConfig={data.uiConfig} />
 
           {/* ── IMAGE 2: Ofertas en Tendencia (TikTok/Reels Vertical Videos) ── */}
-          <VideoSection data={data.videoSection} />
+          <VideoSection
+            data={data.videoSection}
+            title={data.videoSection?.sectionTitle || data.homeSettings?.videoSectionTitle}
+            subtitle={data.videoSection?.sectionSubtitle || data.homeSettings?.videoSectionSubtitle}
+          />
 
           {/* ── IMAGE 2: Las Mejores Marcas Para Tu Trabajo (18 Marcas Grid) ── */}
-          <BrandShowcase brands={data.brandShowcase} />
+          <BrandShowcase
+            brands={data.brandShowcase}
+            title={data.homeSettings?.brandShowcaseTitle}
+            subtitle={data.homeSettings?.brandShowcaseSubtitle}
+          />
 
           {/* ── IMAGE 2: Los Más Vendidos (Carrusel en Rotación) ── */}
           <BestSellersWorkshopSection

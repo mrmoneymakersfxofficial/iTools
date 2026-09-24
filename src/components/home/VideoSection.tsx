@@ -357,7 +357,15 @@ function VideoPlayerCard({
   );
 }
 
-export function VideoSection({ data }: { data: VideoSectionData | null }) {
+export function VideoSection({
+  data,
+  title,
+  subtitle,
+}: {
+  data: VideoSectionData | null;
+  title?: string;
+  subtitle?: string;
+}) {
   const [selectedVideo, setSelectedVideo] = useState<VideoItem | null>(null);
   const videos = data?.videos && data.videos.length > 0 ? data.videos : fallbackVideos;
 
@@ -374,12 +382,18 @@ export function VideoSection({ data }: { data: VideoSectionData | null }) {
           <div className="mb-4">
             <div className="flex items-center gap-2">
               <span className="text-[#E60000] font-black text-lg tracking-tighter">▶▶</span>
-              <h2 className="text-base sm:text-lg font-black text-foreground uppercase tracking-wider">
-                {data?.sectionTitle || "VIDEOS DE PRODUCTOS Y PROMOCIONES"}
+              <h2
+                {...getSanityAttr(data?._id || "videoSection", "videoSection", "sectionTitle")}
+                className="text-base sm:text-lg font-black text-foreground uppercase tracking-wider"
+              >
+                {title || data?.sectionTitle || "VIDEOS DE PRODUCTOS Y PROMOCIONES"}
               </h2>
             </div>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              {data?.sectionSubtitle || "Descubre nuestras herramientas en acción — Tutoriales, demos y más"}
+            <p
+              {...getSanityAttr(data?._id || "videoSection", "videoSection", "sectionSubtitle")}
+              className="text-xs text-muted-foreground mt-0.5"
+            >
+              {subtitle || data?.sectionSubtitle || "Descubre nuestras herramientas en acción — Tutoriales, demos y más"}
             </p>
           </div>
 

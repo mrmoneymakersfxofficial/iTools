@@ -63,9 +63,6 @@ export function MainCategoriesSection({ categories, dealTiles, homeSettings, tit
                     alt={tile?.title || fb.title}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
-                  <div className="absolute top-2.5 left-2.5 bg-[#E60000] text-white font-black text-[10px] sm:text-[11px] px-2 py-0.5 rounded shadow">
-                    {price}
-                  </div>
                 </div>
               </Link>
             );

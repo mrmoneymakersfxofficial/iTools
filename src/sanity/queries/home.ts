@@ -110,9 +110,23 @@ export const dealTilesQuery = `*[_type == "dealTile" && isActive == true] | orde
   image { asset-> { url, metadata { dimensions { width, height }, lqip } } }
 }`;
 
-export const homeSettingsQuery = `*[_type == "homeSettings"][0] {
+export const homeSettingsQuery = `coalesce(
+  *[_type == "homeSettings" && _id == "homeSettings"][0],
+  *[_type == "homeSettings" && _id == "home-settings"][0],
+  *[_type == "homeSettings"][0]
+) {
   _id,
   mainCategoriesTitle,
+  brandShowcaseTitle,
+  brandShowcaseSubtitle,
+  videoSectionTitle,
+  videoSectionSubtitle,
+  bestSellersTitle,
+  bestSellersSubtitle,
+  proDealsTitle,
+  proDealsSubtitle,
+  equipWorkshopTitle,
+  equipWorkshopSubtitle,
   toolCribTitle,
   toolCribLink,
   exploreProductsTitle,

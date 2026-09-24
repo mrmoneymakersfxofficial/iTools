@@ -74,7 +74,15 @@ function mergeBrands(sanityBrands: SanityBrand[]): Array<SanityBrand & { localCo
   return merged.filter((b) => b.isActive !== false);
 }
 
-export function BrandShowcase({ brands }: { brands: any }) {
+export function BrandShowcase({
+  brands,
+  title,
+  subtitle,
+}: {
+  brands: any;
+  title?: string;
+  subtitle?: string;
+}) {
   const rawList = Array.isArray(brands) ? brands : (brands?.brands && Array.isArray(brands.brands) ? brands.brands : []);
   const safeBrands = mergeBrands(rawList);
 
@@ -86,26 +94,36 @@ export function BrandShowcase({ brands }: { brands: any }) {
       localConfig: BRAND_CONFIGS[slug],
     }));
     if (fallback.length === 0) return null;
-    return renderGrid(fallback);
+    return renderGrid(fallback, title, subtitle);
   }
 
-  return renderGrid(safeBrands);
+  return renderGrid(safeBrands, title, subtitle);
 }
 
-function renderGrid(brands: Array<{ _id: string; name: string; slug: string; localConfig?: typeof BRAND_CONFIGS[string]; logo?: { asset?: { url?: string } } }>) {
+function renderGrid(
+  brands: Array<{ _id: string; name: string; slug: string; localConfig?: typeof BRAND_CONFIGS[string]; logo?: { asset?: { url?: string } } }>,
+  title?: string,
+  subtitle?: string
+) {
   return (
-    <section className="py-6 bg-[#F8F9FA] dark:bg-[#111111]" id="las-mejores-marcas" data-section="Las Mejores Marcas" data-sanity-doc="brandShowcaseSettings">
+    <section className="py-6 bg-[#F8F9FA] dark:bg-[#111111]" id="las-mejores-marcas" data-section="Las Mejores Marcas" data-sanity-doc="homeSettings">
       <div className="mx-auto max-w-[1440px] px-3 sm:px-4 lg:px-6">
-        {/* Section Header matching Image 2 */}
+        {/* Section Header matching Image 2 — 100% editable from Sanity */}
         <div className="mb-4">
           <div className="flex items-center gap-2">
             <span className="text-[#E60000] font-black text-lg tracking-tighter">▶▶</span>
-            <h2 className="text-base sm:text-lg font-black text-[#1A1A1A] dark:text-white uppercase tracking-wider">
-              LAS MEJORES MARCAS PARA TU TRABAJO
+            <h2
+              {...getSanityAttr("homeSettings", "homeSettings", "brandShowcaseTitle")}
+              className="text-base sm:text-lg font-black text-[#1A1A1A] dark:text-white uppercase tracking-wider"
+            >
+              {title || "LAS MEJORES MARCAS PARA TU TRABAJO"}
             </h2>
           </div>
-          <p className="text-xs text-muted-foreground mt-0.5">
-            Todo lo que necesitas para equipar tu taller con confianza.
+          <p
+            {...getSanityAttr("homeSettings", "homeSettings", "brandShowcaseSubtitle")}
+            className="text-xs text-muted-foreground mt-0.5"
+          >
+            {subtitle || "Todo lo que necesitas para equipar tu taller con confianza."}
           </p>
         </div>
 

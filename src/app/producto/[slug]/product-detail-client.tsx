@@ -23,6 +23,7 @@ import {
   Package,
   HelpCircle,
   Bell,
+  ZoomIn,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -165,6 +166,16 @@ export function ProductDetailClient({ product, relatedProducts, reviews }: { pro
   const [quantity, setQuantity] = useState(isOutOfStock ? 0 : 1);
   const [activeTab, setActiveTab] = useState<"features" | "specs" | "includes" | "recommendations" | "warranty" | "datasheet" | "reviews">("features");
   const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const [isZoomed, setIsZoomed] = useState(false);
+  const [zoomPos, setZoomPos] = useState({ x: 50, y: 50 });
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = Math.max(0, Math.min(100, ((e.clientX - rect.left) / rect.width) * 100));
+    const y = Math.max(0, Math.min(100, ((e.clientY - rect.top) / rect.height) * 100));
+    setZoomPos({ x, y });
+  };
+
   const carouselRef = useRef<HTMLDivElement>(null);
   const scrollCarousel = (direction: "left" | "right") => {
     if (carouselRef.current) {
@@ -261,23 +272,30 @@ export function ProductDetailClient({ product, relatedProducts, reviews }: { pro
               <div className="flex flex-col gap-4">
                 <div
                   {...getSanityAttr(productIdentifier, "product", "image")}
-                  className="relative aspect-square bg-surface rounded-lg flex items-center justify-center overflow-hidden"
+                  onMouseEnter={() => setIsZoomed(true)}
+                  onMouseLeave={() => setIsZoomed(false)}
+                  onMouseMove={handleMouseMove}
+                  className="relative aspect-square bg-surface rounded-lg flex items-center justify-center overflow-hidden cursor-crosshair group/zoom select-none"
                 >
                   {(() => {
                     const activeImg = product.images?.[activeImageIndex] || product.images?.[0] || product.image;
-                    const src = safeUrlFor(activeImg, 800, 800) || PRODUCT_FALLBACK_IMAGES[product.slug] || "";
+                    const src = safeUrlFor(activeImg, 1200, 1200) || PRODUCT_FALLBACK_IMAGES[product.slug] || "";
                     return src ? (
                       <img
                         src={src}
                         alt={product.name}
-                        className="absolute inset-0 w-full h-full object-contain"
+                        className="absolute inset-0 w-full h-full object-contain pointer-events-none transition-transform will-change-transform duration-75 ease-out"
+                        style={{
+                          transformOrigin: isZoomed ? `${zoomPos.x}% ${zoomPos.y}%` : "center center",
+                          transform: isZoomed ? "scale(2.2)" : "scale(1)",
+                        }}
                       />
                     ) : (
                       <Wrench className="h-32 w-32 text-gray-200 dark:text-gray-600" />
                     );
                   })()}
 
-                  <div className="absolute top-3 left-3 flex flex-col gap-1.5 z-10">
+                  <div className="absolute top-3 left-3 flex flex-col gap-1.5 z-10 pointer-events-none">
                     {discount > 0 && (
                       <Badge className="bg-itools-red text-white border-0 text-sm px-2.5 py-1">
                         -{discount}% OFF
@@ -296,6 +314,12 @@ export function ProductDetailClient({ product, relatedProducts, reviews }: { pro
                   >
                     <Heart className={`h-5 w-5 transition-colors ${wishlisted ? "fill-itools-red text-itools-red" : "text-gray-400"}`} />
                   </button>
+
+                  {/* Zoom indicator helper */}
+                  <div className="absolute bottom-3 right-3 z-10 bg-black/65 backdrop-blur-md text-white text-[11px] font-bold px-2.5 py-1 rounded-full pointer-events-none opacity-70 group-hover/zoom:opacity-100 transition-opacity flex items-center gap-1.5 shadow-md">
+                    <ZoomIn className="w-3.5 h-3.5 text-white" />
+                    <span>Pasa el mouse para Zoom</span>
+                  </div>
                 </div>
                 {product.images && product.images.filter((img: any) => img?.asset).length > 1 && (
                   <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">

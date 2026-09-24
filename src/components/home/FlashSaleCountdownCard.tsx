@@ -57,9 +57,9 @@ export function FlashSaleCountdownCard({ tile }: FlashSaleCountdownCardProps) {
     <Link
       href={tile?.href || "/marca/dongcheng"}
       {...sanityAttr}
-      className="group relative block w-full rounded-xl overflow-hidden shadow-md bg-gradient-to-br from-[#0056D2] via-[#0047AB] to-[#002D72] p-3.5 text-white border border-blue-400/25 transition-all duration-300 hover:scale-[1.01] hover:shadow-lg min-h-[160px]"
+      className="group relative block w-full rounded-xl overflow-hidden shadow-md bg-neutral-900 p-3.5 text-white border border-neutral-800 transition-all duration-300 hover:scale-[1.01] hover:shadow-lg min-h-[160px]"
     >
-      {/* Background Image uploaded from Sanity */}
+      {/* Background Image uploaded from Sanity (Clear & Crisp, no blue filter) */}
       {tile?.image?.asset?.url && (
         <div className="absolute inset-0 z-0">
           <img
@@ -67,60 +67,54 @@ export function FlashSaleCountdownCard({ tile }: FlashSaleCountdownCardProps) {
             alt={tile.title || "Duo Chambeador"}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#001D4A]/95 via-[#003882]/80 to-[#0047AB]/65" />
+          {/* Subtle bottom fade only for countdown contrast without blue tint */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent pointer-events-none" />
         </div>
       )}
 
       <div className="relative z-10">
-        {/* Top Header */}
-        <div className="flex items-start justify-between">
-          <div className="inline-block bg-[#E60000] text-white text-[10px] font-black px-2 py-0.5 rounded uppercase tracking-wider shadow-sm">
-            {tile?.brand || "DUO"}
-          </div>
-        </div>
-
         <div className="mt-1.5">
           <h3 className="font-black text-lg xl:text-xl leading-none uppercase tracking-tight text-white group-hover:text-yellow-300 transition-colors drop-shadow">
             {formattedTitle}
           </h3>
-          <p className="text-[10px] font-bold uppercase tracking-wider text-blue-200 mt-0.5 drop-shadow">
+          <p className="text-[10px] font-bold uppercase tracking-wider text-neutral-300 mt-0.5 drop-shadow">
             {tile?.subtitle || "DEL TIO CHENG"}
           </p>
         </div>
 
-        {/* Countdown timer 3 blocks */}
+        {/* Countdown timer 3 blocks — Centered numbers matching purple annotation */}
         <div className="mt-3 pt-2.5 border-t border-white/20">
           <div className="flex items-center justify-center gap-1.5 text-center">
             {/* Hours */}
-            <div className="flex-1 bg-white text-[#111] rounded-lg py-1 px-1 shadow-sm">
-              <span className="text-base sm:text-lg font-black leading-none block font-mono">
+            <div className="flex-1 bg-white text-neutral-900 rounded-lg py-1.5 px-1 shadow-sm flex flex-col items-center justify-center text-center">
+              <span className="text-base sm:text-lg font-black leading-none tracking-tight block">
                 {pad(timeLeft.hours)}
               </span>
-              <span className="text-[8px] font-black text-gray-500 uppercase tracking-tight">
+              <span className="text-[8px] font-bold text-neutral-500 uppercase tracking-wider mt-0.5 block">
                 HRS
               </span>
             </div>
 
-            <span className="text-white font-black text-sm pb-1">:</span>
+            <span className="text-white font-black text-sm pb-1 leading-none select-none">:</span>
 
             {/* Minutes */}
-            <div className="flex-1 bg-white text-[#111] rounded-lg py-1 px-1 shadow-sm">
-              <span className="text-base sm:text-lg font-black leading-none block font-mono">
+            <div className="flex-1 bg-white text-neutral-900 rounded-lg py-1.5 px-1 shadow-sm flex flex-col items-center justify-center text-center">
+              <span className="text-base sm:text-lg font-black leading-none tracking-tight block">
                 {pad(timeLeft.minutes)}
               </span>
-              <span className="text-[8px] font-black text-gray-500 uppercase tracking-tight">
+              <span className="text-[8px] font-bold text-neutral-500 uppercase tracking-wider mt-0.5 block">
                 MIN
               </span>
             </div>
 
-            <span className="text-white font-black text-sm pb-1">:</span>
+            <span className="text-white font-black text-sm pb-1 leading-none select-none">:</span>
 
             {/* Seconds */}
-            <div className="flex-1 bg-white text-[#111] rounded-lg py-1 px-1 shadow-sm">
-              <span className="text-base sm:text-lg font-black leading-none block font-mono">
+            <div className="flex-1 bg-white text-neutral-900 rounded-lg py-1.5 px-1 shadow-sm flex flex-col items-center justify-center text-center">
+              <span className="text-base sm:text-lg font-black leading-none tracking-tight block">
                 {pad(timeLeft.seconds)}
               </span>
-              <span className="text-[8px] font-black text-gray-500 uppercase tracking-tight">
+              <span className="text-[8px] font-bold text-neutral-500 uppercase tracking-wider mt-0.5 block">
                 SEG
               </span>
             </div>

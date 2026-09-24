@@ -19,7 +19,7 @@ export function DewaltPowerstackBanner({ banner }: DewaltPowerstackBannerProps) 
         <Link
           href={linkUrl}
           {...sanityAttr}
-          className="group relative block w-full h-[110px] sm:h-[130px] md:h-[150px] rounded-xl overflow-hidden shadow-md border border-[#222] transition-transform duration-300 hover:scale-[1.005]"
+          className="group relative block w-full h-[110px] sm:h-[130px] md:h-[150px] rounded-xl overflow-hidden shadow-md transition-transform duration-300 hover:scale-[1.005]"
         >
           <img
             src={imageUrl}

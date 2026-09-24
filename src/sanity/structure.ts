@@ -34,7 +34,7 @@ export const structure: StructureResolver = (S) =>
             .title("Secciones del Inicio")
             .items([
               S.listItem()
-                .title("Ajustes Generales")
+                .title("📝 Títulos de Secciones y Ajustes (Inicio)")
                 .child(S.document().schemaType("homeSettings").documentId("homeSettings")),
               S.listItem()
                 .title("Cuadrícula de Marcas (Orden Fijo)")
