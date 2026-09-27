@@ -12,6 +12,7 @@ import { getSanityAttr } from "@/lib/sanity/visual-attributes";
 interface EquipWorkshopSectionProps {
   products?: any[];
   banners?: any[];
+  title?: string;
 }
 
 const fallbackWorkshopProducts = [
@@ -127,9 +128,10 @@ const fallbackWorkshopProducts = [
   },
 ];
 
-export function EquipWorkshopSection({ products, banners }: EquipWorkshopSectionProps) {
+export function EquipWorkshopSection({ products, banners, title }: EquipWorkshopSectionProps) {
   const { addItem } = useCartStore();
   const { toggleItem, isWishlisted } = useWishlistStore();
+  const titleAttr = getSanityAttr("homeSettings", "homeSettings", "equipWorkshopTitle");
 
   const bAuto = banners?.find((b: any) => b._id === "promo-banner-taller-autostyle");
   const bTotal = banners?.find((b: any) => b._id === "promo-banner-total-530w");
@@ -233,10 +235,10 @@ export function EquipWorkshopSection({ products, banners }: EquipWorkshopSection
     >
       <div className="mx-auto max-w-[1440px] px-3 sm:px-4 lg:px-6">
         {/* Title */}
-        <div className="flex items-center gap-2 mb-4">
+        <div className="flex items-center gap-2 mb-4" {...titleAttr}>
           <span className="text-[#E60000] font-black text-lg tracking-tighter">▶▶</span>
           <h2 className="text-base sm:text-lg font-black text-[#1A1A1A] dark:text-white uppercase tracking-wider">
-            EQUIPA TU TALLER
+            {title || "EQUIPA TU TALLER"}
           </h2>
         </div>
 

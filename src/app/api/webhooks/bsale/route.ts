@@ -108,7 +108,7 @@ async function handleProductWebhook(payload: BsaleWebhookPayload) {
 
 async function handlePriceWebhook(payload: BsaleWebhookPayload) {
   const variantId = Number(payload.resourceId);
-  const priceListId = Number(payload.priceListId || process.env.BSALE_PRICE_LIST_ID || 1);
+  const priceListId = Number(payload.priceListId || process.env.BSALE_PRICE_LIST_ID || 3);
   await syncVariantPrice(variantId, priceListId);
 }
 

@@ -44,12 +44,25 @@ export async function patchSanityProduct(sku: string, data: { name?: string; slu
     
     // Patch existing
     const patchData: any = {};
+    const unsetFields: string[] = [];
+
     if (data.stock !== undefined) patchData.stock = data.stock;
     if (data.price !== undefined) patchData.price = data.price;
-    if (data.salePrice !== undefined) patchData.salePrice = data.salePrice;
+    if (data.salePrice !== undefined && data.salePrice !== null) {
+      patchData.salePrice = data.salePrice;
+    } else if (data.salePrice === null) {
+      unsetFields.push("salePrice");
+    }
     
+    let patchOp = sanityWriteClient.patch(sanityProduct._id);
     if (Object.keys(patchData).length > 0) {
-      await sanityWriteClient.patch(sanityProduct._id).set(patchData).commit();
+      patchOp = patchOp.set(patchData);
+    }
+    if (unsetFields.length > 0) {
+      patchOp = patchOp.unset(unsetFields);
+    }
+    if (Object.keys(patchData).length > 0 || unsetFields.length > 0) {
+      await patchOp.commit();
       console.log(`[Sanity Sync] Patched product ${sku} successfully in Sanity.`);
     }
   } catch (err) {
@@ -111,8 +124,9 @@ export async function syncAllProducts(
             try {
               const priceData = await bsale.getPriceListDetails(priceListId, primaryVariant.id);
               if (priceData.items && priceData.items.length > 0) {
-                price = priceData.items[0].priceWithTax / 100;
-                comparePrice = priceData.items[0].basePrice / 100;
+                const detail = priceData.items[0];
+                const rawVal = Number(detail.variantValueWithTaxes ?? detail.variantValue ?? 0);
+                price = rawVal > 0 ? Math.round(rawVal * 100) / 100 : 0;
               }
             } catch {}
           }
@@ -220,8 +234,9 @@ export async function syncVariantPrice(variantId: number, priceListId: number): 
         const priceData = await bsale.getPriceListDetails(priceListId, variantId);
         if (!priceData.items?.length) return;
     
-        const price = priceData.items[0].priceWithTax / 100;
-        const comparePrice = priceData.items[0].basePrice / 100;
+        const detail = priceData.items[0];
+        const rawVal = Number(detail.variantValueWithTaxes ?? detail.variantValue ?? 0);
+        const price = rawVal > 0 ? Math.round(rawVal * 100) / 100 : 0;
     
         const products = await db.product.findMany({
           where: { specs: { path: ["bsaleVariants"], array_contains: variantId } },
@@ -231,12 +246,12 @@ export async function syncVariantPrice(variantId: number, priceListId: number): 
           const p = products[0];
           await db.product.update({
             where: { id: p.id },
-            data: { price, comparePrice: comparePrice !== price ? comparePrice : null },
+            data: { price, comparePrice: null },
           });
           
           await patchSanityProduct(p.sku, {
               price,
-              salePrice: comparePrice !== price ? comparePrice : undefined
+              salePrice: undefined
           });
         }
     } catch (err) {

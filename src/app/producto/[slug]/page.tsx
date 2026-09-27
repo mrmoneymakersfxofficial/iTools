@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { ProductDetailClient } from "./product-detail-client";
 import { fetchProductBySlug, fetchRelatedProducts, fetchProductReviews } from "@/lib/sanity/fetch-product";
-import { getLiveBsaleStock } from "@/lib/bsale/live-stock";
+import { getLiveBsaleData } from "@/lib/bsale/live-stock";
 import { urlFor } from "@/sanity/image";
 
 export const dynamic = "force-dynamic";
@@ -51,16 +51,28 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   }
   if (!product) notFound();
 
-  // Resolve real-time stock from Bsale if configured
+  // Resolve real-time stock and price from Bsale if configured
   if (product.sku) {
     try {
-      const bsaleStock = await getLiveBsaleStock(product.sku);
-      if (typeof bsaleStock === "number") {
-        product.stock = bsaleStock;
-        product.inStock = bsaleStock > 0;
+      const bsaleData = await getLiveBsaleData(product.sku);
+      if (bsaleData) {
+        if (typeof bsaleData.stock === "number") {
+          product.stock = bsaleData.stock;
+          product.inStock = bsaleData.stock > 0;
+        }
+        if (typeof bsaleData.price === "number" && bsaleData.price > 0) {
+          product.price = bsaleData.price;
+          // If Bsale has no promo price, ensure salePrice is unset
+          if (!bsaleData.salePrice) {
+            product.salePrice = null;
+            product.comparePrice = null;
+          } else {
+            product.salePrice = bsaleData.salePrice;
+          }
+        }
       }
     } catch {
-      // Fallback to Sanity product.stock gracefully
+      // Fallback to Sanity product values gracefully
     }
   }
 

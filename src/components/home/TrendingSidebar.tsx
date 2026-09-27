@@ -33,8 +33,9 @@ function getCategoryThumbnail(cat: any): string {
   return "/products/ingco-combo.webp";
 }
 
-export function TrendingSidebar({ categories }: { categories: any[] }) {
+export function TrendingSidebar({ categories, title }: { categories: any[]; title?: string }) {
   const safeCategories = (categories && categories.length > 0) ? categories : fallbackCategories;
+  const titleAttr = getSanityAttr("homeSettings", "homeSettings", "trendingCategoriesTitle");
 
   return (
     <aside
@@ -43,11 +44,11 @@ export function TrendingSidebar({ categories }: { categories: any[] }) {
       data-sanity-doc="trendingCategory"
     >
       {/* Header matching Image 3 */}
-      <div className="bg-[#F5F6F8] dark:bg-[#1C1C1C] px-4 py-3 border-b border-[#E0E0E0] dark:border-[#262626]">
+      <div className="bg-[#F5F6F8] dark:bg-[#1C1C1C] px-4 py-3 border-b border-[#E0E0E0] dark:border-[#262626]" {...titleAttr}>
         <div className="flex items-center gap-2">
           <TrendingUp className="h-4 w-4 text-[#00A651] shrink-0" />
           <h2 className="text-xs sm:text-sm font-black text-[#1A1A1A] dark:text-white uppercase tracking-wider">
-            TRENDING CATEGORIES
+            {title || "TRENDING CATEGORIES"}
           </h2>
         </div>
       </div>

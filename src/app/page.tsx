@@ -83,18 +83,32 @@ export default async function Home() {
             backgroundBanner={data.promoBanners?.find((b: any) => b._id === "promo-banner-mas-vendidos-bg")}
           />
           <TechnicalServiceBanner banner={data.promoBanners?.find((b: any) => b._id === "promo-banner-servicio-tecnico")} />
-          <ExclusivePromosSection banners={data.promoBanners} />
+          <ExclusivePromosSection
+            banners={data.promoBanners}
+            title={data.homeSettings?.exclusivePromosTitle}
+          />
           <ProDealsSection
             products={proProducts.length ? proProducts : allProducts}
             banners={data.promoBanners}
+            title={data.homeSettings?.proDealsTitle}
           />
           <EquipWorkshopSection
             products={workshopProducts.length ? workshopProducts : allProducts}
             banners={data.promoBanners}
+            title={data.homeSettings?.equipWorkshopTitle}
           />
-          <SataFavoritesBanner banner={data.promoBanners?.find((b: any) => b._id === "promo-banner-sata-380")} />
-          <ExperienceSection banners={data.promoBanners} />
-          <WhyBuySection banners={data.promoBanners} />
+          <SataFavoritesBanner
+            banner={data.promoBanners?.find((b: any) => b._id === "promo-banner-sata-380")}
+            title={data.homeSettings?.sataFavoritesTitle}
+          />
+          <ExperienceSection
+            banners={data.promoBanners}
+            title={data.homeSettings?.experienceTitle}
+          />
+          <WhyBuySection
+            banners={data.promoBanners}
+            title={data.homeSettings?.whyBuyTitle}
+          />
         </div>
 
         {/* ═══════════════════════════════════════════════════
@@ -107,7 +121,10 @@ export default async function Home() {
               {/* LEFT SIDEBAR: Categorías de Tendencia + Cuadro de Tiempo Flash Sale */}
               <div className="w-[240px] xl:w-[260px] shrink-0 flex flex-col">
                 <div className="sticky top-[120px] flex flex-col gap-2.5">
-                  <TrendingSidebar categories={data.trendingCategories} />
+                  <TrendingSidebar
+                    categories={data.trendingCategories}
+                    title={data.homeSettings?.trendingCategoriesTitle}
+                  />
                   <FlashSaleCountdownCard tile={countdownTile} />
                 </div>
               </div>
@@ -169,28 +186,42 @@ export default async function Home() {
           <TechnicalServiceBanner banner={data.promoBanners?.find((b: any) => b._id === "promo-banner-servicio-tecnico")} />
 
           {/* ── IMAGE 3: Promociones Exclusivas (50/50 + Hot Sale Cocina) ── */}
-          <ExclusivePromosSection banners={data.promoBanners} />
+          <ExclusivePromosSection
+            banners={data.promoBanners}
+            title={data.homeSettings?.exclusivePromosTitle}
+          />
 
           {/* ── IMAGE 3: Ofertas Para Profesionales (Carrusel en Rotación) ── */}
           <ProDealsSection
             products={proProducts.length ? proProducts : allProducts}
             banners={data.promoBanners}
+            title={data.homeSettings?.proDealsTitle}
           />
 
           {/* ── IMAGE 4: Equipa Tu Taller (Carrusel en Rotación) ── */}
           <EquipWorkshopSection
             products={workshopProducts.length ? workshopProducts : allProducts}
             banners={data.promoBanners}
+            title={data.homeSettings?.equipWorkshopTitle}
           />
 
           {/* ── IMAGE 4: Favoritos de los Profesionales (SATA 380 piezas) ── */}
-          <SataFavoritesBanner banner={data.promoBanners?.find((b: any) => b._id === "promo-banner-sata-380")} />
+          <SataFavoritesBanner
+            banner={data.promoBanners?.find((b: any) => b._id === "promo-banner-sata-380")}
+            title={data.homeSettings?.sataFavoritesTitle}
+          />
 
           {/* ── IMAGE 4: Vive la Experiencia iTools (4 Cards) ── */}
-          <ExperienceSection banners={data.promoBanners} />
+          <ExperienceSection
+            banners={data.promoBanners}
+            title={data.homeSettings?.experienceTitle}
+          />
 
           {/* ── IMAGE 5: ¿Por Qué Comprar en iTools.pe? (Tractor + 3 Banners) ── */}
-          <WhyBuySection banners={data.promoBanners} />
+          <WhyBuySection
+            banners={data.promoBanners}
+            title={data.homeSettings?.whyBuyTitle}
+          />
         </div>
 
         {/* Section URL hash and Sanity CMS tracker */}

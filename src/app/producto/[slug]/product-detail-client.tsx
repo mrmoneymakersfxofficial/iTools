@@ -640,13 +640,21 @@ export function ProductDetailClient({ product, relatedProducts, reviews }: { pro
                 </div>
 
                 {Array.isArray((product as any).features) && (product as any).features.length > 0 ? (
-                  <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {(product as any).features.map((feat: string, i: number) => (
-                      <li key={i} className="flex items-start gap-2.5 text-sm text-foreground/80 bg-surface dark:bg-[#181818] p-3.5 rounded-xl border border-border dark:border-[#262626]">
-                        <Check className="h-5 w-5 text-green-600 shrink-0 mt-0.5" />
-                        <span>{feat}</span>
-                      </li>
-                    ))}
+                  <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3 items-stretch">
+                    {(product as any).features.map((feat: string, i: number, arr: string[]) => {
+                      const isLastOdd = arr.length % 2 !== 0 && i === arr.length - 1;
+                      return (
+                        <li
+                          key={i}
+                          className={`flex items-center gap-3 text-sm text-foreground/80 bg-surface dark:bg-[#181818] p-3.5 sm:p-4 rounded-xl border border-border dark:border-[#262626] h-full transition-all ${
+                            isLastOdd ? "sm:col-span-2" : ""
+                          }`}
+                        >
+                          <Check className="h-5 w-5 text-green-600 shrink-0" />
+                          <span className="leading-snug">{feat}</span>
+                        </li>
+                      );
+                    })}
                   </ul>
                 ) : (
                   <div className="prose prose-sm max-w-none text-foreground/80 space-y-4">
@@ -726,29 +734,37 @@ export function ProductDetailClient({ product, relatedProducts, reviews }: { pro
                   Contenido del Paquete
                 </h3>
                 {Array.isArray((product as any).includes) && (product as any).includes.length > 0 ? (
-                  <ul className="space-y-2.5">
-                    {(product as any).includes.map((item: string, idx: number) => (
-                      <li key={idx} className="flex items-center gap-3 text-sm text-foreground bg-surface dark:bg-[#181818] p-3 rounded-xl border border-border dark:border-[#262626]">
-                        <Package className="h-4 w-4 text-[#0056D2]" />
-                        <span>{item}</span>
-                      </li>
-                    ))}
+                  <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3 items-stretch">
+                    {(product as any).includes.map((item: string, idx: number, arr: string[]) => {
+                      const isLastOdd = arr.length % 2 !== 0 && idx === arr.length - 1;
+                      return (
+                        <li
+                          key={idx}
+                          className={`flex items-center gap-3 text-sm text-foreground bg-surface dark:bg-[#181818] p-3.5 sm:p-4 rounded-xl border border-border dark:border-[#262626] h-full transition-all ${
+                            isLastOdd ? "sm:col-span-2" : ""
+                          }`}
+                        >
+                          <Package className="h-4 w-4 text-[#0056D2] shrink-0" />
+                          <span className="leading-snug">{item}</span>
+                        </li>
+                      );
+                    })}
                   </ul>
                 ) : (
                   <div className="space-y-3">
                     <p className="text-sm text-muted-foreground">El producto se entrega completamente nuevo en su empaque original e incluye:</p>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      <div className="flex items-center gap-3 text-sm text-foreground bg-surface dark:bg-[#181818] p-3.5 rounded-xl border border-border dark:border-[#262626]">
-                        <Package className="h-4 w-4 text-[#0056D2]" />
-                        <span>1x {product.name}</span>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 items-stretch">
+                      <div className="flex items-center gap-3 text-sm text-foreground bg-surface dark:bg-[#181818] p-3.5 rounded-xl border border-border dark:border-[#262626] h-full">
+                        <Package className="h-4 w-4 text-[#0056D2] shrink-0" />
+                        <span className="leading-snug">1x {product.name}</span>
                       </div>
-                      <div className="flex items-center gap-3 text-sm text-foreground bg-surface dark:bg-[#181818] p-3.5 rounded-xl border border-border dark:border-[#262626]">
-                        <FileDown className="h-4 w-4 text-[#0056D2]" />
-                        <span>1x Manual de instrucciones y certificado de garantía oficial</span>
+                      <div className="flex items-center gap-3 text-sm text-foreground bg-surface dark:bg-[#181818] p-3.5 rounded-xl border border-border dark:border-[#262626] h-full">
+                        <FileDown className="h-4 w-4 text-[#0056D2] shrink-0" />
+                        <span className="leading-snug">1x Manual de instrucciones y certificado de garantía oficial</span>
                       </div>
-                      <div className="flex items-center gap-3 text-sm text-foreground bg-surface dark:bg-[#181818] p-3.5 rounded-xl border border-border dark:border-[#262626]">
-                        <Shield className="h-4 w-4 text-[#0056D2]" />
-                        <span>Accesorios estándar de empaque oficial</span>
+                      <div className="flex items-center gap-3 text-sm text-foreground bg-surface dark:bg-[#181818] p-3.5 rounded-xl border border-border dark:border-[#262626] sm:col-span-2 h-full">
+                        <Shield className="h-4 w-4 text-[#0056D2] shrink-0" />
+                        <span className="leading-snug">Accesorios estándar de empaque oficial</span>
                       </div>
                     </div>
                   </div>

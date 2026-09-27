@@ -6,9 +6,10 @@ import { getSanityAttr } from "@/lib/sanity/visual-attributes";
 
 interface WhyBuySectionProps {
   banners?: any[];
+  title?: string;
 }
 
-export function WhyBuySection({ banners }: WhyBuySectionProps) {
+export function WhyBuySection({ banners, title }: WhyBuySectionProps) {
   const bEquipos = banners?.find((b: any) => b._id === "promo-banner-why-equipos");
   const bDewalt = banners?.find((b: any) => b._id === "promo-banner-why-dewalt");
   const bMakita = banners?.find((b: any) => b._id === "promo-banner-why-makita");
@@ -18,6 +19,7 @@ export function WhyBuySection({ banners }: WhyBuySectionProps) {
   const attrDewalt = getSanityAttr(bDewalt?._id || "promo-banner-why-dewalt", "promoBanner", "image");
   const attrMakita = getSanityAttr(bMakita?._id || "promo-banner-why-makita", "promoBanner", "image");
   const attrMetabo = getSanityAttr(bMetabo?._id || "promo-banner-why-metabo", "promoBanner", "image");
+  const titleAttr = getSanityAttr("homeSettings", "homeSettings", "whyBuyTitle");
 
   return (
     <section
@@ -28,10 +30,10 @@ export function WhyBuySection({ banners }: WhyBuySectionProps) {
     >
       <div className="mx-auto max-w-[1440px] px-3 sm:px-4 lg:px-6">
         {/* Title with left and right red arrows */}
-        <div className="flex items-center gap-2 mb-4">
+        <div className="flex items-center gap-2 mb-4" {...titleAttr}>
           <span className="text-[#E60000] font-black text-lg tracking-tighter">▶▶</span>
           <h2 className="text-base sm:text-lg font-black text-[#1A1A1A] dark:text-white uppercase tracking-wider">
-            ¿POR QUÉ COMPRAR EN iTOOLS.PE?
+            {title || "¿POR QUÉ COMPRAR EN iTOOLS.PE?"}
           </h2>
           <span className="text-[#E60000] font-black text-lg tracking-tighter">◀◀</span>
         </div>

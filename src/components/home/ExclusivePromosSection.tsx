@@ -6,9 +6,10 @@ import { getSanityAttr } from "@/lib/sanity/visual-attributes";
 
 interface ExclusivePromosSectionProps {
   banners?: any[];
+  title?: string;
 }
 
-export function ExclusivePromosSection({ banners }: ExclusivePromosSectionProps) {
+export function ExclusivePromosSection({ banners, title }: ExclusivePromosSectionProps) {
   const b1 = banners?.find((b: any) => b._id === "promo-banner-exclusiva-1");
   const b2 = banners?.find((b: any) => b._id === "promo-banner-exclusiva-2");
   const b3 = banners?.find((b: any) => b._id === "promo-banner-hotsale-cocina");
@@ -16,15 +17,16 @@ export function ExclusivePromosSection({ banners }: ExclusivePromosSectionProps)
   const attr1 = getSanityAttr(b1?._id || "promo-banner-exclusiva-1", "promoBanner", "image");
   const attr2 = getSanityAttr(b2?._id || "promo-banner-exclusiva-2", "promoBanner", "image");
   const attr3 = getSanityAttr(b3?._id || "promo-banner-hotsale-cocina", "promoBanner", "image");
+  const titleAttr = getSanityAttr("homeSettings", "homeSettings", "exclusivePromosTitle");
 
   return (
     <section className="py-6 w-full" id="promociones-exclusivas" data-section="Promociones Exclusivas" data-sanity-doc="promoBanner">
       <div className="mx-auto max-w-[1440px] px-3 sm:px-4 lg:px-6">
         {/* Title */}
-        <div className="flex items-center gap-2 mb-4">
+        <div className="flex items-center gap-2 mb-4" {...titleAttr}>
           <span className="text-[#E60000] font-black text-lg tracking-tighter">▶▶</span>
           <h2 className="text-base sm:text-lg font-black text-[#1A1A1A] dark:text-white uppercase tracking-wider">
-            PROMOCIONES EXCLUSIVAS
+            {title || "PROMOCIONES EXCLUSIVAS"}
           </h2>
         </div>
 

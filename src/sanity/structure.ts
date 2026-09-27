@@ -21,6 +21,9 @@ export const structure: StructureResolver = (S) =>
                 .child(S.document().schemaType("uiConfig").documentId("uiConfig")),
             ])
         ),
+      S.listItem()
+        .title("📝 Títulos y Textos de la Web (Inicio)")
+        .child(S.document().schemaType("homeSettings").documentId("homeSettings")),
       S.documentTypeListItem("product").title("📦 Productos (Catálogo Completo)"),
       S.listItem()
         .title("🎬 Videos de Productos (Subir Video / Drive / TikTok)")

@@ -325,9 +325,16 @@ export async function listDocumentTypes(): Promise<BsaleResponse<BsaleDocumentTy
 // ─── Price Lists ────────────────────────────────────────────────
 
 export interface BsalePriceDetail {
-  variantId: number;
-  basePrice: number;
-  priceWithTax: number;
+  id?: number;
+  variantId?: number;
+  basePrice?: number;
+  priceWithTax?: number;
+  variantValue: number;
+  variantValueWithTaxes: number;
+  variant?: {
+    href: string;
+    id: string | number;
+  };
 }
 
 export async function getPriceListDetails(
@@ -335,7 +342,10 @@ export async function getPriceListDetails(
   variantId?: number
 ): Promise<BsaleResponse<BsalePriceDetail>> {
   const params: Record<string, string> = {};
-  if (variantId) params.variant = String(variantId);
+  if (variantId) {
+    params.variantid = String(variantId);
+    params.variant = String(variantId);
+  }
 
   return bsaleRequest<BsaleResponse<BsalePriceDetail>>(
     "GET", `/price_lists/${priceListId}/details.json`, undefined, params

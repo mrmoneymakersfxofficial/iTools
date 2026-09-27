@@ -101,6 +101,41 @@ export default defineType({
       initialValue: "Descubre nuestra amplia gama de productos por categoría y uso."
     }),
     defineField({
+      name: "trendingCategoriesTitle",
+      title: "Título de Categorías de Tendencia (Sidebar)",
+      type: "string",
+      initialValue: "CATEGORÍAS DE TENDENCIA",
+      description: "Título para la barra lateral izquierda de categorías destacadas",
+    }),
+    defineField({
+      name: "exclusivePromosTitle",
+      title: "Título de la sección Promociones Exclusivas",
+      type: "string",
+      initialValue: "PROMOCIONES EXCLUSIVAS",
+      description: "Título para la sección de promociones exclusivas (2 banners + banner horizontal)",
+    }),
+    defineField({
+      name: "sataFavoritesTitle",
+      title: "Título de la sección Favoritos de los Profesionales",
+      type: "string",
+      initialValue: "FAVORITOS DE LOS PROFESIONALES",
+      description: "Título para el banner panorámico de herramientas destacadas",
+    }),
+    defineField({
+      name: "experienceTitle",
+      title: "Título de la sección Vive la Experiencia",
+      type: "string",
+      initialValue: "VIVE LA EXPERIENCIA ITOOLS",
+      description: "Título para la sección de 4 tarjetas de experiencia",
+    }),
+    defineField({
+      name: "whyBuyTitle",
+      title: "Título de la sección ¿Por Qué Comprar en iTools?",
+      type: "string",
+      initialValue: "¿POR QUÉ COMPRAR EN ITOOLS.PE?",
+      description: "Título para la sección de beneficios y confianza",
+    }),
+    defineField({
       name: "bestSellersProducts",
       title: "Productos Seleccionados: Los Más Vendidos",
       type: "array",

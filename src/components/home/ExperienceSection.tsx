@@ -6,13 +6,15 @@ import { getSanityAttr } from "@/lib/sanity/visual-attributes";
 
 interface ExperienceSectionProps {
   banners?: any[];
+  title?: string;
 }
 
-export function ExperienceSection({ banners }: ExperienceSectionProps) {
+export function ExperienceSection({ banners, title }: ExperienceSectionProps) {
   const bWhatsapp = banners?.find((b: any) => b._id === "promo-banner-exp-whatsapp");
   const bSorteo = banners?.find((b: any) => b._id === "promo-banner-exp-sorteo");
   const bCirculo = banners?.find((b: any) => b._id === "promo-banner-exp-circulo");
   const bApp = banners?.find((b: any) => b._id === "promo-banner-exp-app");
+  const titleAttr = getSanityAttr("homeSettings", "homeSettings", "experienceTitle");
 
   const cards = [
     {
@@ -58,10 +60,10 @@ export function ExperienceSection({ banners }: ExperienceSectionProps) {
     >
       <div className="mx-auto max-w-[1440px] px-3 sm:px-4 lg:px-6">
         {/* Title */}
-        <div className="flex items-center gap-2 mb-4">
+        <div className="flex items-center gap-2 mb-4" {...titleAttr}>
           <span className="text-[#E60000] font-black text-lg tracking-tighter">▶▶</span>
           <h2 className="text-base sm:text-lg font-black text-[#1A1A1A] dark:text-white uppercase tracking-wider">
-            VIVE LA EXPERIENCIA iTOOLS
+            {title || "VIVE LA EXPERIENCIA iTOOLS"}
           </h2>
         </div>
 

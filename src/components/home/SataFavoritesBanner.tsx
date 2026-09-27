@@ -6,12 +6,14 @@ import { getSanityAttr } from "@/lib/sanity/visual-attributes";
 
 interface SataFavoritesBannerProps {
   banner?: any;
+  title?: string;
 }
 
-export function SataFavoritesBanner({ banner }: SataFavoritesBannerProps) {
+export function SataFavoritesBanner({ banner, title }: SataFavoritesBannerProps) {
   const imgUrl = banner?.image?.asset?.url || "/banners/sections/sata-380-piezas.webp";
   const linkUrl = banner?.link || "/marca/sata";
   const sanityAttr = getSanityAttr(banner?._id || "promo-banner-sata-380", "promoBanner", "image");
+  const titleAttr = getSanityAttr("homeSettings", "homeSettings", "sataFavoritesTitle");
 
   return (
     <section
@@ -22,10 +24,10 @@ export function SataFavoritesBanner({ banner }: SataFavoritesBannerProps) {
     >
       <div className="mx-auto max-w-[1440px] px-3 sm:px-4 lg:px-6">
         {/* Title */}
-        <div className="flex items-center gap-2 mb-4">
+        <div className="flex items-center gap-2 mb-4" {...titleAttr}>
           <span className="text-[#E60000] font-black text-lg tracking-tighter">▶▶</span>
           <h2 className="text-base sm:text-lg font-black text-[#1A1A1A] dark:text-white uppercase tracking-wider">
-            FAVORITOS DE LOS PROFESIONALES
+            {title || "FAVORITOS DE LOS PROFESIONALES"}
           </h2>
         </div>
 

@@ -12,6 +12,7 @@ import { getSanityAttr } from "@/lib/sanity/visual-attributes";
 interface ProDealsSectionProps {
   products?: any[];
   banners?: any[];
+  title?: string;
 }
 
 const fallbackProProducts = [
@@ -105,9 +106,10 @@ const fallbackProProducts = [
   },
 ];
 
-export function ProDealsSection({ products, banners }: ProDealsSectionProps) {
+export function ProDealsSection({ products, banners, title }: ProDealsSectionProps) {
   const { addItem } = useCartStore();
   const { toggleItem, isWishlisted } = useWishlistStore();
+  const titleAttr = getSanityAttr("homeSettings", "homeSettings", "proDealsTitle");
 
   const b1 = banners?.find((b: any) => b._id === "promo-banner-pro-dewalt");
   const b2 = banners?.find((b: any) => b._id === "promo-banner-pro-milwaukee");
@@ -205,10 +207,10 @@ export function ProDealsSection({ products, banners }: ProDealsSectionProps) {
     >
       <div className="mx-auto max-w-[1440px] px-3 sm:px-4 lg:px-6">
         {/* Section Title */}
-        <div className="flex items-center gap-2 mb-4">
+        <div className="flex items-center gap-2 mb-4" {...titleAttr}>
           <span className="text-[#E60000] font-black text-lg tracking-tighter">▶▶</span>
           <h2 className="text-base sm:text-lg font-black text-[#1A1A1A] dark:text-white uppercase tracking-wider">
-            OFERTAS PARA PROFESIONALES
+            {title || "OFERTAS PARA PROFESIONALES"}
           </h2>
         </div>
 
