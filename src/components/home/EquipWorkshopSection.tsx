@@ -143,13 +143,8 @@ export function EquipWorkshopSection({ products, banners, title }: EquipWorkshop
   const attrMakita = getSanityAttr(bMakita?._id || "promo-banner-taller-card2", "promoBanner", "image");
   const attrMilwaukee = getSanityAttr(bMilwaukee?._id || "promo-banner-taller-card3", "promoBanner", "image");
 
-  // Combine products with fallbacks to ensure at least 10 items for rotation
-  const combinedList = (products && products.length > 0) ? [...products] : [];
-  fallbackWorkshopProducts.forEach((item) => {
-    if (!combinedList.some((p: any) => (p._id || p.id) === item._id || p.slug === item.slug)) {
-      combinedList.push(item);
-    }
-  });
+  // Use provided real products from Sanity/Bsale; only use fallbacks if none exist
+  const combinedList = (products && products.length > 0) ? [...products] : fallbackWorkshopProducts;
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);

@@ -117,13 +117,8 @@ export function ProDealsSection({ products, banners, title }: ProDealsSectionPro
   const attr1 = getSanityAttr(b1?._id || "promo-banner-pro-dewalt", "promoBanner", "image");
   const attr2 = getSanityAttr(b2?._id || "promo-banner-pro-milwaukee", "promoBanner", "image");
 
-  // Combine products with fallbacks to ensure at least 8 items for rotation
-  const combinedList = (products && products.length > 0) ? [...products] : [];
-  fallbackProProducts.forEach((item) => {
-    if (!combinedList.some((p: any) => (p._id || p.id) === item._id || p.slug === item.slug)) {
-      combinedList.push(item);
-    }
-  });
+  // Use provided real products from Sanity/Bsale; only use fallbacks if none exist
+  const combinedList = (products && products.length > 0) ? [...products] : fallbackProProducts;
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);

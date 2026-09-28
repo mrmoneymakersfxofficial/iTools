@@ -17,7 +17,7 @@ const sanityWriteClient = createClient({
   token: process.env.SANITY_API_WRITE_TOKEN,
 });
 
-export async function patchSanityProduct(sku: string, data: { name?: string; slug?: string; stock?: number; price?: number; salePrice?: number; isActive?: boolean }) {
+export async function patchSanityProduct(sku: string, data: { name?: string; slug?: string; stock?: number; price?: number; salePrice?: number | null; isActive?: boolean }) {
   if (!process.env.SANITY_API_WRITE_TOKEN) {
     console.warn("[Sanity Sync] Skipping Sanity update because SANITY_API_WRITE_TOKEN is not set.");
     return;
@@ -33,7 +33,7 @@ export async function patchSanityProduct(sku: string, data: { name?: string; slu
           slug: { _type: "slug", current: data.slug },
           sku: sku,
           price: data.price || 0,
-          salePrice: data.salePrice,
+          salePrice: data.salePrice ?? undefined,
           stock: data.stock || 0,
           isActive: data.isActive !== false
         });
@@ -119,14 +119,27 @@ export async function syncAllProducts(
           }
 
           let price = 0;
-          let comparePrice: number | null = null;
+          let salePrice: number | null = null;
           if (primaryVariant && priceListId) {
             try {
-              const priceData = await bsale.getPriceListDetails(priceListId, primaryVariant.id);
+              const [priceData, discountData] = await Promise.all([
+                bsale.getPriceListDetails(priceListId, primaryVariant.id),
+                bsale.getVariantDiscounts(primaryVariant.id, priceListId).catch(() => ({ data: [] })),
+              ]);
               if (priceData.items && priceData.items.length > 0) {
                 const detail = priceData.items[0];
                 const rawVal = Number(detail.variantValueWithTaxes ?? detail.variantValue ?? 0);
                 price = rawVal > 0 ? Math.round(rawVal * 100) / 100 : 0;
+              }
+              const activeDiscount = Array.isArray(discountData?.data)
+                ? discountData.data.find((d) => d.discountState === 0 && Number(d.discountPercentage) > 0)
+                : null;
+              if (price > 0 && activeDiscount) {
+                const pct = Number(activeDiscount.discountPercentage);
+                const discounted = Math.round(price * (1 - pct / 100) * 100) / 100;
+                if (discounted > 0 && discounted < price) {
+                  salePrice = discounted;
+                }
               }
             } catch {}
           }
@@ -141,8 +154,8 @@ export async function syncAllProducts(
               name: bsaleProduct.name,
               slug,
               description: bsaleProduct.description || undefined,
-              price: price || 0,
-              comparePrice: comparePrice || undefined,
+              price: salePrice || price || 0,
+              comparePrice: salePrice ? price : undefined,
               stock,
               images: [],
               specs: { bsaleId: bsaleProduct.id, bsaleVariants: variants.map(v => v.id) },
@@ -151,7 +164,8 @@ export async function syncAllProducts(
             update: {
               name: bsaleProduct.name,
               description: bsaleProduct.description || undefined,
-              price: price || undefined,
+              price: salePrice || price || undefined,
+              comparePrice: salePrice ? price : null,
               stock,
               specs: { bsaleId: bsaleProduct.id, bsaleVariants: variants.map(v => v.id) },
               isPublished: bsaleProduct.state === 0,
@@ -165,7 +179,7 @@ export async function syncAllProducts(
             isActive: bsaleProduct.state === 0,
             stock,
             price: price || undefined,
-            salePrice: (comparePrice && comparePrice !== price) ? comparePrice : undefined
+            salePrice: salePrice
           });
 
           result.productsSynced++;
@@ -231,12 +245,27 @@ export async function syncVariantStock(
 
 export async function syncVariantPrice(variantId: number, priceListId: number): Promise<void> {
     try {
-        const priceData = await bsale.getPriceListDetails(priceListId, variantId);
+        const [priceData, discountData] = await Promise.all([
+          bsale.getPriceListDetails(priceListId, variantId),
+          bsale.getVariantDiscounts(variantId, priceListId).catch(() => ({ data: [] })),
+        ]);
         if (!priceData.items?.length) return;
     
         const detail = priceData.items[0];
         const rawVal = Number(detail.variantValueWithTaxes ?? detail.variantValue ?? 0);
         const price = rawVal > 0 ? Math.round(rawVal * 100) / 100 : 0;
+
+        let salePrice: number | null = null;
+        const activeDiscount = Array.isArray(discountData?.data)
+          ? discountData.data.find((d) => d.discountState === 0 && Number(d.discountPercentage) > 0)
+          : null;
+        if (price > 0 && activeDiscount) {
+          const pct = Number(activeDiscount.discountPercentage);
+          const discounted = Math.round(price * (1 - pct / 100) * 100) / 100;
+          if (discounted > 0 && discounted < price) {
+            salePrice = discounted;
+          }
+        }
     
         const products = await db.product.findMany({
           where: { specs: { path: ["bsaleVariants"], array_contains: variantId } },
@@ -246,12 +275,15 @@ export async function syncVariantPrice(variantId: number, priceListId: number): 
           const p = products[0];
           await db.product.update({
             where: { id: p.id },
-            data: { price, comparePrice: null },
+            data: {
+              price: salePrice || price,
+              comparePrice: salePrice ? price : null,
+            },
           });
           
           await patchSanityProduct(p.sku, {
               price,
-              salePrice: undefined
+              salePrice
           });
         }
     } catch (err) {

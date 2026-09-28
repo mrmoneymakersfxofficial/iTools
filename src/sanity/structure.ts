@@ -17,10 +17,13 @@ export const structure: StructureResolver = (S) =>
                 .title("Footer")
                 .child(S.document().schemaType("footerConfig").documentId("footerConfig")),
               S.listItem()
-                .title("Textos y UI Global")
+                .title("🤖 Asistente IA y Textos Globales")
                 .child(S.document().schemaType("uiConfig").documentId("uiConfig")),
             ])
         ),
+      S.listItem()
+        .title("🤖 Asistente IA (Icono Robot y Nombre)")
+        .child(S.document().schemaType("uiConfig").documentId("uiConfig")),
       S.listItem()
         .title("📝 Títulos y Textos de la Web (Inicio)")
         .child(S.document().schemaType("homeSettings").documentId("homeSettings")),

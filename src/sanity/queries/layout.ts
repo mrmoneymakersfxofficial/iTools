@@ -25,6 +25,9 @@ export const footerConfigQuery = `*[_type == "footerConfig"][0] {
 }`;
 
 export const uiConfigQuery = `*[_type == "uiConfig"][0] {
+  "aiAssistantIconUrl": aiAssistantIcon.asset->url,
+  aiAssistantTitle,
+  aiAssistantWelcome,
   addToCartText,
   viewDetailsText,
   outOfStockText,
@@ -32,7 +35,21 @@ export const uiConfigQuery = `*[_type == "uiConfig"][0] {
   shippingBadgeText,
   securePaymentText,
   warrantyText,
-  returnsText
+  returnsText,
+  marqueeBtn1Text,
+  marqueeBtn1Link,
+  marqueeBtn2Text,
+  marqueeBtn2Link,
+  marqueeBtn3Text,
+  marqueeBtn3Link,
+  marqueeBtn4Text,
+  marqueeBtn4Link,
+  marqueeBtn5Text,
+  marqueeBtn5Link,
+  marqueeBtn6Text,
+  marqueeBtn6Link,
+  marqueeBtn7Text,
+  marqueeBtn7Link
 }`;
 
 export const categoriesQuery = `*[_type == "category" && isActive == true] | order(order asc) {

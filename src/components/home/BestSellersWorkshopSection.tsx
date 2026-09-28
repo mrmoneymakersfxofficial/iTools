@@ -106,13 +106,8 @@ export function BestSellersWorkshopSection({ products, backgroundBanner }: BestS
       : defaultBg;
   const bgSanityAttr = getSanityAttr(backgroundBanner?._id || "promo-banner-mas-vendidos-bg", "promoBanner", "image");
 
-  // Combine provided products with fallbacks ensuring at least 8 products for carousel
-  const combinedList = (products && products.length > 0) ? [...products] : [];
-  fallbackBestSellers.forEach((item) => {
-    if (!combinedList.some((p: any) => (p._id || p.id) === item._id || p.slug === item.slug)) {
-      combinedList.push(item);
-    }
-  });
+  // Use provided real products from Sanity/Bsale; only use fallbacks if none exist
+  const combinedList = (products && products.length > 0) ? [...products] : fallbackBestSellers;
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);

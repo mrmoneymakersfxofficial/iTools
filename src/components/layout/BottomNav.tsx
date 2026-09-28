@@ -12,6 +12,7 @@ import { getProductsByBrandSlug, categories, brands } from "@/lib/data";
 import type { Product } from "@/types";
 import { formatPrice } from "@/lib/format";
 import { useAiChatStore } from "@/stores/ai-chat-store";
+import { useGlobalSettings } from "@/stores/global-settings-context";
 
 const brandLinks = [
   { name: "Milwaukee", slug: "milwaukee", color: "#D1001C" },
@@ -46,6 +47,9 @@ const categoryIcons: Record<string, React.ReactNode> = {
 };
 
 export function BottomNav() {
+  const { uiConfig } = useGlobalSettings();
+  const assistantTitle = uiConfig?.aiAssistantTitle || "Asistente IA";
+  const assistantIconUrl = uiConfig?.aiAssistantIconUrl;
   const pathname = usePathname();
   const router = useRouter();
   const [showBrands, setShowBrands] = useState(false);
@@ -130,24 +134,32 @@ export function BottomNav() {
             {(isCategoryPage || showCategories) && <div className="w-4 h-0.5 rounded-full bg-[#E35205]" />}
           </button>
 
-          {/* Chatbot button â€” elevated center */}
+          {/* Chatbot button — elevated center */}
           <button
             onClick={() => { setShowCategories(false); setShowBrands(false); useAiChatStore.getState().toggleChat(); }}
             className="relative flex flex-col items-center gap-0.5 py-1 px-3 rounded-xl transition-all -mt-5"
           >
             <div
-              className="w-12 h-12 rounded-2xl flex items-center justify-center transition-all active:scale-90"
+              className="w-12 h-12 rounded-2xl flex items-center justify-center transition-all active:scale-90 overflow-hidden"
               style={{
                 background: "linear-gradient(135deg, #D1001C, #990000)",
-                boxShadow: false
-                  ? "0 0 20px rgba(209, 0, 28, 0.5), 0 4px 12px rgba(209, 0, 28, 0.3)"
-                  : "0 4px 16px rgba(209, 0, 28, 0.35)",
+                boxShadow: "0 4px 16px rgba(209, 0, 28, 0.35)",
               }}
             >
-              <MessageCircle className="h-5 w-5 text-white" />
-              <Sparkles className="h-3 w-3 text-white/80 absolute -top-0.5 -right-0.5" />
+              {assistantIconUrl ? (
+                <img
+                  src={assistantIconUrl}
+                  alt={assistantTitle}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <>
+                  <MessageCircle className="h-5 w-5 text-white" />
+                  <Sparkles className="h-3 w-3 text-white/80 absolute -top-0.5 -right-0.5" />
+                </>
+              )}
             </div>
-            <span className="text-[7px] font-black uppercase tracking-widest text-[#D1001C]">Asistente IA</span>
+            <span className="text-[7px] font-black uppercase tracking-widest text-[#D1001C]">{assistantTitle}</span>
           </button>
 
           <button

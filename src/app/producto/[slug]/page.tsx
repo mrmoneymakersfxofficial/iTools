@@ -51,24 +51,40 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   }
   if (!product) notFound();
 
-  // Resolve real-time stock and price from Bsale if configured
+  // Resolve real-time stock, base price ("precio antes"), and active discount from Bsale
   if (product.sku) {
     try {
       const bsaleData = await getLiveBsaleData(product.sku);
       if (bsaleData) {
+        const prevStock = product.stock;
+        const prevPrice = product.price;
+        const prevSale = product.salePrice ?? null;
+
         if (typeof bsaleData.stock === "number") {
           product.stock = bsaleData.stock;
           product.inStock = bsaleData.stock > 0;
         }
         if (typeof bsaleData.price === "number" && bsaleData.price > 0) {
           product.price = bsaleData.price;
-          // If Bsale has no promo price, ensure salePrice is unset
-          if (!bsaleData.salePrice) {
-            product.salePrice = null;
-            product.comparePrice = null;
-          } else {
-            product.salePrice = bsaleData.salePrice;
-          }
+          product.salePrice = bsaleData.salePrice ?? null;
+          product.comparePrice = null;
+        }
+
+        // Auto-sync Sanity in background if Bsale values changed
+        if (
+          prevStock !== product.stock ||
+          prevPrice !== product.price ||
+          prevSale !== (product.salePrice ?? null)
+        ) {
+          import("@/lib/bsale/sync")
+            .then(({ patchSanityProduct }) =>
+              patchSanityProduct(product.sku, {
+                stock: product.stock,
+                price: product.price,
+                salePrice: product.salePrice ?? ( null as any ),
+              })
+            )
+            .catch(() => {});
         }
       }
     } catch {

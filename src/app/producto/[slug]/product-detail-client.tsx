@@ -210,7 +210,7 @@ export function ProductDetailClient({ product, relatedProducts, reviews }: { pro
     : (promoPrice ? regularPrice : null);
 
   const discount = (originalStrikethrough && originalStrikethrough > finalPrice)
-    ? Math.round(((originalStrikethrough - finalPrice) / originalStrikethrough) * 100)
+    ? Math.floor(((originalStrikethrough - finalPrice) / originalStrikethrough) * 100)
     : 0;
 
   const cartProduct = {
@@ -387,6 +387,9 @@ export function ProductDetailClient({ product, relatedProducts, reviews }: { pro
                           <>
                             <span className="text-base sm:text-lg text-gray-400 font-bold line-through">
                               {formatPrice(originalStrikethrough)}
+                            </span>
+                            <span className="text-xs font-semibold text-gray-400 -ml-1.5">
+                              antes
                             </span>
                             <span className="bg-[#E60000] text-white text-xs font-black px-2 py-0.5 rounded shadow-xs">
                               -{discount}%

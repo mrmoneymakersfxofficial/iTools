@@ -337,10 +337,18 @@ export interface BsalePriceDetail {
   };
 }
 
+export interface BsaleDiscountDetail {
+  id: number;
+  discountPercentage: number;
+  discountState: number;
+  automaticApply?: number;
+}
+
 export async function getPriceListDetails(
   priceListId: number,
   variantId?: number
 ): Promise<BsaleResponse<BsalePriceDetail>> {
+  const effectiveListId = (!priceListId || priceListId === 1) ? 3 : priceListId;
   const params: Record<string, string> = {};
   if (variantId) {
     params.variantid = String(variantId);
@@ -348,7 +356,17 @@ export async function getPriceListDetails(
   }
 
   return bsaleRequest<BsaleResponse<BsalePriceDetail>>(
-    "GET", `/price_lists/${priceListId}/details.json`, undefined, params
+    "GET", `/price_lists/${effectiveListId}/details.json`, undefined, params
+  );
+}
+
+export async function getVariantDiscounts(
+  variantId: number,
+  priceListId: number
+): Promise<{ code?: number; data?: BsaleDiscountDetail[] }> {
+  const effectiveListId = (!priceListId || priceListId === 1) ? 3 : priceListId;
+  return bsaleRequest<{ code?: number; data?: BsaleDiscountDetail[] }>(
+    "GET", `/variant/${variantId}/price_list/${effectiveListId}/discounts.json`
   );
 }
 

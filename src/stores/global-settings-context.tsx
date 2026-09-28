@@ -4,6 +4,9 @@ import { createContext, useContext, ReactNode } from "react";
 import type { Category } from "@/types";
 
 export type UIConfig = {
+  aiAssistantIconUrl?: string;
+  aiAssistantTitle?: string;
+  aiAssistantWelcome?: string;
   addToCartText: string;
   viewDetailsText: string;
   outOfStockText: string;
@@ -12,6 +15,20 @@ export type UIConfig = {
   securePaymentText: string;
   warrantyText: string;
   returnsText: string;
+  marqueeBtn1Text?: string;
+  marqueeBtn1Link?: string;
+  marqueeBtn2Text?: string;
+  marqueeBtn2Link?: string;
+  marqueeBtn3Text?: string;
+  marqueeBtn3Link?: string;
+  marqueeBtn4Text?: string;
+  marqueeBtn4Link?: string;
+  marqueeBtn5Text?: string;
+  marqueeBtn5Link?: string;
+  marqueeBtn6Text?: string;
+  marqueeBtn6Link?: string;
+  marqueeBtn7Text?: string;
+  marqueeBtn7Link?: string;
 };
 
 export type HeaderConfig = {

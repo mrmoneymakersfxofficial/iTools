@@ -8,7 +8,8 @@ const BSALE_BASE_URL = "https://api.bsale.io/v1";
 export interface LiveBsaleData {
   stock: number;
   price: number | null;
-  salePrice?: number | null;
+  salePrice: number | null;
+  discountPercentage?: number;
   variantId?: number;
 }
 
@@ -18,7 +19,7 @@ export async function getLiveBsaleData(sku?: string): Promise<LiveBsaleData | nu
 
   try {
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 3000);
+    const timeout = setTimeout(() => controller.abort(), 3500);
 
     const cleanSku = sku.trim();
     const variantRes = await fetch(
@@ -26,7 +27,7 @@ export async function getLiveBsaleData(sku?: string): Promise<LiveBsaleData | nu
       {
         headers: { access_token: token },
         signal: controller.signal,
-        next: { revalidate: 15 }, // Cache 15s for high responsiveness and fast TTFB
+        cache: "no-store",
       }
     );
     clearTimeout(timeout);
@@ -36,17 +37,23 @@ export async function getLiveBsaleData(sku?: string): Promise<LiveBsaleData | nu
     const variant = variantData.items?.[0];
     if (!variant?.id) return null;
 
-    const priceListId = process.env.BSALE_PRICE_LIST_ID || "3";
+    // Safeguard: Price List 1 does not exist in Bsale; active base list is 3 ("Lista de Precios Base")
+    const envListId = process.env.BSALE_PRICE_LIST_ID;
+    const priceListId = (!envListId || envListId === "1") ? "3" : envListId;
 
-    // Fetch stock and price in parallel
-    const [stockRes, priceRes] = await Promise.all([
+    // Fetch stock, base price, and active Bsale discounts in parallel
+    const [stockRes, priceRes, discRes] = await Promise.all([
       fetch(`${BSALE_BASE_URL}/stocks.json?variantid=${variant.id}`, {
         headers: { access_token: token },
-        next: { revalidate: 15 },
+        cache: "no-store",
       }).catch(() => null),
       fetch(`${BSALE_BASE_URL}/price_lists/${priceListId}/details.json?variantid=${variant.id}`, {
         headers: { access_token: token },
-        next: { revalidate: 15 },
+        cache: "no-store",
+      }).catch(() => null),
+      fetch(`${BSALE_BASE_URL}/variant/${variant.id}/price_list/${priceListId}/discounts.json`, {
+        headers: { access_token: token },
+        cache: "no-store",
       }).catch(() => null),
     ]);
 
@@ -64,7 +71,7 @@ export async function getLiveBsaleData(sku?: string): Promise<LiveBsaleData | nu
       const priceData = await priceRes.json();
       const detail = priceData.items?.[0];
       if (detail) {
-        // variantValueWithTaxes is the retail price in Soles (including 18% IGV)
+        // variantValueWithTaxes is the retail base price in Soles (including 18% IGV)
         const val = Number(detail.variantValueWithTaxes ?? detail.variantValue);
         if (!isNaN(val) && val > 0) {
           price = Math.round(val * 100) / 100;
@@ -72,10 +79,27 @@ export async function getLiveBsaleData(sku?: string): Promise<LiveBsaleData | nu
       }
     }
 
+    let salePrice: number | null = null;
+    let discountPercentage = 0;
+    if (discRes && discRes.ok && price && price > 0) {
+      const discData = await discRes.json();
+      const activeDiscounts = (discData.data || []).filter(
+        (d: any) => d.discountState === 0 && Number(d.discountPercentage) > 0
+      );
+      if (activeDiscounts.length > 0) {
+        discountPercentage = Number(activeDiscounts[0].discountPercentage);
+        const discounted = Math.round(price * (1 - discountPercentage / 100) * 100) / 100;
+        if (discounted > 0 && discounted < price) {
+          salePrice = discounted;
+        }
+      }
+    }
+
     return {
       stock: Math.max(0, Math.floor(totalAvailable)),
       price,
-      salePrice: null,
+      salePrice,
+      discountPercentage,
       variantId: variant.id,
     };
   } catch {

@@ -27,6 +27,11 @@ export function AgentIA() {
 
   const whatsappUrl = uiConfig?.marqueeBtn5Link || "https://wa.me/51936085056";
   const messengerUrl = "https://m.me/itoolsperu";
+  const assistantTitle = uiConfig?.aiAssistantTitle || "Asistente IA";
+  const assistantIconUrl = uiConfig?.aiAssistantIconUrl;
+  const assistantWelcome =
+    uiConfig?.aiAssistantWelcome ||
+    `¡Hola! 👋 Soy el ${assistantTitle} de iTools. ¿En qué puedo ayudarte hoy?`;
 
   useEffect(() => {
     if (isOpen) {
@@ -36,12 +41,12 @@ export function AgentIA() {
             id: "welcome",
             sender: "ai",
             type: "text",
-            text: "¡Hola! 👋 Soy el Asistente IA de iTools. ¿En qué puedo ayudarte hoy?"
+            text: assistantWelcome
           }
         ]);
       }
     }
-  }, [isOpen, messages.length]);
+  }, [isOpen, messages.length, assistantWelcome]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -117,10 +122,18 @@ export function AgentIA() {
         <button
           onClick={openChat}
           className="hidden md:flex h-12 px-5 rounded-full bg-[#D1001C] text-white shadow-2xl items-center gap-2 hover:bg-red-700 hover:scale-105 active:scale-95 transition-all duration-300 border-2 border-white/20"
-          aria-label="Abrir Asistente IA"
+          aria-label={`Abrir ${assistantTitle}`}
         >
-          <Sparkles className="w-4 h-4 animate-pulse text-white" />
-          <span className="text-xs font-black tracking-wide uppercase">Asistente IA</span>
+          {assistantIconUrl ? (
+            <img
+              src={assistantIconUrl}
+              alt={assistantTitle}
+              className="w-6 h-6 rounded-full object-cover shrink-0"
+            />
+          ) : (
+            <Sparkles className="w-4 h-4 animate-pulse text-white" />
+          )}
+          <span className="text-xs font-black tracking-wide uppercase">{assistantTitle}</span>
         </button>
       </aside>
 
@@ -136,11 +149,19 @@ export function AgentIA() {
         {/* Header */}
         <div className="bg-[#111] p-4 flex items-center justify-between text-white shrink-0 rounded-t-2xl">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#D1001C] to-red-900 flex items-center justify-center shrink-0">
-              <Bot className="w-6 h-6 text-white" />
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#D1001C] to-red-900 flex items-center justify-center shrink-0 overflow-hidden">
+              {assistantIconUrl ? (
+                <img
+                  src={assistantIconUrl}
+                  alt={assistantTitle}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <Bot className="w-6 h-6 text-white" />
+              )}
             </div>
             <div>
-              <h3 className="font-bold text-sm">Asistente IA</h3>
+              <h3 className="font-bold text-sm">{assistantTitle}</h3>
               <p className="text-[11px] text-emerald-400 flex items-center gap-1">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" /> En línea
               </p>

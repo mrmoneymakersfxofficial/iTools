@@ -2,9 +2,30 @@ import { defineType, defineField } from "sanity";
 
 export default defineType({
   name: "uiConfig",
-  title: "Configuración Global UI (Textos)",
+  title: "Configuración Global UI y Asistente IA",
   type: "document",
   fields: [
+    defineField({
+      name: "aiAssistantIcon",
+      title: "🤖 Asistente IA — Icono / Imagen del Robot",
+      description: "Sube una imagen o logo personalizado (PNG, WEBP o JPG) para reemplazar el icono del robot en la cabecera del chat y en el botón flotante. Resolución recomendada: 200x200 px.",
+      type: "image",
+      options: { hotspot: true },
+    }),
+    defineField({
+      name: "aiAssistantTitle",
+      title: "🤖 Asistente IA — Nombre / Texto (ej: Asistente IA)",
+      description: "Texto que aparece en la cabecera del chat y en el botón flotante.",
+      type: "string",
+      initialValue: "Asistente IA",
+    }),
+    defineField({
+      name: "aiAssistantWelcome",
+      title: "🤖 Asistente IA — Mensaje de Bienvenida",
+      description: "Primer mensaje automático al abrir la ventana del asistente.",
+      type: "string",
+      initialValue: "¡Hola! 👋 Soy el Asistente IA de iTools. ¿En qué puedo ayudarte hoy?",
+    }),
     defineField({
       name: "addToCartText",
       title: "Texto de Añadir al Carrito",

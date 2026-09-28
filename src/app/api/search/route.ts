@@ -15,13 +15,13 @@ export async function GET(request: Request) {
     const sanitized = q.replace(/[*"'\\]/g, "");
     const wildcard = `*${sanitized}*`;
 
-    const groqQuery = `*[_type == "product" && (
+    const groqQuery = `*[_type == "product" && !(_id in path("drafts.**")) && (
       sku match $wildcard || 
       name match $wildcard || 
       brand->name match $wildcard || 
       category->name match $wildcard ||
       shortDescription match $wildcard
-    )][0...12] {
+    )][0...16] {
       _id,
       name,
       "slug": slug.current,
@@ -58,8 +58,24 @@ export async function GET(request: Request) {
       }
     }
 
+    // Deduplicate by SKU or slug (prefer real product-bsale-* documents)
+    const seenKeys = new Set<string>();
+    const uniqueResults = (results || [])
+      .sort((a: any, b: any) => {
+        const aIsBsale = String(a._id).startsWith("product-bsale-") ? 0 : 1;
+        const bIsBsale = String(b._id).startsWith("product-bsale-") ? 0 : 1;
+        return aIsBsale - bIsBsale;
+      })
+      .filter((p: any) => {
+        const key = (p.sku || p.slug || p._id || "").trim().toUpperCase();
+        if (!key || seenKeys.has(key)) return false;
+        seenKeys.add(key);
+        return true;
+      })
+      .slice(0, 12);
+
     return NextResponse.json({
-      results: (results || []).map((p: any) => {
+      results: uniqueResults.map((p: any) => {
         const hasExplicitCompare = Boolean(p.comparePrice && p.comparePrice > (p.price || 0));
         const price = hasExplicitCompare
           ? (p.price || 0)
