@@ -71,10 +71,23 @@ export function GlobalSettingsProvider({
   );
 }
 
+const defaultSettings: GlobalSettings = {
+  uiConfig: {
+    addToCartText: "Añadir al Carrito",
+    viewDetailsText: "Ver Detalles",
+    outOfStockText: "Agotado",
+    searchPlaceholder: "Buscar herramientas...",
+    shippingBadgeText: "Envío a todo Perú",
+    securePaymentText: "Pago Seguro",
+    warrantyText: "Garantía Oficial",
+    returnsText: "Devolución en 30 días",
+  },
+  headerConfig: {},
+  footerConfig: {},
+  categories: [],
+};
+
 export function useGlobalSettings() {
   const context = useContext(GlobalSettingsContext);
-  if (!context) {
-    throw new Error("useGlobalSettings must be used within a GlobalSettingsProvider");
-  }
-  return context;
+  return context || defaultSettings;
 }

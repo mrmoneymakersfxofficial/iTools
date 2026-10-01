@@ -11,8 +11,12 @@ export function VisualEditingWrapper({ isDraft }: { isDraft: boolean }) {
   const [inIframe, setInIframe] = useState(false);
 
   useEffect(() => {
-    if (typeof window !== "undefined" && window.self !== window.top) {
-      setInIframe(true);
+    try {
+      if (typeof window !== "undefined" && window.self !== window.top) {
+        setInIframe(true);
+      }
+    } catch {
+      // Ignore cross-origin frame access error
     }
   }, []);
 

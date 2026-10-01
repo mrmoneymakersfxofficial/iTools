@@ -9,9 +9,14 @@ export function SectionUrlTracker() {
   const [isCmsUser, setIsCmsUser] = useState(false);
 
   useEffect(() => {
-    // Detect if inside an iframe or admin/cms preview
-    const inIframe = typeof window !== "undefined" && window.self !== window.top;
-    const isLocalOrPreview = window.location.hostname === "localhost" || inIframe;
+    // Detect if inside an iframe or admin/cms preview safely
+    let isLocalOrPreview = false;
+    try {
+      const inIframe = typeof window !== "undefined" && window.self !== window.top;
+      isLocalOrPreview = window.location.hostname === "localhost" || inIframe;
+    } catch {
+      isLocalOrPreview = false;
+    }
     setIsCmsUser(isLocalOrPreview);
 
     const sections = Array.from(document.querySelectorAll<HTMLElement>("[data-section]"));

@@ -37,12 +37,12 @@ export function ReadingProgressBar() {
     setVisible(true);
     handleScroll();
     hideTimerRef.current = setTimeout(() => {
-      if (progress <= 0.1) setVisible(false);
+      setVisible(false);
     }, 2000);
     return () => {
       if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
     };
-  }, [handleScroll, progress]);
+  }, [handleScroll]);
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll, { passive: true });

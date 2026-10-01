@@ -55,15 +55,8 @@ export function BottomNav() {
   const [showBrands, setShowBrands] = useState(false);
   const [showCategories, setShowCategories] = useState(false);
   
-  const [chatMessages, setChatMessages] = useState<{ role: "user" | "bot"; text: string }[]>([
-    { role: "bot", text: "¡Hola! Soy Asistente IA, tu asistente de herramientas. ¿En qué puedo ayudarte?" },
-  ]);
-  
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const scrollRef = useRef<HTMLDivElement>(null);
   const brandsScrollRef = useRef<HTMLDivElement>(null);
-
-  
 
   useEffect(() => {
     setShowBrands(false);
@@ -72,19 +65,6 @@ export function BottomNav() {
 
   const isBrandPage = pathname?.startsWith("/marca/") ?? false;
   const isCategoryPage = pathname?.startsWith("/categoria/") ?? false;
-
-  const sendChat = () => {
-    if (!chatInput.trim()) return;
-    const userMsg = chatInput.trim();
-    setChatMessages((prev) => [...prev, { role: "user", text: userMsg }]);
-    setChatInput("");
-    setTimeout(() => {
-      setChatMessages((prev) => [
-        ...prev,
-        { role: "bot", text: "Gracias por tu mensaje. Un especialista iTools te contactará pronto. Mientras tanto, explora nuestras marcas y categorías en el menú inferior." },
-      ]);
-    }, 1000);
-  };
 
   const scrollBrands = (dir: "left" | "right") => {
     if (brandsScrollRef.current) {
@@ -404,88 +384,6 @@ export function BottomNav() {
                   })}
                 </div>
               )}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* â”€â”€ CHATBOT PANEL â”€â”€ */}
-      {false && (
-        <div className="lg:hidden fixed bottom-20 left-2 right-2 z-[60] animate-in slide-in-from-bottom-4 fade-in duration-300">
-          <div
-            className="bg-[#111] rounded-2xl border border-[#222] overflow-hidden"
-            style={{ boxShadow: "0 0 40px rgba(209, 0, 28, 0.1), 0 20px 60px rgba(0,0,0,0.5)" }}
-          >
-            {/* Chat header */}
-            <div className="px-4 py-3 flex items-center justify-between" style={{ background: "linear-gradient(135deg, #D1001C, #990000)" }}>
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-xl bg-white/20 flex items-center justify-center">
-                  <Wrench className="h-4 w-4 text-white" />
-                </div>
-                <div>
-                  <p className="text-sm font-bold text-white">Asistente IA</p>
-                  <p className="text-[10px] text-white/70">Asistente de herramientas</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-white/15">
-                  <div className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
-                  <span className="text-[9px] text-white/80 font-medium">En línea</span>
-                </div>
-                <button onClick={() => {}} className="w-7 h-7 rounded-full bg-white/15 flex items-center justify-center">
-                  <X className="h-3.5 w-3.5 text-white" />
-                </button>
-              </div>
-            </div>
-            {/* Chat messages */}
-            <div ref={scrollRef} className="h-48 overflow-y-auto p-3 space-y-2.5 no-scrollbar" style={{ background: "linear-gradient(180deg, #0D0D0D, #111)" }}>
-              {chatMessages.map((msg, i) => (
-                <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
-                  <div
-                    className={`max-w-[80%] px-3 py-2 rounded-2xl text-sm leading-relaxed ${
-                      msg.role === "user" ? "rounded-br-md text-white" : "rounded-bl-md text-[#DDD] bg-[#1A1A1A] border border-[#222]"
-                    }`}
-                    style={msg.role === "user" ? { background: "linear-gradient(135deg, #D1001C, #990000)" } : {}}
-                  >
-                    {msg.text}
-                  </div>
-                </div>
-              ))}
-            </div>
-            {/* Quick actions */}
-            <div className="px-3 py-2 flex gap-1.5 overflow-x-auto no-scrollbar border-t border-[#1A1A1A]">
-              {["Ver ofertas", "Marcas", "Envío", "Garantía"].map((action) => (
-                <button
-                  key={action}
-                  onClick={() => {
-                    setChatMessages((prev) => [...prev, { role: "user", text: action }]);
-                    setTimeout(() => {
-                      setChatMessages((prev) => [...prev, { role: "bot", text: `Te ayudo con ${action.toLowerCase()}. Explora nuestra web o contacta WhatsApp principal.` }]);
-                    }, 800);
-                  }}
-                  className="shrink-0 px-3 py-1.5 rounded-full text-[10px] font-semibold border border-[#333] text-[#999] hover:text-white hover:border-[#E35205] transition-all"
-                >
-                  {action}
-                </button>
-              ))}
-            </div>
-            {/* Input */}
-            <div className="px-3 py-3 flex gap-2 border-t border-[#1A1A1A]">
-              <input
-                type="text"
-                value={chatInput}
-                onChange={(e) => setChatInput(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && sendChat()}
-                placeholder="Escribe tu consulta..."
-                className="flex-1 bg-[#1A1A1A] border border-[#2A2A2A] rounded-xl px-3 py-2.5 text-sm text-white placeholder-[#555] focus:outline-none focus:border-[#E35205] transition-colors"
-              />
-              <button
-                onClick={sendChat}
-                className="w-10 h-10 rounded-xl flex items-center justify-center active:scale-90"
-                style={{ background: "linear-gradient(135deg, #D1001C, #990000)" }}
-              >
-                <Send className="h-4 w-4 text-white" />
-              </button>
             </div>
           </div>
         </div>

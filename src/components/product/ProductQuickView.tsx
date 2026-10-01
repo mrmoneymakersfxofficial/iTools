@@ -374,20 +374,18 @@ export function ProductQuickView() {
                           <p className="text-xs text-[#888] mt-0.5">{warrantyVal || "Garantía del fabricante"}. Servicio técnico autorizado.</p>
                         </div>
                       </div>
+                      <div className="flex items-start gap-3">
+                        <div className="h-8 w-8 rounded-lg flex items-center justify-center shrink-0" style={{ backgroundColor: `${effectiveBrandColor}20` }}>
+                          <RotateCcw className="h-4 w-4" style={{ color: effectiveBrandColor }} />
+                        </div>
+                        <div>
+                          <p className="text-sm text-white font-medium">Devolución 30 días</p>
+                          <p className="text-xs text-[#888] mt-0.5">Sin preguntas. Producto en su empaque original.</p>
+                        </div>
+                      </div>
                     </div>
                   );
                 })()}
-                    <div className="flex items-start gap-3">
-                      <div className="h-8 w-8 rounded-lg flex items-center justify-center shrink-0" style={{ backgroundColor: `${effectiveBrandColor}20` }}>
-                        <RotateCcw className="h-4 w-4" style={{ color: effectiveBrandColor }} />
-                      </div>
-                      <div>
-                        <p className="text-sm text-white font-medium">Devolución 30 días</p>
-                        <p className="text-xs text-[#888] mt-0.5">Sin preguntas. Producto en su empaque original.</p>
-                      </div>
-                    </div>
-                  </div>
-                )}
 
                 {/* Quantity + Add to Cart */}
                 <div className="flex gap-3 pt-2">
@@ -488,10 +486,10 @@ export function ProductQuickView() {
                             )}
                           </div>
                           <p className="text-[10px] text-[#BBB] line-clamp-2 leading-tight mb-1.5 group-hover:text-white transition-colors">
-                            {rp.name}
+                            {related.name}
                           </p>
-                          <span className="text-xs font-bold" style={{ color: getBrandColorForProduct(rp) }}>
-                            {formatPrice(rp.price)}
+                          <span className="text-xs font-bold" style={{ color: getBrandColorForProduct(related) }}>
+                            {formatPrice(related.price)}
                           </span>
                         </Link>
                       );

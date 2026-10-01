@@ -120,7 +120,7 @@ export default async function RootLayout({
   const settings = {
     headerConfig: layoutData?.header || {},
     footerConfig: layoutData?.footer || {},
-    uiConfig: layoutData?.uiConfig || {
+    uiConfig: {
       addToCartText: "Añadir al Carrito",
       viewDetailsText: "Ver Detalles",
       outOfStockText: "Agotado",
@@ -129,6 +129,7 @@ export default async function RootLayout({
       securePaymentText: "Pago Seguro",
       warrantyText: "Garantía Oficial",
       returnsText: "Devolución en 30 días",
+      ...(layoutData?.uiConfig || {}),
     },
     categories: layoutData?.categories || [],
   };

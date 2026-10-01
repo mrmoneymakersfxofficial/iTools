@@ -647,7 +647,7 @@ function MobileSearchOverlay({
         <Input
           ref={inputRef}
           type="search"
-          placeholder={uiConfig.searchPlaceholder || "Buscar herramientas..."}
+          placeholder={uiConfig?.searchPlaceholder || "Buscar herramientas..."}
           className="flex-1 bg-transparent border-0 h-10 px-0 text-base focus-visible:ring-0 placeholder:text-muted-foreground shadow-none"
           value={query}
           onChange={(e) => handleChange(e.target.value)}
