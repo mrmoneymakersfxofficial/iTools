@@ -26,9 +26,9 @@ export async function sanityFetch<QueryResponse>({
   }
 
   return client.fetch<QueryResponse>(query, params, {
-    useCdn: false,
+    useCdn: true,
     next: {
-      revalidate: revalidate === false ? false : revalidate,
+      revalidate: revalidate === false ? false : (revalidate || 60),
       tags,
     },
   });

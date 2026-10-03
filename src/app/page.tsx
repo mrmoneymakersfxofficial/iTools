@@ -25,11 +25,10 @@ import { SectionUrlTracker } from "@/components/layout/SectionUrlTracker";
 import { FlashSaleCountdownCard } from "@/components/home/FlashSaleCountdownCard";
 
 import { fetchHomePageData } from "@/lib/sanity/fetch-home";
+import { getFallbackHomeData } from "@/lib/sanity/home-fallback";
 
 export default async function Home() {
-  const data = await fetchHomePageData();
-
-  if (!data) return null;
+  const data = (await fetchHomePageData()) || getFallbackHomeData();
 
   // Products subsets for different sections (passed to auto-rotating carousels)
   const allProducts = data.products || [];
