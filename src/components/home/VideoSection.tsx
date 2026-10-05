@@ -32,8 +32,17 @@ interface VideoSectionData {
   videos?: VideoItem[];
 }
 
-function getEffectiveUrl(video: VideoItem): string {
-  return (video.videoFileUrl || video.videoUrl || video.googleDriveUrl || "").trim();
+function getEffectiveUrl(video: VideoItem, sourceType?: string): string {
+  // 1. Google Drive siempre tiene máxima prioridad para evitar consumo de Sanity
+  if (video.googleDriveUrl && video.googleDriveUrl.trim().length > 0) {
+    return video.googleDriveUrl.trim();
+  }
+  // 2. URLs externas (YouTube, TikTok, enlaces directos externos)
+  if (video.videoUrl && video.videoUrl.trim().length > 0) {
+    return video.videoUrl.trim();
+  }
+  // 3. Archivo directo subido a Sanity (última opción)
+  return (video.videoFileUrl || "").trim();
 }
 
 function getEmbedInfo(url: string | null | undefined): { embedUrl: string; isDirectVideo: boolean; platform: string } {
@@ -225,11 +234,11 @@ function VideoPlayerCard({
             <video
               ref={videoRef}
               src={embed.embedUrl}
-              autoPlay
+              poster={thumbnailUrl || undefined}
               muted={isMuted}
               playsInline
               loop
-              preload="metadata"
+              preload="none"
               className="w-full h-full object-cover bg-black"
               onPlay={() => setIsPlaying(true)}
               onPause={() => setIsPlaying(false)}

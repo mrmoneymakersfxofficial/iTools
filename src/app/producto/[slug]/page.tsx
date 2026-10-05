@@ -4,9 +4,7 @@ import { fetchProductBySlug, fetchRelatedProducts, fetchProductReviews } from "@
 import { getLiveBsaleData } from "@/lib/bsale/live-stock";
 import { urlFor } from "@/sanity/image";
 
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
-export const fetchCache = "force-no-store";
+export const revalidate = 60;
 
 const SITE_URL = "https://itools.pe";
 
