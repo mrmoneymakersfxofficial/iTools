@@ -38,6 +38,10 @@ db/custom.db
 .vscode/
 .idea/
 
+# backups
+*.ndjson
+
+
 # uploads (not for repo)
 upload/
 
