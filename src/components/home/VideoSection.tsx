@@ -140,11 +140,11 @@ function getVideoPlatform(url: string | null | undefined): { name: string; color
 }
 
 const fallbackVideos: VideoItem[] = [
-  { title: "TOTAL 4.0 — Las 7 Bestias en Acción", videoUrl: "https://www.tiktok.com/@itools.pe/video/7681826524290551061", productSlug: "akd2101" },
-  { title: "Milwaukee M18 FUEL — Taladro Percutor 158Nm", videoUrl: "https://www.tiktok.com/@itools.pe/video/7681826524290551061", productSlug: "2904-20" },
-  { title: "DeWalt 20V MAX XR — Atornillador Brushless", videoUrl: "https://www.tiktok.com/@itools.pe/video/7681826524290551061", productSlug: "dcf850" },
-  { title: "Bosch Professional — Rotomartillo SDS-Plus", videoUrl: "https://www.tiktok.com/@itools.pe/video/7681826524290551061", productSlug: "gbh-180-li" },
-  { title: "PACKOUT Milwaukee — Sistema Modular", videoUrl: "https://www.tiktok.com/@itools.pe/video/7681826524290551061", productSlug: "packout-48-22-8426" },
+  { title: "TOTAL 4.0 — Las 7 Bestias en Acción", videoUrl: "https://www.youtube.com/watch?v=f7_i5d4gBqI", productSlug: "akd2101" },
+  { title: "Milwaukee M18 FUEL — Taladro Percutor 158Nm", videoUrl: "https://www.youtube.com/watch?v=f7_i5d4gBqI", productSlug: "2904-20" },
+  { title: "DeWalt 20V MAX XR — Atornillador Brushless", videoUrl: "https://www.youtube.com/watch?v=f7_i5d4gBqI", productSlug: "dcf850" },
+  { title: "Bosch Professional — Rotomartillo SDS-Plus", videoUrl: "https://www.youtube.com/watch?v=f7_i5d4gBqI", productSlug: "gbh-180-li" },
+  { title: "PACKOUT Milwaukee — Sistema Modular", videoUrl: "https://www.youtube.com/watch?v=f7_i5d4gBqI", productSlug: "packout-48-22-8426" },
 ];
 
 function getThumbnailUrl(thumbnail: any, rawUrl?: string): string | null {

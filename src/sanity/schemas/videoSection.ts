@@ -24,11 +24,10 @@ export default defineType({
         list: [
           { title: "YouTube / YouTube Shorts ($0 ancho de banda)", value: "youtube" },
           { title: "Google Drive ($0 ancho de banda)", value: "googleDrive" },
-          { title: "TikTok ($0 ancho de banda)", value: "tiktok" },
         ],
       },
       initialValue: () => "youtube",
-      description: "Solo enlaces externos (YouTube, Google Drive o TikTok). Los videos se transmiten desde sus servidores oficiales a costo $0 para la web.",
+      description: "Solo enlaces externos (YouTube o Google Drive). Los videos se transmiten desde sus servidores oficiales a costo $0 para la web.",
     }),
     defineField({
       name: "videos",
@@ -46,9 +45,9 @@ export default defineType({
             }),
             defineField({
               name: "videoUrl",
-              title: "1. 🌐 Enlace de YouTube / TikTok (Recomendado)",
+              title: "1. 🌐 Enlace de YouTube (Recomendado)",
               type: "url",
-              description: "Pega el enlace de YouTube, YouTube Shorts o TikTok. Se reproduce directamente desde su plataforma sin costo de ancho de banda.",
+              description: "Pega el enlace de YouTube o YouTube Shorts. Se reproduce directamente desde YouTube sin costo de ancho de banda.",
             }),
             defineField({
               name: "googleDriveUrl",
@@ -72,10 +71,10 @@ export default defineType({
             }),
             defineField({
               name: "isVertical",
-              title: "Video Vertical (Shorts/TikTok)",
+              title: "Video Vertical (YouTube Shorts)",
               type: "boolean",
               initialValue: () => true,
-              description: "Marcar si el video es formato vertical (9:16)",
+              description: "Marcar si el video es formato vertical (YouTube Shorts 9:16)",
             }),
             defineField({
               name: "productSlug",

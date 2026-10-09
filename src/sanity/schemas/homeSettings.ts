@@ -40,10 +40,10 @@ export default defineType({
     }),
     defineField({
       name: "videoSectionTitle",
-      title: "Título de la sección Videos (TikTok / Reels)",
+      title: "Título de la sección Videos (YouTube)",
       type: "string",
       initialValue: "VIDEOS DE PRODUCTOS Y PROMOCIONES",
-      description: "Título editable para la sección de videos verticales",
+      description: "Título editable para la sección de videos de YouTube",
     }),
     defineField({
       name: "videoSectionSubtitle",
