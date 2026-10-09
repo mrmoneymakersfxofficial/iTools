@@ -64,12 +64,7 @@ export default defineType({
               options: { accept: "video/*" },
               description: "ADVERTENCIA: Subir videos aquí consume la cuota mensual de ancho de banda de Sanity (hasta 100 GB por mes). Es preferible usar el campo 1 (Google Drive).",
             }),
-            defineField({
-              name: "videoUrl",
-              title: "3. 🌐 Enlace Externo (TikTok / YouTube Shorts / MP4 URL)",
-              type: "url",
-              description: "URL pública opcional de TikTok, YouTube Shorts o link directo a un video .mp4 externo.",
-            }),
+
             defineField({
               name: "productLink",
               title: "Enlace del Producto (Botón Carrito)",
