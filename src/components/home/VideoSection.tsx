@@ -376,7 +376,13 @@ export function VideoSection({
   subtitle?: string;
 }) {
   const [selectedVideo, setSelectedVideo] = useState<VideoItem | null>(null);
-  const videos = data?.videos && data.videos.length > 0 ? data.videos : fallbackVideos;
+
+  // Si la sección fue desactivada o no tiene videos configurados en el CMS, no mostrar nada
+  if (data?.isActive === false || !data?.videos || data.videos.length === 0) {
+    return null;
+  }
+
+  const videos = data.videos;
 
   return (
     <>
