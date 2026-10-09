@@ -22,14 +22,13 @@ export default defineType({
       type: "string",
       options: {
         list: [
-          { title: "Google Drive (Recomendado - $0 ancho de banda)", value: "googleDrive" },
-          { title: "TikTok / YouTube Shorts", value: "youtube" },
-          { title: "Mixto (URLs variadas)", value: "mixed" },
-          { title: "Subido Directo (⚠️ Consume cuota de Sanity)", value: "direct" },
+          { title: "YouTube / YouTube Shorts ($0 ancho de banda)", value: "youtube" },
+          { title: "Google Drive ($0 ancho de banda)", value: "googleDrive" },
+          { title: "TikTok ($0 ancho de banda)", value: "tiktok" },
         ],
       },
-      initialValue: () => "googleDrive",
-      description: "Selecciona el tipo de videos que se mostrarán.",
+      initialValue: () => "youtube",
+      description: "Solo enlaces externos (YouTube, Google Drive o TikTok). Los videos se transmiten desde sus servidores oficiales a costo $0 para la web.",
     }),
     defineField({
       name: "videos",
@@ -46,23 +45,16 @@ export default defineType({
               validation: (r) => r.required(),
             }),
             defineField({
-              name: "googleDriveUrl",
-              title: "1. 📁 Enlace de Video de Google Drive (Recomendado: 0 consumo de ancho de banda)",
-              type: "url",
-              description: "Pega el enlace de compartir de Google Drive (ej: https://drive.google.com/file/d/XXXX/view?usp=sharing). ⚠️ IMPORTANTE: En Google Drive, dar clic derecho → Compartir → Configurar como 'Cualquier persona con el enlace puede ver'.",
-            }),
-            defineField({
               name: "videoUrl",
-              title: "2. 🌐 Enlace Externo (TikTok / YouTube Shorts / Link MP4 externo)",
+              title: "1. 🌐 Enlace de YouTube / TikTok (Recomendado)",
               type: "url",
-              description: "URL pública de TikTok, YouTube Shorts o enlace directo a un MP4 alojado en un servidor externo.",
+              description: "Pega el enlace de YouTube, YouTube Shorts o TikTok. Se reproduce directamente desde su plataforma sin costo de ancho de banda.",
             }),
             defineField({
-              name: "videoFile",
-              title: "3. ⚠️ Subir Archivo Manual a Sanity (NO RECOMENDADO - Agota la cuota de Sanity)",
-              type: "file",
-              options: { accept: "video/*" },
-              description: "ADVERTENCIA: Subir videos aquí consume la cuota mensual de ancho de banda de Sanity (hasta 100 GB por mes). Es preferible usar el campo 1 (Google Drive).",
+              name: "googleDriveUrl",
+              title: "2. 📁 Enlace de Google Drive",
+              type: "url",
+              description: "Pega el enlace de compartir de Google Drive (ej: https://drive.google.com/file/d/XXXX/view?usp=sharing con permiso 'Cualquier persona con el enlace').",
             }),
 
             defineField({

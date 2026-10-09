@@ -8,7 +8,6 @@ import { urlFor } from "@/sanity/image";
 interface VideoItem {
   title: string;
   videoUrl?: string | null;
-  videoFileUrl?: string | null;
   googleDriveUrl?: string | null;
   thumbnail?: {
     asset?: {
@@ -32,17 +31,14 @@ interface VideoSectionData {
   videos?: VideoItem[];
 }
 
-function getEffectiveUrl(video: VideoItem, sourceType?: string): string {
-  // 1. Google Drive siempre tiene máxima prioridad para evitar consumo de Sanity
-  if (video.googleDriveUrl && video.googleDriveUrl.trim().length > 0) {
-    return video.googleDriveUrl.trim();
-  }
-  // 2. URLs externas (YouTube, TikTok, enlaces directos externos)
+function getEffectiveUrl(video: VideoItem): string {
   if (video.videoUrl && video.videoUrl.trim().length > 0) {
     return video.videoUrl.trim();
   }
-  // 3. Archivo directo subido a Sanity (última opción)
-  return (video.videoFileUrl || "").trim();
+  if (video.googleDriveUrl && video.googleDriveUrl.trim().length > 0) {
+    return video.googleDriveUrl.trim();
+  }
+  return "";
 }
 
 function getEmbedInfo(url: string | null | undefined): { embedUrl: string; isDirectVideo: boolean; platform: string } {
