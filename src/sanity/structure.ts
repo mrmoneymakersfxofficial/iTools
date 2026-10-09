@@ -29,7 +29,7 @@ export const structure: StructureResolver = (S) =>
         .child(S.document().schemaType("homeSettings").documentId("homeSettings")),
       S.documentTypeListItem("product").title("📦 Productos (Catálogo Completo)"),
       S.listItem()
-        .title("🎬 Videos de Productos (Subir Video / Drive / TikTok)")
+        .title("🎬 Videos de Productos (YouTube / Drive / TikTok)")
         .child(S.document().schemaType("videoSection").documentId("videoSection")),
       S.listItem()
         .title("⚡ Popup Promocional (Ventana Emergente)")
@@ -117,7 +117,7 @@ export const structure: StructureResolver = (S) =>
                 .title("Popup Emergente (Promoción de Entrada)")
                 .child(S.document().schemaType("promoPopup").documentId("promo-popup-main")),
               S.listItem()
-                .title("Videos (TikTok / Reels)")
+                .title("🎬 Videos (YouTube / Drive / TikTok)")
                 .child(S.document().schemaType("videoSection").documentId("videoSection")),
               S.documentTypeListItem("packoutComponent").title("PACKOUT Builder"),
               S.documentTypeListItem("productReview").title("Reseñas"),

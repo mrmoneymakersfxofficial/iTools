@@ -191,9 +191,9 @@ export default defineType({
     }),
     defineField({
       name: "videoUrl",
-      title: "Video URL (YouTube/TikTok)",
+      title: "Video Demostrativo del Producto (YouTube / TikTok)",
       type: "url",
-      description: "URL del video del producto (YouTube, TikTok, etc.)",
+      description: "Pega el enlace de YouTube o TikTok del producto. Se reproduce directamente desde la plataforma externa con $0 consumo de ancho de banda en Sanity.",
     }),
   ],
   orderings: [

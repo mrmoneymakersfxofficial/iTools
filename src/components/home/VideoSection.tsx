@@ -373,12 +373,15 @@ export function VideoSection({
 }) {
   const [selectedVideo, setSelectedVideo] = useState<VideoItem | null>(null);
 
-  // Si la sección fue desactivada o no tiene videos configurados en el CMS, no mostrar nada
-  if (data?.isActive === false || !data?.videos || data.videos.length === 0) {
+  // Si la sección fue explícitamente desactivada en el CMS, ocultarla
+  if (data?.isActive === false) {
     return null;
   }
 
-  const videos = data.videos;
+  const videos = data?.videos && data.videos.length > 0 ? data.videos : fallbackVideos;
+  if (!videos || videos.length === 0) {
+    return null;
+  }
 
   return (
     <>

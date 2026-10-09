@@ -54,6 +54,24 @@ const PRODUCT_FALLBACK_IMAGES: Record<string, string> = {
   "atornillador-12v-flexiclick-bosch": "/products/bosch-flexiclick.webp",
 };
 
+function getProductEmbedUrl(url?: string | null): string {
+  if (!url) return "";
+  const clean = url.trim();
+  const ytMatch = clean.match(/(?:youtu\.be\/|youtube\.com\/(?:shorts\/|watch\?v=|embed\/))([a-zA-Z0-9_-]{11})/);
+  if (ytMatch) {
+    return `https://www.youtube.com/embed/${ytMatch[1]}?autoplay=0&rel=0`;
+  }
+  const driveMatch = clean.match(/\/file\/d\/([a-zA-Z0-9_-]+)/) || clean.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+  if (driveMatch) {
+    return `https://drive.google.com/file/d/${driveMatch[1]}/preview`;
+  }
+  const tiktokMatch = clean.match(/video\/(\d+)/);
+  if (tiktokMatch) {
+    return `https://www.tiktok.com/embed/v2/${tiktokMatch[1]}`;
+  }
+  return clean;
+}
+
 interface ResolvedBrand {
   name: string;
   slug: string;
@@ -164,7 +182,7 @@ export function ProductDetailClient({ product, relatedProducts, reviews }: { pro
   const isOutOfStock = availableStock === 0;
 
   const [quantity, setQuantity] = useState(isOutOfStock ? 0 : 1);
-  const [activeTab, setActiveTab] = useState<"features" | "specs" | "includes" | "recommendations" | "warranty" | "datasheet" | "reviews">("features");
+  const [activeTab, setActiveTab] = useState<"features" | "specs" | "includes" | "recommendations" | "warranty" | "datasheet" | "reviews" | "video">("features");
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [isZoomed, setIsZoomed] = useState(false);
   const [zoomPos, setZoomPos] = useState({ x: 50, y: 50 });
@@ -607,6 +625,7 @@ export function ProductDetailClient({ product, relatedProducts, reviews }: { pro
               { key: "recommendations" as const, label: "Recomendaciones" },
               { key: "warranty" as const, label: "Garantía" },
               { key: "datasheet" as const, label: "Ficha Tecnica" },
+              ...((product as any).videoUrl ? [{ key: "video" as const, label: "🎬 Video Demostrativo" }] : []),
               { key: "reviews" as const, label: `Reseñas (${product.reviewCount || 45})` },
             ].map((tab) => (
               <button
@@ -909,6 +928,25 @@ export function ProductDetailClient({ product, relatedProducts, reviews }: { pro
                       Imprimir Ficha
                     </a>
                   </div>
+                </div>
+              </div>
+            )}
+
+            {/* Video Demostrativo */}
+            {activeTab === "video" && (product as any).videoUrl && (
+              <div className="space-y-4">
+                <h3 className="text-lg font-bold text-foreground mb-3 flex items-center gap-2">
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#0056D2]" />
+                  Video Demostrativo del Producto
+                </h3>
+                <div className="max-w-3xl mx-auto rounded-2xl overflow-hidden aspect-video bg-black shadow-lg border border-border dark:border-[#262626]">
+                  <iframe
+                    src={getProductEmbedUrl((product as any).videoUrl)}
+                    className="w-full h-full border-0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
+                    allowFullScreen
+                    title={`Video ${product.name}`}
+                  />
                 </div>
               </div>
             )}
