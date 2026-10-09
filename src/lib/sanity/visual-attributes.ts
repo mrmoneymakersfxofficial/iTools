@@ -12,7 +12,7 @@ export function getSanityAttr(id?: string, type?: string, path: string = "image"
       type,
       path,
       baseUrl: "/cms",
-      projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || "kytfgk41",
+      projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || "3qqlwuul",
       dataset: process.env.NEXT_PUBLIC_SANITY_DATASET || "production",
     });
     return { "data-sanity": attr.toString() };
