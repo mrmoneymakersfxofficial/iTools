@@ -11,6 +11,7 @@ import { useQuickViewStore } from "@/stores/quickview-store";
 import { useCartStore } from "@/stores/cart-store";
 import type { Product, Brand } from "@/types";
 import { formatPrice } from "@/lib/format";
+import { cn } from "@/lib/utils";
 
 interface BrandTheme {
   color: string;
@@ -258,97 +259,214 @@ function SectionFade({ color }: { color: string }) {
   return null;
 }
 
-/* ── Brand Hero Banner with mini carousel for Milwaukee ── */
-function BrandHeroBanner({ slug, name }: { slug: string; name: string }) {
-  const heroMap: Record<string, string[]> = {
-    bosch: ["/banners/hero/bosch-hero.webp"],
-    dewalt: ["/banners/hero/dewalt-hero.webp"],
-    milwaukee: ["/banners/hero/milwaukee-hero.webp", "/banners/hero/milwaukee-hero-2.webp"],
-  };
-
-  const images = heroMap[slug];
-  if (!images || images.length === 0) return null;
-
-  if (images.length === 1) {
-    return (
-      <div className="mb-2 rounded-xl overflow-hidden">
-        <img
-          src={images[0]}
-          alt={`Hero ${name}`}
-          className="w-full h-auto object-cover"
-          loading="eager"
-        />
-      </div>
-    );
+function getBrandPromoImages(slug: string, products: Product[]) {
+  if (slug === "milwaukee") {
+    return {
+      top: "/banners/brands/milwaukee-promo-top.webp",
+      card1: "/banners/brands/milwaukee-promo-card-1.webp",
+      card2: "/banners/brands/milwaukee-promo-card-2.webp",
+    };
   }
 
-  // Mini carousel for multiple hero banners (e.g. Milwaukee)
-  return <BrandHeroMiniCarousel images={images} name={name} />;
+  if (slug === "dewalt") {
+    return {
+      top: "/banners/sections/dewalt-xr-powerpack.webp",
+      card1: "/banners/sections/dewalt-promo-33.webp",
+      card2: "/banners/sections/dewalt-powerstack.webp",
+    };
+  }
+
+  if (slug === "makita") {
+    return {
+      top: "/banners/sections/makita-teal-deals.webp",
+      card1: "/banners/sections/makita-promo-33.webp",
+      card2: "/banners/sections/makita-potencia-sistema.webp",
+    };
+  }
+
+  const p0 = products[0]?.images?.[0] || (products[0] as any)?.image?.asset?.url || "/logo.png";
+  const p1 = products[1]?.images?.[0] || (products[1] as any)?.image?.asset?.url || "/logo.png";
+  const p2 = products[2]?.images?.[0] || (products[2] as any)?.image?.asset?.url || "/logo.png";
+
+  return {
+    top: p0,
+    card1: p1,
+    card2: p2,
+  };
 }
 
-function BrandHeroMiniCarousel({ images, name }: { images: string[]; name: string }) {
-  const [current, setCurrent] = useState(0);
-  const [paused, setPaused] = useState(false);
-  const total = images.length;
+/* ── Clean Full-Width Brand Header Banner (Image 2 Specification) ── */
+function BrandHeaderBanner({
+  brand,
+  brandColor,
+  textColor,
+}: {
+  brand: Brand;
+  brandColor: string;
+  textColor: string;
+}) {
+  const isDark = textColor === "#FFF" || textColor === "#00A651";
+  const slug = brand.slug.toLowerCase();
 
-  useEffect(() => {
-    if (paused || total <= 1) return;
-    const timer = setInterval(() => setCurrent((i) => (i + 1) % total), 4000);
-    return () => clearInterval(timer);
-  }, [paused, total]);
+  const customWhiteLogos: Record<string, string> = {
+    milwaukee: "/brands/milwaukee-white-transparent.svg",
+  };
+
+  const defaultSvg = customWhiteLogos[slug] || `/brands/${slug}.svg`;
 
   return (
     <div
-      className="relative mb-2 rounded-xl overflow-hidden group"
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
+      className="relative w-full rounded-2xl overflow-hidden shadow-lg flex items-center justify-center py-10 sm:py-14 md:py-20 px-4 sm:px-6 mb-4 transition-all"
+      style={{ backgroundColor: brandColor }}
     >
-      <div className="relative w-full" style={{ aspectRatio: "1920 / 500" }}>
-        {images.map((src, idx) => (
-          <div
-            key={idx}
-            className="absolute inset-0 transition-opacity duration-500"
-            style={{ opacity: idx === current ? 1 : 0 }}
-          >
-            <img
-              src={src}
-              alt={`Hero ${name} ${idx + 1}`}
-              className="w-full h-full object-cover scale-[1.02]"
-              style={{ clipPath: "inset(0)" }}
-              loading={idx === 0 ? "eager" : "lazy"}
-            />
-          </div>
-        ))}
+      {/* Subtle top/bottom sheen */}
+      <div className="absolute inset-0 bg-gradient-to-b from-white/10 via-transparent to-black/15 pointer-events-none" />
+
+      <div className="relative z-10 flex items-center justify-center w-full max-w-[700px]">
+        <img
+          src={defaultSvg}
+          alt={brand.name}
+          className={cn(
+            "h-16 sm:h-24 md:h-32 lg:h-36 w-auto max-w-full object-contain drop-shadow-md transition-transform duration-300 hover:scale-105",
+            isDark && slug !== "milwaukee" && "brightness-0 invert",
+            !isDark && "brightness-0"
+          )}
+          onError={(e) => {
+            const target = e.target as HTMLImageElement;
+            if (!target.src.endsWith(".webp")) {
+              target.src = `/brands/${slug}.webp`;
+            } else {
+              target.style.display = "none";
+              const textFallback = target.nextElementSibling as HTMLElement;
+              if (textFallback) textFallback.style.display = "block";
+            }
+          }}
+        />
+        <span
+          style={{ display: "none", color: textColor }}
+          className="text-4xl sm:text-6xl md:text-7xl font-black uppercase tracking-widest text-center"
+        >
+          {brand.name}
+        </span>
       </div>
-      {total > 1 && (
-        <>
-          <button
-            onClick={() => setCurrent((i) => (i - 1 + total) % total)}
-            className="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-black/30 hover:bg-black/50 text-white rounded-full p-1.5 transition-colors"
-            aria-label="Anterior"
-          >
-            <ChevronLeft className="h-5 w-5" />
-          </button>
-          <button
-            onClick={() => setCurrent((i) => (i + 1) % total)}
-            className="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-black/30 hover:bg-black/50 text-white rounded-full p-1.5 transition-colors"
-            aria-label="Siguiente"
-          >
-            <ChevronRight className="h-5 w-5" />
-          </button>
-          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 z-10 flex gap-1.5">
-            {images.map((_, idx) => (
-              <button
-                key={idx}
-                onClick={() => setCurrent(idx)}
-                className={`rounded-full transition-all ${
-                  idx === current ? "w-6 h-2 bg-white" : "w-2 h-2 bg-white/50"
-                }`}
-                aria-label={`Banner ${idx + 1}`}
-              />
-            ))}
+    </div>
+  );
+}
+
+/* ── Wide Promo Banner Component (Image 2 Specification) ── */
+function BrandWidePromoBanner({
+  brand,
+  brandColor,
+  textColor,
+  hasPromoBanner,
+}: {
+  brand: Brand;
+  brandColor: string;
+  textColor: string;
+  hasPromoBanner: boolean;
+}) {
+  const isDark = textColor === "#FFF" || textColor === "#00A651";
+  const bannerPath = `/banners/brands/${brand.slug}.webp`;
+
+  return (
+    <div className="relative w-full rounded-2xl overflow-hidden shadow-2xl border border-white/10 group">
+      {hasPromoBanner ? (
+        <div className="relative w-full min-h-[160px] sm:min-h-[200px] md:min-h-[250px] lg:min-h-[280px]">
+          {/* Panoramic image */}
+          <img
+            src={bannerPath}
+            alt={`Ofertas ${brand.name}`}
+            className="w-full h-full object-cover object-center absolute inset-0"
+          />
+
+          {/* Left gradient overlay to ensure text contrast */}
+          <div
+            className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/40 sm:via-transparent to-transparent pointer-events-none"
+          />
+
+          {/* Overlay text on left */}
+          <div className="relative z-10 p-5 sm:p-7 md:p-10 max-w-md lg:max-w-lg flex flex-col justify-center h-full min-h-[160px] sm:min-h-[200px] md:min-h-[250px] lg:min-h-[280px]">
+            <div className="inline-flex items-center gap-2 mb-2">
+              <span
+                className="text-[10px] sm:text-xs font-black px-2.5 py-1 rounded bg-white text-black tracking-widest uppercase shadow-sm"
+              >
+                OFERTA ESPECIAL
+              </span>
+            </div>
+
+            <h3
+              className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-black uppercase text-white tracking-tight leading-none mb-2 drop-shadow-md"
+            >
+              MÁS {brand.name.toUpperCase()}, MÁS AHORROS
+            </h3>
+
+            <p className="text-xs sm:text-sm text-white/90 mb-4 line-clamp-2 drop-shadow">
+              Ofertas exclusivas en herramientas {brand.name}. Envío a todo Perú.
+            </p>
+
+            <div>
+              <Link
+                href={`/marca/${brand.slug}`}
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-black uppercase tracking-wide bg-white transition-all hover:scale-105 shadow-lg active:scale-95"
+                style={{
+                  color: isDark ? brandColor : "#1A1A1A",
+                }}
+              >
+                COMPRAR AHORA
+                <CircleArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
           </div>
-        </>
+        </div>
+      ) : (
+        /* Fallback branded wide banner for brands without custom banner image */
+        <div
+          className="relative w-full py-10 px-6 sm:px-10 flex flex-col md:flex-row items-center justify-between overflow-hidden"
+          style={{ backgroundColor: brandColor }}
+        >
+          {/* Subtle diagonal background stripes */}
+          <div
+            className="absolute inset-0 opacity-[0.07] pointer-events-none"
+            style={{
+              backgroundImage: `repeating-linear-gradient(135deg, transparent, transparent 20px, ${textColor} 20px, ${textColor} 21px)`,
+            }}
+          />
+
+          <div className="relative z-10 max-w-xl space-y-2 text-center md:text-left">
+            <span
+              className="inline-block text-[10px] sm:text-xs font-black px-2.5 py-1 rounded-full uppercase tracking-wider mb-1"
+              style={{
+                backgroundColor: isDark ? "rgba(255,255,255,0.2)" : "rgba(0,0,0,0.15)",
+                color: textColor,
+              }}
+            >
+              HERRAMIENTAS PROFESIONALES
+            </span>
+            <h3
+              className="text-2xl sm:text-3xl md:text-4xl font-black uppercase tracking-tight leading-none"
+              style={{ color: textColor }}
+            >
+              MÁS {brand.name.toUpperCase()}, MÁS AHORROS
+            </h3>
+            <p className="text-xs sm:text-sm opacity-90" style={{ color: textColor }}>
+              Encuentra el catálogo completo con garantía oficial y entrega rápida en Lima y provincias.
+            </p>
+          </div>
+
+          <div className="relative z-10 mt-6 md:mt-0 flex flex-col sm:flex-row items-center gap-3">
+            <Link
+              href={`/marca/${brand.slug}`}
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-xs font-black uppercase tracking-wider transition-all hover:scale-105 shadow-lg active:scale-95"
+              style={{
+                backgroundColor: isDark ? "#FFFFFF" : "#1A1A1A",
+                color: isDark ? brandColor : textColor,
+              }}
+            >
+              COMPRAR AHORA
+              <CircleArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+        </div>
       )}
     </div>
   );
@@ -372,6 +490,61 @@ export function BrandPageClient({
   const secondColor = theme.secondColor;
   const textCol = theme.textColor;
   const isDark = textCol === "#FFF" || textCol === "#00A651";
+  const promoImgs = getBrandPromoImages(brand.slug, products);
+  const hasPromoBanner = ["bosch", "dewalt", "dong-cheng", "kaili", "makita", "milwaukee"].includes(brand.slug);
+
+  const fallbackPipelineProducts: Product[] = [
+    {
+      id: "pipe-1",
+      sku: "2904-20",
+      name: `LLAVE DE IMPACTO COMPACTA ${brand.name.toUpperCase()} FUEL™`,
+      price: 1799.9,
+      comparePrice: 1999.9,
+      rating: 5,
+      reviewCount: 45,
+      stock: 10,
+      images: [brand.slug === "milwaukee" ? "/products/milwaukee-combo-thumb.webp" : (promoImgs.card1 || "/products/milwaukee-combo-thumb.webp")],
+      slug: "llave-impacto",
+    } as any,
+    {
+      id: "pipe-2",
+      sku: "2902-20",
+      name: `TALADRO PERCUTOR COMPACTO ${brand.name.toUpperCase()} 1/2"`,
+      price: 890.9,
+      comparePrice: 990.0,
+      rating: 5,
+      reviewCount: 45,
+      stock: 12,
+      images: [brand.slug === "milwaukee" ? "/products/milwaukee-combo-thumb.webp" : (promoImgs.card2 || "/products/milwaukee-combo-thumb.webp")],
+      slug: "taladro-percutor",
+    } as any,
+    {
+      id: "pipe-3",
+      sku: "2563-22",
+      name: `TRINQUETE DE TORQUE DIGITAL ${brand.name.toUpperCase()} 1/2"`,
+      price: 5999.9,
+      comparePrice: 6499.9,
+      rating: 5,
+      reviewCount: 45,
+      stock: 5,
+      images: [brand.slug === "milwaukee" ? "/products/milwaukee-combo-thumb.webp" : (promoImgs.top || "/products/milwaukee-combo-thumb.webp")],
+      slug: "trinquete-torque",
+    } as any,
+    {
+      id: "pipe-4",
+      sku: "2804-20",
+      name: `ROTOMARTILLO SDS-PLUS ${brand.name.toUpperCase()} 1"`,
+      price: 1499.9,
+      comparePrice: 1699.9,
+      rating: 5,
+      reviewCount: 45,
+      stock: 8,
+      images: [brand.slug === "milwaukee" ? "/products/milwaukee-combo-thumb.webp" : (promoImgs.card1 || "/products/milwaukee-combo-thumb.webp")],
+      slug: "rotomartillo-sds",
+    } as any,
+  ];
+
+  const pipelineProducts = products.length >= 4 ? products.slice(0, 4) : fallbackPipelineProducts;
 
   // Thematic gradient: brand color → dark → brand color → dark, direct transitions
   const pageBgStyle = {
@@ -403,71 +576,15 @@ export function BrandPageClient({
       />
 
       <div className="relative z-10 mx-auto max-w-[1440px] px-2.5 lg:px-4 py-4 pb-28">
-        {/* ── Brand Hero Banner (1920x500) ── */}
-        <BrandHeroBanner slug={brand.slug} name={brand.name} />
-
-        {/* ── Brand Promotional Banner (1920x320) ── */}
-        {[
-          "bosch", "dewalt", "dong-cheng", "kaili", "milwaukee"
-        ].includes(brand.slug) && (
-          <div className="mb-2 rounded-xl overflow-hidden">
-            <img
-              src={`/banners/brands/${brand.slug}.webp`}
-              alt={`Promoción ${brand.name}`}
-              className="w-full h-auto object-cover"
-              loading="eager"
-            />
-          </div>
-        )}
-
-        {/* ── 3D Brand Name Header ── */}
-        <div className="mb-5 flex justify-center">
-          <div
-            className="relative inline-flex items-center gap-3 px-8 py-4 rounded-2xl"
-            style={{
-              backgroundColor: brandColor,
-              color: textCol,
-              boxShadow: `
-                0 2px 0 ${brandColor}cc,
-                0 4px 0 ${brandColor}99,
-                0 8px 0 ${brandColor}66,
-                0 12px 0 ${brandColor}44,
-                0 16px 24px rgba(0,0,0,0.5),
-                inset 0 1px 0 rgba(255,255,255,0.15)
-              `,
-            }}
-          >
-            {/* Dark border outline */}
-            <div
-              className="absolute inset-0 rounded-2xl pointer-events-none"
-              style={{
-                border: `2px solid rgba(0,0,0,0.3)`,
-                boxShadow: `inset 0 1px 0 rgba(255,255,255,0.1), inset 0 -2px 0 rgba(0,0,0,0.2)`,
-              }}
-            />
-            <Wrench className="h-7 w-7" style={{ filter: "drop-shadow(0 2px 1px rgba(0,0,0,0.3))" }} />
-            <div className="flex flex-col">
-              <h1
-                className="text-3xl md:text-4xl font-black uppercase tracking-wider leading-none"
-                style={{
-                  textShadow: `0 2px 0 rgba(0,0,0,0.3), 0 4px 0 rgba(0,0,0,0.15)`,
-                  letterSpacing: "0.06em",
-                }}
-              >
-                {brand.name}
-              </h1>
-              <span
-                className="text-[10px] font-bold uppercase tracking-[0.2em] mt-0.5 opacity-80"
-                style={{ textShadow: "0 1px 0 rgba(0,0,0,0.3)" }}
-              >
-                Herramientas Profesionales
-              </span>
-            </div>
-          </div>
-        </div>
+        {/* ── Brand Header Banner (Clean, Full-Width with Official Brand Logo — Image 2) ── */}
+        <BrandHeaderBanner
+          brand={brand}
+          brandColor={brandColor}
+          textColor={textCol}
+        />
 
         {/* Breadcrumb */}
-        <nav className="flex items-center gap-1.5 text-sm text-[#999] mb-4 flex-wrap">
+        <nav className="flex items-center gap-1.5 text-xs sm:text-sm text-[#999] mb-4 flex-wrap">
           <Link
             href="/"
             className="hover:text-white transition-colors flex items-center gap-1"
@@ -476,7 +593,7 @@ export function BrandPageClient({
             Inicio
           </Link>
           <ChevronRight className="h-3.5 w-3.5 text-[#555]" />
-          <span className="font-medium text-white">
+          <span className="font-semibold text-white">
             Herramientas {brand.name}
           </span>
         </nav>
@@ -659,248 +776,198 @@ export function BrandPageClient({
               </nav>
             </div>
 
-            {/* ── Hero Banner ── */}
-            <Link
-              href={`/marca/${brand.slug}`}
-              className="block relative overflow-hidden rounded-2xl group"
+            {/* ── Top Promo Card (Image 2 Specification) ── */}
+            <div
+              className="relative rounded-2xl overflow-hidden shadow-lg border border-white/10 flex flex-col md:flex-row items-stretch min-h-[220px] md:h-[260px]"
+              style={{ backgroundColor: brandColor }}
             >
-              <div
-                className="absolute inset-0"
-                style={{ backgroundColor: brandColor }}
-              />
-              <div
-                className="absolute inset-0"
-                style={{
-                  background: isDark
-                    ? "linear-gradient(135deg, rgba(0,0,0,0.15) 0%, transparent 40%, rgba(0,0,0,0.3) 100%)"
-                    : "linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 50%, rgba(255,255,255,0.15) 100%)",
-                }}
-              />
-              {/* Diagonal stripe pattern */}
-              <div
-                className="absolute inset-0 opacity-[0.06]"
-                style={{
-                  backgroundImage: `repeating-linear-gradient(
-                    135deg,
-                    transparent,
-                    transparent 20px,
-                    ${textCol} 20px,
-                    ${textCol} 21px
-                  )`,
-                }}
-              />
-              <div className="relative z-10 flex items-center justify-between px-6 py-8 md:py-12">
-                <div className="max-w-md space-y-2">
-                  <span
-                    className="font-impact text-2xl md:text-3xl lg:text-4xl"
-                    style={{ color: textCol }}
-                  >
-                    MÁS {brand.name.toUpperCase()}, MÁS AHORROS
-                  </span>
-                  <p
-                    className="text-sm md:text-base"
-                    style={{ color: textCol, opacity: 0.9 }}
-                  >
-                    Ofertas exclusivas en herramientas {brand.name}. Envío a
-                    todo Perú.
-                  </p>
-                  <span
-                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wide transition-all hover:scale-105"
+              {/* Left text & CTA */}
+              <div className="relative z-10 flex-1 p-6 md:p-8 flex flex-col justify-center space-y-3 min-w-[260px]">
+                <h2
+                  className="text-2xl sm:text-3xl lg:text-4xl font-black uppercase tracking-tight leading-none drop-shadow-sm"
+                  style={{ color: textCol }}
+                >
+                  MÁS {brand.name.toUpperCase()},<br className="hidden sm:inline" /> MÁS AHORROS
+                </h2>
+                <p
+                  className="text-xs sm:text-sm leading-relaxed max-w-sm drop-shadow-sm"
+                  style={{ color: textCol, opacity: 0.9 }}
+                >
+                  Ofertas exclusivas en herramientas {brand.name}. Envío a todo Perú.
+                </p>
+                <div>
+                  <Link
+                    href={`/marca/${brand.slug}`}
+                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-black uppercase tracking-wider transition-all hover:scale-105 shadow-md active:scale-95"
                     style={{
-                      backgroundColor: isDark ? "white" : "#1A1A1A",
+                      backgroundColor: isDark ? "#FFFFFF" : "#1A1A1A",
                       color: isDark ? brandColor : textCol,
                     }}
                   >
                     COMPRAR AHORA
-                    <CircleArrowRight className="h-3.5 w-3.5" />
-                  </span>
-                </div>
-              </div>
-            </Link>
-
-            {/* Fade between hero and promo cards */}
-            <SectionFade color={brandColor} />
-
-            {/* ── Two smaller promo banners ── */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
-              <Link
-                href={`/marca/${brand.slug}`}
-                className="block relative overflow-hidden rounded-xl"
-              >
-                <div
-                  className="absolute inset-0"
-                  style={{ backgroundColor: brandColor }}
-                />
-                <div
-                  className="absolute inset-0"
-                  style={{
-                    background:
-                      "linear-gradient(to bottom, transparent 30%, rgba(0,0,0,0.5) 100%)",
-                  }}
-                />
-                <div className="relative z-10 flex flex-col justify-between h-[160px] md:h-[200px] p-4">
-                  <span
-                    className="text-[11px] font-bold tracking-[0.08em] uppercase"
-                    style={{ color: textCol, opacity: 0.85 }}
-                  >
-                    {brand.name.toUpperCase()}
-                  </span>
-                  <div>
-                    <p
-                      className="font-impact text-sm leading-tight mb-1"
-                      style={{ color: textCol }}
-                    >
-                      PRODUCTO GRATUITO A ELECCIÓN
-                    </p>
-                    <p
-                      className="text-[10px] leading-relaxed mb-2"
-                      style={{ color: textCol, opacity: 0.8 }}
-                    >
-                      Con un paquete de 2 baterías seleccionado.
-                    </p>
-                    <span
-                      className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-[11px] font-bold"
-                      style={{
-                        backgroundColor: isDark ? "white" : "#1A1A1A",
-                        color: isDark ? brandColor : textCol,
-                      }}
-                    >
-                      COMPRAR AHORA <CircleArrowRight className="h-3 w-3" />
-                    </span>
-                  </div>
-                </div>
-              </Link>
-              <Link
-                href={`/marca/${brand.slug}`}
-                className="block relative overflow-hidden rounded-xl"
-              >
-                <div
-                  className="absolute inset-0"
-                  style={{
-                    backgroundColor: brandColor,
-                    filter: "brightness(0.85)",
-                  }}
-                />
-                <div
-                  className="absolute inset-0"
-                  style={{
-                    background:
-                      "linear-gradient(to bottom, transparent 30%, rgba(0,0,0,0.55) 100%)",
-                  }}
-                />
-                <div className="relative z-10 flex flex-col justify-between h-[160px] md:h-[200px] p-4">
-                  <span
-                    className="text-[11px] font-bold tracking-[0.08em] uppercase"
-                    style={{ color: textCol, opacity: 0.85 }}
-                  >
-                    {brand.name.toUpperCase()}
-                  </span>
-                  <div>
-                    <p
-                      className="font-impact text-sm leading-tight mb-1"
-                      style={{ color: textCol }}
-                    >
-                      OFERTA DE BONIFICACIÓN POR BATERÍA
-                    </p>
-                    <p
-                      className="text-[10px] leading-relaxed mb-2"
-                      style={{ color: textCol, opacity: 0.8 }}
-                    >
-                      Elige un artículo GRATIS con tu compra.
-                    </p>
-                    <span
-                      className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-[11px] font-bold"
-                      style={{
-                        backgroundColor: isDark ? "white" : "#1A1A1A",
-                        color: isDark ? brandColor : textCol,
-                      }}
-                    >
-                      COMPRAR AHORA <CircleArrowRight className="h-3 w-3" />
-                    </span>
-                  </div>
-                </div>
-              </Link>
-            </div>
-
-            {/* Fade between promo cards and products grid */}
-            <SectionFade color={brandColor} />
-
-            {/* ── Products grid — dark glass card ── */}
-            <div>
-              <div className="flex items-center gap-2 mb-3">
-                <TrendingUp className="h-4 w-4" style={{ color: brandColor }} />
-                <h2 className="text-sm font-bold text-white uppercase tracking-wide">
-                  Productos {brand.name}
-                </h2>
-                <span className="text-xs text-[#666]">
-                  ({products.length})
-                </span>
-              </div>
-              {products.length > 0 ? (
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-2.5">
-                  {products.map((product, i) => (
-                    <div
-                      key={product.id}
-                      className="rounded-xl overflow-hidden bg-[#111]/80 backdrop-blur-sm border border-[#1A1A1A]"
-                    >
-                      <ProductCard product={product} index={i} quickView quickViewColor={brandColor} />
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="bg-[#111]/80 backdrop-blur-sm rounded-xl border border-[#1A1A1A] p-8 text-center">
-                  <p className="text-[#666] text-sm">
-                    No hay productos de {brand.name} disponibles aún.
-                  </p>
-                  <Link
-                    href="/"
-                    className="inline-block mt-3 text-sm font-semibold hover:underline"
-                    style={{ color: brandColor }}
-                  >
-                    Volver al inicio
+                    <CircleArrowRight className="h-4 w-4" />
                   </Link>
                 </div>
-              )}
+              </div>
+
+              {/* Right promo image */}
+              <div className="relative w-full md:w-[50%] h-[180px] md:h-full overflow-hidden shrink-0">
+                <img
+                  src={promoImgs.top}
+                  alt={`Promoción ${brand.name}`}
+                  className="w-full h-full object-cover object-center"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).style.display = "none";
+                  }}
+                />
+                {/* Horizontal gradient blend */}
+                <div
+                  className="hidden md:block absolute inset-y-0 left-0 w-24 pointer-events-none"
+                  style={{
+                    background: `linear-gradient(to right, ${brandColor}, transparent)`,
+                  }}
+                />
+                {/* Vertical blend for mobile */}
+                <div
+                  className="md:hidden absolute inset-x-0 top-0 h-14 pointer-events-none"
+                  style={{
+                    background: `linear-gradient(to bottom, ${brandColor}, transparent)`,
+                  }}
+                />
+              </div>
             </div>
 
-            {/* Fade between products grid and bottom tabs */}
-            <SectionFade color={brandColor} />
-
-            {/* ── Bottom Tabs ── */}
-            {theme.tabs && theme.tabs.length > 0 && (
+            {/* ── Two Promo Cards (50% / 50% — Image 2 Specification) ── */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
+              {/* Card 1: PRODUCTO GRATUITO A ELECCIÓN */}
               <div
-                className="mt-4 flex gap-0 overflow-x-auto rounded-xl border border-[#222]"
-                style={{ scrollbarWidth: "none" }}
+                className="relative rounded-2xl overflow-hidden shadow-md border border-white/10 flex flex-col justify-between h-[190px] sm:h-[210px] p-5 group"
+                style={{ backgroundColor: brandColor }}
               >
-                {theme.tabs.map((tab) => (
-                  <button
-                    key={tab}
-                    type="button"
-                    onClick={() =>
-                      setActiveTab(activeTab === tab ? null : tab)
-                    }
-                    className="shrink-0 px-4 py-3 text-xs font-bold uppercase tracking-wide transition-all border-r border-[#222] last:border-r-0"
-                    style={{
-                      backgroundColor:
-                        activeTab === tab ? brandColor : "#0A0A0A",
-                      color:
-                        activeTab === tab
-                          ? textCol
-                          : brandColor === "#1A1A1A"
-                            ? "#FFF"
-                            : brandColor,
+                {/* Cutout image on right */}
+                <div className="absolute right-0 top-0 bottom-0 w-[55%] pointer-events-none overflow-hidden">
+                  <img
+                    src={promoImgs.card1}
+                    alt={`Oferta ${brand.name}`}
+                    className="w-full h-full object-contain object-right"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).style.display = "none";
                     }}
+                  />
+                  <div
+                    className="absolute inset-y-0 left-0 w-16 pointer-events-none"
+                    style={{
+                      background: `linear-gradient(to right, ${brandColor}, transparent)`,
+                    }}
+                  />
+                </div>
+
+                {/* Content */}
+                <div className="relative z-10">
+                  <span
+                    className="text-[10px] font-black tracking-widest uppercase block mb-1"
+                    style={{ color: textCol, opacity: 0.85 }}
                   >
-                    {tab}
-                  </button>
-                ))}
+                    {brand.name.toUpperCase()}
+                  </span>
+                </div>
+
+                <div className="relative z-10 max-w-[65%] space-y-1">
+                  <h3
+                    className="text-xs sm:text-sm font-black uppercase leading-tight"
+                    style={{ color: textCol }}
+                  >
+                    PRODUCTO GRATUITO A ELECCIÓN
+                  </h3>
+                  <p
+                    className="text-[10px] sm:text-[11px] leading-tight"
+                    style={{ color: textCol, opacity: 0.85 }}
+                  >
+                    Con un paquete de 2 baterías seleccionado.
+                  </p>
+                  <div className="pt-2">
+                    <Link
+                      href={`/marca/${brand.slug}`}
+                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-wider transition-all hover:scale-105 shadow-sm active:scale-95"
+                      style={{
+                        backgroundColor: isDark ? "#FFFFFF" : "#1A1A1A",
+                        color: isDark ? brandColor : textCol,
+                      }}
+                    >
+                      COMPRAR AHORA
+                      <CircleArrowRight className="h-3 w-3" />
+                    </Link>
+                  </div>
+                </div>
               </div>
-            )}
+
+              {/* Card 2: OFERTA DE BONIFICACIÓN POR BATERÍA */}
+              <div
+                className="relative rounded-2xl overflow-hidden shadow-md border border-white/10 flex flex-col justify-between h-[190px] sm:h-[210px] p-5 group"
+                style={{ backgroundColor: brandColor }}
+              >
+                {/* Cutout image on right */}
+                <div className="absolute right-0 top-0 bottom-0 w-[55%] pointer-events-none overflow-hidden">
+                  <img
+                    src={promoImgs.card2}
+                    alt={`Oferta ${brand.name}`}
+                    className="w-full h-full object-contain object-right"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).style.display = "none";
+                    }}
+                  />
+                  <div
+                    className="absolute inset-y-0 left-0 w-16 pointer-events-none"
+                    style={{
+                      background: `linear-gradient(to right, ${brandColor}, transparent)`,
+                    }}
+                  />
+                </div>
+
+                {/* Content */}
+                <div className="relative z-10">
+                  <span
+                    className="text-[10px] font-black tracking-widest uppercase block mb-1"
+                    style={{ color: textCol, opacity: 0.85 }}
+                  >
+                    {brand.name.toUpperCase()}
+                  </span>
+                </div>
+
+                <div className="relative z-10 max-w-[65%] space-y-1">
+                  <h3
+                    className="text-xs sm:text-sm font-black uppercase leading-tight"
+                    style={{ color: textCol }}
+                  >
+                    OFERTA DE BONIFICACIÓN POR BATERÍA
+                  </h3>
+                  <p
+                    className="text-[10px] sm:text-[11px] leading-tight"
+                    style={{ color: textCol, opacity: 0.85 }}
+                  >
+                    Elige un artículo GRATIS con tu compra.
+                  </p>
+                  <div className="pt-2">
+                    <Link
+                      href={`/marca/${brand.slug}`}
+                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-wider transition-all hover:scale-105 shadow-sm active:scale-95"
+                      style={{
+                        backgroundColor: isDark ? "#FFFFFF" : "#1A1A1A",
+                        color: isDark ? brandColor : textCol,
+                      }}
+                    >
+                      COMPRAR AHORA
+                      <CircleArrowRight className="h-3 w-3" />
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
 
-          {/* RIGHT SIDEBAR — Pipeline (dark bg) */}
-          <aside className="hidden lg:block w-[280px] xl:w-[300px] shrink-0">
-            <div className="sticky top-[120px] bg-[#0A0A0A]/95 backdrop-blur-sm rounded-2xl overflow-hidden border border-[#1A1A1A]">
+          {/* RIGHT SIDEBAR — PIPELINE (Image 2 Specification) */}
+          <aside className="hidden lg:block w-[280px] xl:w-[320px] shrink-0">
+            <div className="sticky top-[120px] bg-[#0A0A0A]/95 backdrop-blur-sm rounded-2xl overflow-hidden border border-[#1A1A1A] shadow-xl">
               {/* Header */}
               <div
                 className="px-4 py-3 flex items-center justify-between"
@@ -908,92 +975,103 @@ export function BrandPageClient({
               >
                 <div className="flex items-center gap-2">
                   <Plus className="h-4 w-4" />
-                  <h2 className="text-sm font-bold uppercase tracking-wide">
+                  <h2 className="text-sm font-black uppercase tracking-wider">
                     PIPELINE
                   </h2>
                 </div>
                 <Link
                   href={`/marca/${brand.slug}`}
-                  className="text-xs underline opacity-80 hover:opacity-100"
+                  className="text-xs underline opacity-85 hover:opacity-100 transition-opacity font-semibold"
                 >
                   Ver más
                 </Link>
               </div>
+
               {/* Product list */}
               <div>
-                {products.slice(0, 8).map((product) => {
-                  const discount = product.comparePrice
-                    ? Math.round(
-                        ((product.comparePrice - product.price) /
-                          product.comparePrice) *
-                          100
-                      )
-                    : 0;
+                {pipelineProducts.map((product) => {
+                  const prodImg =
+                    product.images?.[0] ||
+                    (product as any).image?.asset?.url ||
+                    (brand.slug === "milwaukee"
+                      ? "/products/milwaukee-combo-thumb.webp"
+                      : promoImgs.card1 || "/products/milwaukee-combo-thumb.webp");
+
                   return (
                     <div
                       key={product.id}
                       onClick={() => openQuickView(product, brandColor)}
-                      className="group flex gap-3 p-3 hover:bg-[#151515] transition-colors border-b border-[#1A1A1A] last:border-b-0 cursor-pointer"
+                      className="group flex items-center gap-3 p-3 hover:bg-[#151515] transition-colors border-b border-[#1A1A1A] last:border-b-0 cursor-pointer"
                     >
-                      <div className="shrink-0 w-16 h-16 rounded-xl bg-[#151515] flex items-center justify-center border border-[#222]">
-                        <Wrench className="h-7 w-7 text-[#444]" />
+                      {/* White rounded square thumbnail */}
+                      <div className="shrink-0 w-16 h-16 rounded-xl bg-white p-1.5 flex items-center justify-center border border-white/20 shadow-sm overflow-hidden">
+                        <img
+                          src={prodImg}
+                          alt={product.name}
+                          className="w-full h-full object-contain"
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            if (!target.src.includes("milwaukee-combo-thumb")) {
+                              target.src = "/products/milwaukee-combo-thumb.webp";
+                            } else {
+                              target.style.display = "none";
+                            }
+                          }}
+                        />
                       </div>
+
+                      {/* Info */}
                       <div className="flex-1 min-w-0">
-                        {discount > 0 && (
-                          <span
-                            className="inline-block text-[10px] font-bold px-1.5 py-0.5 rounded text-white mb-1"
-                            style={{ backgroundColor: brandColor }}
-                          >
-                            -{discount}%
-                          </span>
-                        )}
-                        <p className="text-xs leading-snug text-[#BBB] group-hover:text-white transition-colors line-clamp-2 mb-1">
+                        <p className="text-xs font-bold leading-snug text-white group-hover:text-amber-400 transition-colors line-clamp-2 mb-1">
                           {product.name}
                         </p>
-                        <div className="flex items-center gap-1 mb-0.5">
+
+                        <div className="flex items-center gap-1 mb-1">
                           <div className="flex items-center">
                             {[1, 2, 3, 4, 5].map((star) => (
                               <Star
                                 key={star}
-                                className={`h-2.5 w-2.5 ${
-                                  star <= Math.round(product.rating)
-                                    ? "fill-amber-400 text-amber-400"
-                                    : "fill-[#333] text-[#333]"
-                                }`}
+                                className="h-2.5 w-2.5 fill-amber-400 text-amber-400"
                               />
                             ))}
                           </div>
-                          <span className="text-[10px] text-[#555]">
-                            ({product.reviewCount})
+                          <span className="text-[10px] text-[#777]">
+                            ({product.reviewCount || 45})
                           </span>
                         </div>
+
                         <div className="flex items-center gap-2">
                           {product.comparePrice && (
-                            <span className="text-[11px] text-[#555] line-through">
+                            <span className="text-[11px] text-[#666] line-through">
                               {formatPrice(product.comparePrice)}
                             </span>
                           )}
                           <span
-                            className="text-sm font-bold"
-                            style={{ color: brandColor }}
+                            className="text-xs sm:text-sm font-black"
+                            style={{ color: brandColor === "#0A0A0A" ? "#FFF" : brandColor }}
                           >
                             {formatPrice(product.price)}
                           </span>
                         </div>
                       </div>
+
+                      {/* Circular + action button */}
                       <div className="shrink-0 flex items-center">
                         <button
+                          type="button"
                           onClick={(e) => {
                             e.stopPropagation();
                             addToCart(product);
                           }}
-                          className="w-8 h-8 rounded-xl flex items-center justify-center transition-all hover:scale-110"
+                          className="w-7 h-7 rounded-full flex items-center justify-center transition-all hover:scale-110 active:scale-95 border"
                           style={{
                             backgroundColor: `${brandColor}22`,
+                            borderColor: `${brandColor}66`,
                             color: brandColor,
                           }}
+                          title="Agregar al carrito"
                         >
-                          <Plus className="h-4 w-4" />
+                          <Plus className="h-3.5 w-3.5" />
                         </button>
                       </div>
                     </div>
@@ -1003,6 +1081,86 @@ export function BrandPageClient({
             </div>
           </aside>
         </div>
+
+        {/* ── Wide Promo Banner (Below 3 Columns — Image 2 Specification) ── */}
+        <div className="mt-4 mb-8">
+          <BrandWidePromoBanner
+            brand={brand}
+            brandColor={brandColor}
+            textColor={textCol}
+            hasPromoBanner={hasPromoBanner}
+          />
+        </div>
+
+        {/* ── Full Products Catalog Grid ── */}
+        <div>
+          <div className="flex items-center gap-2 mb-4">
+            <TrendingUp className="h-4 w-4" style={{ color: brandColor }} />
+            <h2 className="text-sm font-black text-white uppercase tracking-wider">
+              Productos {brand.name}
+            </h2>
+            <span className="text-xs text-[#666]">
+              ({products.length})
+            </span>
+          </div>
+
+          {products.length > 0 ? (
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+              {products.map((product, i) => (
+                <div
+                  key={product.id}
+                  className="rounded-xl overflow-hidden bg-[#111]/80 backdrop-blur-sm border border-[#1A1A1A] hover:border-white/20 transition-colors"
+                >
+                  <ProductCard product={product} index={i} quickView quickViewColor={brandColor} />
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="bg-[#111]/80 backdrop-blur-sm rounded-xl border border-[#1A1A1A] p-8 text-center">
+              <p className="text-[#666] text-sm">
+                No hay productos de {brand.name} disponibles aún.
+              </p>
+              <Link
+                href="/"
+                className="inline-block mt-3 text-sm font-semibold hover:underline"
+                style={{ color: brandColor }}
+              >
+                Volver al inicio
+              </Link>
+            </div>
+          )}
+        </div>
+
+        {/* ── Bottom Tabs ── */}
+        {theme.tabs && theme.tabs.length > 0 && (
+          <div
+            className="mt-6 flex gap-0 overflow-x-auto rounded-xl border border-[#222]"
+            style={{ scrollbarWidth: "none" }}
+          >
+            {theme.tabs.map((tab) => (
+              <button
+                key={tab}
+                type="button"
+                onClick={() =>
+                  setActiveTab(activeTab === tab ? null : tab)
+                }
+                className="shrink-0 px-4 py-3 text-xs font-bold uppercase tracking-wide transition-all border-r border-[#222] last:border-r-0"
+                style={{
+                  backgroundColor:
+                    activeTab === tab ? brandColor : "#0A0A0A",
+                  color:
+                    activeTab === tab
+                      ? textCol
+                      : brandColor === "#1A1A1A"
+                        ? "#FFF"
+                        : brandColor,
+                }}
+              >
+                {tab}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
     </main>
   );
