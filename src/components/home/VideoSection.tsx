@@ -139,12 +139,37 @@ function getVideoPlatform(url: string | null | undefined): { name: string; color
   return { name: "Video", color: "#D1001C" };
 }
 
-const fallbackVideos: VideoItem[] = [
-  { title: "TOTAL 4.0 — Las 7 Bestias en Acción", videoUrl: "https://www.youtube.com/watch?v=f7_i5d4gBqI", productSlug: "akd2101" },
-  { title: "Milwaukee M18 FUEL — Taladro Percutor 158Nm", videoUrl: "https://www.youtube.com/watch?v=f7_i5d4gBqI", productSlug: "2904-20" },
-  { title: "DeWalt 20V MAX XR — Atornillador Brushless", videoUrl: "https://www.youtube.com/watch?v=f7_i5d4gBqI", productSlug: "dcf850" },
-  { title: "Bosch Professional — Rotomartillo SDS-Plus", videoUrl: "https://www.youtube.com/watch?v=f7_i5d4gBqI", productSlug: "gbh-180-li" },
-  { title: "PACKOUT Milwaukee — Sistema Modular", videoUrl: "https://www.youtube.com/watch?v=f7_i5d4gBqI", productSlug: "packout-48-22-8426" },
+const HARDCODED_VIDEOS: VideoItem[] = [
+  {
+    title: "TOTAL 4.0 — Las 7 Bestias en Acción",
+    videoUrl: "https://www.youtube.com/watch?v=f7_i5d4gBqI",
+    productSlug: "akd2101",
+    productLink: "/buscar?q=total",
+  },
+  {
+    title: "Milwaukee M18 FUEL — Taladro Percutor 158Nm",
+    videoUrl: "https://www.youtube.com/watch?v=f7_i5d4gBqI",
+    productSlug: "2904-20",
+    productLink: "/buscar?q=milwaukee",
+  },
+  {
+    title: "DeWalt 20V MAX XR — Atornillador Brushless",
+    videoUrl: "https://www.youtube.com/watch?v=f7_i5d4gBqI",
+    productSlug: "dcf850",
+    productLink: "/buscar?q=dewalt",
+  },
+  {
+    title: "Bosch Professional — Rotomartillo SDS-Plus",
+    videoUrl: "https://www.youtube.com/watch?v=f7_i5d4gBqI",
+    productSlug: "gbh-180-li",
+    productLink: "/buscar?q=bosch",
+  },
+  {
+    title: "PACKOUT Milwaukee — Sistema Modular",
+    videoUrl: "https://www.youtube.com/watch?v=f7_i5d4gBqI",
+    productSlug: "packout-48-22-8426",
+    productLink: "/packout-builder",
+  },
 ];
 
 function getThumbnailUrl(thumbnail: any, rawUrl?: string): string | null {
@@ -173,14 +198,19 @@ function getProductHref(video: VideoItem): string {
 function VideoPlayerCard({
   video,
   index,
+  isPlaying,
+  onPlay,
+  onPause,
   onExpand,
 }: {
   video: VideoItem;
   index: number;
+  isPlaying: boolean;
+  onPlay: () => void;
+  onPause: () => void;
   onExpand: (video: VideoItem) => void;
 }) {
   const [isReady, setIsReady] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
   const [reloadKey, setReloadKey] = useState(0);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -199,14 +229,21 @@ function VideoPlayerCard({
     return () => clearTimeout(timer);
   }, [index]);
 
+  useEffect(() => {
+    if (embed.isDirectVideo && videoRef.current) {
+      if (isPlaying) {
+        videoRef.current.play().catch(() => {});
+      } else {
+        videoRef.current.pause();
+      }
+    }
+  }, [isPlaying, embed.isDirectVideo]);
+
   const toggleDirectPlay = () => {
-    if (!videoRef.current) return;
-    if (videoRef.current.paused) {
-      videoRef.current.play();
-      setIsPlaying(true);
+    if (isPlaying) {
+      onPause();
     } else {
-      videoRef.current.pause();
-      setIsPlaying(false);
+      onPlay();
     }
   };
 
@@ -236,8 +273,6 @@ function VideoPlayerCard({
               loop
               preload="none"
               className="w-full h-full object-cover bg-black"
-              onPlay={() => setIsPlaying(true)}
-              onPause={() => setIsPlaying(false)}
             />
 
             {/* Play overlay button if paused */}
@@ -262,7 +297,7 @@ function VideoPlayerCard({
         ) : thumbnailUrl && !isPlaying ? (
           <button
             type="button"
-            onClick={() => setIsPlaying(true)}
+            onClick={onPlay}
             className="relative w-full h-full group/btn cursor-pointer block text-left"
             aria-label={`Reproducir ${video.title}`}
           >
@@ -284,7 +319,7 @@ function VideoPlayerCard({
               {thumbnailUrl && isPlaying && (
                 <button
                   type="button"
-                  onClick={() => setIsPlaying(false)}
+                  onClick={onPause}
                   className="bg-black/75 hover:bg-black text-white rounded-full py-0.5 px-2 text-[10px] font-bold flex items-center gap-1 backdrop-blur-md shadow-md transition-all cursor-pointer"
                   title="Volver a portada"
                 >
@@ -331,6 +366,7 @@ function VideoPlayerCard({
           type="button"
           onClick={(e) => {
             e.stopPropagation();
+            onPause(); // Detener video de fondo para que no haya audio doble
             onExpand(video);
           }}
           className="absolute bottom-2.5 right-2.5 z-20 w-8 h-8 rounded-md bg-black/60 hover:bg-[#E60000] text-white flex items-center justify-center backdrop-blur-md shadow-md transition-all hover:scale-110"
@@ -367,21 +403,15 @@ export function VideoSection({
   title,
   subtitle,
 }: {
-  data: VideoSectionData | null;
+  data?: VideoSectionData | null;
   title?: string;
   subtitle?: string;
 }) {
   const [selectedVideo, setSelectedVideo] = useState<VideoItem | null>(null);
+  const [activePlayingIndex, setActivePlayingIndex] = useState<number | null>(null);
 
-  // Si la sección fue explícitamente desactivada en el CMS, ocultarla
-  if (data?.isActive === false) {
-    return null;
-  }
-
-  const videos = data?.videos && data.videos.length > 0 ? data.videos : fallbackVideos;
-  if (!videos || videos.length === 0) {
-    return null;
-  }
+  // Los videos están insertados directamente por código para garantizar CERO consumo de banda ancha en Sanity
+  const videos = HARDCODED_VIDEOS;
 
   return (
     <>
@@ -418,7 +448,13 @@ export function VideoSection({
                 key={i}
                 video={video}
                 index={i}
-                onExpand={(v) => setSelectedVideo(v)}
+                isPlaying={activePlayingIndex === i}
+                onPlay={() => setActivePlayingIndex(i)}
+                onPause={() => setActivePlayingIndex(null)}
+                onExpand={(v) => {
+                  setActivePlayingIndex(null); // Pausar video de fondo para evitar audio doble
+                  setSelectedVideo(v);
+                }}
               />
             ))}
           </div>

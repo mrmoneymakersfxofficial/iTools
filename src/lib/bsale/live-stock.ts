@@ -5,12 +5,29 @@
 
 const BSALE_BASE_URL = "https://api.bsale.io/v1";
 
+export interface BranchStock {
+  officeId: number;
+  officeName: string;
+  address: string;
+  stock: number;
+  isStore: boolean;
+}
+
+export const BSALE_OFFICES: Record<number, { name: string; address: string; isStore: boolean }> = {
+  1: { name: "Tienda Principal Los Olivos", address: "Av. Universitaria 4974, Urb. Parque Naranjal", isStore: true },
+  4: { name: "Sucursal Alisos", address: "Av. Los Alisos, Los Olivos", isStore: true },
+  2: { name: "Sucursal Huacho", address: "Jr. Atahualpa 229, Huacho", isStore: true },
+  3: { name: "Almacén Central iTools", address: "Los Olivos, Lima", isStore: false },
+  5: { name: "Almacén Canta Callao", address: "Callao, Lima", isStore: false },
+};
+
 export interface LiveBsaleData {
   stock: number;
   price: number | null;
   salePrice: number | null;
   discountPercentage?: number;
   variantId?: number;
+  branches?: BranchStock[];
 }
 
 export async function getLiveBsaleData(sku?: string): Promise<LiveBsaleData | null> {
@@ -58,12 +75,37 @@ export async function getLiveBsaleData(sku?: string): Promise<LiveBsaleData | nu
     ]);
 
     let totalAvailable = 0;
+    const branches: BranchStock[] = [];
+
     if (stockRes && stockRes.ok) {
       const stockData = await stockRes.json();
-      totalAvailable = (stockData.items || []).reduce(
+      const items = stockData.items || [];
+      totalAvailable = items.reduce(
         (sum: number, item: any) => sum + (Number(item.quantityAvailable) || 0),
         0
       );
+
+      const stockByOffice: Record<number, number> = {};
+      items.forEach((item: any) => {
+        const offId = Number(item.office?.id || item.officeId || 0);
+        const qty = Math.max(0, Math.floor(Number(item.quantityAvailable) || 0));
+        stockByOffice[offId] = (stockByOffice[offId] || 0) + qty;
+      });
+
+      // Target physical stores and warehouses in display order
+      const targetOffices = [1, 4, 2, 3, 5];
+      targetOffices.forEach((offId) => {
+        const meta = BSALE_OFFICES[offId];
+        if (meta) {
+          branches.push({
+            officeId: offId,
+            officeName: meta.name,
+            address: meta.address,
+            stock: stockByOffice[offId] ?? 0,
+            isStore: meta.isStore,
+          });
+        }
+      });
     }
 
     let price: number | null = null;
@@ -101,6 +143,7 @@ export async function getLiveBsaleData(sku?: string): Promise<LiveBsaleData | nu
       salePrice,
       discountPercentage,
       variantId: variant.id,
+      branches,
     };
   } catch {
     return null;

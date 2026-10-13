@@ -37,11 +37,19 @@ export function SataFavoritesBanner({ banner, title }: SataFavoritesBannerProps)
           {...sanityAttr}
           className="group relative block w-full h-[120px] sm:h-[150px] md:h-[180px] rounded-xl overflow-hidden shadow-sm border border-[#E0E0E0] dark:border-[#333] transition-transform duration-300 hover:scale-[1.005]"
         >
-          <img
-            src={imgUrl}
-            alt={banner?.title || "SATA 380 piezas Listo para la chamba Carro de herramientas"}
-            className="w-full h-full object-cover"
-          />
+          <picture className="w-full h-full block">
+            {banner?.imageMobile?.asset?.url && (
+              <source
+                media="(max-width: 640px)"
+                srcSet={banner.imageMobile.asset.url}
+              />
+            )}
+            <img
+              src={imgUrl}
+              alt={banner?.title || "SATA 380 piezas Listo para la chamba Carro de herramientas"}
+              className="w-full h-full object-cover"
+            />
+          </picture>
         </Link>
       </div>
     </section>

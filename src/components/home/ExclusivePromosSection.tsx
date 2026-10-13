@@ -38,11 +38,19 @@ export function ExclusivePromosSection({ banners, title }: ExclusivePromosSectio
             {...attr1}
             className="group relative block w-full h-[180px] sm:h-[220px] md:h-[250px] rounded-xl overflow-hidden shadow-sm border border-[#E0E0E0] dark:border-[#333] transition-transform duration-300 hover:scale-[1.01]"
           >
-            <img
-              src={b1?.image?.asset?.url || "/banners/sections/milwaukee-bateria-gratis.webp"}
-              alt={b1?.title || "Milwaukee Batería Gratis M12"}
-              className="w-full h-full object-cover"
-            />
+            <picture className="w-full h-full block">
+              {b1?.imageMobile?.asset?.url && (
+                <source
+                  media="(max-width: 640px)"
+                  srcSet={b1.imageMobile.asset.url}
+                />
+              )}
+              <img
+                src={b1?.image?.asset?.url || "/banners/sections/milwaukee-bateria-gratis.webp"}
+                alt={b1?.title || "Milwaukee Batería Gratis M12"}
+                className="w-full h-full object-cover"
+              />
+            </picture>
           </Link>
 
           {/* Makita Potencia tu Sistema */}
@@ -51,11 +59,19 @@ export function ExclusivePromosSection({ banners, title }: ExclusivePromosSectio
             {...attr2}
             className="group relative block w-full h-[180px] sm:h-[220px] md:h-[250px] rounded-xl overflow-hidden shadow-sm border border-[#E0E0E0] dark:border-[#333] transition-transform duration-300 hover:scale-[1.01]"
           >
-            <img
-              src={b2?.image?.asset?.url || "/banners/sections/makita-potencia-sistema.webp"}
-              alt={b2?.title || "Makita Potencia tu Sistema Gratis"}
-              className="w-full h-full object-cover"
-            />
+            <picture className="w-full h-full block">
+              {b2?.imageMobile?.asset?.url && (
+                <source
+                  media="(max-width: 640px)"
+                  srcSet={b2.imageMobile.asset.url}
+                />
+              )}
+              <img
+                src={b2?.image?.asset?.url || "/banners/sections/makita-potencia-sistema.webp"}
+                alt={b2?.title || "Makita Potencia tu Sistema Gratis"}
+                className="w-full h-full object-cover"
+              />
+            </picture>
           </Link>
         </div>
 
@@ -65,11 +81,19 @@ export function ExclusivePromosSection({ banners, title }: ExclusivePromosSectio
           {...attr3}
           className="group relative block w-full h-[120px] sm:h-[150px] md:h-[175px] rounded-xl overflow-hidden shadow-sm border border-[#E0E0E0] dark:border-[#333] transition-transform duration-300 hover:scale-[1.005]"
         >
-          <img
-            src={b3?.image?.asset?.url || "/banners/sections/hotsale-cocina.webp"}
-            alt={b3?.title || "Hot Sale Hasta 40% Empotrables de Cocina"}
-            className="w-full h-full object-cover"
-          />
+          <picture className="w-full h-full block">
+            {b3?.imageMobile?.asset?.url && (
+              <source
+                media="(max-width: 640px)"
+                srcSet={b3.imageMobile.asset.url}
+              />
+            )}
+            <img
+              src={b3?.image?.asset?.url || "/banners/sections/hotsale-cocina.webp"}
+              alt={b3?.title || "Hot Sale Hasta 40% Empotrables de Cocina"}
+              className="w-full h-full object-cover"
+            />
+          </picture>
         </Link>
       </div>
     </section>

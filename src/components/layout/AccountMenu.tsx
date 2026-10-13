@@ -41,7 +41,7 @@ export function AccountMenu() {
         <Button
           variant="ghost"
           size="icon"
-          className="relative text-itools-dark hover:text-itools-blue rounded-full hover:bg-surface transition-colors"
+          className="relative text-itools-dark dark:text-white hover:text-itools-blue dark:hover:text-itools-blue rounded-full hover:bg-surface dark:hover:bg-neutral-800 transition-colors"
           aria-label="Mi cuenta"
         >
           <User className="h-5 w-5" />
@@ -52,7 +52,7 @@ export function AccountMenu() {
       </DropdownMenuTrigger>
       <DropdownMenuContent
         align="end"
-        className="w-60 bg-white border border-border shadow-xl rounded-xl overflow-hidden"
+        className="w-60 bg-white dark:bg-[#1A1A1A] border border-border dark:border-[#333] text-foreground dark:text-white shadow-xl rounded-xl overflow-hidden"
       >
         {isLoggedIn ? (
           <>
@@ -195,7 +195,7 @@ export function AccountMenuDesktop() {
       <DropdownMenuTrigger asChild>
         <button
           type="button"
-          className="flex items-center gap-1.5 text-sm font-medium text-itools-dark hover:text-itools-blue transition-colors py-2 px-1"
+          className="flex items-center gap-1.5 text-sm font-medium text-itools-dark dark:text-white/90 hover:text-itools-blue dark:hover:text-itools-blue transition-colors py-2 px-1"
         >
           <User className="h-4 w-4" />
           <span>{isLoggedIn ? (userName.split(" ")[0] || "Mi Cuenta") : "Mi Cuenta"}</span>
@@ -204,7 +204,7 @@ export function AccountMenuDesktop() {
       </DropdownMenuTrigger>
       <DropdownMenuContent
         align="end"
-        className="w-60 bg-white border border-border shadow-xl rounded-xl overflow-hidden"
+        className="w-60 bg-white dark:bg-[#1A1A1A] border border-border dark:border-[#333] text-foreground dark:text-white shadow-xl rounded-xl overflow-hidden"
       >
         {isLoggedIn ? (
           <>

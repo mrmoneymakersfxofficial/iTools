@@ -63,39 +63,35 @@ export function FlashSaleCountdownCard({ tile }: FlashSaleCountdownCardProps) {
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           />
 
-          {/* Solo el contador (sin texto superpuesto ni difuminado) */}
-          <div className="absolute inset-x-2.5 sm:inset-x-3.5 bottom-[14%] sm:bottom-[15%] z-10">
-            <div className="flex items-center justify-center gap-1 sm:gap-1.5 text-center">
+          {/* Contador exacto al diseño de referencia (3 tarjetas redondeadas limpias sin dos puntos) */}
+          <div className="absolute inset-x-3 sm:inset-x-4 bottom-[12%] sm:bottom-[14%] z-10">
+            <div className="flex items-center justify-center gap-2 sm:gap-2.5 text-center max-w-[320px] mx-auto">
               {/* Hours */}
-              <div className="flex-1 bg-white text-neutral-900 rounded-lg py-1 sm:py-1.5 px-0.5 sm:px-1 shadow-md flex flex-col items-center justify-center text-center">
-                <span className="text-base sm:text-lg font-black leading-none tracking-tight block">
+              <div className="flex-1 bg-white text-neutral-900 rounded-xl sm:rounded-2xl py-2 sm:py-2.5 px-1 shadow-md flex flex-col items-center justify-center text-center border border-black/5">
+                <span className="text-lg sm:text-2xl font-black leading-none tracking-tight block text-neutral-900">
                   {pad(timeLeft.hours)}
                 </span>
-                <span className="text-[7.5px] sm:text-[8px] font-bold text-neutral-500 uppercase tracking-wider mt-0.5 block">
+                <span className="text-[8px] sm:text-[9.5px] font-bold text-neutral-500 uppercase tracking-wider mt-1 block">
                   HRS
                 </span>
               </div>
 
-              <span className="text-white font-black text-sm sm:text-base pb-0.5 leading-none select-none">:</span>
-
               {/* Minutes */}
-              <div className="flex-1 bg-white text-neutral-900 rounded-lg py-1 sm:py-1.5 px-0.5 sm:px-1 shadow-md flex flex-col items-center justify-center text-center">
-                <span className="text-base sm:text-lg font-black leading-none tracking-tight block">
+              <div className="flex-1 bg-white text-neutral-900 rounded-xl sm:rounded-2xl py-2 sm:py-2.5 px-1 shadow-md flex flex-col items-center justify-center text-center border border-black/5">
+                <span className="text-lg sm:text-2xl font-black leading-none tracking-tight block text-neutral-900">
                   {pad(timeLeft.minutes)}
                 </span>
-                <span className="text-[7.5px] sm:text-[8px] font-bold text-neutral-500 uppercase tracking-wider mt-0.5 block">
+                <span className="text-[8px] sm:text-[9.5px] font-bold text-neutral-500 uppercase tracking-wider mt-1 block">
                   MIN
                 </span>
               </div>
 
-              <span className="text-white font-black text-sm sm:text-base pb-0.5 leading-none select-none">:</span>
-
               {/* Seconds */}
-              <div className="flex-1 bg-white text-neutral-900 rounded-lg py-1 sm:py-1.5 px-0.5 sm:px-1 shadow-md flex flex-col items-center justify-center text-center">
-                <span className="text-base sm:text-lg font-black leading-none tracking-tight block">
+              <div className="flex-1 bg-white text-neutral-900 rounded-xl sm:rounded-2xl py-2 sm:py-2.5 px-1 shadow-md flex flex-col items-center justify-center text-center border border-black/5">
+                <span className="text-lg sm:text-2xl font-black leading-none tracking-tight block text-neutral-900">
                   {pad(timeLeft.seconds)}
                 </span>
-                <span className="text-[7.5px] sm:text-[8px] font-bold text-neutral-500 uppercase tracking-wider mt-0.5 block">
+                <span className="text-[8px] sm:text-[9.5px] font-bold text-neutral-500 uppercase tracking-wider mt-1 block">
                   SEG
                 </span>
               </div>
@@ -105,30 +101,28 @@ export function FlashSaleCountdownCard({ tile }: FlashSaleCountdownCardProps) {
       ) : (
         <div className="relative w-full aspect-[600/365] bg-[#0056D2] flex items-center justify-center p-3">
           <div className="w-full">
-            <div className="flex items-center justify-center gap-1.5 text-center">
-              <div className="flex-1 bg-white text-neutral-900 rounded-lg py-1.5 px-1 shadow-md flex flex-col items-center justify-center text-center">
-                <span className="text-base sm:text-lg font-black leading-none tracking-tight block">
+            <div className="flex items-center justify-center gap-2 sm:gap-2.5 text-center max-w-[320px] mx-auto">
+              <div className="flex-1 bg-white text-neutral-900 rounded-xl sm:rounded-2xl py-2 sm:py-2.5 px-1 shadow-md flex flex-col items-center justify-center text-center">
+                <span className="text-lg sm:text-2xl font-black leading-none tracking-tight block text-neutral-900">
                   {pad(timeLeft.hours)}
                 </span>
-                <span className="text-[8px] font-bold text-neutral-500 uppercase tracking-wider mt-0.5 block">
+                <span className="text-[8px] sm:text-[9.5px] font-bold text-neutral-500 uppercase tracking-wider mt-1 block">
                   HRS
                 </span>
               </div>
-              <span className="text-white font-black text-sm pb-1 leading-none select-none">:</span>
-              <div className="flex-1 bg-white text-neutral-900 rounded-lg py-1.5 px-1 shadow-md flex flex-col items-center justify-center text-center">
-                <span className="text-base sm:text-lg font-black leading-none tracking-tight block">
+              <div className="flex-1 bg-white text-neutral-900 rounded-xl sm:rounded-2xl py-2 sm:py-2.5 px-1 shadow-md flex flex-col items-center justify-center text-center">
+                <span className="text-lg sm:text-2xl font-black leading-none tracking-tight block text-neutral-900">
                   {pad(timeLeft.minutes)}
                 </span>
-                <span className="text-[8px] font-bold text-neutral-500 uppercase tracking-wider mt-0.5 block">
+                <span className="text-[8px] sm:text-[9.5px] font-bold text-neutral-500 uppercase tracking-wider mt-1 block">
                   MIN
                 </span>
               </div>
-              <span className="text-white font-black text-sm pb-1 leading-none select-none">:</span>
-              <div className="flex-1 bg-white text-neutral-900 rounded-lg py-1.5 px-1 shadow-md flex flex-col items-center justify-center text-center">
-                <span className="text-base sm:text-lg font-black leading-none tracking-tight block">
+              <div className="flex-1 bg-white text-neutral-900 rounded-xl sm:rounded-2xl py-2 sm:py-2.5 px-1 shadow-md flex flex-col items-center justify-center text-center">
+                <span className="text-lg sm:text-2xl font-black leading-none tracking-tight block text-neutral-900">
                   {pad(timeLeft.seconds)}
                 </span>
-                <span className="text-[8px] font-bold text-neutral-500 uppercase tracking-wider mt-0.5 block">
+                <span className="text-[8px] sm:text-[9.5px] font-bold text-neutral-500 uppercase tracking-wider mt-1 block">
                   SEG
                 </span>
               </div>

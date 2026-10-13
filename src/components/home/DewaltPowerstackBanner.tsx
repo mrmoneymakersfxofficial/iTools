@@ -21,11 +21,19 @@ export function DewaltPowerstackBanner({ banner }: DewaltPowerstackBannerProps) 
           {...sanityAttr}
           className="group relative block w-full h-[110px] sm:h-[130px] md:h-[150px] rounded-xl overflow-hidden shadow-md transition-transform duration-300 hover:scale-[1.005]"
         >
-          <img
-            src={imageUrl}
-            alt="DeWalt Powerstack Kit S/ 2,099.90"
-            className="w-full h-full object-cover object-center"
-          />
+          <picture className="w-full h-full block">
+            {banner?.imageMobile?.asset?.url && (
+              <source
+                media="(max-width: 640px)"
+                srcSet={banner.imageMobile.asset.url}
+              />
+            )}
+            <img
+              src={imageUrl}
+              alt={banner?.title || "DeWalt Powerstack Kit S/ 2,099.90"}
+              className="w-full h-full object-cover object-center"
+            />
+          </picture>
         </Link>
       </div>
     </section>

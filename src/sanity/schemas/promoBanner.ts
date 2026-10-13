@@ -18,6 +18,13 @@ export default defineType({
       options: { hotspot: true },
       description: "📐 Resoluciones recomendadas según la sección:\n• Hero Inferior (Rotomartillo / Electricista): 600 x 340 px (o 1200 x 680 px @2x)\n• Banners anchos (DeWalt Powerstack / SATA 380 / Servicio Técnico): 1440 x 220 px\n• Promociones Exclusivas / Pro Deals: 600 x 320 px\n• Equipa tu Taller: 350 x 320 px\n• Fondo Los Más Vendidos: 1440 x 480 px",
     }),
+    defineField({
+      name: "imageMobile",
+      title: "Imagen para Móvil / Celular (Opcional)",
+      type: "image",
+      options: { hotspot: true },
+      description: "📐 Imagen adaptada para móviles (ej: 750 x 600 px o 800 x 800 px). Si se sube una imagen aquí, se mostrará en dispositivos móviles evitando que la versión horizontal se distorsione o corte (igual que en Bsale).",
+    }),
     defineField({ name: "order", title: "Orden", type: "number", validation: (r) => r.required().min(0) }),
     defineField({ name: "isActive", title: "Activo", type: "boolean", initialValue: true }),
   ],

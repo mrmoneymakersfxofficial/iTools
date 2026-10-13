@@ -29,11 +29,19 @@ export function TechnicalServiceBanner({
           {...sanityAttr}
           className="group relative block w-full h-[120px] sm:h-[150px] md:h-[175px] rounded-xl overflow-hidden shadow-md border border-[#222] transition-transform duration-300 hover:scale-[1.005]"
         >
-          <img
-            src={imgUrl}
-            alt="Servicio Técnico Oficial Milwaukee 936 085 056"
-            className="w-full h-full object-cover object-center"
-          />
+          <picture className="w-full h-full block">
+            {banner?.imageMobile?.asset?.url && (
+              <source
+                media="(max-width: 640px)"
+                srcSet={banner.imageMobile.asset.url}
+              />
+            )}
+            <img
+              src={imgUrl}
+              alt={banner?.title || "Servicio Técnico Oficial Milwaukee 936 085 056"}
+              className="w-full h-full object-cover object-center"
+            />
+          </picture>
         </a>
       </div>
     </section>

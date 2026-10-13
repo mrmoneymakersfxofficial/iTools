@@ -243,11 +243,19 @@ export function EquipWorkshopSection({ products, banners, title }: EquipWorkshop
           {...attrAuto}
           className="group relative block w-full h-[110px] sm:h-[130px] md:h-[145px] rounded-xl overflow-hidden shadow-sm border border-[#E0E0E0] dark:border-[#333] transition-transform duration-300 hover:scale-[1.005] mb-3 sm:mb-4"
         >
-          <img
-            src={bAuto?.image?.asset?.url || "/banners/sections/autostyle-banner.webp"}
-            alt={bAuto?.title || "Auto Style hasta 50% de ahorro"}
-            className="w-full h-full object-cover"
-          />
+          <picture className="w-full h-full block">
+            {bAuto?.imageMobile?.asset?.url && (
+              <source
+                media="(max-width: 640px)"
+                srcSet={bAuto.imageMobile.asset.url}
+              />
+            )}
+            <img
+              src={bAuto?.image?.asset?.url || "/banners/sections/autostyle-banner.webp"}
+              alt={bAuto?.title || "Auto Style hasta 50% de ahorro"}
+              className="w-full h-full object-cover"
+            />
+          </picture>
         </Link>
 
         {/* 3 Banners Row (33% / 33% / 33%) */}
@@ -258,11 +266,19 @@ export function EquipWorkshopSection({ products, banners, title }: EquipWorkshop
             {...attrTotal}
             className="group relative block w-full h-[170px] sm:h-[200px] rounded-xl overflow-hidden shadow-sm border border-[#E0E0E0] dark:border-[#333] transition-transform duration-300 hover:scale-[1.01]"
           >
-            <img
-              src={bTotal?.image?.asset?.url || "/banners/sections/total-530w.webp"}
-              alt={bTotal?.title || "Total 530W Pistola para pintar S/ 99.90"}
-              className="w-full h-full object-cover"
-            />
+            <picture className="w-full h-full block">
+              {bTotal?.imageMobile?.asset?.url && (
+                <source
+                  media="(max-width: 640px)"
+                  srcSet={bTotal.imageMobile.asset.url}
+                />
+              )}
+              <img
+                src={bTotal?.image?.asset?.url || "/banners/sections/total-530w.webp"}
+                alt={bTotal?.title || "Total 530W Pistola para pintar S/ 99.90"}
+                className="w-full h-full object-cover"
+              />
+            </picture>
           </Link>
 
           {/* Makita Teal Deals / Potencia tu Sistema */}
@@ -271,11 +287,19 @@ export function EquipWorkshopSection({ products, banners, title }: EquipWorkshop
             {...attrMakita}
             className="group relative block w-full h-[170px] sm:h-[200px] rounded-xl overflow-hidden shadow-sm border border-[#E0E0E0] dark:border-[#333] transition-transform duration-300 hover:scale-[1.01]"
           >
-            <img
-              src={bMakita?.image?.asset?.url || "/banners/sections/makita-teal-deals.webp"}
-              alt={bMakita?.title || "Makita Teal Deals"}
-              className="w-full h-full object-cover"
-            />
+            <picture className="w-full h-full block">
+              {bMakita?.imageMobile?.asset?.url && (
+                <source
+                  media="(max-width: 640px)"
+                  srcSet={bMakita.imageMobile.asset.url}
+                />
+              )}
+              <img
+                src={bMakita?.image?.asset?.url || "/banners/sections/makita-teal-deals.webp"}
+                alt={bMakita?.title || "Makita Teal Deals"}
+                className="w-full h-full object-cover"
+              />
+            </picture>
           </Link>
 
           {/* Milwaukee Red Hot Deals / Bateria Gratis */}
@@ -284,11 +308,19 @@ export function EquipWorkshopSection({ products, banners, title }: EquipWorkshop
             {...attrMilwaukee}
             className="group relative block w-full h-[170px] sm:h-[200px] rounded-xl overflow-hidden shadow-sm border border-[#E0E0E0] dark:border-[#333] transition-transform duration-300 hover:scale-[1.01]"
           >
-            <img
-              src={bMilwaukee?.image?.asset?.url || "/banners/sections/milwaukee-redhot-deals.webp"}
-              alt={bMilwaukee?.title || "Milwaukee Red Hot Deals"}
-              className="w-full h-full object-cover"
-            />
+            <picture className="w-full h-full block">
+              {bMilwaukee?.imageMobile?.asset?.url && (
+                <source
+                  media="(max-width: 640px)"
+                  srcSet={bMilwaukee.imageMobile.asset.url}
+                />
+              )}
+              <img
+                src={bMilwaukee?.image?.asset?.url || "/banners/sections/milwaukee-redhot-deals.webp"}
+                alt={bMilwaukee?.title || "Milwaukee Red Hot Deals"}
+                className="w-full h-full object-cover"
+              />
+            </picture>
           </Link>
         </div>
 

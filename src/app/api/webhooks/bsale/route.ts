@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import * as bsale from "@/lib/bsale/client";
-import { syncVariantStock, syncVariantPrice } from "@/lib/bsale/sync";
+import { syncVariantStock, syncVariantPrice, patchSanityProduct } from "@/lib/bsale/sync";
 
 interface BsaleWebhookPayload {
   cpnId: number;
@@ -71,6 +71,12 @@ async function handleProductWebhook(payload: BsaleWebhookPayload) {
   const bsaleProduct = await bsale.getProduct(productId, ["product_type"]);
   const { db } = await import("@/lib/db");
   
+  // Get main variant to retrieve the authentic SKU
+  const variants = await bsale.getProductVariants(productId).catch(() => ({ items: [] }));
+  const mainVariant = variants.items?.[0];
+  const sku = mainVariant?.code || `BSALE-${bsaleProduct.id}`;
+  const slug = bsaleProduct.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+
   const existing = await db.product.findFirst({
     where: { specs: { path: ["bsaleId"], equals: productId } },
   });
@@ -86,9 +92,6 @@ async function handleProductWebhook(payload: BsaleWebhookPayload) {
     });
     console.log(`[Bsale] Updated product: ${bsaleProduct.name}`);
   } else {
-    const sku = `BSALE-${bsaleProduct.id}`;
-    const slug = bsaleProduct.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
-
     await db.product.create({
       data: {
         sku,
@@ -104,6 +107,13 @@ async function handleProductWebhook(payload: BsaleWebhookPayload) {
     });
     console.log(`[Bsale] Created new product in DB: ${bsaleProduct.name}`);
   }
+
+  // Sincronizar automáticamente hacia Sanity (CMS)
+  await patchSanityProduct(sku, {
+    name: bsaleProduct.name,
+    slug,
+    isActive: bsaleProduct.state === 0,
+  });
 }
 
 async function handlePriceWebhook(payload: BsaleWebhookPayload) {

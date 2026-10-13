@@ -55,7 +55,9 @@ export function MainCategoriesSection({ categories, dealTiles, homeSettings, tit
                 key={tile?._id || tileId}
                 href={linkHref}
                 {...tileSanityAttr}
-                className="group relative rounded-xl overflow-hidden shadow-sm border border-[#E0E0E0] dark:border-[#333] transition-transform duration-300 hover:scale-[1.01] bg-[#0047AB]"
+                className={`group relative rounded-xl overflow-hidden shadow-sm border border-[#E0E0E0] dark:border-[#333] transition-transform duration-300 hover:scale-[1.01] bg-[#0047AB] ${
+                  idx === 5 ? "hidden lg:block" : ""
+                }`}
               >
                 <div className="relative w-full h-[220px] sm:h-[240px] lg:h-[260px]">
                   <img

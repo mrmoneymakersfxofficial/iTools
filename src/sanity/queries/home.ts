@@ -17,6 +17,7 @@ export const brandPromoBannersQuery = `*[_type == "brandPromoSlide" && isActive 
   _type,
   brandName,
   brandSlug,
+  link,
   image { asset-> { url, metadata { dimensions { width, height }, lqip } } },
   imageMobile { asset-> { url, metadata { dimensions { width, height }, lqip } } },
   order

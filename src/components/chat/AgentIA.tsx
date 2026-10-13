@@ -86,7 +86,7 @@ export function AgentIA() {
       <aside
         aria-label="Canales de contacto y Asistente IA"
         className={cn(
-          "fixed bottom-6 right-6 z-[60] flex flex-col items-center gap-3 transition-all duration-300",
+          "fixed bottom-20 md:bottom-6 right-4 sm:right-6 z-[60] flex flex-col items-center gap-3 transition-all duration-300",
           isOpen && "opacity-0 pointer-events-none scale-0"
         )}
       >

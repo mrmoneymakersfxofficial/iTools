@@ -24,6 +24,8 @@ import {
   HelpCircle,
   Bell,
   ZoomIn,
+  Store,
+  MapPin,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -473,6 +475,71 @@ export function ProductDetailClient({ product, relatedProducts, reviews }: { pro
                   {product.shortDescription}
                 </p>
               )}
+
+              {/* Disponibilidad en Tiendas Físicas / Sucursales */}
+              {(() => {
+                const branches = (product as any).branches || [
+                  { officeId: 1, officeName: "Tienda Principal Los Olivos", address: "Av. Universitaria 4974", stock: availableStock, isStore: true },
+                  { officeId: 4, officeName: "Sucursal Alisos", address: "Los Olivos", stock: 0, isStore: true },
+                  { officeId: 2, officeName: "Sucursal Huacho", address: "Jr. Atahualpa 229", stock: 0, isStore: true },
+                  { officeId: 3, officeName: "Almacén Central iTools", address: "iTools Store", stock: 0, isStore: false },
+                  { officeId: 5, officeName: "Almacén Canta Callao", address: "Callao", stock: 0, isStore: false },
+                ];
+
+                return (
+                  <div className="p-3.5 rounded-xl bg-neutral-50 dark:bg-[#141414] border border-neutral-200 dark:border-[#2a2a2a] shadow-xs">
+                    <div className="flex items-center justify-between gap-2 mb-2.5">
+                      <div className="flex items-center gap-1.5 text-xs font-bold text-neutral-800 dark:text-neutral-200 uppercase tracking-wider">
+                        <Store className="w-4 h-4 text-itools-blue" />
+                        <span>Disponibilidad en Tiendas</span>
+                      </div>
+                      <span className="text-[10px] font-medium text-muted-foreground flex items-center gap-1">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block" />
+                        Stock Bsale en tiempo real
+                      </span>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      {branches.map((b: any) => {
+                        const hasStock = b.stock > 0;
+                        return (
+                          <div
+                            key={b.officeId}
+                            className={cn(
+                              "flex items-center justify-between p-2 rounded-lg border transition-colors",
+                              hasStock
+                                ? "bg-white dark:bg-[#1c1c1c] border-neutral-200 dark:border-[#333]"
+                                : "bg-neutral-100/60 dark:bg-[#181818] border-neutral-200/50 dark:border-[#252525] opacity-75"
+                            )}
+                          >
+                            <div className="flex items-center gap-2 min-w-0 pr-2">
+                              <MapPin className={cn("w-3.5 h-3.5 shrink-0", hasStock ? "text-emerald-500" : "text-neutral-400")} />
+                              <div className="truncate">
+                                <p className="font-semibold text-xs text-neutral-800 dark:text-neutral-100 truncate">
+                                  {b.officeName}
+                                </p>
+                                <p className="text-[10px] text-muted-foreground truncate">
+                                  {b.address}
+                                </p>
+                              </div>
+                            </div>
+                            <div className="shrink-0 text-right">
+                              {hasStock ? (
+                                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
+                                  {b.stock} {b.stock === 1 ? "unidad" : "unidades"}
+                                </span>
+                              ) : (
+                                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-neutral-200/80 text-neutral-500 dark:bg-neutral-800 dark:text-neutral-400">
+                                  Sin stock
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              })()}
 
               {/* Actions: Image 3 Layout */}
               <div className="space-y-3 mt-2">

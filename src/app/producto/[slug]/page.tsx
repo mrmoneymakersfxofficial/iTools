@@ -67,6 +67,9 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           product.salePrice = bsaleData.salePrice ?? null;
           product.comparePrice = null;
         }
+        if (bsaleData.branches) {
+          product.branches = bsaleData.branches;
+        }
 
         // Auto-sync Sanity in background if Bsale values changed
         if (

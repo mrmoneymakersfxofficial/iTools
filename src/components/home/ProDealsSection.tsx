@@ -216,11 +216,19 @@ export function ProDealsSection({ products, banners, title }: ProDealsSectionPro
             {...attr1}
             className="group relative block w-full h-[180px] sm:h-[220px] md:h-[250px] rounded-xl overflow-hidden shadow-sm border border-[#E0E0E0] dark:border-[#333] transition-transform duration-300 hover:scale-[1.01]"
           >
-            <img
-              src={b1?.image?.asset?.url || "/banners/sections/dewalt-xr-powerpack.webp"}
-              alt={b1?.title || "DeWalt XR Powerpack 20V 8Ah 50% Más Potencia"}
-              className="w-full h-full object-cover"
-            />
+            <picture className="w-full h-full block">
+              {b1?.imageMobile?.asset?.url && (
+                <source
+                  media="(max-width: 640px)"
+                  srcSet={b1.imageMobile.asset.url}
+                />
+              )}
+              <img
+                src={b1?.image?.asset?.url || "/banners/sections/dewalt-xr-powerpack.webp"}
+                alt={b1?.title || "DeWalt XR Powerpack 20V 8Ah 50% Más Potencia"}
+                className="w-full h-full object-cover"
+              />
+            </picture>
           </Link>
 
           <Link
@@ -228,11 +236,19 @@ export function ProDealsSection({ products, banners, title }: ProDealsSectionPro
             {...attr2}
             className="group relative block w-full h-[180px] sm:h-[220px] md:h-[250px] rounded-xl overflow-hidden shadow-sm border border-[#E0E0E0] dark:border-[#333] transition-transform duration-300 hover:scale-[1.01]"
           >
-            <img
-              src={b2?.image?.asset?.url || "/banners/sections/milwaukee-forge.webp"}
-              alt={b2?.title || "Milwaukee M18 Redlithium Forge 15 Minutos de Recarga"}
-              className="w-full h-full object-cover"
-            />
+            <picture className="w-full h-full block">
+              {b2?.imageMobile?.asset?.url && (
+                <source
+                  media="(max-width: 640px)"
+                  srcSet={b2.imageMobile.asset.url}
+                />
+              )}
+              <img
+                src={b2?.image?.asset?.url || "/banners/sections/milwaukee-forge.webp"}
+                alt={b2?.title || "Milwaukee M18 Redlithium Forge 15 Minutos de Recarga"}
+                className="w-full h-full object-cover"
+              />
+            </picture>
           </Link>
         </div>
 

@@ -50,7 +50,7 @@ export function HomeCenterHero({
 
       {/* ── 2. Mid Slim Banner: Milwaukee Combo Kit ── */}
       <Link
-        href={midBanner?.link || "/marca/milwaukee"}
+        href={midBanner?.link || (midBanner?.brandSlug ? `/marca/${midBanner.brandSlug}` : "/marca/milwaukee")}
         {...midSanityAttr}
         className="group relative block w-full h-[75px] sm:h-[88px] shrink-0 rounded-lg overflow-hidden border border-[#E0E0E0] dark:border-[#333] shadow-sm transition-transform duration-300 hover:scale-[1.005]"
       >

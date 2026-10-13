@@ -22,6 +22,12 @@ export default defineType({
       options: { hotspot: true },
       description: "📐 Imagen adaptada para móviles (ej: 750 x 200 px). Si se sube, se mostrará en teléfonos.",
     }),
+    defineField({
+      name: "link",
+      title: "Enlace del Banner (Opcional)",
+      type: "string",
+      description: "URL o ruta de destino al hacer click en el banner (ej: /producto/kit-combinado-de-4-herramientas o /marca/milwaukee). Si se deja vacío, redirigirá a la marca.",
+    }),
     defineField({ name: "order", title: "Orden", type: "number", validation: (r) => r.required().min(0) }),
     defineField({ name: "isActive", title: "Activo", type: "boolean", initialValue: true }),
   ],
