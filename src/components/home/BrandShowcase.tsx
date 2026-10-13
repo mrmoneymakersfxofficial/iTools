@@ -130,11 +130,11 @@ function renderGrid(
         <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-1.5 md:gap-2">
           {brands.map((brand) => {
             const rawSlug = brand.slug || brand.name?.toLowerCase() || "";
-            const slug = typeof rawSlug === "string" ? rawSlug : (rawSlug.current || "");
+            const slug = (typeof rawSlug === "string" ? rawSlug : (rawSlug.current || "")).toLowerCase().trim();
             const config = brand.localConfig || BRAND_CONFIGS[slug];
             const hasCustomLogo = !!brand.logo?.asset?.url;
             const hasLocalImg = !hasCustomLogo && !!config;
-            const fallbackExt = config ? config.logoExt : "webp";
+            const fallbackExt = config ? config.logoExt : "svg";
             const imgSrc = hasCustomLogo
               ? brand.logo!.asset!.url
               : (hasLocalImg ? `/brands/${slug}.${fallbackExt}` : null);
@@ -157,9 +157,14 @@ function renderGrid(
                     className="w-full h-full object-cover p-0"
                     loading="lazy"
                     onError={(e) => {
-                      e.currentTarget.style.display = "none";
-                      const next = e.currentTarget.nextElementSibling as HTMLElement;
-                      if (next) next.style.display = "block";
+                      const img = e.currentTarget;
+                      if (!img.src.endsWith(".svg")) {
+                        img.src = `/brands/${slug}.svg`;
+                      } else {
+                        img.style.display = "none";
+                        const next = img.nextElementSibling as HTMLElement;
+                        if (next) next.style.display = "block";
+                      }
                     }}
                   />
                 ) : null}

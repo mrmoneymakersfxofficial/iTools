@@ -1,15 +1,24 @@
 import { notFound } from "next/navigation";
-import { getBrandTheme } from "@/lib/data";
+import { getBrandTheme, getBrandBySlug, getProductsByBrandSlug } from "@/lib/data";
 import { fetchBrandBySlug, fetchProductsByBrandSlug, fetchAllBrandSlugs } from "@/lib/sanity/fetch-brand";
 import { BrandPageClient } from "./brand-page-client";
+
+import { BRAND_SHOWCASE_ORDER } from "@/lib/constants/brands";
 
 const SITE_URL = "https://itools.pe";
 
 export const revalidate = 60;
 
+export async function generateStaticParams() {
+  const sanityBrands = await fetchAllBrandSlugs();
+  const sanitySlugs = sanityBrands.map((b: any) => b.slug).filter(Boolean);
+  const allSlugs = Array.from(new Set([...BRAND_SHOWCASE_ORDER, ...sanitySlugs]));
+  return allSlugs.map((slug) => ({ slug }));
+}
+
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const brand = await fetchBrandBySlug(slug);
+  const brand = (await fetchBrandBySlug(slug)) || getBrandBySlug(slug);
   if (!brand) return { title: "Marca no encontrada | iTools Perú" };
 
   return {
@@ -29,10 +38,17 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function BrandPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const brand = await fetchBrandBySlug(slug);
+  let brand = await fetchBrandBySlug(slug);
+  if (!brand) {
+    brand = getBrandBySlug(slug) || null;
+  }
   if (!brand) notFound();
 
-  const products = await fetchProductsByBrandSlug(slug);
+  let products = await fetchProductsByBrandSlug(slug);
+  if (!products || products.length === 0) {
+    products = getProductsByBrandSlug(slug);
+  }
+
   const theme = getBrandTheme(slug);
 
   return <BrandPageClient brand={brand} products={products} theme={theme} />;

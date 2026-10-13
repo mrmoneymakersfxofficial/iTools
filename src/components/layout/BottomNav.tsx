@@ -15,24 +15,38 @@ import { useAiChatStore } from "@/stores/ai-chat-store";
 import { useGlobalSettings } from "@/stores/global-settings-context";
 
 const brandLinks = [
-  { name: "Milwaukee", slug: "milwaukee", color: "#D1001C" },
-  { name: "DeWalt", slug: "dewalt", color: "#FFD700", textColor: "#1A1A1A" },
-  { name: "Bosch", slug: "bosch", color: "#005691" },
-  { name: "Makita", slug: "makita", color: "#0077C8" },
-  { name: "Stanley", slug: "stanley", color: "#E35205" },
-  { name: "3M", slug: "3m", color: "#CC3300" },
-  { name: "Honda", slug: "honda", color: "#CC0000" },
-  { name: "Klein Tools", slug: "klein-tools", color: "#FFC220", textColor: "#1A1A1A" },
-  { name: "Toro", slug: "toro", color: "#1A1A1A", textColor: "#CC0000" },
-  { name: "EGO", slug: "ego", color: "#0d5c4a" },
-  { name: "Metabo HPT", slug: "metabo-hpt", color: "#1b7a3a" },
-  { name: "FLEX", slug: "flex", color: "#1A1A1A" },
-  { name: "STIHL", slug: "stihl", color: "#E35205" },
-  { name: "FEIN", slug: "fein", color: "#666666" },
-  { name: "SKIL", slug: "skil", color: "#CC0000" },
-  { name: "Festool", slug: "festool", color: "#1A1A1A", textColor: "#00A651" },
-  { name: "JET", slug: "jet", color: "#CC0000" },
-  { name: "Knaack", slug: "knaack", color: "#8B6914" },
+  { name: "Milwaukee", slug: "milwaukee", color: "#DB001A", textColor: "#FFF" },
+  { name: "DeWalt", slug: "dewalt", color: "#FEBD17", textColor: "#1A1A1A" },
+  { name: "Bosch", slug: "bosch", color: "#002A54", textColor: "#FFF" },
+  { name: "Makita", slug: "makita", color: "#0077C8", textColor: "#FFF" },
+  { name: "Truper", slug: "truper", color: "#F37021", textColor: "#FFF" },
+  { name: "Total", slug: "total", color: "#00828A", textColor: "#FFF" },
+  { name: "Ingco", slug: "ingco", color: "#F39200", textColor: "#FFF" },
+  { name: "Stanley", slug: "stanley", color: "#FFC20F", textColor: "#1A1A1A" },
+  { name: "DCA", slug: "dca", color: "#008554", textColor: "#FFF" },
+  { name: "Dong Cheng", slug: "dong-cheng", color: "#0055A4", textColor: "#FFF" },
+  { name: "Kaili", slug: "kaili", color: "#0059D6", textColor: "#FFF" },
+  { name: "Kamasa", slug: "kamasa", color: "#FFE000", textColor: "#1A1A1A" },
+  { name: "SATA", slug: "sata", color: "#006747", textColor: "#FFF" },
+  { name: "Toptul", slug: "toptul", color: "#E31837", textColor: "#FFF" },
+  { name: "Bahco", slug: "bahco", color: "#F57B20", textColor: "#FFF" },
+  { name: "EmtOP", slug: "emtop", color: "#E1001A", textColor: "#FFF" },
+  { name: "Tramontina", slug: "tramontina", color: "#001689", textColor: "#FFF" },
+  { name: "Wagner", slug: "wagner", color: "#FFCE00", textColor: "#1A1A1A" },
+  { name: "Würth", slug: "wurth", color: "#CC0000", textColor: "#FFF" },
+  { name: "3M", slug: "3m", color: "#E60000", textColor: "#FFF" },
+  { name: "Honda", slug: "honda", color: "#E4002B", textColor: "#FFF" },
+  { name: "Klein Tools", slug: "klein-tools", color: "#F58220", textColor: "#1A1A1A" },
+  { name: "Toro", slug: "toro", color: "#C8102E", textColor: "#FFF" },
+  { name: "EGO", slug: "ego", color: "#00843D", textColor: "#FFF" },
+  { name: "Metabo HPT", slug: "metabo-hpt", color: "#007A3D", textColor: "#FFF" },
+  { name: "FLEX", slug: "flex", color: "#D32F2F", textColor: "#FFF" },
+  { name: "STIHL", slug: "stihl", color: "#F37021", textColor: "#FFF" },
+  { name: "FEIN", slug: "fein", color: "#C8102E", textColor: "#FFF" },
+  { name: "SKIL", slug: "skil", color: "#D71920", textColor: "#FFF" },
+  { name: "Festool", slug: "festool", color: "#004F34", textColor: "#FFF" },
+  { name: "JET", slug: "jet", color: "#C8102E", textColor: "#FFF" },
+  { name: "Knaack", slug: "knaack", color: "#8B5A2B", textColor: "#FFF" },
 ];
 
 const categoryIcons: Record<string, React.ReactNode> = {
@@ -247,7 +261,14 @@ export function BottomNav() {
                       src={`/brands/${brand.slug}.webp`}
                       alt={brand.name}
                       className="w-full h-full object-cover"
-                      onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        if (!target.src.endsWith(".svg")) {
+                          target.src = `/brands/${brand.slug}.svg`;
+                        } else {
+                          target.style.display = "none";
+                        }
+                      }}
                     />
                   </div>
                   <div className="bg-[#111] px-3 py-2 flex items-center justify-between">

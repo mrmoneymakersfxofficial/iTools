@@ -7,19 +7,33 @@ export const brands: Brand[] = [
   { id: "b3", name: "Bosch", slug: "bosch", logo: null, featured: true },
   { id: "b4", name: "Makita", slug: "makita", logo: null, featured: true },
   { id: "b5", name: "Stanley", slug: "stanley", logo: null, featured: true },
-  { id: "b6", name: "3M", slug: "3m", logo: null, featured: true },
-  { id: "b7", name: "Honda", slug: "honda", logo: null, featured: false },
-  { id: "b8", name: "Klein Tools", slug: "klein-tools", logo: null, featured: false },
-  { id: "b9", name: "Toro", slug: "toro", logo: null, featured: false },
-  { id: "b10", name: "EGO", slug: "ego", logo: null, featured: false },
-  { id: "b11", name: "Metabo HPT", slug: "metabo-hpt", logo: null, featured: false },
-  { id: "b12", name: "FLEX", slug: "flex", logo: null, featured: false },
-  { id: "b13", name: "STIHL", slug: "stihl", logo: null, featured: false },
-  { id: "b14", name: "FEIN", slug: "fein", logo: null, featured: false },
-  { id: "b15", name: "SKIL", slug: "skil", logo: null, featured: false },
-  { id: "b16", name: "Festool", slug: "festool", logo: null, featured: false },
-  { id: "b17", name: "JET", slug: "jet", logo: null, featured: false },
-  { id: "b18", name: "Knaack", slug: "knaack", logo: null, featured: false },
+  { id: "b6", name: "Ingco", slug: "ingco", logo: null, featured: true },
+  { id: "b7", name: "Truper", slug: "truper", logo: null, featured: true },
+  { id: "b8", name: "Total", slug: "total", logo: null, featured: true },
+  { id: "b9", name: "Toptul", slug: "toptul", logo: null, featured: true },
+  { id: "b10", name: "DongCheng", slug: "dong-cheng", logo: null, featured: true },
+  { id: "b11", name: "Kamasa", slug: "kamasa", logo: null, featured: true },
+  { id: "b12", name: "Bahco", slug: "bahco", logo: null, featured: true },
+  { id: "b13", name: "Tramontina", slug: "tramontina", logo: null, featured: true },
+  { id: "b14", name: "Wagner", slug: "wagner", logo: null, featured: true },
+  { id: "b15", name: "Sata", slug: "sata", logo: null, featured: true },
+  { id: "b16", name: "Emtop", slug: "emtop", logo: null, featured: true },
+  { id: "b17", name: "DCA", slug: "dca", logo: null, featured: true },
+  { id: "b18", name: "Kaili", slug: "kaili", logo: null, featured: true },
+  { id: "b19", name: "Wurth", slug: "wurth", logo: null, featured: true },
+  { id: "b20", name: "3M", slug: "3m", logo: null, featured: true },
+  { id: "b21", name: "Honda", slug: "honda", logo: null, featured: false },
+  { id: "b22", name: "Klein Tools", slug: "klein-tools", logo: null, featured: false },
+  { id: "b23", name: "Toro", slug: "toro", logo: null, featured: false },
+  { id: "b24", name: "EGO", slug: "ego", logo: null, featured: false },
+  { id: "b25", name: "Metabo HPT", slug: "metabo-hpt", logo: null, featured: false },
+  { id: "b26", name: "FLEX", slug: "flex", logo: null, featured: false },
+  { id: "b27", name: "STIHL", slug: "stihl", logo: null, featured: false },
+  { id: "b28", name: "FEIN", slug: "fein", logo: null, featured: false },
+  { id: "b29", name: "SKIL", slug: "skil", logo: null, featured: false },
+  { id: "b30", name: "Festool", slug: "festool", logo: null, featured: false },
+  { id: "b31", name: "JET", slug: "jet", logo: null, featured: false },
+  { id: "b32", name: "Knaack", slug: "knaack", logo: null, featured: false },
 ];
 
 // ── Categories ────────────────────────────────────────────
@@ -1355,42 +1369,57 @@ export function searchProducts(query: string): Product[] {
 
 // ── Brand helpers ──────────────────────────────────────────
 export const brandThemes: Record<string, { color: string; textColor: string; secondColor: string; tabs?: string[] }> = {
-  milwaukee: { color: "#D1001C", textColor: "#FFF", secondColor: "#0A0A0A", tabs: ["M18", "M12", "MX FUEL", "PACKOUT", "FORGE", "PIPELINE", "RED HOT DEALS"] },
-  dewalt: { color: "#FFD700", textColor: "#1A1A1A", secondColor: "#1A1A1A", tabs: ["20V MAX", "12V MAX", "FLEXVOLT", "ATOMIC", "PROFORMANCE"] },
-  bosch: { color: "#005691", textColor: "#FFF", secondColor: "#0A0A0A", tabs: ["18V", "12V", "GREEN", "PROFESSIONAL"] },
+  milwaukee: { color: "#DB001A", textColor: "#FFF", secondColor: "#0A0A0A", tabs: ["M18", "M12", "MX FUEL", "PACKOUT", "FORGE", "PIPELINE", "RED HOT DEALS"] },
+  dewalt: { color: "#FEBD17", textColor: "#1A1A1A", secondColor: "#1A1A1A", tabs: ["20V MAX", "12V MAX", "FLEXVOLT", "ATOMIC", "PROFORMANCE"] },
+  bosch: { color: "#002A54", textColor: "#FFF", secondColor: "#0A0A0A", tabs: ["18V", "12V", "GREEN", "PROFESSIONAL"] },
   makita: { color: "#0077C8", textColor: "#FFF", secondColor: "#0A0A0A", tabs: ["18V LXT", "12V CXT", "X2", "LXT 40V"] },
-  total: { color: "#00A3AD", textColor: "#FFF", secondColor: "#0A0A0A", tabs: ["P20S", "INDUSTRIAL", "HERRAMIENTAS"] },
-  ingco: { color: "#FF6600", textColor: "#FFF", secondColor: "#0A0A0A", tabs: ["20V", "P20S", "INDUSTRIAL"] },
-  dca: { color: "#00823B", textColor: "#FFF", secondColor: "#0A0A0A", tabs: ["20V", "BRUSHLESS", "INDUSTRIAL"] },
-  "dong-cheng": { color: "#D71920", textColor: "#FFF", secondColor: "#0A0A0A", tabs: ["20V", "BRUSHLESS", "COMBO"] },
-  kaili: { color: "#E60000", textColor: "#FFF", secondColor: "#0A0A0A", tabs: ["INDUSTRIAL", "LINEA ROJA"] },
-  kamasa: { color: "#F7C300", textColor: "#1A1A1A", secondColor: "#1A1A1A", tabs: ["HERRAMIENTAS", "AUTOMOTRIZ"] },
-  sata: { color: "#008852", textColor: "#FFF", secondColor: "#0A0A0A", tabs: ["JUEGO DE DADOS", "LLAVES", "TORQUE"] },
-  toptul: { color: "#007A3D", textColor: "#FFF", secondColor: "#0A0A0A", tabs: ["HERRAMIENTAS", "TALLER"] },
-  truper: { color: "#FF5F00", textColor: "#FFF", secondColor: "#0A0A0A", tabs: ["EXPERT", "MAX", "PRO"] },
-  bahco: { color: "#EE7202", textColor: "#FFF", secondColor: "#0A0A0A", tabs: ["MANUALES", "SERRUCHOS", "LLAVES"] },
-  emtop: { color: "#005BAC", textColor: "#FFF", secondColor: "#0A0A0A", tabs: ["20V", "POWER TOOLS"] },
-  tramontina: { color: "#004B97", textColor: "#FFF", secondColor: "#0A0A0A", tabs: ["MASTER", "PRO", "HERRAMIENTAS"] },
-  wagner: { color: "#FFD100", textColor: "#1A1A1A", secondColor: "#1A1A1A", tabs: ["PINTURA", "AIRLESS"] },
+  total: { color: "#00828A", textColor: "#FFF", secondColor: "#0A0A0A", tabs: ["P20S", "INDUSTRIAL", "HERRAMIENTAS"] },
+  ingco: { color: "#F39200", textColor: "#FFF", secondColor: "#0A0A0A", tabs: ["20V", "P20S", "INDUSTRIAL"] },
+  dca: { color: "#008554", textColor: "#FFF", secondColor: "#0A0A0A", tabs: ["20V", "BRUSHLESS", "INDUSTRIAL"] },
+  "dong-cheng": { color: "#0055A4", textColor: "#FFF", secondColor: "#0A0A0A", tabs: ["20V", "BRUSHLESS", "COMBO"] },
+  kaili: { color: "#0059D6", textColor: "#FFF", secondColor: "#0A0A0A", tabs: ["INDUSTRIAL", "LINEA ROJA"] },
+  kamasa: { color: "#FFE000", textColor: "#1A1A1A", secondColor: "#1A1A1A", tabs: ["HERRAMIENTAS", "AUTOMOTRIZ"] },
+  sata: { color: "#006747", textColor: "#FFF", secondColor: "#0A0A0A", tabs: ["JUEGO DE DADOS", "LLAVES", "TORQUE"] },
+  toptul: { color: "#E31837", textColor: "#FFF", secondColor: "#0A0A0A", tabs: ["HERRAMIENTAS", "TALLER"] },
+  truper: { color: "#F37021", textColor: "#FFF", secondColor: "#0A0A0A", tabs: ["EXPERT", "MAX", "PRO"] },
+  bahco: { color: "#F57B20", textColor: "#FFF", secondColor: "#0A0A0A", tabs: ["MANUALES", "SERRUCHOS", "LLAVES"] },
+  emtop: { color: "#E1001A", textColor: "#FFF", secondColor: "#0A0A0A", tabs: ["20V", "POWER TOOLS"] },
+  tramontina: { color: "#001689", textColor: "#FFF", secondColor: "#0A0A0A", tabs: ["MASTER", "PRO", "HERRAMIENTAS"] },
+  wagner: { color: "#FFCE00", textColor: "#1A1A1A", secondColor: "#1A1A1A", tabs: ["PINTURA", "AIRLESS"] },
   wurth: { color: "#CC0000", textColor: "#FFF", secondColor: "#0A0A0A", tabs: ["ZEBRA", "AUTOMOTRIZ"] },
-  ego: { color: "#0d5c4a", textColor: "#FFF", secondColor: "#0A0A0A", tabs: ["56V", "POWER+", "TOOL ONLY"] },
-  stanley: { color: "#E35205", textColor: "#FFF", secondColor: "#0A0A0A", tabs: ["FATMAX", "STANLEY PRO"] },
-  "3m": { color: "#CC3300", textColor: "#FFF", secondColor: "#0A0A0A", tabs: ["SEGURIDAD", "INDUSTRIAL"] },
-  "metabo-hpt": { color: "#1b7a3a", textColor: "#FFF", secondColor: "#0A0A0A", tabs: ["MULTIVOLT", "AIR NAILER"] },
-  stihl: { color: "#E35205", textColor: "#FFF", secondColor: "#0A0A0A", tabs: ["BATERÍA", "GASOLINA"] },
-  fein: { color: "#666666", textColor: "#FFF", secondColor: "#0A0A0A", tabs: ["MULTIMASTER", "SLIPPER"] },
-  flex: { color: "#E35205", textColor: "#FFF", secondColor: "#0A0A0A", tabs: ["24V", "40V MAX"] },
-  festool: { color: "#00A651", textColor: "#FFF", secondColor: "#0A0A0A", tabs: ["SISTEMA", "TSC", "CT"] },
-  honda: { color: "#CC0000", textColor: "#FFF", secondColor: "#0A0A0A", tabs: ["GENERADORES", "MOTORES", "BOMBAS"] },
-  "klein-tools": { color: "#FFC220", textColor: "#1A1A1A", secondColor: "#1A1A1A", tabs: ["ELÉCTRICAS", "MANUALES"] },
-  toro: { color: "#CC0000", textColor: "#FFF", secondColor: "#0A0A0A", tabs: ["CÉSPED", "SOPLORES"] },
-  skil: { color: "#CC0000", textColor: "#FFF", secondColor: "#0A0A0A", tabs: ["12V", "20V"] },
-  jet: { color: "#CC0000", textColor: "#FFF", secondColor: "#0A0A0A", tabs: ["SIERRAS", "TORNO"] },
-  knaack: { color: "#8B6914", textColor: "#FFF", secondColor: "#0A0A0A", tabs: ["ALMACENAMIENTO"] },
+  stanley: { color: "#FFC20F", textColor: "#1A1A1A", secondColor: "#1A1A1A", tabs: ["FATMAX", "STANLEY PRO"] },
+  "3m": { color: "#E60000", textColor: "#FFF", secondColor: "#0A0A0A", tabs: ["SEGURIDAD", "INDUSTRIAL"] },
+  honda: { color: "#E4002B", textColor: "#FFF", secondColor: "#0A0A0A", tabs: ["GENERADORES", "MOTORES", "BOMBAS"] },
+  "klein-tools": { color: "#F58220", textColor: "#1A1A1A", secondColor: "#1A1A1A", tabs: ["ELÉCTRICAS", "MANUALES"] },
+  toro: { color: "#C8102E", textColor: "#FFF", secondColor: "#0A0A0A", tabs: ["CÉSPED", "SOPLADORES"] },
+  ego: { color: "#00843D", textColor: "#FFF", secondColor: "#0A0A0A", tabs: ["56V", "POWER+", "TOOL ONLY"] },
+  "metabo-hpt": { color: "#007A3D", textColor: "#FFF", secondColor: "#0A0A0A", tabs: ["MULTIVOLT", "AIR NAILER"] },
+  flex: { color: "#D32F2F", textColor: "#FFF", secondColor: "#0A0A0A", tabs: ["24V", "40V MAX"] },
+  stihl: { color: "#F37021", textColor: "#FFF", secondColor: "#0A0A0A", tabs: ["BATERÍA", "GASOLINA"] },
+  fein: { color: "#C8102E", textColor: "#FFF", secondColor: "#0A0A0A", tabs: ["MULTIMASTER", "SLIPPER"] },
+  skil: { color: "#D71920", textColor: "#FFF", secondColor: "#0A0A0A", tabs: ["12V", "20V"] },
+  festool: { color: "#004F34", textColor: "#FFF", secondColor: "#0A0A0A", tabs: ["SISTEMA", "TSC", "CT"] },
+  jet: { color: "#C8102E", textColor: "#FFF", secondColor: "#0A0A0A", tabs: ["SIERRAS", "TORNO"] },
+  knaack: { color: "#8B5A2B", textColor: "#FFF", secondColor: "#0A0A0A", tabs: ["ALMACENAMIENTO"] },
 };
 
 export function getBrandBySlug(slug: string): Brand | undefined {
-  return brands.find((b) => b.slug === slug);
+  const norm = slug.toLowerCase().trim();
+  const found = brands.find((b) => b.slug.toLowerCase() === norm);
+  if (found) return found;
+
+  const formattedName = norm
+    .split("-")
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(" ");
+
+  return {
+    id: `brand-${norm}`,
+    name: formattedName,
+    slug: norm,
+    logo: null,
+    featured: true,
+  };
 }
 
 export function getProductsByBrandSlug(slug: string): Product[] {
@@ -1400,5 +1429,5 @@ export function getProductsByBrandSlug(slug: string): Product[] {
 }
 
 export function getBrandTheme(slug: string) {
-  return brandThemes[slug] || { color: "#333", textColor: "#FFF", secondColor: "#0A0A0A", tabs: [] };
+  return brandThemes[slug.toLowerCase()] || { color: "#1A1A1A", textColor: "#FFF", secondColor: "#0A0A0A", tabs: ["HERRAMIENTAS", "OFERTAS"] };
 }

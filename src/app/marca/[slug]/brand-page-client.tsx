@@ -305,14 +305,15 @@ function BrandHeaderBanner({
   brandColor: string;
   textColor: string;
 }) {
-  const isDark = textColor === "#FFF" || textColor === "#00A651";
   const slug = brand.slug.toLowerCase();
+  const isYellowBrand = ["dewalt", "kamasa", "wagner", "stanley", "klein-tools"].includes(slug);
+  const isDark = !isYellowBrand && (textColor === "#FFF" || textColor === "#00A651");
 
   const customWhiteLogos: Record<string, string> = {
     milwaukee: "/brands/milwaukee-white-transparent.svg",
   };
 
-  const defaultSvg = customWhiteLogos[slug] || `/brands/${slug}.svg`;
+  const defaultSvg = customWhiteLogos[slug] || `/brands/transparent/${slug}.svg`;
 
   return (
     <div
@@ -328,12 +329,13 @@ function BrandHeaderBanner({
           alt={brand.name}
           className={cn(
             "h-16 sm:h-24 md:h-32 lg:h-36 w-auto max-w-full object-contain drop-shadow-md transition-transform duration-300 hover:scale-105",
-            isDark && slug !== "milwaukee" && "brightness-0 invert",
-            !isDark && "brightness-0"
+            isDark && slug !== "milwaukee" && "brightness-0 invert"
           )}
           onError={(e) => {
             const target = e.target as HTMLImageElement;
-            if (!target.src.endsWith(".webp")) {
+            if (target.src.includes("/brands/transparent/")) {
+              target.src = `/brands/${slug}.svg`;
+            } else if (!target.src.endsWith(".webp")) {
               target.src = `/brands/${slug}.webp`;
             } else {
               target.style.display = "none";
@@ -365,8 +367,12 @@ function BrandWidePromoBanner({
   textColor: string;
   hasPromoBanner: boolean;
 }) {
-  const isDark = textColor === "#FFF" || textColor === "#00A651";
+  const isYellowBrand = ["dewalt", "kamasa", "wagner", "stanley", "klein-tools"].includes(brand.slug.toLowerCase());
+  const isDark = !isYellowBrand && (textColor === "#FFF" || textColor === "#00A651");
   const bannerPath = `/banners/brands/${brand.slug}.webp`;
+
+  const buttonBg = isDark ? "#FFFFFF" : "#1A1A1A";
+  const buttonTextColor = isDark ? (brandColor === "#1A1A1A" ? "#FFD700" : brandColor) : "#FFD700";
 
   return (
     <div className="relative w-full rounded-2xl overflow-hidden shadow-2xl border border-white/10 group">
@@ -407,13 +413,14 @@ function BrandWidePromoBanner({
             <div>
               <Link
                 href={`/marca/${brand.slug}`}
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-black uppercase tracking-wide bg-white transition-all hover:scale-105 shadow-lg active:scale-95"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-black uppercase tracking-wide transition-all hover:scale-105 shadow-lg active:scale-95"
                 style={{
-                  color: isDark ? brandColor : "#1A1A1A",
+                  backgroundColor: buttonBg,
+                  color: buttonTextColor,
                 }}
               >
                 COMPRAR AHORA
-                <CircleArrowRight className="h-4 w-4" />
+                <CircleArrowRight className="h-4 w-4" style={{ color: buttonTextColor }} />
               </Link>
             </div>
           </div>
@@ -458,12 +465,12 @@ function BrandWidePromoBanner({
               href={`/marca/${brand.slug}`}
               className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-xs font-black uppercase tracking-wider transition-all hover:scale-105 shadow-lg active:scale-95"
               style={{
-                backgroundColor: isDark ? "#FFFFFF" : "#1A1A1A",
-                color: isDark ? brandColor : textColor,
+                backgroundColor: buttonBg,
+                color: buttonTextColor,
               }}
             >
               COMPRAR AHORA
-              <CircleArrowRight className="h-4 w-4" />
+              <CircleArrowRight className="h-4 w-4" style={{ color: buttonTextColor }} />
             </Link>
           </div>
         </div>
@@ -484,14 +491,17 @@ export function BrandPageClient({
   const [activeTab, setActiveTab] = useState<string | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const openQuickView = useQuickViewStore((s) => s.openQuickView);
-  const addToCart = useCartStore((s) => s.addItem);
-  const cats = brandCategories[brand.slug] || defaultBrandCategories;
+  const cats = brandCategories[brand.slug.toLowerCase()] || defaultBrandCategories;
   const brandColor = theme.color;
   const secondColor = theme.secondColor;
   const textCol = theme.textColor;
-  const isDark = textCol === "#FFF" || textCol === "#00A651";
-  const promoImgs = getBrandPromoImages(brand.slug, products);
-  const hasPromoBanner = ["bosch", "dewalt", "dong-cheng", "kaili", "makita", "milwaukee"].includes(brand.slug);
+  const isYellowBrand = ["dewalt", "kamasa", "wagner", "stanley", "klein-tools"].includes(brand.slug.toLowerCase());
+  const isDark = !isYellowBrand && (textCol === "#FFF" || textCol === "#00A651");
+  const buttonBg = isDark ? "#FFFFFF" : "#1A1A1A";
+  const buttonTextColor = isDark ? (brandColor === "#1A1A1A" ? "#FFD700" : brandColor) : "#FFD700";
+  const safeProducts = Array.isArray(products) ? products : [];
+  const promoImgs = getBrandPromoImages(brand.slug.toLowerCase(), safeProducts);
+  const hasPromoBanner = ["bosch", "dewalt", "dong-cheng", "kaili", "makita", "milwaukee"].includes(brand.slug.toLowerCase());
 
   const fallbackPipelineProducts: Product[] = [
     {
@@ -544,7 +554,7 @@ export function BrandPageClient({
     } as any,
   ];
 
-  const pipelineProducts = products.length >= 4 ? products.slice(0, 4) : fallbackPipelineProducts;
+  const pipelineProducts = safeProducts.length >= 4 ? safeProducts.slice(0, 4) : fallbackPipelineProducts;
 
   // Thematic gradient: brand color → dark → brand color → dark, direct transitions
   const pageBgStyle = {
@@ -603,12 +613,13 @@ export function BrandPageClient({
           onClick={() => setSidebarOpen(!sidebarOpen)}
           className="lg:hidden fixed bottom-20 left-4 z-50 flex items-center gap-2 px-4 py-2.5 rounded-full text-xs font-bold uppercase tracking-wide transition-all active:scale-95"
           style={{
-            backgroundColor: brandColor,
-            color: textCol,
-            boxShadow: `0 4px 20px ${brandColor}66`,
+            backgroundColor: isYellowBrand ? "#1A1A1A" : brandColor,
+            color: isYellowBrand ? "#FFD700" : textCol,
+            border: isYellowBrand ? "1px solid #FFD70044" : "none",
+            boxShadow: isYellowBrand ? "0 4px 20px rgba(0,0,0,0.8)" : `0 4px 20px ${brandColor}66`,
           }}
         >
-          <Wrench className="h-4 w-4" />
+          <Wrench className="h-4 w-4" style={{ color: isYellowBrand ? "#FFD700" : textCol }} />
           Categorías
         </button>
 
@@ -800,12 +811,12 @@ export function BrandPageClient({
                     href={`/marca/${brand.slug}`}
                     className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-black uppercase tracking-wider transition-all hover:scale-105 shadow-md active:scale-95"
                     style={{
-                      backgroundColor: isDark ? "#FFFFFF" : "#1A1A1A",
-                      color: isDark ? brandColor : textCol,
+                      backgroundColor: buttonBg,
+                      color: buttonTextColor,
                     }}
                   >
                     COMPRAR AHORA
-                    <CircleArrowRight className="h-4 w-4" />
+                    <CircleArrowRight className="h-4 w-4" style={{ color: buttonTextColor }} />
                   </Link>
                 </div>
               </div>
@@ -890,12 +901,12 @@ export function BrandPageClient({
                       href={`/marca/${brand.slug}`}
                       className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-wider transition-all hover:scale-105 shadow-sm active:scale-95"
                       style={{
-                        backgroundColor: isDark ? "#FFFFFF" : "#1A1A1A",
-                        color: isDark ? brandColor : textCol,
+                        backgroundColor: buttonBg,
+                        color: buttonTextColor,
                       }}
                     >
                       COMPRAR AHORA
-                      <CircleArrowRight className="h-3 w-3" />
+                      <CircleArrowRight className="h-3 w-3" style={{ color: buttonTextColor }} />
                     </Link>
                   </div>
                 </div>
@@ -952,12 +963,12 @@ export function BrandPageClient({
                       href={`/marca/${brand.slug}`}
                       className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-wider transition-all hover:scale-105 shadow-sm active:scale-95"
                       style={{
-                        backgroundColor: isDark ? "#FFFFFF" : "#1A1A1A",
-                        color: isDark ? brandColor : textCol,
+                        backgroundColor: buttonBg,
+                        color: buttonTextColor,
                       }}
                     >
                       COMPRAR AHORA
-                      <CircleArrowRight className="h-3 w-3" />
+                      <CircleArrowRight className="h-3 w-3" style={{ color: buttonTextColor }} />
                     </Link>
                   </div>
                 </div>
@@ -1048,7 +1059,7 @@ export function BrandPageClient({
                           )}
                           <span
                             className="text-xs sm:text-sm font-black"
-                            style={{ color: brandColor === "#0A0A0A" ? "#FFF" : brandColor }}
+                            style={{ color: isYellowBrand ? "#FFD700" : (brandColor === "#0A0A0A" ? "#FFF" : brandColor) }}
                           >
                             {formatPrice(product.price)}
                           </span>
@@ -1065,9 +1076,9 @@ export function BrandPageClient({
                           }}
                           className="w-7 h-7 rounded-full flex items-center justify-center transition-all hover:scale-110 active:scale-95 border"
                           style={{
-                            backgroundColor: `${brandColor}22`,
-                            borderColor: `${brandColor}66`,
-                            color: brandColor,
+                            backgroundColor: isYellowBrand ? "#FFD70022" : `${brandColor}22`,
+                            borderColor: isYellowBrand ? "#FFD700" : `${brandColor}66`,
+                            color: isYellowBrand ? "#FFD700" : (brandColor === "#0A0A0A" ? "#FFF" : brandColor),
                           }}
                           title="Agregar al carrito"
                         >
@@ -1095,20 +1106,20 @@ export function BrandPageClient({
         {/* ── Full Products Catalog Grid ── */}
         <div>
           <div className="flex items-center gap-2 mb-4">
-            <TrendingUp className="h-4 w-4" style={{ color: brandColor }} />
+            <TrendingUp className="h-4 w-4" style={{ color: isYellowBrand ? "#FFD700" : brandColor }} />
             <h2 className="text-sm font-black text-white uppercase tracking-wider">
               Productos {brand.name}
             </h2>
             <span className="text-xs text-[#666]">
-              ({products.length})
+              ({safeProducts.length})
             </span>
           </div>
 
-          {products.length > 0 ? (
+          {safeProducts.length > 0 ? (
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-              {products.map((product, i) => (
+              {safeProducts.map((product, i) => (
                 <div
-                  key={product.id}
+                  key={product.id || `prod-${i}`}
                   className="rounded-xl overflow-hidden bg-[#111]/80 backdrop-blur-sm border border-[#1A1A1A] hover:border-white/20 transition-colors"
                 >
                   <ProductCard product={product} index={i} quickView quickViewColor={brandColor} />
@@ -1123,7 +1134,7 @@ export function BrandPageClient({
               <Link
                 href="/"
                 className="inline-block mt-3 text-sm font-semibold hover:underline"
-                style={{ color: brandColor }}
+                style={{ color: isYellowBrand ? "#FFD700" : brandColor }}
               >
                 Volver al inicio
               </Link>
@@ -1132,7 +1143,7 @@ export function BrandPageClient({
         </div>
 
         {/* ── Bottom Tabs ── */}
-        {theme.tabs && theme.tabs.length > 0 && (
+        {theme?.tabs && Array.isArray(theme.tabs) && theme.tabs.length > 0 && (
           <div
             className="mt-6 flex gap-0 overflow-x-auto rounded-xl border border-[#222]"
             style={{ scrollbarWidth: "none" }}
@@ -1151,9 +1162,11 @@ export function BrandPageClient({
                   color:
                     activeTab === tab
                       ? textCol
-                      : brandColor === "#1A1A1A"
-                        ? "#FFF"
-                        : brandColor,
+                      : isYellowBrand
+                        ? "#FFD700"
+                        : brandColor === "#1A1A1A"
+                          ? "#FFF"
+                          : brandColor,
                 }}
               >
                 {tab}

@@ -1,13 +1,18 @@
 export const VALID_LOCAL_BRANDS = [
   "bahco", "bosch", "dca", "dewalt", "dong-cheng", "emtop", 
   "ingco", "kaili", "kamasa", "makita", "milwaukee", "sata", 
-  "stanley", "toptul", "total", "tramontina", "truper", "wagner"
+  "stanley", "toptul", "total", "tramontina", "truper", "wagner",
+  "wurth", "3m", "honda", "klein-tools", "toro", "ego",
+  "metabo-hpt", "flex", "stihl", "fein", "skil", "festool",
+  "jet", "knaack"
 ];
 
 export const BRAND_SHOWCASE_ORDER = [
   "milwaukee", "bosch", "dewalt", "makita", "stanley", "ingco", 
   "truper", "total", "toptul", "dong-cheng", "kamasa", "bahco", 
-  "tramontina", "wagner", "sata", "emtop", "dca", "kaili"
+  "tramontina", "wagner", "sata", "emtop", "dca", "kaili",
+  "3m", "honda", "klein-tools", "toro", "ego", "metabo-hpt",
+  "flex", "stihl", "fein", "skil", "festool", "jet", "knaack"
 ];
 
 export const BRAND_CONFIGS: Record<string, { bg: string; logoExt: string }> = {
@@ -28,5 +33,19 @@ export const BRAND_CONFIGS: Record<string, { bg: string; logoExt: string }> = {
   "sata": { bg: "#006747", logoExt: "svg" },
   "emtop": { bg: "#E1001A", logoExt: "svg" },
   "dca": { bg: "#008554", logoExt: "svg" },
-  "kaili": { bg: "#0059D6", logoExt: "svg" }
+  "kaili": { bg: "#0059D6", logoExt: "svg" },
+  "wurth": { bg: "#CC0000", logoExt: "svg" },
+  "3m": { bg: "#E60000", logoExt: "svg" },
+  "honda": { bg: "#E4002B", logoExt: "svg" },
+  "klein-tools": { bg: "#F58220", logoExt: "svg" },
+  "toro": { bg: "#C8102E", logoExt: "svg" },
+  "ego": { bg: "#00843D", logoExt: "svg" },
+  "metabo-hpt": { bg: "#007A3D", logoExt: "svg" },
+  "flex": { bg: "#D32F2F", logoExt: "svg" },
+  "stihl": { bg: "#F37021", logoExt: "svg" },
+  "fein": { bg: "#C8102E", logoExt: "svg" },
+  "skil": { bg: "#D71920", logoExt: "svg" },
+  "festool": { bg: "#004F34", logoExt: "svg" },
+  "jet": { bg: "#C8102E", logoExt: "svg" },
+  "knaack": { bg: "#8B5A2B", logoExt: "svg" }
 };

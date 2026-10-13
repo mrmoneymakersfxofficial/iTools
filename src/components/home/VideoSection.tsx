@@ -142,31 +142,31 @@ function getVideoPlatform(url: string | null | undefined): { name: string; color
 const HARDCODED_VIDEOS: VideoItem[] = [
   {
     title: "TOTAL 4.0 — Las 7 Bestias en Acción",
-    videoUrl: "https://www.youtube.com/watch?v=f7_i5d4gBqI",
+    videoUrl: "https://www.youtube.com/watch?v=w7ejDZ8SWv8",
     productSlug: "akd2101",
     productLink: "/buscar?q=total",
   },
   {
     title: "Milwaukee M18 FUEL — Taladro Percutor 158Nm",
-    videoUrl: "https://www.youtube.com/watch?v=f7_i5d4gBqI",
+    videoUrl: "https://www.youtube.com/watch?v=a3ICNMQW7Ok",
     productSlug: "2904-20",
     productLink: "/buscar?q=milwaukee",
   },
   {
     title: "DeWalt 20V MAX XR — Atornillador Brushless",
-    videoUrl: "https://www.youtube.com/watch?v=f7_i5d4gBqI",
+    videoUrl: "https://www.youtube.com/watch?v=Z1BCujX3pw8",
     productSlug: "dcf850",
     productLink: "/buscar?q=dewalt",
   },
   {
     title: "Bosch Professional — Rotomartillo SDS-Plus",
-    videoUrl: "https://www.youtube.com/watch?v=f7_i5d4gBqI",
+    videoUrl: "https://www.youtube.com/watch?v=e-ORhEE9VVg",
     productSlug: "gbh-180-li",
     productLink: "/buscar?q=bosch",
   },
   {
     title: "PACKOUT Milwaukee — Sistema Modular",
-    videoUrl: "https://www.youtube.com/watch?v=f7_i5d4gBqI",
+    videoUrl: "https://www.youtube.com/watch?v=3JZ_D3ELwOQ",
     productSlug: "packout-48-22-8426",
     productLink: "/packout-builder",
   },
@@ -305,6 +305,9 @@ function VideoPlayerCard({
               src={thumbnailUrl}
               alt={video.title}
               className="w-full h-full object-cover group-hover/btn:scale-105 transition-transform duration-500"
+              onError={(e) => {
+                (e.target as HTMLImageElement).src = "/banners/brands/milwaukee-promo-card-1.webp";
+              }}
             />
             <div className="absolute inset-0 bg-black/25 group-hover/btn:bg-black/10 transition-colors" />
             <div className="absolute inset-0 flex items-center justify-center">
