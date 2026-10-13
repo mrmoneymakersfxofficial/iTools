@@ -23,19 +23,10 @@ export function CartDrawer() {
       <SheetContent side="right" className="w-full sm:max-w-md flex flex-col p-0 gap-0">
         {/* Header */}
         <SheetHeader className="px-6 pt-6 pb-4 shrink-0">
-          <div className="flex items-center justify-between">
-            <SheetTitle className="text-lg text-foreground">
+          <div className="flex items-center justify-between pr-8">
+            <SheetTitle className="text-lg text-foreground font-bold">
               Mi Carrito ({itemCount} {itemCount === 1 ? "item" : "items"})
             </SheetTitle>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8 -mr-2"
-              onClick={closeCart}
-              aria-label="Cerrar carrito"
-            >
-              <X className="h-4 w-4" />
-            </Button>
           </div>
         </SheetHeader>
 

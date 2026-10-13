@@ -7,6 +7,7 @@ import { formatPrice } from "@/lib/format";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { useAiChatStore } from "@/stores/ai-chat-store";
+import { useCartStore } from "@/stores/cart-store";
 
 import { useGlobalSettings } from "@/stores/global-settings-context";
 
@@ -21,6 +22,7 @@ interface ChatMessage {
 export function AgentIA() {
   const { headerConfig, uiConfig } = useGlobalSettings();
   const { isOpen, openChat, closeChat } = useAiChatStore();
+  const isCartOpen = useCartStore((s) => s.isOpen);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -86,8 +88,8 @@ export function AgentIA() {
       <aside
         aria-label="Canales de contacto y Asistente IA"
         className={cn(
-          "fixed bottom-20 md:bottom-6 right-4 sm:right-6 z-[60] flex flex-col items-center gap-3 transition-all duration-300",
-          isOpen && "opacity-0 pointer-events-none scale-0"
+          "fixed bottom-20 md:bottom-6 right-4 sm:right-6 z-40 flex flex-col items-center gap-3 transition-all duration-300",
+          (isOpen || isCartOpen) && "opacity-0 pointer-events-none scale-0"
         )}
       >
         {/* 1. WhatsApp Button */}
