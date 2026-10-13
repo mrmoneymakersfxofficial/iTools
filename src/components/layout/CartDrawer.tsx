@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { X, Plus, Minus, Trash2, ShoppingBag, ArrowRight, Wrench } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -8,6 +9,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useCartStore } from "@/stores/cart-store";
 import type { CartItem } from "@/types";
 import { formatPrice } from "@/lib/format";
+import { cn } from "@/lib/utils";
 
 export function CartDrawer() {
   const { isOpen, closeCart, items, updateQuantity, removeItem, getItemCount, getSubtotal } =
@@ -68,9 +70,20 @@ export function CartDrawer() {
                     className="group py-4 transition-colors hover:bg-gray-50 dark:hover:bg-[#1a1a1a] rounded-lg px-2 -mx-2"
                   >
                     <div className="flex gap-4">
-                      {/* Product Image Placeholder */}
-                      <div className="w-20 h-20 rounded-lg bg-gray-100 dark:bg-[#222] shrink-0 flex items-center justify-center">
-                        <Wrench className="h-8 w-8 text-gray-300 dark:text-gray-500" />
+                      {/* Product Image */}
+                      <div className="w-20 h-20 rounded-lg bg-white dark:bg-[#222] border border-border/40 shrink-0 flex items-center justify-center overflow-hidden p-1">
+                        {item.product.images?.[0] ? (
+                          <img
+                            src={item.product.images[0]}
+                            alt={item.product.name}
+                            className="w-full h-full object-contain"
+                            onError={(e) => {
+                              (e.target as HTMLElement).style.display = "none";
+                            }}
+                          />
+                        ) : (
+                          <Wrench className="h-8 w-8 text-gray-300 dark:text-gray-500" />
+                        )}
                       </div>
 
                       {/* Product Info */}
@@ -171,10 +184,12 @@ export function CartDrawer() {
                 </p>
 
                 {/* Checkout Button */}
-                <Button className="w-full bg-itools-red hover:bg-itools-red-dark text-white font-impact h-11 transition-colors">
-                  Ir a Pagar
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
+                <Link href="/checkout" onClick={closeCart} className="w-full block">
+                  <Button className="w-full bg-itools-red hover:bg-itools-red-dark text-white font-impact h-11 transition-colors">
+                    Ir a Pagar
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </Link>
 
                 {/* Continue Shopping */}
                 <button
