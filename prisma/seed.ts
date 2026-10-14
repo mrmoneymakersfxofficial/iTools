@@ -1,6 +1,5 @@
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import "dotenv/config";
+import { db as prisma } from "../src/lib/db";
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 // Import static data – tsx resolves TS paths & type-only imports are erased at runtime
@@ -185,20 +184,32 @@ async function main() {
   }
   console.log(`   ✅ ${productCount} products seeded`);
 
-  // ── 4. Seed default admin user ────────────────────────────
-  console.log("\n👤 Seeding admin user...");
-  // Placeholder bcrypt hash for "admin123" – this is development only
-  // Real hash would be generated with: bcrypt.hash("admin123", 12)
-  const adminPasswordHash =
-    "$2b$12$_placeholder_dev_only_hash_do_not_use_in_production";
+  // ── 4. Seed default admin users ────────────────────────────
+  console.log("\n👤 Seeding admin users...");
+  // Bcrypt hash for "Naye.2009"
+  const nayePasswordHash =
+    "$2b$10$ti4ktzwHQC6Rc1DhHq6RHuydl34Uw.NF3WAqcJao8vWmOPRSvL7H6";
+
+  await prisma.user.upsert({
+    where: { email: "administracion.7n@gmail.com" },
+    update: { name: "Administrador iTools", role: "ADMIN", passwordHash: nayePasswordHash },
+    create: {
+      email: "administracion.7n@gmail.com",
+      name: "Administrador iTools",
+      role: "ADMIN",
+      passwordHash: nayePasswordHash,
+    },
+  });
+  console.log("   ✅ Admin user seeded (administracion.7n@gmail.com)");
+
   await prisma.user.upsert({
     where: { email: "admin@itools.pe" },
-    update: { name: "Admin", role: "ADMIN", passwordHash: adminPasswordHash },
+    update: { name: "Admin", role: "ADMIN", passwordHash: nayePasswordHash },
     create: {
       email: "admin@itools.pe",
       name: "Admin",
       role: "ADMIN",
-      passwordHash: adminPasswordHash,
+      passwordHash: nayePasswordHash,
     },
   });
   console.log("   ✅ Admin user seeded (admin@itools.pe)");
