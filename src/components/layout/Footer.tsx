@@ -20,8 +20,9 @@ import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import { useGlobalSettings } from "@/stores/global-settings-context";
 import { BrandMarquee } from "@/components/layout/BrandMarquee";
+import { getSanityAttr } from "@/lib/sanity/visual-attributes";
 
-const trustFeatures: {
+const defaultTrustFeatures: {
   icon: React.ComponentType<React.SVGProps<SVGSVGElement> & { strokeWidth?: number }>;
   label: string;
   iconClassName?: string;
@@ -45,6 +46,16 @@ const trustFeatures: {
   },
 ];
 
+const getTrustIcon = (iconName?: string) => {
+  const name = (iconName || "").toLowerCase();
+  if (name.includes("truck") || name.includes("envio")) return Truck;
+  if (name.includes("shield") || name.includes("tecnic") || name.includes("oficial")) return Shield;
+  if (name.includes("clock") || name.includes("hora") || name.includes("atenc")) return Clock;
+  if (name.includes("award") || name.includes("product") || name.includes("garant")) return Award;
+  if (name.includes("lock") || name.includes("segur")) return Lock;
+  return Truck;
+};
+
 const infoLinks = [
   { label: "Nosotros", href: "/nosotros" },
   { label: "Términos y Condiciones", href: "/terminos-y-condiciones" },
@@ -56,6 +67,47 @@ const infoLinks = [
 
 export function Footer() {
   const { footerConfig, categories, headerConfig } = useGlobalSettings();
+
+  const trustFeaturesList = (footerConfig?.trustFeatures && footerConfig.trustFeatures.length > 0)
+    ? footerConfig.trustFeatures.map((f) => ({
+        icon: getTrustIcon(f.iconName),
+        label: f.label,
+        iconClassName: (f.iconName || f.label || "").toLowerCase().includes("milwaukee") || (f.iconName || "").toLowerCase().includes("shield")
+          ? "text-itools-gold"
+          : undefined,
+      }))
+    : defaultTrustFeatures;
+
+  const socialBarTitle = footerConfig?.socialBarTitle || "Síguenos en:";
+  const paymentMethodsTitle = footerConfig?.paymentMethodsTitle || "Medios de pago:";
+  const secureStoreTitle = footerConfig?.secureStoreTitle || "Tienda 100% Segura";
+
+  const aboutText =
+    footerConfig?.aboutText ||
+    "Distribuidor autorizado de herramientas Milwaukee en Perú. Más de 10 años de experiencia en el mercado industrial.";
+
+  const contactAddress =
+    footerConfig?.companyAddress ||
+    (typeof footerConfig?.contactInfo === "object" ? footerConfig.contactInfo?.address : undefined) ||
+    headerConfig?.location ||
+    "Av. Universitaria 4974, Los Olivos, Lima";
+
+  const contactPhone =
+    footerConfig?.companyPhone ||
+    (typeof footerConfig?.contactInfo === "object" ? footerConfig.contactInfo?.phone : undefined) ||
+    headerConfig?.phone ||
+    "(01) 123-4567";
+
+  const contactEmail =
+    footerConfig?.companyEmail ||
+    (typeof footerConfig?.contactInfo === "object" ? footerConfig.contactInfo?.email : undefined) ||
+    footerConfig?.email ||
+    "ventas@itoolsperu.com";
+
+  const contactHours =
+    footerConfig?.workingHours ||
+    (typeof footerConfig?.contactInfo === "object" ? footerConfig.contactInfo?.hours : undefined) ||
+    "Lunes a Sábado: 8:00 AM - 6:00 PM";
 
   const topCategories = categories
     .filter((c) => !c.parentId)
@@ -74,14 +126,14 @@ export function Footer() {
   ];
 
   return (
-    <footer className="mt-auto">
+    <footer className="mt-auto" id="pie-de-pagina" data-section="Pie de Página" data-sanity-doc="footerConfig">
       {/* ── Trust / Features Bar ──────────────────────────────── */}
       <section
         aria-label="Beneficios de iTools Perú"
         className="bg-itools-blue"
       >
         <div className="mx-auto grid max-w-7xl grid-cols-2 gap-4 px-4 py-5 sm:px-6 lg:grid-cols-4 lg:gap-6 lg:py-6">
-          {trustFeatures.map((feature) => (
+          {trustFeaturesList.map((feature) => (
             <div
               key={feature.label}
               className="flex items-center gap-3 text-white"
@@ -107,7 +159,7 @@ export function Footer() {
         <div className="mx-auto max-w-7xl flex flex-wrap items-center justify-between gap-4 sm:gap-6 text-xs sm:text-sm font-bold">
           {/* Left: Social */}
           <div className="flex items-center gap-3">
-            <span className="text-white text-xs sm:text-sm font-bold uppercase tracking-wider">Síguenos en:</span>
+            <span className="text-white text-xs sm:text-sm font-bold uppercase tracking-wider">{socialBarTitle}</span>
             <div className="flex items-center gap-2">
               <a
                 href="https://youtube.com/@itoolsperu"
@@ -141,7 +193,7 @@ export function Footer() {
 
           {/* Center: Medios de pago */}
           <div className="flex items-center gap-3">
-            <span className="text-white text-xs sm:text-sm font-bold uppercase tracking-wider">Medios de pago:</span>
+            <span className="text-white text-xs sm:text-sm font-bold uppercase tracking-wider">{paymentMethodsTitle}</span>
             <div className="flex items-center gap-2.5 sm:gap-3.5 bg-white px-4 sm:px-5 py-1.5 sm:py-2 rounded-full shadow-md">
               {/* Yape */}
               <svg viewBox="0 0 42 22" className="h-5 sm:h-5.5 w-auto" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Yape">
@@ -184,7 +236,7 @@ export function Footer() {
             <svg viewBox="0 0 24 24" className="w-6 h-6 sm:w-7 sm:h-7 text-[#00C853] shrink-0" fill="currentColor">
               <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z" />
             </svg>
-            <span className="text-white text-xs sm:text-sm font-bold uppercase tracking-wider">Tienda 100% Segura</span>
+            <span className="text-white text-xs sm:text-sm font-bold uppercase tracking-wider">{secureStoreTitle}</span>
           </div>
         </div>
       </section>
@@ -205,9 +257,11 @@ export function Footer() {
                   height={56}
                 />
               </div>
-              <p className="mb-6 text-sm leading-relaxed text-gray-400">
-                {footerConfig?.aboutText || 
-                  "Distribuidor autorizado de herramientas Milwaukee en Perú. Más de 10 años de experiencia en el mercado industrial."}
+              <p
+                className="mb-6 text-sm leading-relaxed text-gray-400"
+                {...getSanityAttr("footerConfig", "footerConfig", "aboutText")}
+              >
+                {aboutText}
               </p>
               {/* Social Media */}
               <nav aria-label="Redes sociales">
@@ -282,23 +336,39 @@ export function Footer() {
               </h3>
               <address className="not-italic space-y-4">
                 <a
-                  href={`mailto:${footerConfig?.email || "ventas@itoolsperu.com"}`}
+                  href={`mailto:${contactEmail}`}
                   className="flex items-start gap-3 text-sm text-gray-400 transition-colors duration-200 hover:text-itools-blue-light"
+                  {...getSanityAttr("footerConfig", "footerConfig", "companyEmail")}
                 >
                   <Mail
                     className="mt-0.5 h-4 w-4 shrink-0 text-gray-500"
                     aria-hidden="true"
                   />
-                  <span>{footerConfig?.email || "ventas@itoolsperu.com"}</span>
+                  <span>{contactEmail}</span>
                 </a>
-                <li className="flex items-start gap-3 text-sm text-gray-400">
+                <li
+                  className="flex items-start gap-3 text-sm text-gray-400"
+                  {...getSanityAttr("footerConfig", "footerConfig", "companyAddress")}
+                >
                   <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-itools-blue" />
-                  <span>{headerConfig?.location || "Av. Industrial 123, Lima - Perú"}</span>
+                  <span>{contactAddress}</span>
                 </li>
-                <li className="flex items-center gap-3 text-sm text-gray-400">
+                <li
+                  className="flex items-center gap-3 text-sm text-gray-400"
+                  {...getSanityAttr("footerConfig", "footerConfig", "companyPhone")}
+                >
                   <Phone className="h-4 w-4 shrink-0 text-itools-blue" />
-                  <span>{headerConfig?.phone || "(01) 123-4567"}</span>
+                  <span>{contactPhone}</span>
                 </li>
+                {contactHours && (
+                  <li
+                    className="flex items-start gap-3 text-sm text-gray-400"
+                    {...getSanityAttr("footerConfig", "footerConfig", "workingHours")}
+                  >
+                    <Clock className="mt-0.5 h-4 w-4 shrink-0 text-itools-blue" />
+                    <span>{contactHours}</span>
+                  </li>
+                )}
               </address>
             </div>
           </div>

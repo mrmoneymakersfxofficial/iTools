@@ -160,7 +160,7 @@ export function BestSellersWorkshopSection({ products, backgroundBanner }: BestS
       image: product.image?.asset?.url || "/icon.png",
       brand: product.brand?.name || "iTools",
       quantity: 1,
-    });
+    } as any);
     toast({
       title: "Agregado al carrito",
       description: `${product.name} se agregó correctamente`,

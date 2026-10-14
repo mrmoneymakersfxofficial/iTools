@@ -7,5 +7,5 @@ export default async function PackoutBuilderPage() {
     fetchPackoutStackables(),
   ]);
 
-  return <PackoutBuilderClient bases={bases} stackables={stackables} />;
+  return <PackoutBuilderClient bases={bases as any} stackables={stackables as any} />;
 }

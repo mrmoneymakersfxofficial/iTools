@@ -10,9 +10,7 @@ export const VALID_LOCAL_BRANDS = [
 export const BRAND_SHOWCASE_ORDER = [
   "milwaukee", "bosch", "dewalt", "makita", "stanley", "ingco", 
   "truper", "total", "toptul", "dong-cheng", "kamasa", "bahco", 
-  "tramontina", "wagner", "sata", "emtop", "dca", "kaili",
-  "3m", "honda", "klein-tools", "toro", "ego", "metabo-hpt",
-  "flex", "stihl", "fein", "skil", "festool", "jet", "knaack"
+  "tramontina", "wagner", "sata", "emtop", "dca", "kaili"
 ];
 
 export const BRAND_CONFIGS: Record<string, { bg: string; logoExt: string }> = {

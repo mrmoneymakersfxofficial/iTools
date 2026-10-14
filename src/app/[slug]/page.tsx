@@ -12,7 +12,7 @@ const pageQuery = `*[_type == "page" && slug.current == $slug][0] {
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const p = await params;
-  const page = await sanityFetch({ query: pageQuery, params: { slug: p.slug } });
+  const page: any = await sanityFetch({ query: pageQuery, params: { slug: p.slug } });
   
   if (!page) return {};
   
@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function GenericPage({ params }: { params: Promise<{ slug: string }> }) {
   const p = await params;
-  const page = await sanityFetch({ query: pageQuery, params: { slug: p.slug } });
+  const page: any = await sanityFetch({ query: pageQuery, params: { slug: p.slug } });
 
   if (!page) {
     notFound();

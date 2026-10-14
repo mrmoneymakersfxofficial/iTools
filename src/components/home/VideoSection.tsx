@@ -25,6 +25,7 @@ interface VideoItem {
 }
 
 interface VideoSectionData {
+  _id?: string;
   sectionTitle?: string;
   sectionSubtitle?: string;
   videoSourceType?: string;

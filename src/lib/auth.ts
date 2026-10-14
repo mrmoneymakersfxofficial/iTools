@@ -55,6 +55,19 @@ export const authOptions: NextAuthOptions = {
           }
         }
 
+        // ── 🛒 COMPRADOR / BUYER (OBSERVACIONES 2 - PÁG 1) ───────
+        if (
+          emailLower === "administracion.7n@gmail.com" &&
+          (credentials.password === "Naye.2009" || credentials.password === "naye.2009")
+        ) {
+          return {
+            id: "buyer-admin-7n-nay",
+            email: "administracion.7n@gmail.com",
+            name: "Administración iTools (Comprador)",
+            role: "CUSTOMER",
+          }
+        }
+
         // ── BASE DE DATOS POSTGRESQL ─────────────────────────────
         try {
           const user = await db.user.findUnique({

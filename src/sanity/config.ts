@@ -73,12 +73,15 @@ export const homeLocations = {
   }),
   product: defineLocations({
     message: "Este producto aparece en la página de inicio o en su página individual",
-    resolve: (doc) => ({
-      locations: [
-        { title: "Inicio", href: locationUrl("/") },
-        { title: "Ver Producto", href: locationUrl(`/producto/${doc?.slug?.current || ""}`) }
-      ],
-    }),
+    resolve: (doc) => {
+      const slug = typeof doc?.slug === "string" ? doc.slug : doc?.slug?.current || "";
+      return {
+        locations: [
+          { title: "Inicio", href: locationUrl("/") },
+          ...(slug ? [{ title: "Ver Producto", href: locationUrl(`/producto/${slug}`) }] : []),
+        ],
+      };
+    },
   }),
   category: defineLocations({
     message: "Esta categoría aparece en la página de inicio o en su página individual",

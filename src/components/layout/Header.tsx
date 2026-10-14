@@ -58,6 +58,7 @@ import { searchProducts } from "@/lib/data";
 import type { Product, Category } from "@/types";
 import { cn } from "@/lib/utils";
 import { useGlobalSettings } from "@/stores/global-settings-context";
+import { officialCategories } from "@/lib/official-categories";
 import { urlFor } from "@/sanity/image";
 import Image from "next/image";
 import { formatPrice } from "@/lib/format";
@@ -431,14 +432,14 @@ const verticalSubmenusBySlug: Record<string, VerticalSubmenuItem[]> = {
 };
 
 const fallbackHeaderCategories: Category[] = [
-  { id: "cat-electricas", name: "HERRAMIENTAS ELÉCTRICAS", slug: "herramientas-electricas" },
-  { id: "cat-inalambricas", name: "HERRAMIENTAS INALÁMBRICAS", slug: "herramientas-inalambricas" },
-  { id: "cat-manuales", name: "HERRAMIENTAS MANUALES", slug: "herramientas-manuales" },
-  { id: "cat-especializados", name: "EQUIPOS ESPECIALIZADOS", slug: "equipos-especializados" },
-  { id: "cat-accesorios", name: "ACCESORIOS", slug: "accesorios" },
-  { id: "cat-repuestos", name: "REPUESTOS", slug: "repuestos" },
-  { id: "cat-seguridad", name: "SEGURIDAD INDUSTRIAL", slug: "seguridad-industrial" },
-  { id: "cat-ferreteria", name: "FERRETERÍA GENERAL", slug: "ferreteria-general" },
+  { id: "cat-electricas", name: "HERRAMIENTAS ELÉCTRICAS", slug: "herramientas-electricas", parentId: null, image: null, icon: null, order: 1 },
+  { id: "cat-inalambricas", name: "HERRAMIENTAS INALÁMBRICAS", slug: "herramientas-inalambricas", parentId: null, image: null, icon: null, order: 2 },
+  { id: "cat-manuales", name: "HERRAMIENTAS MANUALES", slug: "herramientas-manuales", parentId: null, image: null, icon: null, order: 3 },
+  { id: "cat-especializados", name: "EQUIPOS ESPECIALIZADOS", slug: "equipos-especializados", parentId: null, image: null, icon: null, order: 4 },
+  { id: "cat-accesorios", name: "ACCESORIOS", slug: "accesorios", parentId: null, image: null, icon: null, order: 5 },
+  { id: "cat-repuestos", name: "REPUESTOS", slug: "repuestos", parentId: null, image: null, icon: null, order: 6 },
+  { id: "cat-seguridad", name: "SEGURIDAD INDUSTRIAL", slug: "seguridad-industrial", parentId: null, image: null, icon: null, order: 7 },
+  { id: "cat-ferreteria", name: "FERRETERÍA GENERAL", slug: "ferreteria-general", parentId: null, image: null, icon: null, order: 8 },
 ];
 
 /** Category Nav Bar - horizontal list of categories with rich submenus on click and hover */
@@ -721,20 +722,16 @@ function MobileSearchOverlay({
 /* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ Modern Hamburger Menu â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 function MobileMenuContent({ onClose }: { onClose: () => void }) {
-  const { categories } = useGlobalSettings();
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
 
-  const toggleCategory = (id: string) => {
+  const toggleCategory = (slug: string) => {
     setExpanded((prev) => {
       const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
+      if (next.has(slug)) next.delete(slug);
+      else next.add(slug);
       return next;
     });
   };
-
-  const filtered = (categories || []).filter((c) => !c.parentId && c.name && c.slug);
-  const topLevelCategories = filtered.length > 0 ? filtered : fallbackHeaderCategories;
 
   return (
     <div className="flex flex-col h-full bg-gradient-to-b from-[#0d0d1a] to-[#111128] text-white">
@@ -786,40 +783,40 @@ function MobileMenuContent({ onClose }: { onClose: () => void }) {
         </div>
       </div>
 
-      <nav className="flex-1 overflow-y-auto px-3" aria-label="Menú de navegación">
-        <p className="px-3 pb-2 pt-2 text-[10px] font-semibold uppercase tracking-widest text-white/30">
-          Categorías
+      <nav className="flex-1 overflow-y-auto px-3 no-scrollbar" aria-label="Menú de navegación">
+        <p className="px-3 pb-2 pt-2 text-[10px] font-semibold uppercase tracking-widest text-white/40">
+          Categorías Oficiales
         </p>
-        <div className="space-y-0.5">
-          {topLevelCategories.map((category) => {
-            const hasChildren = Boolean(category.children && category.children.length > 0);
-            const isExpanded = expanded.has(category.id);
+        <div className="space-y-1">
+          {officialCategories.map((category) => {
+            const hasSub = category.subcategories && category.subcategories.length > 0;
+            const isExpanded = expanded.has(category.slug);
 
             return (
-              <div key={category.id || category.slug}>
-                <div className="flex items-center justify-between w-full px-3 py-2.5 text-sm font-medium text-white/85 hover:text-white hover:bg-white/5 rounded-xl transition-all duration-200 group">
+              <div key={category.slug} className="rounded-xl overflow-hidden bg-white/[0.02]">
+                <div className="flex items-center justify-between w-full px-3 py-2.5 text-sm font-medium text-white/90 hover:text-white hover:bg-white/5 rounded-xl transition-all duration-200 group">
                   <Link
                     href={`/categoria/${category.slug}`}
                     onClick={onClose}
-                    className="flex-1 text-left group-hover:text-itools-blue-light transition-colors py-0.5"
+                    className="flex-1 text-left group-hover:text-itools-blue-light transition-colors py-0.5 font-semibold text-xs uppercase tracking-wide"
                   >
                     {category.name}
                   </Link>
-                  {hasChildren ? (
+                  {hasSub ? (
                     <button
                       type="button"
                       onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
-                        toggleCategory(category.id);
+                        toggleCategory(category.slug);
                       }}
-                      className="p-1.5 rounded-lg text-white/40 hover:text-white hover:bg-white/10 transition-colors ml-2"
+                      className="p-1.5 rounded-lg text-white/50 hover:text-white hover:bg-white/10 transition-colors ml-2"
                       aria-label={isExpanded ? "Colapsar subcategorías" : "Expandir subcategorías"}
                     >
                       <ChevronDown
                         className={cn(
                           "h-4 w-4 transition-transform duration-300",
-                          isExpanded && "rotate-180"
+                          isExpanded && "rotate-180 text-itools-blue"
                         )}
                       />
                     </button>
@@ -835,17 +832,17 @@ function MobileMenuContent({ onClose }: { onClose: () => void }) {
                   )}
                 </div>
 
-                {hasChildren && isExpanded && (
-                  <div className="ml-2 mt-0.5 mb-1 space-y-0.5 pl-2 border-l border-white/10">
-                    {category.children!.map((child) => (
+                {hasSub && isExpanded && (
+                  <div className="ml-3 mt-0.5 mb-2 space-y-0.5 pl-3 border-l border-itools-blue/40 animate-in fade-in-0 duration-200">
+                    {category.subcategories.map((sub) => (
                       <Link
-                        key={child.id || child.slug}
-                        href={`/categoria/${child.slug}`}
+                        key={sub.name}
+                        href={sub.href}
                         onClick={onClose}
-                        className="flex items-center gap-2 px-3 py-2 text-[13px] text-white/55 hover:text-white hover:bg-white/5 rounded-lg transition-all duration-200"
+                        className="flex items-center gap-2 px-2.5 py-1.5 text-[12px] text-white/65 hover:text-white hover:bg-white/5 rounded-lg transition-all"
                       >
-                        <span className="h-1 w-1 rounded-full bg-itools-blue/60" />
-                        {child.name}
+                        <span className="h-1 w-1 rounded-full bg-itools-blue/70" />
+                        <span className="truncate">{sub.name}</span>
                       </Link>
                     ))}
                   </div>

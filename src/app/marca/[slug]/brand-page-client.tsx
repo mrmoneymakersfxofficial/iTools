@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import {
   ChevronLeft, ChevronRight, CircleArrowRight, Wrench, Star, TrendingUp, Plus, Search,
-  Home, ArrowLeft, MessageCircle, ShoppingCart, User,
+  Home, ArrowLeft, MessageCircle, ShoppingCart, User, SlidersHorizontal,
 } from "lucide-react";
 import { ProductCard } from "@/components/product/ProductCard";
 import { useQuickViewStore } from "@/stores/quickview-store";
@@ -491,6 +491,7 @@ export function BrandPageClient({
   const [activeTab, setActiveTab] = useState<string | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const openQuickView = useQuickViewStore((s) => s.openQuickView);
+  const addItem = useCartStore((s) => s.addItem);
   const cats = brandCategories[brand.slug.toLowerCase()] || defaultBrandCategories;
   const brandColor = theme.color;
   const secondColor = theme.secondColor;
@@ -555,6 +556,50 @@ export function BrandPageClient({
   ];
 
   const pipelineProducts = safeProducts.length >= 4 ? safeProducts.slice(0, 4) : fallbackPipelineProducts;
+
+  // ── Bsale-style Filtering & Sorting (CAMBIOS M.pdf Item 3) ──
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [sortBy, setSortBy] = useState<string>("relevance");
+
+  // Extract available categories for this brand
+  const rawProductCategories = Array.from(
+    new Set(
+      safeProducts
+        .map((p) => p.category?.name || (p as any).categoryName || "")
+        .filter(Boolean)
+    )
+  );
+  const availableCategories = Array.from(
+    new Set([
+      ...rawProductCategories,
+      ...cats.map((c) => c.name),
+    ])
+  );
+
+  // Filter products by selected category
+  const filteredProducts = safeProducts.filter((product) => {
+    if (selectedCategory === "all") return true;
+    const target = selectedCategory.toLowerCase().trim();
+    const pCat = (product.category?.name || (product as any).categoryName || "").toLowerCase().trim();
+    if (pCat && (pCat.includes(target) || target.includes(pCat))) return true;
+    const pName = (product.name || "").toLowerCase();
+    const keywords = target.split(" ").filter((w) => w.length > 3);
+    if (keywords.length > 0 && keywords.some((kw) => pName.includes(kw))) return true;
+    return false;
+  });
+
+  // Sort products with exact Bsale options from CAMBIOS M.pdf
+  const sortedProducts = [...filteredProducts].sort((a, b) => {
+    const priceA = a.salePrice || a.price || 0;
+    const priceB = b.salePrice || b.price || 0;
+    if (sortBy === "price-asc") return priceA - priceB;
+    if (sortBy === "price-desc") return priceB - priceA;
+    if (sortBy === "name-asc") return (a.name || "").localeCompare(b.name || "");
+    if (sortBy === "name-desc") return (b.name || "").localeCompare(a.name || "");
+    if (sortBy === "newest") return ((b as any)._createdAt || b.id || "").localeCompare((a as any)._createdAt || a.id || "");
+    if (sortBy === "oldest") return ((a as any)._createdAt || a.id || "").localeCompare((b as any)._createdAt || b.id || "");
+    return 0; // relevance / default
+  });
 
   // Thematic gradient: brand color → dark → brand color → dark, direct transitions
   const pageBgStyle = {
@@ -623,93 +668,125 @@ export function BrandPageClient({
           Categorías
         </button>
 
-        {/* Mobile sidebar overlay */}
+        {/* Mobile sidebar overlay — formatted with generous padding matching "Asi deberia quedar" */}
         {sidebarOpen && (
           <div
-            className="lg:hidden fixed inset-0 z-40"
+            className="lg:hidden fixed inset-0 z-50"
             onClick={() => setSidebarOpen(false)}
           >
-            <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
+            <div className="absolute inset-0 bg-black/75 backdrop-blur-sm" />
             <div
-              className="absolute left-0 top-0 bottom-0 w-[300px] overflow-y-auto rounded-r-2xl"
+              className="absolute left-0 top-0 bottom-0 w-[320px] sm:w-[350px] max-w-[88vw] overflow-y-auto bg-[#0F0F0F] rounded-r-3xl flex flex-col shadow-2xl border-r border-white/10"
               onClick={(e) => e.stopPropagation()}
-              style={{ boxShadow: "12px 0 50px rgba(0,0,0,0.9)" }}
             >
-              <div className="bg-[#111] min-h-full rounded-r-2xl">
-                <div
-                  className="px-4 py-4 flex items-center justify-between rounded-t-r-2xl"
-                  style={{ backgroundColor: brandColor }}
-                >
-                  <div className="flex items-center gap-2">
-                    <Wrench className="h-5 w-5" style={{ color: textCol }} />
-                    <h2
-                      className="text-sm font-bold uppercase tracking-wide"
-                      style={{ color: textCol }}
-                    >
-                      {brand.name} Tools
-                    </h2>
-                  </div>
-                  <button
-                    onClick={() => setSidebarOpen(false)}
+              <div
+                className="px-5 py-4 flex items-center justify-between shrink-0 border-b border-white/10"
+                style={{ backgroundColor: brandColor }}
+              >
+                <div className="flex items-center gap-2.5">
+                  <Wrench className="h-5 w-5" style={{ color: textCol }} />
+                  <h2
+                    className="text-sm font-bold uppercase tracking-wider"
                     style={{ color: textCol }}
                   >
-                    <svg
-                      className="h-5 w-5"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M6 18L18 6M6 6l12 12"
-                      />
-                    </svg>
-                  </button>
+                    {brand.name} Categorías
+                  </h2>
                 </div>
-                <ul className="divide-y divide-[#222]">
-                  {cats.map((cat, i) => (
-                    <li key={i}>
-                      <Link
-                        href={`/marca/${brand.slug}`}
-                        className="flex items-center justify-between px-4 py-3 hover:bg-[#1A1A1A] transition-colors"
-                        onClick={() => setSidebarOpen(false)}
-                      >
-                        <div className="flex items-center gap-3">
-                          <span style={{ color: brandColor }}>
-                            <BrandCategoryIcon
-                              type={cat.icon}
-                              color={brandColor}
-                            />
-                          </span>
-                          <span className="text-sm text-[#CCC]">
-                            {cat.name}
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <span className="text-xs text-[#666] bg-[#222] px-2 py-0.5 rounded-full">
-                            {cat.count}
-                          </span>
-                          <ChevronRight className="h-3 w-3 text-[#555]" />
-                        </div>
-                      </Link>
-                    </li>
-                  ))}
+                <button
+                  onClick={() => setSidebarOpen(false)}
+                  className="p-1 rounded-full hover:bg-black/20 transition-colors"
+                  style={{ color: textCol }}
+                  aria-label="Cerrar"
+                >
+                  <svg
+                    className="h-5 w-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
+              </div>
+
+              {/* Category list with generous padding so it doesn't touch the borders */}
+              <div className="flex-1 overflow-y-auto px-4 py-3 no-scrollbar">
+                <ul className="space-y-1.5">
+                  <li>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSelectedCategory("all");
+                        setSidebarOpen(false);
+                      }}
+                      className={`w-full flex items-center justify-between px-4 py-3 rounded-xl border transition-all text-left ${
+                        selectedCategory === "all"
+                          ? "bg-white/10 border-white/20 text-white font-bold"
+                          : "bg-[#161616] hover:bg-[#1C1C1C] border-white/5 text-[#BBB]"
+                      }`}
+                    >
+                      <span className="text-xs sm:text-sm font-bold uppercase tracking-wide">
+                        Todas las Categorías
+                      </span>
+                      <ChevronRight className="h-3.5 w-3.5 text-[#555]" />
+                    </button>
+                  </li>
+                  {cats.map((cat, i) => {
+                    const isSelected = selectedCategory === cat.name;
+                    return (
+                      <li key={i}>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setSelectedCategory(selectedCategory === cat.name ? "all" : cat.name);
+                            setSidebarOpen(false);
+                          }}
+                          className={`w-full flex items-center justify-between px-4 py-3 rounded-xl border transition-all text-left ${
+                            isSelected
+                              ? "bg-white/10 border-white/25 text-white font-bold shadow-sm"
+                              : "bg-[#161616] hover:bg-[#1E1E1E] border-white/5 text-[#CCC]"
+                          }`}
+                        >
+                          <div className="flex items-center gap-3 min-w-0 pr-2">
+                            <span style={{ color: brandColor }} className="shrink-0">
+                              <BrandCategoryIcon
+                                type={cat.icon}
+                                color={brandColor}
+                              />
+                            </span>
+                            <span className="text-xs sm:text-sm truncate">
+                              {cat.name}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-2 shrink-0 ml-1">
+                            <span className="text-[10px] text-[#777] bg-[#222] px-2 py-0.5 rounded-full font-mono">
+                              {cat.count}
+                            </span>
+                            <ChevronRight className="h-3.5 w-3.5 text-[#555]" />
+                          </div>
+                        </button>
+                      </li>
+                    );
+                  })}
                 </ul>
               </div>
             </div>
           </div>
         )}
 
-        {/* ── 3-Column Layout (desktop) ── */}
-        <div className="flex gap-3">
+        {/* ── 3-Column Layout (desktop) — Symmetrical Heights (CAMBIOS M.pdf Item 1) ── */}
+        <div className="flex flex-col lg:flex-row gap-3 items-stretch">
           {/* LEFT SIDEBAR — Black bg + brand color accents */}
-          <aside className="hidden lg:block w-[240px] xl:w-[260px] shrink-0">
-            <div className="sticky top-[120px] bg-[#0A0A0A]/95 backdrop-blur-sm rounded-2xl overflow-hidden border border-[#1A1A1A]">
+          <aside className="hidden lg:flex flex-col w-[240px] xl:w-[260px] shrink-0">
+            <div className="h-full bg-[#0A0A0A]/95 backdrop-blur-sm rounded-2xl overflow-hidden border border-[#1A1A1A] flex flex-col justify-between shadow-xl">
               {/* Header with brand color */}
               <div
-                className="px-4 py-3 flex items-center gap-2"
+                className="px-4 py-3 flex items-center gap-2 shrink-0"
                 style={{ backgroundColor: brandColor, color: textCol }}
               >
                 <Wrench className="h-4 w-4" />
@@ -717,79 +794,85 @@ export function BrandPageClient({
                   {brand.name} Tools
                 </h2>
               </div>
-              {/* Category list */}
-              <ul className="divide-y divide-[#1A1A1A]">
-                {cats.map((cat, i) => (
-                  <li key={i}>
-                    <Link
-                      href={`/marca/${brand.slug}`}
-                      className="flex items-center justify-between px-4 py-2.5 hover:bg-[#151515] transition-colors group"
+              {/* Category list — exactly 10 items aligned symmetrically */}
+              <ul className="flex-1 flex flex-col justify-between divide-y divide-[#1A1A1A] py-1">
+                {cats.slice(0, 10).map((cat, i) => (
+                  <li key={i} className="flex-1 flex items-center">
+                    <button
+                      type="button"
+                      onClick={() => setSelectedCategory(selectedCategory === cat.name ? "all" : cat.name)}
+                      className="w-full flex items-center justify-between px-4 py-2 hover:bg-[#151515] transition-colors group text-left cursor-pointer"
                     >
-                      <div className="flex items-center gap-2.5">
-                        <span style={{ color: brandColor }}>
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <span style={{ color: brandColor }} className="shrink-0">
                           <BrandCategoryIcon
                             type={cat.icon}
                             color={brandColor}
                           />
                         </span>
-                        <span className="text-sm text-[#BBB] group-hover:text-white transition-colors truncate">
+                        <span className={`text-xs xl:text-sm transition-colors truncate ${selectedCategory === cat.name ? "text-white font-bold" : "text-[#BBB] group-hover:text-white"}`}>
                           {cat.name}
                         </span>
                       </div>
-                      <div className="flex items-center gap-2 shrink-0">
-                        <span className="text-xs text-[#666] bg-[#181818] px-1.5 py-0.5 rounded-full">
+                      <div className="flex items-center gap-2 shrink-0 ml-1">
+                        <span className="text-[10px] xl:text-xs text-[#666] bg-[#181818] px-1.5 py-0.5 rounded-full">
                           {cat.count}
                         </span>
                         <ChevronRight className="h-3 w-3 text-[#444] group-hover:text-white transition-colors" />
                       </div>
-                    </Link>
+                    </button>
                   </li>
                 ))}
               </ul>
             </div>
           </aside>
 
-          {/* CENTER COLUMN */}
-          <div className="flex-1 min-w-0">
+          {/* CENTER COLUMN — Symmetrical Height */}
+          <div className="flex-1 min-w-0 flex flex-col justify-between gap-3">
             {/* Mobile horizontal scrolling category pills */}
-            <div className="lg:hidden mb-3">
+            <div className="lg:hidden mb-2">
               <nav
                 className="flex gap-2 overflow-x-auto pb-1 -mx-2.5 px-2.5 no-scrollbar"
                 style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
               >
                 <button
-                  onClick={() => {}}
-                  className="shrink-0 flex items-center gap-1.5 px-3.5 py-2 rounded-full text-[10px] font-bold uppercase tracking-wider border transition-all"
+                  onClick={() => setSelectedCategory("all")}
+                  className="shrink-0 flex items-center gap-1.5 px-3.5 py-2 rounded-full text-[10px] font-bold uppercase tracking-wider border transition-all cursor-pointer"
                   style={{
-                    backgroundColor: brandColor,
-                    color: textCol,
-                    borderColor: brandColor,
-                    boxShadow: `0 0 8px ${brandColor}4D`,
+                    backgroundColor: selectedCategory === "all" ? brandColor : "#111",
+                    color: selectedCategory === "all" ? textCol : "#CCC",
+                    borderColor: selectedCategory === "all" ? brandColor : "#333",
                   }}
                 >
                   Todos
                 </button>
-                {cats.map((cat, i) => (
+                {cats.slice(0, 10).map((cat, i) => (
                   <button
                     key={i}
-                    className="shrink-0 flex items-center gap-1.5 px-3.5 py-2 rounded-full text-[10px] font-semibold uppercase tracking-wider border border-[#333] bg-[#111] text-[#CCC] hover:border-[#E35205] hover:text-[#E35205] transition-all"
+                    onClick={() => setSelectedCategory(selectedCategory === cat.name ? "all" : cat.name)}
+                    className="shrink-0 flex items-center gap-1.5 px-3.5 py-2 rounded-full text-[10px] font-semibold uppercase tracking-wider border transition-all cursor-pointer"
+                    style={{
+                      backgroundColor: selectedCategory === cat.name ? brandColor : "#111",
+                      color: selectedCategory === cat.name ? textCol : "#CCC",
+                      borderColor: selectedCategory === cat.name ? brandColor : "#333",
+                    }}
                   >
-                    <span style={{ color: brandColor }}>
+                    <span style={{ color: selectedCategory === cat.name ? textCol : brandColor }}>
                       <BrandCategoryIcon
                         type={cat.icon}
-                        color={brandColor}
+                        color={selectedCategory === cat.name ? textCol : brandColor}
                       />
                     </span>
                     <span>{cat.name}</span>
-                    <span className="text-[#555] ml-0.5">{cat.count}</span>
+                    <span className="opacity-70 ml-0.5">{cat.count}</span>
                   </button>
                 ))}
               </nav>
             </div>
 
-            {/* ── Top Promo Card (Image 2 Specification) ── */}
+            {/* ── Top Promo Card ── */}
             <div
-              className="relative rounded-2xl overflow-hidden shadow-lg border border-white/10 flex flex-col md:flex-row items-stretch min-h-[220px] md:h-[260px]"
+              className="relative rounded-2xl overflow-hidden shadow-lg border border-white/10 flex flex-col md:flex-row items-stretch flex-1 min-h-[220px] md:min-h-[250px]"
               style={{ backgroundColor: brandColor }}
             >
               {/* Left text & CTA */}
@@ -848,14 +931,13 @@ export function BrandPageClient({
               </div>
             </div>
 
-            {/* ── Two Promo Cards (50% / 50% — Image 2 Specification) ── */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
+            {/* ── Two Promo Cards (50% / 50%) ── */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 h-[190px] sm:h-[200px] shrink-0">
               {/* Card 1: PRODUCTO GRATUITO A ELECCIÓN */}
               <div
-                className="relative rounded-2xl overflow-hidden shadow-md border border-white/10 flex flex-col justify-between h-[190px] sm:h-[210px] p-5 group"
+                className="relative rounded-2xl overflow-hidden shadow-md border border-white/10 flex flex-col justify-between h-full p-4 xl:p-5 group"
                 style={{ backgroundColor: brandColor }}
               >
-                {/* Cutout image on right */}
                 <div className="absolute right-0 top-0 bottom-0 w-[55%] pointer-events-none overflow-hidden">
                   <img
                     src={promoImgs.card1}
@@ -873,10 +955,9 @@ export function BrandPageClient({
                   />
                 </div>
 
-                {/* Content */}
                 <div className="relative z-10">
                   <span
-                    className="text-[10px] font-black tracking-widest uppercase block mb-1"
+                    className="text-[10px] font-black tracking-widest uppercase block mb-0.5"
                     style={{ color: textCol, opacity: 0.85 }}
                   >
                     {brand.name.toUpperCase()}
@@ -896,10 +977,10 @@ export function BrandPageClient({
                   >
                     Con un paquete de 2 baterías seleccionado.
                   </p>
-                  <div className="pt-2">
+                  <div className="pt-1.5">
                     <Link
                       href={`/marca/${brand.slug}`}
-                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-wider transition-all hover:scale-105 shadow-sm active:scale-95"
+                      className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[10px] font-black uppercase tracking-wider transition-all hover:scale-105 shadow-sm active:scale-95"
                       style={{
                         backgroundColor: buttonBg,
                         color: buttonTextColor,
@@ -914,10 +995,9 @@ export function BrandPageClient({
 
               {/* Card 2: OFERTA DE BONIFICACIÓN POR BATERÍA */}
               <div
-                className="relative rounded-2xl overflow-hidden shadow-md border border-white/10 flex flex-col justify-between h-[190px] sm:h-[210px] p-5 group"
+                className="relative rounded-2xl overflow-hidden shadow-md border border-white/10 flex flex-col justify-between h-full p-4 xl:p-5 group"
                 style={{ backgroundColor: brandColor }}
               >
-                {/* Cutout image on right */}
                 <div className="absolute right-0 top-0 bottom-0 w-[55%] pointer-events-none overflow-hidden">
                   <img
                     src={promoImgs.card2}
@@ -935,10 +1015,9 @@ export function BrandPageClient({
                   />
                 </div>
 
-                {/* Content */}
                 <div className="relative z-10">
                   <span
-                    className="text-[10px] font-black tracking-widest uppercase block mb-1"
+                    className="text-[10px] font-black tracking-widest uppercase block mb-0.5"
                     style={{ color: textCol, opacity: 0.85 }}
                   >
                     {brand.name.toUpperCase()}
@@ -958,10 +1037,10 @@ export function BrandPageClient({
                   >
                     Elige un artículo GRATIS con tu compra.
                   </p>
-                  <div className="pt-2">
+                  <div className="pt-1.5">
                     <Link
                       href={`/marca/${brand.slug}`}
-                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-wider transition-all hover:scale-105 shadow-sm active:scale-95"
+                      className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[10px] font-black uppercase tracking-wider transition-all hover:scale-105 shadow-sm active:scale-95"
                       style={{
                         backgroundColor: buttonBg,
                         color: buttonTextColor,
@@ -976,12 +1055,12 @@ export function BrandPageClient({
             </div>
           </div>
 
-          {/* RIGHT SIDEBAR — PIPELINE (Image 2 Specification) */}
-          <aside className="hidden lg:block w-[280px] xl:w-[320px] shrink-0">
-            <div className="sticky top-[120px] bg-[#0A0A0A]/95 backdrop-blur-sm rounded-2xl overflow-hidden border border-[#1A1A1A] shadow-xl">
+          {/* RIGHT SIDEBAR — PIPELINE (Symmetrical Height) */}
+          <aside className="hidden lg:flex flex-col w-[280px] xl:w-[320px] shrink-0">
+            <div className="h-full bg-[#0A0A0A]/95 backdrop-blur-sm rounded-2xl overflow-hidden border border-[#1A1A1A] flex flex-col justify-between shadow-xl">
               {/* Header */}
               <div
-                className="px-4 py-3 flex items-center justify-between"
+                className="px-4 py-3 flex items-center justify-between shrink-0"
                 style={{ backgroundColor: brandColor, color: textCol }}
               >
                 <div className="flex items-center gap-2">
@@ -998,9 +1077,9 @@ export function BrandPageClient({
                 </Link>
               </div>
 
-              {/* Product list */}
-              <div>
-                {pipelineProducts.map((product) => {
+              {/* Product list — 4 products distributed symmetrically */}
+              <div className="flex-1 flex flex-col justify-between divide-y divide-[#1A1A1A]">
+                {pipelineProducts.slice(0, 4).map((product) => {
                   const prodImg =
                     product.images?.[0] ||
                     (product as any).image?.asset?.url ||
@@ -1012,10 +1091,10 @@ export function BrandPageClient({
                     <div
                       key={product.id}
                       onClick={() => openQuickView(product, brandColor)}
-                      className="group flex items-center gap-3 p-3 hover:bg-[#151515] transition-colors border-b border-[#1A1A1A] last:border-b-0 cursor-pointer"
+                      className="flex-1 flex items-center gap-3 px-3 py-2 hover:bg-[#151515] transition-colors cursor-pointer"
                     >
                       {/* White rounded square thumbnail */}
-                      <div className="shrink-0 w-16 h-16 rounded-xl bg-white p-1.5 flex items-center justify-center border border-white/20 shadow-sm overflow-hidden">
+                      <div className="shrink-0 w-14 h-14 xl:w-16 xl:h-16 rounded-xl bg-white p-1.5 flex items-center justify-center border border-white/20 shadow-sm overflow-hidden">
                         <img
                           src={prodImg}
                           alt={product.name}
@@ -1033,11 +1112,11 @@ export function BrandPageClient({
 
                       {/* Info */}
                       <div className="flex-1 min-w-0">
-                        <p className="text-xs font-bold leading-snug text-white group-hover:text-amber-400 transition-colors line-clamp-2 mb-1">
+                        <p className="text-xs font-bold leading-snug text-white group-hover:text-amber-400 transition-colors line-clamp-2 mb-0.5">
                           {product.name}
                         </p>
 
-                        <div className="flex items-center gap-1 mb-1">
+                        <div className="flex items-center gap-1 mb-0.5">
                           <div className="flex items-center">
                             {[1, 2, 3, 4, 5].map((star) => (
                               <Star
@@ -1053,7 +1132,7 @@ export function BrandPageClient({
 
                         <div className="flex items-center gap-2">
                           {product.comparePrice && (
-                            <span className="text-[11px] text-[#666] line-through">
+                            <span className="text-[10px] text-[#666] line-through">
                               {formatPrice(product.comparePrice)}
                             </span>
                           )}
@@ -1072,9 +1151,9 @@ export function BrandPageClient({
                           type="button"
                           onClick={(e) => {
                             e.stopPropagation();
-                            addToCart(product);
+                            addItem(product, 1);
                           }}
-                          className="w-7 h-7 rounded-full flex items-center justify-center transition-all hover:scale-110 active:scale-95 border"
+                          className="w-7 h-7 rounded-full flex items-center justify-center transition-all hover:scale-110 active:scale-95 border cursor-pointer"
                           style={{
                             backgroundColor: isYellowBrand ? "#FFD70022" : `${brandColor}22`,
                             borderColor: isYellowBrand ? "#FFD700" : `${brandColor}66`,
@@ -1093,8 +1172,8 @@ export function BrandPageClient({
           </aside>
         </div>
 
-        {/* ── Wide Promo Banner (Below 3 Columns — Image 2 Specification) ── */}
-        <div className="mt-4 mb-8">
+        {/* ── Wide Promo Banner (Below 3 Columns) ── */}
+        <div className="mt-4 mb-6">
           <BrandWidePromoBanner
             brand={brand}
             brandColor={brandColor}
@@ -1103,7 +1182,52 @@ export function BrandPageClient({
           />
         </div>
 
-        {/* ── Full Products Catalog Grid ── */}
+        {/* ── Bsale-style Filter & Sort Bar (CAMBIOS M.pdf Item 3) ── */}
+        <div className="bg-white dark:bg-[#151515] rounded-xl border border-gray-200 dark:border-[#222] px-4 py-3 shadow-sm mb-6 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+          {/* Left: results counter */}
+          <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300 text-xs sm:text-sm font-semibold">
+            <SlidersHorizontal className="h-4 w-4 text-gray-500" />
+            <span>Mostrando {sortedProducts.length} resultado{sortedProducts.length !== 1 ? "s" : ""}</span>
+          </div>
+
+          {/* Right: filter & sort controls */}
+          <div className="flex flex-wrap items-center gap-3 text-xs sm:text-sm">
+            {/* Filter by Category */}
+            <div className="flex items-center gap-1.5">
+              <span className="text-gray-500 dark:text-gray-400 font-medium whitespace-nowrap">Filtrar por :</span>
+              <select
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                className="bg-white dark:bg-[#222] border border-gray-300 dark:border-[#444] text-gray-900 dark:text-white rounded-lg px-2.5 py-1.5 text-xs sm:text-sm focus:outline-none focus:ring-1 focus:ring-red-500 font-medium cursor-pointer"
+              >
+                <option value="all">Todas las categorías</option>
+                {availableCategories.map((c) => (
+                  <option key={c} value={c}>{c}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* Sort by (exact Bsale options from CAMBIOS M.pdf) */}
+            <div className="flex items-center gap-1.5">
+              <span className="text-gray-500 dark:text-gray-400 font-medium whitespace-nowrap">Ordenar por:</span>
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="bg-white dark:bg-[#222] border border-gray-300 dark:border-[#444] text-gray-900 dark:text-white rounded-lg px-2.5 py-1.5 text-xs sm:text-sm focus:outline-none focus:ring-1 focus:ring-red-500 font-medium cursor-pointer"
+              >
+                <option value="relevance">Más relevantes</option>
+                <option value="name-asc">Nombres de A a Z</option>
+                <option value="name-desc">Nombres de Z a A</option>
+                <option value="price-asc">Precios de menor a mayor</option>
+                <option value="price-desc">Precios de mayor a menor</option>
+                <option value="newest">Nuevos productos</option>
+                <option value="oldest">Antiguos productos</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        {/* ── Full Products Catalog Grid — Borderless Cards (CAMBIOS M.pdf Item 2) ── */}
         <div>
           <div className="flex items-center gap-2 mb-4">
             <TrendingUp className="h-4 w-4" style={{ color: isYellowBrand ? "#FFD700" : brandColor }} />
@@ -1111,33 +1235,34 @@ export function BrandPageClient({
               Productos {brand.name}
             </h2>
             <span className="text-xs text-[#666]">
-              ({safeProducts.length})
+              ({sortedProducts.length})
             </span>
           </div>
 
-          {safeProducts.length > 0 ? (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-              {safeProducts.map((product, i) => (
+          {sortedProducts.length > 0 ? (
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+              {sortedProducts.map((product, i) => (
                 <div
                   key={product.id || `prod-${i}`}
-                  className="rounded-xl overflow-hidden bg-[#111]/80 backdrop-blur-sm border border-[#1A1A1A] hover:border-white/20 transition-colors"
+                  className="rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow bg-white"
                 >
-                  <ProductCard product={product} index={i} quickView quickViewColor={brandColor} />
+                  <ProductCard product={product} index={i} quickView quickViewColor={brandColor} borderless />
                 </div>
               ))}
             </div>
           ) : (
             <div className="bg-[#111]/80 backdrop-blur-sm rounded-xl border border-[#1A1A1A] p-8 text-center">
               <p className="text-[#666] text-sm">
-                No hay productos de {brand.name} disponibles aún.
+                No hay productos de {brand.name} que coincidan con los filtros seleccionados.
               </p>
-              <Link
-                href="/"
-                className="inline-block mt-3 text-sm font-semibold hover:underline"
+              <button
+                type="button"
+                onClick={() => { setSelectedCategory("all"); setSortBy("relevance"); }}
+                className="inline-block mt-3 text-sm font-semibold hover:underline cursor-pointer"
                 style={{ color: isYellowBrand ? "#FFD700" : brandColor }}
               >
-                Volver al inicio
-              </Link>
+                Restablecer filtros
+              </button>
             </div>
           )}
         </div>

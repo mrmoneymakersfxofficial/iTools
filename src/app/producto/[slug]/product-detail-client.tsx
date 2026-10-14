@@ -104,9 +104,10 @@ const KNOWN_BRANDS_MAP: Array<{ name: string; slug: string; match: RegExp }> = [
 
 function resolveProductBrand(product: Product): ResolvedBrand {
   const customLogoUrl = (product as any).brandLogo?.asset?.url || null;
-  const sanityBrandSlug = (typeof product.brand?.slug === "string" ? product.brand.slug : product.brand?.slug?.current) || "";
-  const sanityBrandName = product.brand?.name || "";
-  const sanityBrandLogo = product.brand?.logo?.asset?.url || null;
+  const rawBrand: any = product.brand;
+  const sanityBrandSlug = (typeof rawBrand?.slug === "string" ? rawBrand.slug : rawBrand?.slug?.current) || "";
+  const sanityBrandName = rawBrand?.name || "";
+  const sanityBrandLogo = rawBrand?.logo?.asset?.url || (typeof rawBrand?.logo === "string" ? rawBrand.logo : null);
 
   if (sanityBrandSlug || sanityBrandName) {
     const slug = sanityBrandSlug || sanityBrandName.toLowerCase().replace(/\s+/g, "-");
@@ -185,9 +186,19 @@ export function ProductDetailClient({ product, relatedProducts, reviews }: { pro
 
   const [quantity, setQuantity] = useState(isOutOfStock ? 0 : 1);
   const [activeTab, setActiveTab] = useState<"features" | "specs" | "includes" | "recommendations" | "warranty" | "datasheet" | "reviews" | "video">("features");
+  const [deliveryMethod, setDeliveryMethod] = useState<"envio" | "tienda">("envio");
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [isZoomed, setIsZoomed] = useState(false);
   const [zoomPos, setZoomPos] = useState({ x: 50, y: 50 });
+
+  const getDeliveryDateText = () => {
+    const d = new Date();
+    d.setDate(d.getDate() + 2);
+    const dayName = d.toLocaleDateString("es-PE", { weekday: "long" });
+    const dayNum = d.getDate();
+    const monthName = d.toLocaleDateString("es-PE", { month: "long" });
+    return `el ${dayName} ${dayNum} de ${monthName}`;
+  };
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -236,7 +247,7 @@ export function ProductDetailClient({ product, relatedProducts, reviews }: { pro
   const cartProduct = {
     ...product,
     price: finalPrice,
-    comparePrice: originalStrikethrough || undefined,
+    comparePrice: originalStrikethrough || null,
     stock: availableStock,
   };
 
@@ -476,14 +487,11 @@ export function ProductDetailClient({ product, relatedProducts, reviews }: { pro
                 </p>
               )}
 
-              {/* Disponibilidad en Tiendas Físicas / Sucursales */}
+              {/* Disponibilidad en Tiendas Físicas / Sucursales (OBSERVACIONES 2 - Pág 1: solo Tienda Principal y Sucursal Alisos, una debajo de la otra) */}
               {(() => {
-                const branches = (product as any).branches || [
-                  { officeId: 1, officeName: "Tienda Principal Los Olivos", address: "Av. Universitaria 4974", stock: availableStock, isStore: true },
-                  { officeId: 4, officeName: "Sucursal Alisos", address: "Los Olivos", stock: 0, isStore: true },
-                  { officeId: 2, officeName: "Sucursal Huacho", address: "Jr. Atahualpa 229", stock: 0, isStore: true },
-                  { officeId: 3, officeName: "Almacén Central iTools", address: "iTools Store", stock: 0, isStore: false },
-                  { officeId: 5, officeName: "Almacén Canta Callao", address: "Callao", stock: 0, isStore: false },
+                const allowedBranches = [
+                  { officeId: 1, officeName: "Tienda Principal", address: "Av. Universitaria 4974, Los Olivos", stock: availableStock, isStore: true },
+                  { officeId: 4, officeName: "Sucursal Alisos", address: "Av. Los Alisos, Los Olivos", stock: 0, isStore: true },
                 ];
 
                 return (
@@ -498,14 +506,15 @@ export function ProductDetailClient({ product, relatedProducts, reviews }: { pro
                         Stock Bsale en tiempo real
                       </span>
                     </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                      {branches.map((b: any) => {
+                    {/* Una debajo de la otra (OBSERVACIONES 2) */}
+                    <div className="flex flex-col gap-2">
+                      {allowedBranches.map((b) => {
                         const hasStock = b.stock > 0;
                         return (
                           <div
                             key={b.officeId}
                             className={cn(
-                              "flex items-center justify-between p-2 rounded-lg border transition-colors",
+                              "flex items-center justify-between p-2.5 rounded-lg border transition-colors",
                               hasStock
                                 ? "bg-white dark:bg-[#1c1c1c] border-neutral-200 dark:border-[#333]"
                                 : "bg-neutral-100/60 dark:bg-[#181818] border-neutral-200/50 dark:border-[#252525] opacity-75"
@@ -540,6 +549,88 @@ export function ProductDetailClient({ product, relatedProducts, reviews }: { pro
                   </div>
                 );
               })()}
+
+              {/* ── SELECCIÓN DEL MÉTODO DE ENTREGA (OBSERVACIONES 2 - Pág 2) ── */}
+              <div className="space-y-2 mt-3">
+                <div className="text-xs sm:text-sm font-medium text-foreground">
+                  Método de entrega seleccionado:{" "}
+                  <span className="font-black text-[#E60000]">
+                    {deliveryMethod === "envio" ? "Envío" : "Recoger en tienda"}
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                  {/* Opción 1: Envío */}
+                  <button
+                    type="button"
+                    onClick={() => setDeliveryMethod("envio")}
+                    className={cn(
+                      "flex items-center gap-3 p-3 rounded-xl border text-left transition-all cursor-pointer",
+                      deliveryMethod === "envio"
+                        ? "border-[#E60000] bg-red-50/20 dark:bg-red-950/20 ring-1 ring-[#E60000]"
+                        : "border-gray-200 dark:border-[#333] hover:border-gray-300 dark:hover:border-[#444] bg-white dark:bg-[#141414]"
+                    )}
+                  >
+                    {/* Radio indicator */}
+                    <div className="shrink-0 flex items-center justify-center">
+                      <div className={cn(
+                        "w-4 h-4 rounded-full border-2 flex items-center justify-center",
+                        deliveryMethod === "envio" ? "border-[#E60000]" : "border-gray-300 dark:border-gray-600"
+                      )}>
+                        {deliveryMethod === "envio" && <div className="w-2 h-2 rounded-full bg-[#E60000]" />}
+                      </div>
+                    </div>
+
+                    <div className="shrink-0 text-[#E60000]">
+                      <Truck className="h-6 w-6" />
+                    </div>
+
+                    <div className="min-w-0">
+                      <p className="text-xs sm:text-sm font-black uppercase text-foreground">
+                        ENVÍO
+                      </p>
+                      <p className="text-[11px] text-muted-foreground leading-tight mt-0.5">
+                        Recíbelo lo antes posible, {getDeliveryDateText()}.
+                      </p>
+                    </div>
+                  </button>
+
+                  {/* Opción 2: Recoger en Tienda */}
+                  <button
+                    type="button"
+                    onClick={() => setDeliveryMethod("tienda")}
+                    className={cn(
+                      "flex items-center gap-3 p-3 rounded-xl border text-left transition-all cursor-pointer",
+                      deliveryMethod === "tienda"
+                        ? "border-[#E60000] bg-red-50/20 dark:bg-red-950/20 ring-1 ring-[#E60000]"
+                        : "border-gray-200 dark:border-[#333] hover:border-gray-300 dark:hover:border-[#444] bg-white dark:bg-[#141414]"
+                    )}
+                  >
+                    {/* Radio indicator */}
+                    <div className="shrink-0 flex items-center justify-center">
+                      <div className={cn(
+                        "w-4 h-4 rounded-full border-2 flex items-center justify-center",
+                        deliveryMethod === "tienda" ? "border-[#E60000]" : "border-gray-300 dark:border-gray-600"
+                      )}>
+                        {deliveryMethod === "tienda" && <div className="w-2 h-2 rounded-full bg-[#E60000]" />}
+                      </div>
+                    </div>
+
+                    <div className="shrink-0 text-gray-700 dark:text-gray-300">
+                      <Store className="h-6 w-6" />
+                    </div>
+
+                    <div className="min-w-0">
+                      <p className="text-xs sm:text-sm font-black uppercase text-foreground">
+                        RECOGER EN TIENDA
+                      </p>
+                      <p className="text-[11px] text-muted-foreground leading-tight mt-0.5">
+                        Disponible en 4 horas.
+                      </p>
+                    </div>
+                  </button>
+                </div>
+              </div>
 
               {/* Actions: Image 3 Layout */}
               <div className="space-y-3 mt-2">
@@ -712,7 +803,7 @@ export function ProductDetailClient({ product, relatedProducts, reviews }: { pro
           </div>
 
           {/* Container for tab contents */}
-          <div className="bg-white dark:bg-[#111111] rounded-b-2xl border border-t-0 border-border dark:border-[#262626] p-6 sm:p-8 shadow-sm">
+          <div className="bg-white dark:bg-[#111111] rounded-2xl border border-border dark:border-[#262626] p-6 sm:p-8 shadow-sm mt-3">
             {/* 1. Principales Características */}
             {activeTab === "features" && (
               <div className="space-y-6">
@@ -1184,7 +1275,7 @@ export function ProductDetailClient({ product, relatedProducts, reviews }: { pro
                               image: safeUrlFor(p.image, 200, 200) || (p.image as any)?.asset?.url || "",
                               sku: p.sku || "",
                               brand: p.brand?.name || "",
-                            },
+                            } as any,
                             1
                           );
                           openCart();

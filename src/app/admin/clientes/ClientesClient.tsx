@@ -47,7 +47,7 @@ const STATUS_COLORS: Record<string, string> = {
   REFUNDED: "bg-red-500/15 text-red-400 border-red-500/20",
 };
 
-function CustomerDetailRow({
+export function CustomerDetailRow({
   customer,
   orders,
   addresses,

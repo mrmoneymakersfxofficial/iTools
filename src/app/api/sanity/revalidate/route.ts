@@ -10,8 +10,8 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Invalid secret" }, { status: 401 });
     }
 
-    revalidateTag("sanity");
-    revalidateTag("product");
+    (revalidateTag as any)("sanity");
+    (revalidateTag as any)("product");
     
     if (body.slug?.current) {
       revalidatePath(`/producto/${body.slug.current}`);

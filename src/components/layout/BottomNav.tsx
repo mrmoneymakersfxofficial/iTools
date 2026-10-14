@@ -6,9 +6,10 @@ import { useState, useRef, useEffect } from "react";
 import {
   Home, ShoppingBag, MessageCircle, User, ChevronLeft, ChevronRight,
   X, Send, Wrench, Search, Sparkles, ArrowLeft, Zap, Shield, Trees,
-  Settings, Package, HardHat, Ruler, Layers,
+  Settings, Package, HardHat, Ruler, Layers, BatteryCharging,
 } from "lucide-react";
 import { getProductsByBrandSlug, categories, brands } from "@/lib/data";
+import { officialCategories } from "@/lib/official-categories";
 import type { Product } from "@/types";
 import { formatPrice } from "@/lib/format";
 import { useAiChatStore } from "@/stores/ai-chat-store";
@@ -51,13 +52,13 @@ const brandLinks = [
 
 const categoryIcons: Record<string, React.ReactNode> = {
   "Zap": <Zap className="h-5 w-5" />,
+  "BatteryCharging": <BatteryCharging className="h-5 w-5" />,
   "Wrench": <Wrench className="h-5 w-5" />,
-  "Trees": <Trees className="h-5 w-5" />,
-  "Shield": <Shield className="h-5 w-5" />,
   "Settings": <Settings className="h-5 w-5" />,
   "Package": <Package className="h-5 w-5" />,
+  "Shield": <Shield className="h-5 w-5" />,
+  "Layers": <Layers className="h-5 w-5" />,
   "HardHat": <HardHat className="h-5 w-5" />,
-  "Ruler": <Ruler className="h-5 w-5" />,
 };
 
 export function BottomNav() {
@@ -248,33 +249,29 @@ export function BottomNav() {
               </div>
             </div>
 
-            {/* Brand cards grid â€” with webp images */}
+            {/* Brand cards grid — full logo in brand color, without redundant bottom text */}
             <div className="px-3 pb-6 grid grid-cols-2 gap-2 overflow-y-auto max-h-[45vh] no-scrollbar">
               {brandLinks.map((brand) => (
                 <button
                   key={`gc-${brand.slug}`}
                   onClick={() => { setShowBrands(false); router.push(`/marca/${brand.slug}`); }}
-                  className="relative overflow-hidden rounded-xl border border-[#1A1A1A] transition-all active:scale-[0.97] text-left"
+                  className="relative h-[64px] rounded-xl flex items-center justify-center p-3 transition-all active:scale-[0.96] shadow-sm hover:brightness-105 border border-white/10"
+                  style={{ backgroundColor: brand.color }}
+                  title={brand.name}
                 >
-                  <div className="relative h-[60px] overflow-hidden" style={{ backgroundColor: brand.color }}>
-                    <img
-                      src={`/brands/${brand.slug}.webp`}
-                      alt={brand.name}
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        if (!target.src.endsWith(".svg")) {
-                          target.src = `/brands/${brand.slug}.svg`;
-                        } else {
-                          target.style.display = "none";
-                        }
-                      }}
-                    />
-                  </div>
-                  <div className="bg-[#111] px-3 py-2 flex items-center justify-between">
-                    <span className="text-[10px] font-bold text-white/80 uppercase tracking-wide">{brand.name}</span>
-                    <ChevronRight className="h-3 w-3 text-[#444]" />
-                  </div>
+                  <img
+                    src={`/brands/transparent/${brand.slug}.svg`}
+                    alt={brand.name}
+                    className="max-h-[34px] max-w-[85%] w-auto object-contain drop-shadow-sm"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      if (!target.src.includes(".webp")) {
+                        target.src = `/brands/${brand.slug}.webp`;
+                      } else if (!target.src.endsWith(`/${brand.slug}.svg`)) {
+                        target.src = `/brands/${brand.slug}.svg`;
+                      }
+                    }}
+                  />
                 </button>
               ))}
             </div>
@@ -304,79 +301,63 @@ export function BottomNav() {
               </button>
             </div>
 
-            {/* Category list with product previews */}
-            <div className="overflow-y-auto max-h-[65vh] pb-6 no-scrollbar">
+            {/* Category list with subcategories view matching NUEVA WEB - CAMBIOS 3 Point 2 */}
+            <div className="overflow-y-auto max-h-[68vh] pb-6 no-scrollbar">
               {selectedCategory ? (
                 <>
-                  {/* Back button */}
-                  <button
-                    onClick={() => setSelectedCategory(null)}
-                    className="mx-4 mb-3 flex items-center gap-1.5 text-[11px] text-[#D1001C] font-semibold"
-                  >
-                    <ArrowLeft className="h-3.5 w-3.5" />
-                    Todas las Categorías
-                  </button>
-                  {/* Subcategories and products */}
+                  {/* Back button and category title */}
+                  <div className="px-4 pb-3 flex items-center justify-between border-b border-[#1A1A1A]">
+                    <button
+                      onClick={() => setSelectedCategory(null)}
+                      className="flex items-center gap-1.5 text-xs text-[#0056D2] dark:text-[#4B90FF] font-semibold hover:underline"
+                    >
+                      <ArrowLeft className="h-4 w-4" />
+                      Todas las Categorías
+                    </button>
+                    {(() => {
+                      const currentCat = officialCategories.find(c => c.slug === selectedCategory);
+                      return currentCat ? (
+                        <span className="text-xs font-bold text-white uppercase tracking-wider">
+                          {currentCat.name}
+                        </span>
+                      ) : null;
+                    })()}
+                  </div>
+
                   {(() => {
-                    const cat = categories.find(c => c.id === selectedCategory);
-                    if (!cat) return null;
-                    const products = getCategoryProducts(selectedCategory);
+                    const currentCat = officialCategories.find(c => c.slug === selectedCategory);
+                    if (!currentCat) return null;
                     return (
-                      <div>
-                        {/* Subcategory horizontal scroll */}
-                        {cat.children && cat.children.length > 0 && (
-                          <div className="flex gap-2 px-4 pb-3 overflow-x-auto no-scrollbar">
-                            {cat.children.map(child => (
+                      <div className="px-4 py-3">
+                        <div className="mb-3">
+                          <p className="text-[11px] font-semibold text-[#888] uppercase tracking-wider mb-2.5">
+                            Secciones y Subcategorías ({currentCat.subcategories.length})
+                          </p>
+                          <div className="space-y-1.5 max-h-[48vh] overflow-y-auto no-scrollbar pr-0.5">
+                            {currentCat.subcategories.map((sub) => (
                               <Link
-                                key={child.id}
-                                href={`/categoria/${child.slug}`}
-                                onClick={() => setShowCategories(false)}
-                                className="shrink-0 px-3 py-2 rounded-lg bg-[#1A1A1A] border border-[#222] text-[10px] font-bold text-[#CCC] uppercase tracking-wider hover:border-[#E35205] hover:text-[#D1001C] transition-all"
+                                key={sub.name}
+                                href={sub.href}
+                                onClick={() => { setShowCategories(false); setSelectedCategory(null); }}
+                                className="flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-[#141414] hover:bg-[#1E1E1E] border border-white/5 transition-all text-left group"
                               >
-                                {child.name}
+                                <span className="text-xs font-medium text-[#DDD] group-hover:text-white">
+                                  {sub.name}
+                                </span>
+                                <ChevronRight className="h-3.5 w-3.5 text-[#555] group-hover:text-[#4B90FF] transition-colors" />
                               </Link>
                             ))}
                           </div>
-                        )}
-                        {/* Product previews */}
-                        {products.length > 0 ? (
-                          <div className="px-4 grid grid-cols-2 gap-2">
-                            {products.map(product => (
-                              <Link
-                                key={product.id}
-                                href={`/producto/${product.slug}`}
-                                onClick={() => setShowCategories(false)}
-                                className="bg-[#111] rounded-xl border border-[#1A1A1A] overflow-hidden"
-                              >
-                                <div className="h-24 bg-[#1A1A1A] flex items-center justify-center">
-                                  <Wrench className="h-8 w-8 text-[#333]" />
-                                </div>
-                                <div className="p-2.5">
-                                  <p className="text-[10px] text-[#CCC] line-clamp-2 leading-snug mb-1.5">{product.name}</p>
-                                  <div className="flex items-center justify-between">
-                                    <span className="text-xs font-bold text-[#D1001C]">{formatPrice(product.price)}</span>
-                                    {product.comparePrice && (
-                                      <span className="text-[9px] text-[#555] line-through">{formatPrice(product.comparePrice)}</span>
-                                    )}
-                                  </div>
-                                </div>
-                              </Link>
-                            ))}
-                          </div>
-                        ) : (
-                          <div className="px-4 py-8 text-center">
-                            <p className="text-[#555] text-xs">Próximamente más productos en esta categoría.</p>
-                          </div>
-                        )}
+                        </div>
+
                         {/* Link to full category */}
-                        <div className="px-4 mt-3">
+                        <div className="mt-3 pt-2 border-t border-[#1A1A1A]">
                           <Link
-                            href={`/categoria/${cat.slug}`}
-                            onClick={() => setShowCategories(false)}
-                            className="block w-full text-center py-3 rounded-xl text-xs font-bold uppercase tracking-wider text-white transition-all active:scale-[0.98]"
-                            style={{ background: "linear-gradient(135deg, #D1001C, #990000)" }}
+                            href={`/categoria/${currentCat.slug}`}
+                            onClick={() => { setShowCategories(false); setSelectedCategory(null); }}
+                            className="block w-full text-center py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider text-white bg-[#0056D2] hover:bg-[#0047B3] transition-all active:scale-[0.98]"
                           >
-                            Ver Toda la Categoría
+                            Ver Toda la Categoría {currentCat.name}
                           </Link>
                         </div>
                       </div>
@@ -384,25 +365,22 @@ export function BottomNav() {
                   })()}
                 </>
               ) : (
-                /* Main category grid */
+                /* Main category grid — 8 official categories */
                 <div className="px-3 grid grid-cols-2 gap-2">
-                  {categories.map(cat => {
-                    const prodCount = getCategoryProducts(cat.id).length;
-                    return (
-                      <button
-                        key={cat.id}
-                        onClick={() => setSelectedCategory(cat.id)}
-                        className="relative overflow-hidden rounded-xl border border-[#1A1A1A] bg-[#111] p-4 text-left transition-all active:scale-[0.97] hover:border-[#E35205]/40"
-                      >
-                        <div className="w-9 h-9 rounded-lg bg-[#E35205]/10 flex items-center justify-center text-[#D1001C] mb-3">
-                          {categoryIcons[cat.icon || ""] || <Wrench className="h-5 w-5" />}
-                        </div>
-                        <p className="text-xs font-bold text-white leading-tight">{cat.name}</p>
-                        <p className="text-[9px] text-[#666] mt-1">{prodCount} productos</p>
-                        <ChevronRight className="absolute top-4 right-3 h-3.5 w-3.5 text-[#444]" />
-                      </button>
-                    );
-                  })}
+                  {officialCategories.map(cat => (
+                    <button
+                      key={cat.slug}
+                      onClick={() => setSelectedCategory(cat.slug)}
+                      className="relative overflow-hidden rounded-xl border border-[#1A1A1A] bg-[#111] p-3.5 text-left transition-all active:scale-[0.97] hover:border-[#0056D2]/60 hover:bg-[#161616]"
+                    >
+                      <div className="w-8 h-8 rounded-lg bg-[#0056D2]/15 flex items-center justify-center text-[#4B90FF] mb-2.5">
+                        {categoryIcons[cat.icon] || <Wrench className="h-4 w-4" />}
+                      </div>
+                      <p className="text-xs font-bold text-white leading-tight uppercase tracking-wide">{cat.name}</p>
+                      <p className="text-[9px] text-[#666] mt-1">{cat.subcategories.length} secciones</p>
+                      <ChevronRight className="absolute top-3.5 right-3 h-3.5 w-3.5 text-[#444]" />
+                    </button>
+                  ))}
                 </div>
               )}
             </div>

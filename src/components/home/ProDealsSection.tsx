@@ -171,7 +171,7 @@ export function ProDealsSection({ products, banners, title }: ProDealsSectionPro
       image: product.image?.asset?.url || "/icon.png",
       brand: product.brand?.name || "iTools",
       quantity: 1,
-    });
+    } as any);
     toast({
       title: "Agregado al carrito",
       description: `${product.name} se agregó al carrito`,

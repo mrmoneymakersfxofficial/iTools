@@ -24,25 +24,27 @@ export const productsByBrandSlugQuery = `*[_type == "product" && brand->slug.cur
   isOnSale
 }`;
 
-export async function fetchBrandBySlug(slug: string) {
+export async function fetchBrandBySlug(slug: string): Promise<any> {
   try {
-    return await sanityFetch({ query: brandBySlugQuery, params: { slug } });
+    return (await sanityFetch({ query: brandBySlugQuery, params: { slug } })) as any;
   } catch (error) {
     return null;
   }
 }
 
-export async function fetchProductsByBrandSlug(slug: string) {
+export async function fetchProductsByBrandSlug(slug: string): Promise<any[]> {
   try {
-    return await sanityFetch({ query: productsByBrandSlugQuery, params: { slug } });
+    const res = await sanityFetch({ query: productsByBrandSlugQuery, params: { slug } });
+    return (Array.isArray(res) ? res : []) as any[];
   } catch (error) {
     return [];
   }
 }
 
-export async function fetchAllBrandSlugs() {
+export async function fetchAllBrandSlugs(): Promise<{ slug: string }[]> {
   try {
-    return await sanityFetch({ query: `*[_type == "brandShowcaseItem"] { "slug": slug.current }` });
+    const res = await sanityFetch({ query: `*[_type == "brandShowcaseItem"] { "slug": slug.current }` });
+    return (Array.isArray(res) ? res : []) as { slug: string }[];
   } catch (error) {
     return [];
   }

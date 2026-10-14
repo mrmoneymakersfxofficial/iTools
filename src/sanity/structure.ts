@@ -25,6 +25,9 @@ export const structure: StructureResolver = (S) =>
         .title("🤖 Asistente IA (Icono Robot y Nombre)")
         .child(S.document().schemaType("uiConfig").documentId("uiConfig")),
       S.listItem()
+        .title("🦶 Pie de Página (Footer)")
+        .child(S.document().schemaType("footerConfig").documentId("footerConfig")),
+      S.listItem()
         .title("📝 Títulos y Textos de la Web (Inicio)")
         .child(S.document().schemaType("homeSettings").documentId("homeSettings")),
       S.documentTypeListItem("product").title("📦 Productos (Catálogo Completo)"),

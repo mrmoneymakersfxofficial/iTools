@@ -38,14 +38,25 @@ export type HeaderConfig = {
   badge1?: string;
   badge2?: string;
   announcementBar?: string;
+  showBrandLogos?: boolean;
+  brandLogos?: { name?: string; slug?: string; logo?: any; order?: number }[];
 };
 
 export type FooterConfig = {
   aboutText?: string;
-  contactInfo?: string;
+  companyAddress?: string;
+  companyPhone?: string;
+  companyEmail?: string;
+  workingHours?: string;
+  email?: string;
+  contactInfo?: { address?: string; phone?: string; email?: string; hours?: string } | string;
   socialLinks?: { platform: string; url: string }[];
   bottomLinks?: { title: string; url: string }[];
   columns?: any[];
+  trustFeatures?: { label: string; iconName?: string }[];
+  socialBarTitle?: string;
+  paymentMethodsTitle?: string;
+  secureStoreTitle?: string;
 };
 
 export type GlobalSettings = {

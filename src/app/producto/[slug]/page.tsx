@@ -11,7 +11,7 @@ const SITE_URL = "https://itools.pe";
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   try {
     const { slug } = await params;
-    const product = await fetchProductBySlug(slug);
+    const product: any = await fetchProductBySlug(slug);
     if (!product) return { title: "Producto no encontrado | iTools Peru" };
     const discount = product.comparePrice
       ? Math.round(((product.comparePrice - product.price) / product.comparePrice) * 100) : 0;
@@ -99,7 +99,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     }
   } catch { relatedProducts = []; }
   try {
-    reviews = await fetchProductReviews(slug);
+    reviews = ((await fetchProductReviews(slug)) as any[]) || [];
   } catch { reviews = []; }
   return <ProductDetailClient product={product} relatedProducts={relatedProducts} reviews={reviews} />;
 }

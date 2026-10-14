@@ -142,8 +142,8 @@ async function syncSpecificProducts(
             primaryVariant.id
           );
           if (priceData.items && priceData.items.length > 0) {
-            price = priceData.items[0].priceWithTax / 100;
-            comparePrice = priceData.items[0].basePrice / 100;
+            price = (priceData.items[0] as any).priceWithTax / 100;
+            comparePrice = (priceData.items[0] as any).basePrice / 100;
           }
         } catch {
           // Price not available

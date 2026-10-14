@@ -50,8 +50,12 @@ export const categories: Category[] = [
     ],
   },
   {
+    id: "c-inalambricas", name: "Herramientas Inalámbricas", slug: "herramientas-inalambricas",
+    parentId: null, image: null, icon: "BatteryCharging", order: 2,
+  },
+  {
     id: "c2", name: "Herramientas Manuales", slug: "herramientas-manuales",
-    parentId: null, image: null, icon: "Wrench", order: 2,
+    parentId: null, image: null, icon: "Wrench", order: 3,
     children: [
       { id: "c2-1", name: "Llaves", slug: "llaves", parentId: "c2", image: null, icon: "Wrench", order: 1 },
       { id: "c2-2", name: "Pinzas", slug: "pinzas", parentId: "c2", image: null, icon: "Grip", order: 2 },
@@ -60,29 +64,30 @@ export const categories: Category[] = [
     ],
   },
   {
-    id: "c3", name: "Jardín y Exterior", slug: "jardin-exterior",
-    parentId: null, image: null, icon: "Trees", order: 3,
-  },
-  {
-    id: "c4", name: "Seguridad Industrial", slug: "seguridad-industrial",
-    parentId: null, image: null, icon: "Shield", order: 4,
-  },
-  {
-    id: "c5", name: "Servicio Técnico Milwaukee", slug: "servicio-tecnico-milwaukee",
-    parentId: null, image: null, icon: "Settings", order: 5,
+    id: "c-especializados", name: "Equipos Especializados", slug: "equipos-especializados",
+    parentId: null, image: null, icon: "Settings", order: 4,
   },
   {
     id: "c6", name: "Accesorios", slug: "accesorios",
-    parentId: null, image: null, icon: "Package", order: 6,
+    parentId: null, image: null, icon: "Package", order: 5,
   },
   {
-    id: "c7", name: "Almacenamiento", slug: "almacenamiento",
-    parentId: null, image: null, icon: "HardHat", order: 7,
+    id: "c-repuestos", name: "Repuestos", slug: "repuestos",
+    parentId: null, image: null, icon: "Wrench", order: 6,
   },
   {
-    id: "c8", name: "Medición", slug: "medicion",
-    parentId: null, image: null, icon: "Ruler", order: 8,
+    id: "c4", name: "Seguridad Industrial", slug: "seguridad-industrial",
+    parentId: null, image: null, icon: "Shield", order: 7,
   },
+  {
+    id: "c-ferreteria", name: "Ferretería General", slug: "ferreteria-general",
+    parentId: null, image: null, icon: "Layers", order: 8,
+  },
+  // Legacy aliases for backward compatibility with mock data
+  { id: "c3", name: "Jardín y Exterior", slug: "jardin-exterior", parentId: null, image: null, icon: "Trees", order: 9 },
+  { id: "c5", name: "Servicio Técnico Milwaukee", slug: "servicio-tecnico-milwaukee", parentId: null, image: null, icon: "Settings", order: 10 },
+  { id: "c7", name: "Almacenamiento", slug: "almacenamiento", parentId: null, image: null, icon: "HardHat", order: 11 },
+  { id: "c8", name: "Medición", slug: "medicion", parentId: null, image: null, icon: "Ruler", order: 12 },
 ];
 
 // ── Products ──────────────────────────────────────────────

@@ -254,8 +254,12 @@ export const headerConfigQuery = `*[_type == "headerConfig"][0]{
 }`;
 
 // Footer Config
-export const footerConfigQuery = `*[_type == "footerConfig"][0]{
+export const footerConfigQuery = `*[_type == "footerConfig" && _id in ["footerConfig", "drafts.footerConfig", "footer-config", "drafts.footer-config"]] | order(_updatedAt desc)[0]{
   aboutText,
+  companyAddress,
+  companyPhone,
+  companyEmail,
+  workingHours,
   contactInfo {
     address,
     phone,

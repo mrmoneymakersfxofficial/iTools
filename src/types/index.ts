@@ -13,12 +13,16 @@ export interface Product {
   category?: Category;
   stock: number;
   images: string[];
+  image?: string;
   specs: Record<string, string>;
   rating: number;
   reviewCount: number;
   isFeatured: boolean;
   isOnSale: boolean;
   isNewArrival: boolean;
+  _id?: string;
+  salePrice?: number | null;
+  inStock?: boolean;
 }
 
 export interface Brand {

@@ -147,7 +147,7 @@ async function handleDocumentWebhook(payload: BsaleWebhookPayload) {
       const newStatus = statusMap[docData.state] ?? order.status;
 
       const paymentMap: Record<number, string> = { 0: "PENDING", 1: "PAID", 2: "PARTIAL" };
-      const newPaymentStatus = docData.paymentStatus !== undefined ? (paymentMap[docData.paymentStatus] ?? order.paymentStatus) : order.paymentStatus;
+      const newPaymentStatus = (docData as any).paymentStatus !== undefined ? (paymentMap[(docData as any).paymentStatus] ?? order.paymentStatus) : order.paymentStatus;
 
       await db.order.update({
         where: { id: order.id },

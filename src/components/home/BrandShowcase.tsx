@@ -31,47 +31,26 @@ function getDisplayName(slug: string): string {
 function mergeBrands(sanityBrands: SanityBrand[]): Array<SanityBrand & { localConfig?: typeof BRAND_CONFIGS[string] }> {
   const sanityBySlug = new Map<string, SanityBrand>();
   for (const b of sanityBrands) {
-    if (b.slug) sanityBySlug.set(b.slug, b);
+    const raw = typeof b.slug === "string" ? b.slug : (b.slug as any)?.current || "";
+    if (raw) sanityBySlug.set(raw.toLowerCase().trim(), b);
   }
 
-  const merged: Array<SanityBrand & { localConfig?: typeof BRAND_CONFIGS[string] }> = [];
-
-  for (const slug of BRAND_SHOWCASE_ORDER) {
+  // Strictly follow BRAND_SHOWCASE_ORDER (18 brands, 3 rows of 6)
+  return BRAND_SHOWCASE_ORDER.map((slug) => {
     const config = BRAND_CONFIGS[slug];
     const sanityData = sanityBySlug.get(slug);
 
-    merged.push({
+    return {
       _id: sanityData?._id || `brand-${slug}`,
       name: sanityData?.name || getDisplayName(slug),
       slug,
-      showInGrid: sanityData?.showInGrid ?? true,
+      showInGrid: true,
       logo: sanityData?.logo,
-      order: sanityData?.order ?? merged.length,
-      isActive: sanityData?.isActive ?? true,
+      order: BRAND_SHOWCASE_ORDER.indexOf(slug),
+      isActive: true,
       localConfig: config,
-    });
-  }
-
-  for (const b of sanityBrands) {
-    if (b.slug && !VALID_LOCAL_BRANDS.includes(b.slug) && b.isActive !== false) {
-      merged.push({
-        ...b,
-        localConfig: undefined,
-      });
-    }
-  }
-
-  const hasSanityOrder = sanityBrands.some((b) => typeof b.order === "number");
-  if (hasSanityOrder) {
-    merged.sort((a, b) => {
-      const aLocal = a.localConfig ? 0 : 1;
-      const bLocal = b.localConfig ? 0 : 1;
-      if (aLocal !== bLocal) return aLocal - bLocal;
-      return (a.order ?? 999) - (b.order ?? 999);
-    });
-  }
-
-  return merged.filter((b) => b.isActive !== false);
+    };
+  });
 }
 
 export function BrandShowcase({
@@ -129,8 +108,8 @@ function renderGrid(
 
         <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-1.5 md:gap-2">
           {brands.map((brand) => {
-            const rawSlug = brand.slug || brand.name?.toLowerCase() || "";
-            const slug = (typeof rawSlug === "string" ? rawSlug : (rawSlug.current || "")).toLowerCase().trim();
+            const rawSlug: any = brand.slug || brand.name?.toLowerCase() || "";
+            const slug = (typeof rawSlug === "string" ? rawSlug : (rawSlug?.current || "")).toLowerCase().trim();
             const config = brand.localConfig || BRAND_CONFIGS[slug];
             const hasCustomLogo = !!brand.logo?.asset?.url;
             const hasLocalImg = !hasCustomLogo && !!config;

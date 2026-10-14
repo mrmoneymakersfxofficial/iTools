@@ -47,7 +47,7 @@ export function BrandsGridMobile({ brands }: { brands: any[] }) {
             const bgColor = config ? config.bg : "#ffffff";
             
             const fallbackExt = config ? config.logoExt : "webp";
-            const imgSrc = hasLocalImg ? `/brands/${slug}.${fallbackExt}` : (brand.logo?.asset?.url || null);
+            const imgSrc = hasLocalImg ? `/brands/${slug}.${fallbackExt}` : ((brand as any).logo?.asset?.url || null);
             const showImg = !!imgSrc;
 
             return (

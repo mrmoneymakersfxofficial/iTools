@@ -1,11 +1,12 @@
 "use client";
 
 import Link from "next/link";
+import { useState } from "react";
 import { ChevronRight, SlidersHorizontal, Wrench, ArrowRight } from "lucide-react";
 import { ProductCard } from "@/components/product/ProductCard";
 import { useSectionDeepLinking, sectionId } from "@/hooks/useSectionDeepLinking";
 import { brands, getBrandTheme } from "@/lib/data";
-import type { Product, Category } from "@/types";
+import type { Product, Category, Brand } from "@/types";
 
 const SECTION_PRODUCTS = "Productos";
 const SECTION_SUBCATEGORIES = "Subcategorías";
@@ -15,13 +16,36 @@ const SECTION_BRANDS = "Marcas Disponibles";
 export function CategoryPageClient({ category, products }: { category: Category; products: Product[] }) {
   useSectionDeepLinking();
 
+  const [selectedBrand, setSelectedBrand] = useState<string>("all");
+  const [sortBy, setSortBy] = useState<string>("relevance");
+
   // Get unique brands from products in this category
-  const categoryBrands = products.reduce((acc, p) => {
-    if (p.brand && !acc.find((b) => b.id === p.brand.id)) {
+  const categoryBrands = (products.reduce((acc, p) => {
+    if (p.brand && !acc.find((b) => b?.id === p.brand?.id)) {
       acc.push(p.brand);
     }
     return acc;
-  }, [] as typeof products[0]["brand"][]).filter(Boolean);
+  }, [] as Brand[]) || []).filter((b): b is Brand => Boolean(b && b.id));
+
+  const filteredProducts = products.filter((p) => {
+    if (selectedBrand === "all") return true;
+    const bName = (p.brand?.name || (p as any).brandName || "").toLowerCase();
+    const bSlug = (p.brand?.slug || "").toLowerCase();
+    const target = selectedBrand.toLowerCase();
+    return bName === target || bSlug === target || (p.brandId && p.brandId === selectedBrand);
+  });
+
+  const sortedProducts = [...filteredProducts].sort((a, b) => {
+    const priceA = a.salePrice || a.price || 0;
+    const priceB = b.salePrice || b.price || 0;
+    if (sortBy === "price-asc") return priceA - priceB;
+    if (sortBy === "price-desc") return priceB - priceA;
+    if (sortBy === "name-asc") return (a.name || "").localeCompare(b.name || "");
+    if (sortBy === "name-desc") return (b.name || "").localeCompare(a.name || "");
+    if (sortBy === "newest") return ((b as any)._createdAt || b.id || "").localeCompare((a as any)._createdAt || a.id || "");
+    if (sortBy === "oldest") return ((a as any)._createdAt || a.id || "").localeCompare((b as any)._createdAt || b.id || "");
+    return 0;
+  });
 
   return (
     <main className="min-h-screen bg-background">
@@ -107,37 +131,60 @@ export function CategoryPageClient({ category, products }: { category: Category;
           </section>
         )}
 
-        {/* Section: Filters */}
+        {/* Section: Filters (CAMBIOS M.pdf Item 3) */}
         <section data-section={SECTION_FILTERS} className="mb-6">
-          <div className="flex items-center justify-between bg-white dark:bg-[#1a1a1a] rounded-lg border border-border dark:border-[#333] px-4 py-3">
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <SlidersHorizontal className="h-4 w-4" />
-              <span>{products.length} resultado{products.length !== 1 ? "s" : ""}</span>
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between bg-white dark:bg-[#1a1a1a] rounded-xl border border-border dark:border-[#333] px-4 py-3 gap-3 shadow-sm">
+            <div className="flex items-center gap-2 text-sm text-foreground font-semibold">
+              <SlidersHorizontal className="h-4 w-4 text-muted-foreground" />
+              <span>Mostrando {sortedProducts.length} resultado{sortedProducts.length !== 1 ? "s" : ""}</span>
             </div>
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-muted-foreground hidden sm:inline">Ordenar por:</span>
-              <select className="text-sm bg-transparent border border-border rounded-md px-2 py-1.5 text-foreground focus:outline-none focus:ring-1 focus:ring-itools-blue/30">
-                <option>Más relevantes</option>
-                <option>Precio: menor a mayor</option>
-                <option>Precio: mayor a menor</option>
-                <option>Mejor valorados</option>
-                <option>Más nuevos</option>
-              </select>
+            <div className="flex flex-wrap items-center gap-3">
+              {categoryBrands.length > 0 && (
+                <div className="flex items-center gap-1.5">
+                  <span className="text-xs text-muted-foreground whitespace-nowrap">Filtrar por :</span>
+                  <select
+                    value={selectedBrand}
+                    onChange={(e) => setSelectedBrand(e.target.value)}
+                    className="text-xs sm:text-sm bg-white dark:bg-[#222] border border-border rounded-lg px-2.5 py-1.5 text-foreground focus:outline-none focus:ring-1 focus:ring-itools-blue/30 font-medium cursor-pointer"
+                  >
+                    <option value="all">Todas las marcas</option>
+                    {categoryBrands.map((b) => (
+                      <option key={b.id || b.slug} value={b.slug || b.name}>{b.name}</option>
+                    ))}
+                  </select>
+                </div>
+              )}
+              <div className="flex items-center gap-1.5">
+                <span className="text-xs text-muted-foreground whitespace-nowrap">Ordenar por:</span>
+                <select
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value)}
+                  className="text-xs sm:text-sm bg-white dark:bg-[#222] border border-border rounded-lg px-2.5 py-1.5 text-foreground focus:outline-none focus:ring-1 focus:ring-itools-blue/30 font-medium cursor-pointer"
+                >
+                  <option value="relevance">Más relevantes</option>
+                  <option value="name-asc">Nombres de A a Z</option>
+                  <option value="name-desc">Nombres de Z a A</option>
+                  <option value="price-asc">Precios de menor a mayor</option>
+                  <option value="price-desc">Precios de mayor a menor</option>
+                  <option value="newest">Nuevos productos</option>
+                  <option value="oldest">Antiguos productos</option>
+                </select>
+              </div>
             </div>
           </div>
         </section>
 
         {/* Section: Products Grid with Every 8 Products Separator */}
         <section data-section={SECTION_PRODUCTS} id={sectionId(SECTION_PRODUCTS)}>
-          {products.length > 0 ? (
+          {sortedProducts.length > 0 ? (
             <div className="space-y-6">
-              {Array.from({ length: Math.ceil(products.length / 8) }).map((_, chunkIndex) => {
-                const chunk = products.slice(chunkIndex * 8, (chunkIndex + 1) * 8);
+              {Array.from({ length: Math.ceil(sortedProducts.length / 8) }).map((_, chunkIndex) => {
+                const chunk = sortedProducts.slice(chunkIndex * 8, (chunkIndex + 1) * 8);
                 return (
                   <div key={chunkIndex} className="space-y-6">
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 md:gap-4 lg:gap-5">
                       {chunk.map((product, i) => (
-                        <ProductCard key={product.id || (product as any)._id} product={product} index={chunkIndex * 8 + i} />
+                        <ProductCard key={product.id || (product as any)._id} product={product} index={chunkIndex * 8 + i} borderless />
                       ))}
                     </div>
 
@@ -219,8 +266,7 @@ export function CategoryPageClient({ category, products }: { category: Category;
                 <Link
                   key={brand.id}
                   href={`/marca/${brand.slug}`}
-                  className="flex items-center gap-2 px-3 py-2.5 rounded-lg border border-border hover:border-transparent transition-all group text-center justify-center"
-                  style={{ hoverBackgroundColor: `${theme.color}10` }}
+                  className="flex items-center gap-2 px-3 py-2.5 rounded-lg border border-border hover:border-transparent transition-all group text-center justify-center hover:bg-neutral-100 dark:hover:bg-neutral-800"
                 >
                   <div
                     className="h-6 w-6 rounded-md flex items-center justify-center text-white text-[9px] font-bold shrink-0"

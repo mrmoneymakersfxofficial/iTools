@@ -51,5 +51,5 @@ export default async function BrandPage({ params }: { params: Promise<{ slug: st
 
   const theme = getBrandTheme(slug);
 
-  return <BrandPageClient brand={brand} products={products} theme={theme} />;
+  return <BrandPageClient brand={brand as any} products={products as any} theme={theme} />;
 }

@@ -141,7 +141,7 @@ export async function createBsaleOrder(order: iToolsOrder): Promise<BsaleOrderRe
 
     // Build line items
     const details: bsale.BsaleDocumentDetail[] = order.items.map((item) => ({
-      ...(item.bsaleVariantId ? { variantId: item.bsaleVariantId } : { code: Number(item.sku) || undefined }),
+      ...(item.bsaleVariantId ? { variantId: item.bsaleVariantId } : { code: item.sku || undefined }),
       netUnitValue: solesToCents(item.price), // Price before IGV
       quantity: item.quantity,
       taxId: "[1]", // IGV 18% (Peru)

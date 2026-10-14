@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useSession } from 'next-auth/react'
 import {
   getAddresses,
@@ -65,19 +65,20 @@ export default function DireccionesPage() {
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null)
 
-  // Fetch addresses when authenticated
-  useEffect(() => {
-    if (authStatus === 'loading' || !session?.user?.id) return
-    let cancelled = false
-    // eslint-disable-next-line react-hooks/set-state-in-effect
+  const fetchAddresses = useCallback(() => {
+    if (!session?.user?.id) return
     setLoading(true)
     getAddresses(session.user.id).then((data) => {
-      if (cancelled) return
       setAddresses(data)
       setLoading(false)
     })
-    return () => { cancelled = true }
-  }, [authStatus, session?.user?.id])
+  }, [session?.user?.id])
+
+  // Fetch addresses when authenticated
+  useEffect(() => {
+    if (authStatus === 'loading' || !session?.user?.id) return
+    fetchAddresses()
+  }, [authStatus, session?.user?.id, fetchAddresses])
 
   function openNew() {
     setEditingId(null)

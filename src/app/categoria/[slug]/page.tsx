@@ -48,5 +48,5 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
 
   const products = await fetchProductsByCategorySlug(slug, category.productsLimit || 24);
 
-  return <CategoryPageClient category={category} products={products} />;
+  return <CategoryPageClient category={category} products={products as any} />;
 }

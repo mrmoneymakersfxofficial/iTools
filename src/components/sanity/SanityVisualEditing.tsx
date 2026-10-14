@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { VisualEditing } from "@sanity/visual-editing/react";
 
 export function SanityVisualEditing() {
-  return <VisualEditing />;
+  return <VisualEditing portal={true} />;
 }
 
 export function VisualEditingWrapper({ isDraft }: { isDraft: boolean }) {
@@ -24,5 +24,5 @@ export function VisualEditingWrapper({ isDraft }: { isDraft: boolean }) {
     return null;
   }
 
-  return <VisualEditing />;
+  return <VisualEditing portal={true} />;
 }

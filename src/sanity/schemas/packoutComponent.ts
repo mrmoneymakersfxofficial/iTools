@@ -54,7 +54,7 @@ export default defineType({
       name: "compatibleBases",
       title: "Bases Compatibles",
       type: "array",
-      of: [defineType({ name: "baseRef", type: "string" })],
+      of: [{ type: "string" }],
       description: "Slugs de las bases con las que este módulo es compatible. Vacío = compatible con todas.",
     }),
     defineField({

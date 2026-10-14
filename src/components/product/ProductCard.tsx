@@ -12,6 +12,7 @@ import { useQuickViewStore } from "@/stores/quickview-store";
 
 import { formatPrice } from "@/lib/format";
 import { getSanityAttr } from "@/lib/sanity/visual-attributes";
+import { cn } from "@/lib/utils";
 
 const PRODUCT_FALLBACK_IMAGES: Record<string, string> = {
   "super-combo-inicio-tio-cheng": "/products/dongcheng-combo.webp",
@@ -65,9 +66,11 @@ interface ProductCardProps {
   quickView?: boolean;
   /** Override the brand color used in quick view header */
   quickViewColor?: string;
+  /** If true, removes borders completely (CAMBIOS M.pdf Item 2) */
+  borderless?: boolean;
 }
 
-export function ProductCard({ product, index = 0, quickView, quickViewColor }: ProductCardProps) {
+export function ProductCard({ product, index = 0, quickView, quickViewColor, borderless }: ProductCardProps) {
   const addToCart = useCartStore((s) => s.addItem);
   const { toggleItem, isWishlisted } = useWishlistStore();
   const openQuickView = useQuickViewStore((s) => s.openQuickView);
@@ -96,13 +99,19 @@ export function ProductCard({ product, index = 0, quickView, quickViewColor }: P
     comparePrice,
   };
 
+  const rawSlug = product.slug || product._id || product.id || "";
+  const productSlug = typeof rawSlug === "string" ? rawSlug : (rawSlug.current || product._id || product.id || "");
+
   return (
     <motion.article
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-50px" }}
       transition={{ duration: 0.4, delay: Math.min(index * 0.05, 0.3) }}
-      className="group product-card-hover relative flex flex-col rounded-lg border border-border bg-white dark:bg-[#1a1a1a] overflow-hidden h-full"
+      className={cn(
+        "group product-card-hover relative flex flex-col rounded-xl bg-white dark:bg-[#1a1a1a] overflow-hidden h-full",
+        borderless ? "border-0 shadow-sm hover:shadow-md" : "border border-border"
+      )}
     >
       {/* Clickable overlay for entire card */}
       {quickView ? (
@@ -113,7 +122,7 @@ export function ProductCard({ product, index = 0, quickView, quickViewColor }: P
         />
       ) : (
         <Link
-          href={`/producto/${product.slug}`}
+          href={`/producto/${productSlug}`}
           className="absolute inset-0 z-[5]"
           aria-label={`Ver ${product.name}`}
         />

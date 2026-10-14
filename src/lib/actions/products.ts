@@ -90,21 +90,31 @@ export interface CategoryWithChildren {
 
 // ── Helpers ────────────────────────────────────────────────
 
-function parseImages(imagesJson: string): string[] {
+function parseImages(imagesJson: any): string[] {
   try {
-    const parsed = JSON.parse(imagesJson)
-    return Array.isArray(parsed) ? parsed : []
+    if (Array.isArray(imagesJson)) return imagesJson
+    if (typeof imagesJson === 'string') {
+      const parsed = JSON.parse(imagesJson)
+      return Array.isArray(parsed) ? parsed : []
+    }
+    return []
   } catch {
     return []
   }
 }
 
-function parseSpecs(specsJson: string): Record<string, string> {
+function parseSpecs(specsJson: any): Record<string, string> {
   try {
-    const parsed = JSON.parse(specsJson)
-    return typeof parsed === 'object' && parsed !== null && !Array.isArray(parsed)
-      ? parsed
-      : {}
+    if (typeof specsJson === 'object' && specsJson !== null && !Array.isArray(specsJson)) {
+      return specsJson as Record<string, string>
+    }
+    if (typeof specsJson === 'string') {
+      const parsed = JSON.parse(specsJson)
+      return typeof parsed === 'object' && parsed !== null && !Array.isArray(parsed)
+        ? parsed
+        : {}
+    }
+    return {}
   } catch {
     return {}
   }
@@ -129,24 +139,7 @@ const PRODUCT_LIST_SELECT = {
   category: { select: { id: true, name: true, slug: true } },
 } satisfies Prisma.ProductSelect
 
-function mapProductListItem(product: {
-  id: string
-  sku: string
-  name: string
-  slug: string
-  shortDescription: string | null
-  price: number
-  comparePrice: number | null
-  stock: number
-  images: string
-  rating: number
-  reviewCount: number
-  isFeatured: boolean
-  isOnSale: boolean
-  isNewArrival: boolean
-  brand: { id: string; name: string; slug: string; logo: string | null } | null
-  category: { id: string; name: string; slug: string } | null
-}): ProductListItem {
+function mapProductListItem(product: any): ProductListItem {
   return {
     ...product,
     images: parseImages(product.images),

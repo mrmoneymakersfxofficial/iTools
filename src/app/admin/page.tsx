@@ -19,10 +19,14 @@ export const dynamic = "force-dynamic";
 
 /* â”€â”€ Helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
-function parseItems(itemsJson: string): Array<{ productId: string; name: string; quantity: number; price: number }> {
+function parseItems(itemsJson: any): Array<{ productId: string; name: string; quantity: number; price: number }> {
   try {
-    const parsed = JSON.parse(itemsJson);
-    return Array.isArray(parsed) ? parsed : [];
+    if (Array.isArray(itemsJson)) return itemsJson;
+    if (typeof itemsJson === "string") {
+      const parsed = JSON.parse(itemsJson);
+      return Array.isArray(parsed) ? parsed : [];
+    }
+    return [];
   } catch {
     return [];
   }
