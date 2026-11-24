@@ -63,7 +63,8 @@ export function FlashSaleCountdownCard({ tile }: FlashSaleCountdownCardProps) {
   const isCountdownEnabled = tile?.countdownEnabled !== false;
 
   const rawTitle = (tile?.title || "").trim();
-  const displayTitle = !rawTitle || rawTitle.toLowerCase() === "chambeador" ? "PROMOS EXPRESS" : rawTitle.toUpperCase();
+  const displayTitle =
+    !rawTitle || rawTitle.toLowerCase() === "chambeador" ? "PROMOS EXPRESS" : rawTitle.toUpperCase();
   const titleWords = displayTitle.split(/\s+/);
   const leadText = titleWords.length > 1 ? titleWords.slice(0, -1).join(" ") : displayTitle;
   const highlightWord = titleWords.length > 1 ? titleWords[titleWords.length - 1] : "";
@@ -74,7 +75,9 @@ export function FlashSaleCountdownCard({ tile }: FlashSaleCountdownCardProps) {
       ? "¡COMPRA AHORA QUE SE AGOTA EL TIEMPO!"
       : rawSubtitle.toUpperCase();
 
-  const sanityAttr = getSanityAttr(tile?._id || "deal-tile-duo-countdown", "dealTile", "countdownEnd");
+  const bgImgUrl = tile?.image?.asset?.url;
+  const bgMobileUrl = tile?.imageMobile?.asset?.url;
+  const sanityAttr = getSanityAttr(tile?._id || "deal-tile-duo-countdown", "dealTile", "image");
 
   return (
     <Link
@@ -82,59 +85,88 @@ export function FlashSaleCountdownCard({ tile }: FlashSaleCountdownCardProps) {
       {...sanityAttr}
       className="group relative block w-full rounded-2xl overflow-hidden transition-all duration-300 hover:scale-[1.01] hover:shadow-lg shadow-sm bg-[#004FD6]"
     >
-      <div className="relative w-full px-3.5 py-4 sm:py-4 flex flex-col items-center justify-center text-center bg-gradient-to-b from-[#0059E8] to-[#0044BD]">
-        {/* Header: PROMOS [EXPRESS] */}
-        <div className="flex items-center justify-center gap-1.5 flex-wrap mb-1">
-          <span className="text-white font-black text-xl sm:text-[22px] leading-none tracking-tight uppercase">
-            {leadText}
-          </span>
-          {highlightWord && (
-            <span className="bg-[#E60000] text-white font-black text-xl sm:text-[22px] leading-none px-1.5 py-0.5 rounded-[3px] tracking-tight uppercase">
-              {highlightWord}
+      <div className="relative w-full min-h-[168px] sm:min-h-[162px] px-4 py-5 flex flex-col items-center justify-center text-center bg-gradient-to-b from-[#0059E8] to-[#0044BD]">
+        {/* Imagen de fondo editable desde Sanity (si existe) */}
+        {bgImgUrl && (
+          <>
+            <picture className="absolute inset-0 w-full h-full block pointer-events-none">
+              {bgMobileUrl && <source media="(max-width: 640px)" srcSet={bgMobileUrl} />}
+              <img
+                src={bgImgUrl}
+                alt={displayTitle}
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              />
+            </picture>
+            <div className="absolute inset-0 bg-black/25 pointer-events-none" />
+          </>
+        )}
+
+        {/* Contenido superior: PROMOS [EXPRESS] + Subtítulo */}
+        <div className="relative z-10 flex flex-col items-center w-full">
+          <div className="flex items-center justify-center gap-1.5 flex-wrap mb-1">
+            <span className="text-white font-black text-xl sm:text-[22px] leading-none tracking-tight uppercase drop-shadow-sm">
+              {leadText}
             </span>
+            {highlightWord && (
+              <span className="bg-[#E60000] text-white font-black text-xl sm:text-[22px] leading-none px-1.5 py-0.5 rounded-[3px] tracking-tight uppercase shadow-sm">
+                {highlightWord}
+              </span>
+            )}
+          </div>
+
+          <p className="text-white/95 text-[9.5px] sm:text-[10.5px] font-extrabold uppercase tracking-wide mb-3.5 leading-tight drop-shadow-sm">
+            {displaySubtitle}
+          </p>
+
+          {/* Tarjetas de Cuenta Regresiva idénticas en Web y Móvil */}
+          {isCountdownEnabled && (
+            <div className="flex items-center justify-center gap-1.5 sm:gap-2 w-full max-w-[290px] mx-auto">
+              <div className="flex-1 bg-white text-neutral-900 rounded-xl py-2.5 sm:py-2 px-1 shadow-md flex flex-col items-center justify-center border border-black/5">
+                <span
+                  suppressHydrationWarning
+                  className="text-xl sm:text-[22px] font-black leading-none tracking-tight tabular-nums text-neutral-900"
+                >
+                  {pad(timeLeft.hours)}
+                </span>
+                <span className="text-[8.5px] sm:text-[9px] font-bold text-neutral-500 uppercase tracking-wider mt-1">
+                  HRS
+                </span>
+              </div>
+
+              <span className="text-white font-black text-lg sm:text-xl leading-none select-none pb-1 drop-shadow-sm">
+                :
+              </span>
+
+              <div className="flex-1 bg-white text-neutral-900 rounded-xl py-2.5 sm:py-2 px-1 shadow-md flex flex-col items-center justify-center border border-black/5">
+                <span
+                  suppressHydrationWarning
+                  className="text-xl sm:text-[22px] font-black leading-none tracking-tight tabular-nums text-neutral-900"
+                >
+                  {pad(timeLeft.minutes)}
+                </span>
+                <span className="text-[8.5px] sm:text-[9px] font-bold text-neutral-500 uppercase tracking-wider mt-1">
+                  MIN
+                </span>
+              </div>
+
+              <span className="text-white font-black text-lg sm:text-xl leading-none select-none pb-1 drop-shadow-sm">
+                :
+              </span>
+
+              <div className="flex-1 bg-white text-neutral-900 rounded-xl py-2.5 sm:py-2 px-1 shadow-md flex flex-col items-center justify-center border border-black/5">
+                <span
+                  suppressHydrationWarning
+                  className="text-xl sm:text-[22px] font-black leading-none tracking-tight tabular-nums text-neutral-900"
+                >
+                  {pad(timeLeft.seconds)}
+                </span>
+                <span className="text-[8.5px] sm:text-[9px] font-bold text-neutral-500 uppercase tracking-wider mt-1">
+                  SEG
+                </span>
+              </div>
+            </div>
           )}
         </div>
-
-        {/* Subtitle */}
-        <p className="text-white/95 text-[9.5px] sm:text-[10.5px] font-extrabold uppercase tracking-wide mb-3 leading-tight">
-          {displaySubtitle}
-        </p>
-
-        {/* Countdown Boxes matching Web & Mobile Reference (with white colons) */}
-        {isCountdownEnabled && (
-          <div className="flex items-center justify-center gap-1.5 w-full max-w-[280px] mx-auto">
-            <div className="flex-1 bg-white text-neutral-900 rounded-xl py-2 px-1 shadow-md flex flex-col items-center justify-center border border-black/5">
-              <span className="text-xl sm:text-[22px] font-black leading-none tracking-tight tabular-nums text-neutral-900">
-                {pad(timeLeft.hours)}
-              </span>
-              <span className="text-[8.5px] sm:text-[9px] font-bold text-neutral-500 uppercase tracking-wider mt-1">
-                HRS
-              </span>
-            </div>
-
-            <span className="text-white font-black text-lg sm:text-xl leading-none select-none pb-1">:</span>
-
-            <div className="flex-1 bg-white text-neutral-900 rounded-xl py-2 px-1 shadow-md flex flex-col items-center justify-center border border-black/5">
-              <span className="text-xl sm:text-[22px] font-black leading-none tracking-tight tabular-nums text-neutral-900">
-                {pad(timeLeft.minutes)}
-              </span>
-              <span className="text-[8.5px] sm:text-[9px] font-bold text-neutral-500 uppercase tracking-wider mt-1">
-                MIN
-              </span>
-            </div>
-
-            <span className="text-white font-black text-lg sm:text-xl leading-none select-none pb-1">:</span>
-
-            <div className="flex-1 bg-white text-neutral-900 rounded-xl py-2 px-1 shadow-md flex flex-col items-center justify-center border border-black/5">
-              <span className="text-xl sm:text-[22px] font-black leading-none tracking-tight tabular-nums text-neutral-900">
-                {pad(timeLeft.seconds)}
-              </span>
-              <span className="text-[8.5px] sm:text-[9px] font-bold text-neutral-500 uppercase tracking-wider mt-1">
-                SEG
-              </span>
-            </div>
-          </div>
-        )}
       </div>
     </Link>
   );

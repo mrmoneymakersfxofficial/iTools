@@ -1,5 +1,5 @@
 import { defaultCache } from "@serwist/next/worker";
-import type { PrecacheEntry, SerwistGlobalConfig } from "serwist";
+import { NetworkOnly, type PrecacheEntry, type SerwistGlobalConfig } from "serwist";
 import { Serwist } from "serwist";
 
 declare global {
@@ -15,7 +15,20 @@ const serwist = new Serwist({
   skipWaiting: true,
   clientsClaim: true,
   navigationPreload: true,
-  runtimeCaching: defaultCache,
+  runtimeCaching: [
+    // Never serve stale cached HTML, Next.js RSC payloads, APIs or CMS routes
+    {
+      matcher: ({ request, url }) =>
+        request.mode === "navigate" ||
+        request.destination === "document" ||
+        request.headers.get("RSC") === "1" ||
+        url.searchParams.has("_rsc") ||
+        url.pathname.startsWith("/api/") ||
+        url.pathname.startsWith("/cms"),
+      handler: new NetworkOnly(),
+    },
+    ...defaultCache,
+  ],
 });
 
 serwist.addEventListeners();

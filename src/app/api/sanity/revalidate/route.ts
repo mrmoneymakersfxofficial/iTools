@@ -16,6 +16,7 @@ export async function POST(request: Request) {
     if (body.slug?.current) {
       revalidatePath(`/producto/${body.slug.current}`);
     }
+    revalidatePath("/", "layout");
     revalidatePath("/");
 
     return NextResponse.json({ revalidated: true, now: Date.now() });
