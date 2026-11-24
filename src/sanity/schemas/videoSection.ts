@@ -23,11 +23,13 @@ export default defineType({
       options: {
         list: [
           { title: "YouTube / YouTube Shorts ($0 ancho de banda)", value: "youtube" },
+          { title: "Vimeo ($0 ancho de banda)", value: "vimeo" },
           { title: "Google Drive ($0 ancho de banda)", value: "googleDrive" },
+          { title: "Mixto (YouTube, Vimeo y Drive)", value: "mixed" },
         ],
       },
       initialValue: () => "youtube",
-      description: "Solo enlaces externos (YouTube o Google Drive). Los videos se transmiten desde sus servidores oficiales a costo $0 para la web.",
+      description: "Solo enlaces externos (YouTube, Vimeo o Google Drive). Los videos se transmiten desde sus servidores oficiales a costo $0 para la web.",
     }),
     defineField({
       name: "videos",
@@ -45,13 +47,13 @@ export default defineType({
             }),
             defineField({
               name: "videoUrl",
-              title: "1. 🌐 Enlace de YouTube (Recomendado)",
+              title: "1. 🌐 Enlace de YouTube o Vimeo (Recomendado)",
               type: "url",
-              description: "Pega el enlace de YouTube o YouTube Shorts. Se reproduce directamente desde YouTube sin costo de ancho de banda.",
+              description: "Pega cualquier enlace de YouTube, YouTube Shorts (youtube.com/shorts/...) o Vimeo (ej: https://vimeo.com/1235967167). El reproductor detecta la plataforma automáticamente.",
             }),
             defineField({
               name: "googleDriveUrl",
-              title: "2. 📁 Enlace de Google Drive",
+              title: "2. 📁 Enlace de Google Drive (Opcional)",
               type: "url",
               description: "Pega el enlace de compartir de Google Drive (ej: https://drive.google.com/file/d/XXXX/view?usp=sharing con permiso 'Cualquier persona con el enlace').",
             }),

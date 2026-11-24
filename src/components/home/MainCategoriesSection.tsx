@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 import { getSanityAttr } from "@/lib/sanity/visual-attributes";
 
 interface MainCategoriesSectionProps {
@@ -10,25 +9,29 @@ interface MainCategoriesSectionProps {
 }
 
 const fallbackCombos = [
-  { title: "Herramientas Eléctricas", price: "S/ 1039.90", href: "/categoria/herramientas-electricas" },
-  { title: "Herramientas Inalámbricas", price: "S/ 500.00", href: "/categoria/herramientas-inalambricas" },
-  { title: "Herramientas Manuales", price: "S/ 899.00", href: "/categoria/herramientas-manuales" },
-  { title: "Herramientas Manuales", price: "S/ 1909.90", href: "/categoria/herramientas-manuales" },
-  { title: "Accesorios de Herramientas", price: "S/ 899.00", href: "/categoria/accesorios" },
+  { title: "Herramientas Eléctricas", price: "S/ 399.90", href: "/categoria/herramientas-electricas" },
+  { title: "Herramientas Inalámbricas", price: "S/ 699.90", href: "/categoria/herramientas-inalambricas" },
+  { title: "Herramientas Manuales", price: "S/ 999.90", href: "/categoria/herramientas-manuales" },
+  { title: "Equipos Especializados", price: "S/ 999.90", href: "/categoria/equipos-especializados" },
 ];
 
-export function MainCategoriesSection({ categories, dealTiles, homeSettings, title }: MainCategoriesSectionProps) {
-  // STRICTLY filter out deal-tile-duo-countdown so it NEVER appears in the 5 combo cards
+export function MainCategoriesSection({ dealTiles, homeSettings, title }: MainCategoriesSectionProps) {
+  // Excluir estrictamente deal-tile-duo-countdown para que nunca aparezca en las 4 tarjetas principales
   const nonCountdownTiles = (dealTiles || []).filter(
     (t: any) => t._id !== "deal-tile-duo-countdown" && t._id !== "drafts.deal-tile-duo-countdown"
   );
 
-  const sectionTitle = title || homeSettings?.mainCategoriesTitle || "CATEGORIAS PRINCIPALES";
+  const sectionTitle = title || homeSettings?.mainCategoriesTitle || "PROMOS EXPRESS";
 
   return (
-    <section className="py-4 md:py-6" id="categorias-principales" data-section="Categorías Principales" data-sanity-doc="dealTile">
+    <section
+      className="py-4 md:py-6"
+      id="categorias-principales"
+      data-section="Categorías Principales"
+      data-sanity-doc="dealTile"
+    >
       <div className="mx-auto max-w-[1440px] px-3 sm:px-4 lg:px-6">
-        {/* Section Title — 100% editable from Sanity CMS */}
+        {/* Section Title — 100% editable desde Sanity CMS */}
         <div className="flex items-center gap-2 mb-3">
           <span className="text-[#E60000] font-black text-lg tracking-tighter">▶▶</span>
           <h2
@@ -39,15 +42,15 @@ export function MainCategoriesSection({ categories, dealTiles, homeSettings, tit
           </h2>
         </div>
 
-        {/* 5 Cards Grid Matching Image 1 */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-          {[1, 2, 3, 4, 5].map((idx) => {
+        {/* 4 Cards Grid — Exactamente 4 tarjetas en Web y 4 en Móvil (2x2 sin espacios vacíos) */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+          {[1, 2, 3, 4].map((idx) => {
             const tileId = `deal-tile-duo-${idx}`;
             const tile = dealTiles?.find((t: any) => t._id === tileId) || nonCountdownTiles[idx - 1];
             const fb = fallbackCombos[idx - 1];
             const tileSanityAttr = getSanityAttr(tile?._id || tileId, "dealTile", "image");
             const imgUrl = tile?.image?.asset?.url || "/banners/sections/dongcheng-combo.webp";
-            const price = tile?.promoPrice ? `S/ ${Number(tile.promoPrice).toFixed(2)}` : fb.price;
+            const mobImgUrl = tile?.imageMobile?.asset?.url;
             const linkHref = tile?.href || fb.href;
 
             return (
@@ -55,16 +58,17 @@ export function MainCategoriesSection({ categories, dealTiles, homeSettings, tit
                 key={tile?._id || tileId}
                 href={linkHref}
                 {...tileSanityAttr}
-                className={`group relative rounded-xl overflow-hidden shadow-sm border border-[#E0E0E0] dark:border-[#333] transition-transform duration-300 hover:scale-[1.01] bg-[#0047AB] ${
-                  idx === 5 ? "hidden lg:block" : ""
-                }`}
+                className="group relative rounded-xl overflow-hidden shadow-sm border border-[#E0E0E0] dark:border-[#333] transition-transform duration-300 hover:scale-[1.01] bg-[#0047AB]"
               >
-                <div className="relative w-full h-[220px] sm:h-[240px] lg:h-[260px]">
-                  <img
-                    src={imgUrl}
-                    alt={tile?.title || fb.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
+                <div className="relative w-full aspect-square sm:aspect-[600/520]">
+                  <picture className="w-full h-full block">
+                    {mobImgUrl && <source media="(max-width: 640px)" srcSet={mobImgUrl} />}
+                    <img
+                      src={imgUrl}
+                      alt={tile?.title || fb.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                  </picture>
                 </div>
               </Link>
             );

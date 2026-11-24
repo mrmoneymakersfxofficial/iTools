@@ -12,6 +12,7 @@ import { useCartStore } from "@/stores/cart-store";
 import type { Product, Brand } from "@/types";
 import { formatPrice } from "@/lib/format";
 import { cn } from "@/lib/utils";
+import { BrandHeroSlider, type BrandPromoCardData } from "@/components/brand/BrandHeroSlider";
 
 interface BrandTheme {
   color: string;
@@ -870,188 +871,198 @@ export function BrandPageClient({
               </nav>
             </div>
 
-            {/* ── Top Promo Card ── */}
-            <div
-              className="relative rounded-2xl overflow-hidden shadow-lg border border-white/10 flex flex-col md:flex-row items-stretch flex-1 min-h-[220px] md:min-h-[250px]"
-              style={{ backgroundColor: brandColor }}
-            >
-              {/* Left text & CTA */}
-              <div className="relative z-10 flex-1 p-6 md:p-8 flex flex-col justify-center space-y-3 min-w-[260px]">
-                <h2
-                  className="text-2xl sm:text-3xl lg:text-4xl font-black uppercase tracking-tight leading-none drop-shadow-sm"
-                  style={{ color: textCol }}
-                >
-                  MÁS {brand.name.toUpperCase()},<br className="hidden sm:inline" /> MÁS AHORROS
-                </h2>
-                <p
-                  className="text-xs sm:text-sm leading-relaxed max-w-sm drop-shadow-sm"
-                  style={{ color: textCol, opacity: 0.9 }}
-                >
-                  Ofertas exclusivas en herramientas {brand.name}. Envío a todo Perú.
-                </p>
-                <div>
-                  <Link
-                    href={`/marca/${brand.slug}`}
-                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-black uppercase tracking-wider transition-all hover:scale-105 shadow-md active:scale-95"
-                    style={{
-                      backgroundColor: buttonBg,
-                      color: buttonTextColor,
-                    }}
-                  >
-                    COMPRAR AHORA
-                    <CircleArrowRight className="h-4 w-4" style={{ color: buttonTextColor }} />
-                  </Link>
-                </div>
-              </div>
+            {/* ── Top Promo Slider (Editable desde Sanity Marcas) ── */}
+            <BrandHeroSlider
+              brandId={(brand as any)._id || brand.id}
+              brandName={brand.name}
+              brandSlug={brand.slug}
+              brandColor={brandColor}
+              textCol={textCol}
+              buttonBg={buttonBg}
+              buttonTextColor={buttonTextColor}
+              fallbackTopImg={promoImgs.top}
+              sliders={(brand as any).brandSliders}
+            />
 
-              {/* Right promo image */}
-              <div className="relative w-full md:w-[50%] h-[180px] md:h-full overflow-hidden shrink-0">
-                <img
-                  src={promoImgs.top}
-                  alt={`Promoción ${brand.name}`}
-                  className="w-full h-full object-cover object-center"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).style.display = "none";
-                  }}
-                />
-                {/* Horizontal gradient blend */}
-                <div
-                  className="hidden md:block absolute inset-y-0 left-0 w-24 pointer-events-none"
-                  style={{
-                    background: `linear-gradient(to right, ${brandColor}, transparent)`,
-                  }}
-                />
-                {/* Vertical blend for mobile */}
-                <div
-                  className="md:hidden absolute inset-x-0 top-0 h-14 pointer-events-none"
-                  style={{
-                    background: `linear-gradient(to bottom, ${brandColor}, transparent)`,
-                  }}
-                />
-              </div>
-            </div>
-
-            {/* ── Two Promo Cards (50% / 50%) ── */}
+            {/* ── Two Promo Cards (50% / 50% - Editables desde Sanity Marcas) ── */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3 h-[190px] sm:h-[200px] shrink-0">
-              {/* Card 1: PRODUCTO GRATUITO A ELECCIÓN */}
-              <div
-                className="relative rounded-2xl overflow-hidden shadow-md border border-white/10 flex flex-col justify-between h-full p-4 xl:p-5 group"
-                style={{ backgroundColor: brandColor }}
-              >
-                <div className="absolute right-0 top-0 bottom-0 w-[55%] pointer-events-none overflow-hidden">
-                  <img
-                    src={promoImgs.card1}
-                    alt={`Oferta ${brand.name}`}
-                    className="w-full h-full object-contain object-right"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).style.display = "none";
-                    }}
-                  />
-                  <div
-                    className="absolute inset-y-0 left-0 w-16 pointer-events-none"
-                    style={{
-                      background: `linear-gradient(to right, ${brandColor}, transparent)`,
-                    }}
-                  />
-                </div>
+              {(() => {
+                const c1: BrandPromoCardData | undefined = (brand as any).promoCard1;
+                const c1Img = c1?.image?.asset?.url || promoImgs.card1;
+                const c1Mobile = c1?.imageMobile?.asset?.url;
+                const c1Title = c1?.title || "PRODUCTO GRATUITO A ELECCIÓN";
+                const c1Sub = c1?.subtitle || "Con un paquete de 2 baterías seleccionado.";
+                const c1Eyebrow = c1?.eyebrow || brand.name.toUpperCase();
+                const c1Link = c1?.link || `/marca/${brand.slug}`;
+                const c1FullBanner = Boolean(c1?.image?.asset?.url && !c1?.title);
 
-                <div className="relative z-10">
-                  <span
-                    className="text-[10px] font-black tracking-widest uppercase block mb-0.5"
-                    style={{ color: textCol, opacity: 0.85 }}
-                  >
-                    {brand.name.toUpperCase()}
-                  </span>
-                </div>
-
-                <div className="relative z-10 max-w-[65%] space-y-1">
-                  <h3
-                    className="text-xs sm:text-sm font-black uppercase leading-tight"
-                    style={{ color: textCol }}
-                  >
-                    PRODUCTO GRATUITO A ELECCIÓN
-                  </h3>
-                  <p
-                    className="text-[10px] sm:text-[11px] leading-tight"
-                    style={{ color: textCol, opacity: 0.85 }}
-                  >
-                    Con un paquete de 2 baterías seleccionado.
-                  </p>
-                  <div className="pt-1.5">
+                if (c1FullBanner) {
+                  return (
                     <Link
-                      href={`/marca/${brand.slug}`}
-                      className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[10px] font-black uppercase tracking-wider transition-all hover:scale-105 shadow-sm active:scale-95"
-                      style={{
-                        backgroundColor: buttonBg,
-                        color: buttonTextColor,
-                      }}
+                      href={c1Link}
+                      className="relative rounded-2xl overflow-hidden shadow-md border border-white/10 block h-full"
                     >
-                      COMPRAR AHORA
-                      <CircleArrowRight className="h-3 w-3" style={{ color: buttonTextColor }} />
+                      <picture className="w-full h-full block">
+                        {c1Mobile && <source media="(max-width: 640px)" srcSet={c1Mobile} />}
+                        <img src={c1Img} alt={`Oferta ${brand.name}`} className="w-full h-full object-cover" />
+                      </picture>
                     </Link>
-                  </div>
-                </div>
-              </div>
+                  );
+                }
 
-              {/* Card 2: OFERTA DE BONIFICACIÓN POR BATERÍA */}
-              <div
-                className="relative rounded-2xl overflow-hidden shadow-md border border-white/10 flex flex-col justify-between h-full p-4 xl:p-5 group"
-                style={{ backgroundColor: brandColor }}
-              >
-                <div className="absolute right-0 top-0 bottom-0 w-[55%] pointer-events-none overflow-hidden">
-                  <img
-                    src={promoImgs.card2}
-                    alt={`Oferta ${brand.name}`}
-                    className="w-full h-full object-contain object-right"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).style.display = "none";
-                    }}
-                  />
+                return (
                   <div
-                    className="absolute inset-y-0 left-0 w-16 pointer-events-none"
-                    style={{
-                      background: `linear-gradient(to right, ${brandColor}, transparent)`,
-                    }}
-                  />
-                </div>
+                    className="relative rounded-2xl overflow-hidden shadow-md border border-white/10 flex flex-col justify-between h-full p-4 xl:p-5 group"
+                    style={{ backgroundColor: brandColor }}
+                  >
+                    <div className="absolute right-0 top-0 bottom-0 w-[55%] pointer-events-none overflow-hidden">
+                      <picture className="w-full h-full block">
+                        {c1Mobile && <source media="(max-width: 640px)" srcSet={c1Mobile} />}
+                        <img
+                          src={c1Img}
+                          alt={`Oferta ${brand.name}`}
+                          className="w-full h-full object-contain object-right"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).style.display = "none";
+                          }}
+                        />
+                      </picture>
+                      <div
+                        className="absolute inset-y-0 left-0 w-16 pointer-events-none"
+                        style={{
+                          background: `linear-gradient(to right, ${brandColor}, transparent)`,
+                        }}
+                      />
+                    </div>
 
-                <div className="relative z-10">
-                  <span
-                    className="text-[10px] font-black tracking-widest uppercase block mb-0.5"
-                    style={{ color: textCol, opacity: 0.85 }}
-                  >
-                    {brand.name.toUpperCase()}
-                  </span>
-                </div>
+                    <div className="relative z-10">
+                      <span
+                        className="text-[10px] font-black tracking-widest uppercase block mb-0.5"
+                        style={{ color: textCol, opacity: 0.85 }}
+                      >
+                        {c1Eyebrow}
+                      </span>
+                    </div>
 
-                <div className="relative z-10 max-w-[65%] space-y-1">
-                  <h3
-                    className="text-xs sm:text-sm font-black uppercase leading-tight"
-                    style={{ color: textCol }}
-                  >
-                    OFERTA DE BONIFICACIÓN POR BATERÍA
-                  </h3>
-                  <p
-                    className="text-[10px] sm:text-[11px] leading-tight"
-                    style={{ color: textCol, opacity: 0.85 }}
-                  >
-                    Elige un artículo GRATIS con tu compra.
-                  </p>
-                  <div className="pt-1.5">
-                    <Link
-                      href={`/marca/${brand.slug}`}
-                      className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[10px] font-black uppercase tracking-wider transition-all hover:scale-105 shadow-sm active:scale-95"
-                      style={{
-                        backgroundColor: buttonBg,
-                        color: buttonTextColor,
-                      }}
-                    >
-                      COMPRAR AHORA
-                      <CircleArrowRight className="h-3 w-3" style={{ color: buttonTextColor }} />
-                    </Link>
+                    <div className="relative z-10 max-w-[65%] space-y-1">
+                      <h3
+                        className="text-xs sm:text-sm font-black uppercase leading-tight"
+                        style={{ color: textCol }}
+                      >
+                        {c1Title}
+                      </h3>
+                      <p
+                        className="text-[10px] sm:text-[11px] leading-tight"
+                        style={{ color: textCol, opacity: 0.85 }}
+                      >
+                        {c1Sub}
+                      </p>
+                      <div className="pt-1.5">
+                        <Link
+                          href={c1Link}
+                          className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[10px] font-black uppercase tracking-wider transition-all hover:scale-105 shadow-sm active:scale-95"
+                          style={{
+                            backgroundColor: buttonBg,
+                            color: buttonTextColor,
+                          }}
+                        >
+                          COMPRAR AHORA
+                          <CircleArrowRight className="h-3 w-3" style={{ color: buttonTextColor }} />
+                        </Link>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
+                );
+              })()}
+
+              {(() => {
+                const c2: BrandPromoCardData | undefined = (brand as any).promoCard2;
+                const c2Img = c2?.image?.asset?.url || promoImgs.card2;
+                const c2Mobile = c2?.imageMobile?.asset?.url;
+                const c2Title = c2?.title || "OFERTA DE BONIFICACIÓN POR BATERÍA";
+                const c2Sub = c2?.subtitle || "Elige un artículo GRATIS con tu compra.";
+                const c2Eyebrow = c2?.eyebrow || brand.name.toUpperCase();
+                const c2Link = c2?.link || `/marca/${brand.slug}`;
+                const c2FullBanner = Boolean(c2?.image?.asset?.url && !c2?.title);
+
+                if (c2FullBanner) {
+                  return (
+                    <Link
+                      href={c2Link}
+                      className="relative rounded-2xl overflow-hidden shadow-md border border-white/10 block h-full"
+                    >
+                      <picture className="w-full h-full block">
+                        {c2Mobile && <source media="(max-width: 640px)" srcSet={c2Mobile} />}
+                        <img src={c2Img} alt={`Oferta ${brand.name}`} className="w-full h-full object-cover" />
+                      </picture>
+                    </Link>
+                  );
+                }
+
+                return (
+                  <div
+                    className="relative rounded-2xl overflow-hidden shadow-md border border-white/10 flex flex-col justify-between h-full p-4 xl:p-5 group"
+                    style={{ backgroundColor: brandColor }}
+                  >
+                    <div className="absolute right-0 top-0 bottom-0 w-[55%] pointer-events-none overflow-hidden">
+                      <picture className="w-full h-full block">
+                        {c2Mobile && <source media="(max-width: 640px)" srcSet={c2Mobile} />}
+                        <img
+                          src={c2Img}
+                          alt={`Oferta ${brand.name}`}
+                          className="w-full h-full object-contain object-right"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).style.display = "none";
+                          }}
+                        />
+                      </picture>
+                      <div
+                        className="absolute inset-y-0 left-0 w-16 pointer-events-none"
+                        style={{
+                          background: `linear-gradient(to right, ${brandColor}, transparent)`,
+                        }}
+                      />
+                    </div>
+
+                    <div className="relative z-10">
+                      <span
+                        className="text-[10px] font-black tracking-widest uppercase block mb-0.5"
+                        style={{ color: textCol, opacity: 0.85 }}
+                      >
+                        {c2Eyebrow}
+                      </span>
+                    </div>
+
+                    <div className="relative z-10 max-w-[65%] space-y-1">
+                      <h3
+                        className="text-xs sm:text-sm font-black uppercase leading-tight"
+                        style={{ color: textCol }}
+                      >
+                        {c2Title}
+                      </h3>
+                      <p
+                        className="text-[10px] sm:text-[11px] leading-tight"
+                        style={{ color: textCol, opacity: 0.85 }}
+                      >
+                        {c2Sub}
+                      </p>
+                      <div className="pt-1.5">
+                        <Link
+                          href={c2Link}
+                          className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[10px] font-black uppercase tracking-wider transition-all hover:scale-105 shadow-sm active:scale-95"
+                          style={{
+                            backgroundColor: buttonBg,
+                            color: buttonTextColor,
+                          }}
+                        >
+                          COMPRAR AHORA
+                          <CircleArrowRight className="h-3 w-3" style={{ color: buttonTextColor }} />
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()}
             </div>
           </div>
 

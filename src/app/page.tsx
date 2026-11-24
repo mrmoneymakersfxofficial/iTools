@@ -118,14 +118,12 @@ export default async function Home() {
           <div className="mx-auto max-w-[1440px] px-2.5 lg:px-4 py-3">
             <div className="flex gap-3 items-stretch">
               {/* LEFT SIDEBAR: Categorías de Tendencia + Cuadro de Tiempo Flash Sale */}
-              <div className="w-[240px] xl:w-[260px] shrink-0 flex flex-col">
-                <div className="sticky top-[120px] flex flex-col gap-2.5">
-                  <TrendingSidebar
-                    categories={data.trendingCategories}
-                    title={data.homeSettings?.trendingCategoriesTitle}
-                  />
-                  <FlashSaleCountdownCard tile={countdownTile} />
-                </div>
+              <div className="w-[240px] xl:w-[260px] shrink-0 flex flex-col gap-2.5 justify-between">
+                <TrendingSidebar
+                  categories={data.trendingCategories}
+                  title={data.homeSettings?.trendingCategoriesTitle}
+                />
+                <FlashSaleCountdownCard tile={countdownTile} />
               </div>
 
               {/* CENTER COLUMN: Hero Banners */}
@@ -139,15 +137,14 @@ export default async function Home() {
 
               {/* RIGHT SIDEBAR: Tool Crib of the North */}
               <div className="w-[280px] xl:w-[300px] shrink-0 flex flex-col">
-                <div className="sticky top-[120px]">
-                  <ToolCribSidebar
-                    products={
-                      data.products?.filter((p: any) => p.showInToolCrib)?.length
-                        ? data.products.filter((p: any) => p.showInToolCrib).slice(0, 6)
-                        : (data.featuredProducts || data.products || []).slice(0, 6)
-                    }
-                  />
-                </div>
+                <ToolCribSidebar
+                  products={
+                    data.products?.filter((p: any) => p.showInToolCrib)?.length
+                      ? data.products.filter((p: any) => p.showInToolCrib).slice(0, 6)
+                      : (data.featuredProducts || data.products || []).slice(0, 6)
+                  }
+                  homeSettings={data.homeSettings}
+                />
               </div>
             </div>
           </div>

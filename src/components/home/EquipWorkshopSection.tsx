@@ -241,7 +241,9 @@ export function EquipWorkshopSection({ products, banners, title }: EquipWorkshop
         <Link
           href={bAuto?.link || "/categoria/herramientas-electricas"}
           {...attrAuto}
-          className="group relative block w-full h-[110px] sm:h-[130px] md:h-[145px] rounded-xl overflow-hidden shadow-sm border border-[#E0E0E0] dark:border-[#333] transition-transform duration-300 hover:scale-[1.005] mb-3 sm:mb-4"
+          className={`group relative block w-full ${
+            bAuto?.imageMobile?.asset?.url ? "aspect-[4/3] sm:aspect-auto sm:h-[130px] md:h-[145px]" : "h-[110px] sm:h-[130px] md:h-[145px]"
+          } rounded-xl overflow-hidden shadow-sm border border-[#E0E0E0] dark:border-[#333] transition-transform duration-300 hover:scale-[1.005] mb-3 sm:mb-4`}
         >
           <picture className="w-full h-full block">
             {bAuto?.imageMobile?.asset?.url && (
@@ -264,7 +266,9 @@ export function EquipWorkshopSection({ products, banners, title }: EquipWorkshop
           <Link
             href={bTotal?.link || "/marca/total"}
             {...attrTotal}
-            className="group relative block w-full h-[170px] sm:h-[200px] rounded-xl overflow-hidden shadow-sm border border-[#E0E0E0] dark:border-[#333] transition-transform duration-300 hover:scale-[1.01]"
+            className={`group relative block w-full ${
+              bTotal?.imageMobile?.asset?.url ? "aspect-[5/4] sm:aspect-auto sm:h-[200px]" : "h-[170px] sm:h-[200px]"
+            } rounded-xl overflow-hidden shadow-sm border border-[#E0E0E0] dark:border-[#333] transition-transform duration-300 hover:scale-[1.01]`}
           >
             <picture className="w-full h-full block">
               {bTotal?.imageMobile?.asset?.url && (
@@ -285,7 +289,9 @@ export function EquipWorkshopSection({ products, banners, title }: EquipWorkshop
           <Link
             href={bMakita?.link || "/marca/makita"}
             {...attrMakita}
-            className="group relative block w-full h-[170px] sm:h-[200px] rounded-xl overflow-hidden shadow-sm border border-[#E0E0E0] dark:border-[#333] transition-transform duration-300 hover:scale-[1.01]"
+            className={`group relative block w-full ${
+              bMakita?.imageMobile?.asset?.url ? "aspect-[5/4] sm:aspect-auto sm:h-[200px]" : "h-[170px] sm:h-[200px]"
+            } rounded-xl overflow-hidden shadow-sm border border-[#E0E0E0] dark:border-[#333] transition-transform duration-300 hover:scale-[1.01]`}
           >
             <picture className="w-full h-full block">
               {bMakita?.imageMobile?.asset?.url && (
@@ -306,7 +312,9 @@ export function EquipWorkshopSection({ products, banners, title }: EquipWorkshop
           <Link
             href={bMilwaukee?.link || "/marca/milwaukee"}
             {...attrMilwaukee}
-            className="group relative block w-full h-[170px] sm:h-[200px] rounded-xl overflow-hidden shadow-sm border border-[#E0E0E0] dark:border-[#333] transition-transform duration-300 hover:scale-[1.01]"
+            className={`group relative block w-full ${
+              bMilwaukee?.imageMobile?.asset?.url ? "aspect-[5/4] sm:aspect-auto sm:h-[200px]" : "h-[170px] sm:h-[200px]"
+            } rounded-xl overflow-hidden shadow-sm border border-[#E0E0E0] dark:border-[#333] transition-transform duration-300 hover:scale-[1.01]`}
           >
             <picture className="w-full h-full block">
               {bMilwaukee?.imageMobile?.asset?.url && (

@@ -2,11 +2,11 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
-  Home, ShoppingBag, MessageCircle, User, ChevronLeft, ChevronRight,
-  X, Send, Wrench, Search, Sparkles, ArrowLeft, Zap, Shield, Trees,
-  Settings, Package, HardHat, Ruler, Layers, BatteryCharging,
+  Home, ShoppingBag, MessageCircle, User,
+  X, Wrench, Search, Sparkles, ArrowLeft, Zap, Shield,
+  Settings, Package, HardHat, Layers, BatteryCharging, ChevronRight,
 } from "lucide-react";
 import { getProductsByBrandSlug, categories, brands } from "@/lib/data";
 import { officialCategories } from "@/lib/official-categories";
@@ -17,37 +17,23 @@ import { useGlobalSettings } from "@/stores/global-settings-context";
 
 const brandLinks = [
   { name: "Milwaukee", slug: "milwaukee", color: "#DB001A", textColor: "#FFF" },
-  { name: "DeWalt", slug: "dewalt", color: "#FEBD17", textColor: "#1A1A1A" },
   { name: "Bosch", slug: "bosch", color: "#002A54", textColor: "#FFF" },
-  { name: "Makita", slug: "makita", color: "#0077C8", textColor: "#FFF" },
+  { name: "DeWalt", slug: "dewalt", color: "#FEBD17", textColor: "#1A1A1A" },
+  { name: "Makita", slug: "makita", color: "#E4002B", textColor: "#FFF" },
+  { name: "Stanley", slug: "stanley", color: "#FFC20F", textColor: "#1A1A1A" },
+  { name: "Ingco", slug: "ingco", color: "#F39200", textColor: "#FFF" },
   { name: "Truper", slug: "truper", color: "#F37021", textColor: "#FFF" },
   { name: "Total", slug: "total", color: "#00828A", textColor: "#FFF" },
-  { name: "Ingco", slug: "ingco", color: "#F39200", textColor: "#FFF" },
-  { name: "Stanley", slug: "stanley", color: "#FFC20F", textColor: "#1A1A1A" },
-  { name: "DCA", slug: "dca", color: "#008554", textColor: "#FFF" },
-  { name: "Dong Cheng", slug: "dong-cheng", color: "#0055A4", textColor: "#FFF" },
-  { name: "Kaili", slug: "kaili", color: "#0059D6", textColor: "#FFF" },
-  { name: "Kamasa", slug: "kamasa", color: "#FFE000", textColor: "#1A1A1A" },
-  { name: "SATA", slug: "sata", color: "#006747", textColor: "#FFF" },
   { name: "Toptul", slug: "toptul", color: "#E31837", textColor: "#FFF" },
+  { name: "Dong Cheng", slug: "dong-cheng", color: "#0055A4", textColor: "#FFF" },
+  { name: "Kamasa", slug: "kamasa", color: "#FFE000", textColor: "#1A1A1A" },
   { name: "Bahco", slug: "bahco", color: "#F57B20", textColor: "#FFF" },
-  { name: "EmtOP", slug: "emtop", color: "#E1001A", textColor: "#FFF" },
   { name: "Tramontina", slug: "tramontina", color: "#001689", textColor: "#FFF" },
   { name: "Wagner", slug: "wagner", color: "#FFCE00", textColor: "#1A1A1A" },
-  { name: "Würth", slug: "wurth", color: "#CC0000", textColor: "#FFF" },
-  { name: "3M", slug: "3m", color: "#E60000", textColor: "#FFF" },
-  { name: "Honda", slug: "honda", color: "#E4002B", textColor: "#FFF" },
-  { name: "Klein Tools", slug: "klein-tools", color: "#F58220", textColor: "#1A1A1A" },
-  { name: "Toro", slug: "toro", color: "#C8102E", textColor: "#FFF" },
-  { name: "EGO", slug: "ego", color: "#00843D", textColor: "#FFF" },
-  { name: "Metabo HPT", slug: "metabo-hpt", color: "#007A3D", textColor: "#FFF" },
-  { name: "FLEX", slug: "flex", color: "#D32F2F", textColor: "#FFF" },
-  { name: "STIHL", slug: "stihl", color: "#F37021", textColor: "#FFF" },
-  { name: "FEIN", slug: "fein", color: "#C8102E", textColor: "#FFF" },
-  { name: "SKIL", slug: "skil", color: "#D71920", textColor: "#FFF" },
-  { name: "Festool", slug: "festool", color: "#004F34", textColor: "#FFF" },
-  { name: "JET", slug: "jet", color: "#C8102E", textColor: "#FFF" },
-  { name: "Knaack", slug: "knaack", color: "#8B5A2B", textColor: "#FFF" },
+  { name: "SATA", slug: "sata", color: "#006747", textColor: "#FFF" },
+  { name: "Emtop", slug: "emtop", color: "#E1001A", textColor: "#FFF" },
+  { name: "DCA", slug: "dca", color: "#008554", textColor: "#FFF" },
+  { name: "Kaili", slug: "kaili", color: "#0059D6", textColor: "#FFF" },
 ];
 
 const categoryIcons: Record<string, React.ReactNode> = {
@@ -71,7 +57,6 @@ export function BottomNav() {
   const [showCategories, setShowCategories] = useState(false);
   
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const brandsScrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setShowBrands(false);
@@ -80,12 +65,6 @@ export function BottomNav() {
 
   const isBrandPage = pathname?.startsWith("/marca/") ?? false;
   const isCategoryPage = pathname?.startsWith("/categoria/") ?? false;
-
-  const scrollBrands = (dir: "left" | "right") => {
-    if (brandsScrollRef.current) {
-      brandsScrollRef.current.scrollBy({ left: dir === "left" ? -200 : 200, behavior: "smooth" });
-    }
-  };
 
   // Get products for a selected category (with children)
   const getCategoryProducts = (catId: string) => {
@@ -105,11 +84,11 @@ export function BottomNav() {
     <>
       {/* â”€â”€ Bottom Bar â€” MOBILE ONLY â”€â”€ */}
       <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#0A0A0A]/98 backdrop-blur-xl border-t border-[#1A1A1A]">
-        {/* Main nav buttons */}
-        <div className="flex items-center justify-around px-1 pb-[env(safe-area-inset-bottom)]">
+        {/* Main nav buttons — 5 items simétricos y centrados (sin PACKOUT) */}
+        <div className="grid grid-cols-5 items-center px-1 pb-[env(safe-area-inset-bottom)]">
           <Link
             href="/"
-            className={`flex flex-col items-center gap-0.5 py-2 px-2.5 rounded-xl transition-all ${
+            className={`flex flex-col items-center justify-center gap-0.5 py-2 px-1 rounded-xl transition-all ${
               pathname === "/" ? "text-[#D1001C]" : "text-gray-400 hover:text-gray-200"
             }`}
           >
@@ -120,7 +99,7 @@ export function BottomNav() {
 
           <button
             onClick={() => { setShowBrands(false); setShowCategories(!showCategories); }}
-            className={`flex flex-col items-center gap-0.5 py-2 px-2.5 rounded-xl transition-all ${
+            className={`flex flex-col items-center justify-center gap-0.5 py-2 px-1 rounded-xl transition-all ${
               isCategoryPage || showCategories ? "text-[#D1001C]" : "text-gray-400 hover:text-gray-200"
             }`}
           >
@@ -129,10 +108,10 @@ export function BottomNav() {
             {(isCategoryPage || showCategories) && <div className="w-4 h-0.5 rounded-full bg-[#E35205]" />}
           </button>
 
-          {/* Chatbot button — elevated center */}
+          {/* Chatbot button — centered */}
           <button
             onClick={() => { setShowCategories(false); setShowBrands(false); useAiChatStore.getState().toggleChat(); }}
-            className="relative flex flex-col items-center gap-0.5 py-1 px-3 rounded-xl transition-all -mt-5"
+            className="relative flex flex-col items-center justify-center gap-0.5 py-1 px-1 rounded-xl transition-all -mt-5"
           >
             <div
               className="w-12 h-12 rounded-2xl flex items-center justify-center transition-all active:scale-90 overflow-hidden"
@@ -154,12 +133,12 @@ export function BottomNav() {
                 </>
               )}
             </div>
-            <span className="text-[7px] font-black uppercase tracking-widest text-[#D1001C]">{assistantTitle}</span>
+            <span className="text-[7px] font-black uppercase tracking-widest text-[#D1001C] text-center leading-tight">{assistantTitle}</span>
           </button>
 
           <button
             onClick={() => { setShowCategories(false); setShowBrands(!showBrands); }}
-            className={`flex flex-col items-center gap-0.5 py-2 px-2.5 rounded-xl transition-all ${
+            className={`flex flex-col items-center justify-center gap-0.5 py-2 px-1 rounded-xl transition-all ${
               isBrandPage || showBrands ? "text-[#D1001C]" : "text-gray-400 hover:text-gray-200"
             }`}
           >
@@ -169,19 +148,8 @@ export function BottomNav() {
           </button>
 
           <Link
-            href="/packout-builder"
-            className={`flex flex-col items-center gap-0.5 py-2 px-2.5 rounded-xl transition-all ${
-              pathname === "/packout-builder" ? "text-[#D1001C]" : "text-gray-400 hover:text-gray-200"
-            }`}
-          >
-            <Layers className="h-5 w-5" />
-            <span className="text-[8px] font-bold uppercase tracking-wider">PACKOUT</span>
-            {pathname === "/packout-builder" && <div className="w-4 h-0.5 rounded-full bg-[#E35205]" />}
-          </Link>
-
-          <Link
             href="/login"
-            className="flex flex-col items-center gap-0.5 py-2 px-2.5 rounded-xl text-gray-400 hover:text-gray-200 transition-all"
+            className="flex flex-col items-center justify-center gap-0.5 py-2 px-1 rounded-xl text-gray-400 hover:text-gray-200 transition-all"
           >
             <User className="h-5 w-5" />
             <span className="text-[8px] font-bold uppercase tracking-wider">Cuenta</span>
@@ -189,12 +157,12 @@ export function BottomNav() {
         </div>
       </nav>
 
-      {/* â”€â”€ BRANDS MODAL â”€â”€ */}
+      {/* ── BRANDS MODAL ── */}
       {showBrands && (
         <div className="lg:hidden fixed inset-0 z-[60]" onClick={() => setShowBrands(false)}>
           <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" />
           <div
-            className="absolute bottom-0 left-0 right-0 max-h-[70vh] bg-[#0A0A0A] rounded-t-3xl overflow-hidden animate-in slide-in-from-bottom-4 duration-300"
+            className="absolute bottom-0 left-0 right-0 max-h-[75vh] bg-[#0A0A0A] rounded-t-3xl overflow-hidden animate-in slide-in-from-bottom-4 duration-300"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Handle bar */}
@@ -212,45 +180,8 @@ export function BottomNav() {
               </button>
             </div>
 
-            {/* Horizontal brand scroll */}
-            <div className="relative px-2">
-              <div className="absolute left-0 top-0 bottom-0 w-6 z-10 pointer-events-none" style={{ background: "linear-gradient(to right, #0A0A0A, transparent)" }} />
-              <div className="absolute right-0 top-0 bottom-0 w-6 z-10 pointer-events-none" style={{ background: "linear-gradient(to left, #0A0A0A, transparent)" }} />
-              <button onClick={() => scrollBrands("left")} className="absolute left-0.5 top-1/2 -translate-y-1/2 z-20 w-6 h-6 rounded-full bg-[#1A1A1A] border border-[#333] flex items-center justify-center text-[#888]">
-                <ChevronLeft className="h-3 w-3" />
-              </button>
-              <button onClick={() => scrollBrands("right")} className="absolute right-0.5 top-1/2 -translate-y-1/2 z-20 w-6 h-6 rounded-full bg-[#1A1A1A] border border-[#333] flex items-center justify-center text-[#888]">
-                <ChevronRight className="h-3 w-3" />
-              </button>
-              <div
-                ref={brandsScrollRef}
-                className="flex gap-2 px-8 py-3 overflow-x-auto no-scrollbar"
-              >
-                {brandLinks.map((brand) => {
-                  const isActive = pathname === `/marca/${brand.slug}`;
-                  return (
-                    <button
-                      key={brand.slug}
-                      onClick={() => { setShowBrands(false); router.push(`/marca/${brand.slug}`); }}
-                      className={`shrink-0 px-4 py-2.5 rounded-xl text-[11px] font-bold uppercase tracking-wider transition-all active:scale-95 border ${
-                        isActive ? "ring-1 ring-white/20" : ""
-                      }`}
-                      style={{
-                        backgroundColor: isActive ? brand.color : `${brand.color}22`,
-                        color: (brand.textColor || "#FFF"),
-                        borderColor: isActive ? brand.color : `${brand.color}44`,
-                        boxShadow: isActive ? `0 0 12px ${brand.color}44` : "none",
-                      }}
-                    >
-                      {brand.name}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Brand cards grid — full logo in brand color, without redundant bottom text */}
-            <div className="px-3 pb-6 grid grid-cols-2 gap-2 overflow-y-auto max-h-[45vh] no-scrollbar">
+            {/* Brand cards grid — Solo las 18 marcas oficiales, sin la barra horizontal superior */}
+            <div className="px-3 pb-6 grid grid-cols-2 gap-2 overflow-y-auto max-h-[58vh] no-scrollbar">
               {brandLinks.map((brand) => (
                 <button
                   key={`gc-${brand.slug}`}

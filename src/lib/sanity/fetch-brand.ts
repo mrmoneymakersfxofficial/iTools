@@ -1,11 +1,35 @@
 import { sanityFetch } from "@/sanity/lib/sanityFetch";
 
-export const brandBySlugQuery = `*[_type == "brandShowcaseItem" && slug.current == $slug][0] {
+export const brandBySlugQuery = `*[_type == "brandShowcaseItem" && (slug.current == $slug || slug == $slug)][0] {
   _id,
   "id": _id,
   name,
-  "slug": slug.current,
-  logo { asset-> { url } }
+  "slug": coalesce(slug.current, slug),
+  logo { asset-> { url } },
+  brandSliders[] {
+    headline,
+    subheadline,
+    ctaText,
+    link,
+    image { asset-> { url } },
+    imageMobile { asset-> { url } }
+  },
+  promoCard1 {
+    eyebrow,
+    title,
+    subtitle,
+    link,
+    image { asset-> { url } },
+    imageMobile { asset-> { url } }
+  },
+  promoCard2 {
+    eyebrow,
+    title,
+    subtitle,
+    link,
+    image { asset-> { url } },
+    imageMobile { asset-> { url } }
+  }
 }`;
 
 export const productsByBrandSlugQuery = `*[_type == "product" && brand->slug.current == $slug && isActive == true] | order(_createdAt desc) {

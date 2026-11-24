@@ -27,7 +27,11 @@ export function TechnicalServiceBanner({
           target="_blank"
           rel="noopener noreferrer"
           {...sanityAttr}
-          className="group relative block w-full h-[120px] sm:h-[150px] md:h-[175px] rounded-xl overflow-hidden shadow-md border border-[#222] transition-transform duration-300 hover:scale-[1.005]"
+          className={`group relative block w-full ${
+            banner?.imageMobile?.asset?.url
+              ? "aspect-[4/3] sm:aspect-auto sm:h-[150px] md:h-[175px]"
+              : "h-[120px] sm:h-[150px] md:h-[175px]"
+          } rounded-xl overflow-hidden shadow-md border border-[#222] transition-transform duration-300 hover:scale-[1.005]`}
         >
           <picture className="w-full h-full block">
             {banner?.imageMobile?.asset?.url && (

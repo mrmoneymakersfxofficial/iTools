@@ -12,7 +12,7 @@ export async function fetchLayoutData() {
   }));
 
   try {
-    const data: any = await sanityFetch({ query: layoutQuery });
+    const data: any = await sanityFetch({ query: layoutQuery, revalidate: 60 });
     if (!data) return { categories: fallbackCategories };
     return {
       ...data,

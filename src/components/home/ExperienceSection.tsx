@@ -22,6 +22,7 @@ export function ExperienceSection({ banners, title }: ExperienceSectionProps) {
       title: bWhatsapp?.title || "Únete a nuestro canal de Whatsapp",
       subtitle: bWhatsapp?.headline || "¡Entérate de las novedades!",
       image: bWhatsapp?.image?.asset?.url || "/banners/sections/exp-whatsapp.webp",
+      imageMobile: bWhatsapp?.imageMobile?.asset?.url,
       href: bWhatsapp?.link || "https://wa.me/51936085056",
       isExternal: true,
     },
@@ -30,6 +31,7 @@ export function ExperienceSection({ banners, title }: ExperienceSectionProps) {
       title: bSorteo?.title || "¡Regístrate y gana!",
       subtitle: bSorteo?.headline || "Descubre lo que tenemos preparado",
       image: bSorteo?.image?.asset?.url || "/banners/sections/exp-sorteo.webp",
+      imageMobile: bSorteo?.imageMobile?.asset?.url,
       href: bSorteo?.link || "/registro",
       isExternal: false,
     },
@@ -38,6 +40,7 @@ export function ExperienceSection({ banners, title }: ExperienceSectionProps) {
       title: bCirculo?.title || "Círculo de especialistas",
       subtitle: bCirculo?.headline || "¡Disfruta de los múltiples beneficios!",
       image: bCirculo?.image?.asset?.url || "/banners/sections/exp-circulo.webp",
+      imageMobile: bCirculo?.imageMobile?.asset?.url,
       href: bCirculo?.link || "/cuenta",
       isExternal: false,
     },
@@ -46,6 +49,7 @@ export function ExperienceSection({ banners, title }: ExperienceSectionProps) {
       title: bApp?.title || "Descarga el APP iTools.pe",
       subtitle: bApp?.headline || "¡Compra más fácil y rápido!",
       image: bApp?.image?.asset?.url || "/banners/sections/exp-app.webp",
+      imageMobile: bApp?.imageMobile?.asset?.url,
       href: bApp?.link || "#instalar-app",
       isExternal: false,
     },
@@ -80,11 +84,16 @@ export function ExperienceSection({ banners, title }: ExperienceSectionProps) {
                 {...sanityAttr}
                 className="group relative block w-full aspect-[4/5] sm:aspect-square lg:aspect-[4/5] rounded-2xl overflow-hidden shadow-sm border border-[#E0E0E0] dark:border-[#333] transition-transform duration-300 hover:scale-[1.02]"
               >
-                <img
-                  src={card.image}
-                  alt={card.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
+                <picture className="w-full h-full block">
+                  {card.imageMobile && (
+                    <source media="(max-width: 640px)" srcSet={card.imageMobile} />
+                  )}
+                  <img
+                    src={card.image}
+                    alt={card.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                </picture>
               </a>
             );
           })}

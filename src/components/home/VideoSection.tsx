@@ -116,11 +116,22 @@ function getEmbedInfo(url: string | null | undefined): { embedUrl: string; isDir
     };
   }
 
-  // 6. Vimeo
-  const vimeoMatch = clean.match(/vimeo\.com\/(\d+)/);
-  if (vimeoMatch) {
+  // 6. Vimeo (soporta enlaces públicos, canales y privados con hash)
+  const vimeoPlayerMatch = clean.match(/player\.vimeo\.com\/video\/(\d+)/);
+  if (vimeoPlayerMatch) {
+    const separator = clean.includes("?") ? "&" : "?";
     return {
-      embedUrl: `https://player.vimeo.com/video/${vimeoMatch[1]}?autoplay=1`,
+      embedUrl: clean.includes("autoplay") ? clean : `${clean}${separator}autoplay=1&muted=1&loop=1`,
+      isDirectVideo: false,
+      platform: "vimeo",
+    };
+  }
+  const vimeoMatch = clean.match(/vimeo\.com\/(?:channels\/[^/]+\/|groups\/[^/]+\/videos\/|video\/)?(\d+)(?:\/([a-zA-Z0-9]+))?/);
+  if (vimeoMatch) {
+    const id = vimeoMatch[1];
+    const hashParam = vimeoMatch[2] ? `h=${vimeoMatch[2]}&` : "";
+    return {
+      embedUrl: `https://player.vimeo.com/video/${id}?${hashParam}autoplay=1&muted=1&loop=1&title=0&byline=0&portrait=0`,
       isDirectVideo: false,
       platform: "vimeo",
     };
@@ -185,6 +196,10 @@ function getThumbnailUrl(thumbnail: any, rawUrl?: string): string | null {
     const ytMatch = rawUrl.match(/(?:youtu\.be\/|youtube\.com\/(?:shorts\/|watch\?v=|embed\/))([a-zA-Z0-9_-]{11})/);
     if (ytMatch) {
       return `https://img.youtube.com/vi/${ytMatch[1]}/hqdefault.jpg`;
+    }
+    const vimeoThumbMatch = rawUrl.match(/vimeo\.com\/(?:channels\/[^/]+\/|groups\/[^/]+\/videos\/|video\/)?(\d+)/);
+    if (vimeoThumbMatch) {
+      return `https://vumbnail.com/${vimeoThumbMatch[1]}.jpg`;
     }
   }
   return null;
@@ -414,8 +429,10 @@ export function VideoSection({
   const [selectedVideo, setSelectedVideo] = useState<VideoItem | null>(null);
   const [activePlayingIndex, setActivePlayingIndex] = useState<number | null>(null);
 
-  // Los videos están insertados directamente por código para garantizar CERO consumo de banda ancha en Sanity
-  const videos = HARDCODED_VIDEOS;
+  const videos =
+    data?.videos && data.videos.length > 0
+      ? [...data.videos].sort((a, b) => (a.order ?? 99) - (b.order ?? 99))
+      : HARDCODED_VIDEOS;
 
   return (
     <>

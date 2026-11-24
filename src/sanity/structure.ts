@@ -32,12 +32,12 @@ export const structure: StructureResolver = (S) =>
         .child(S.document().schemaType("homeSettings").documentId("homeSettings")),
       S.documentTypeListItem("product").title("📦 Productos (Catálogo Completo)"),
       S.listItem()
-        .title("🎬 Videos de Productos (YouTube / Drive)")
+        .title("🎬 Videos de Productos (YouTube / Vimeo / Drive)")
         .child(S.document().schemaType("videoSection").documentId("videoSection")),
       S.listItem()
         .title("⚡ Popup Promocional (Ventana Emergente)")
         .child(S.document().schemaType("promoPopup").documentId("promo-popup-main")),
-      S.documentTypeListItem("brandShowcaseItem").title("🏷️ Marcas"),
+      S.documentTypeListItem("brandShowcaseItem").title("🏷️ Marcas y Sliders por Marca"),
       S.documentTypeListItem("category").title("📂 Categorías"),
       S.listItem()
         .title("Homepage")
@@ -97,7 +97,7 @@ export const structure: StructureResolver = (S) =>
               S.documentTypeListItem("promoBanner").title("Todos los Promo Banners"),
               S.documentTypeListItem("giveawayBanner").title("Sorteos (Giveaway)"),
               S.documentTypeListItem("brandPromoSlide").title("Banners de Marcas"),
-              S.documentTypeListItem("brandShowcaseItem").title("Marcas"),
+              S.documentTypeListItem("brandShowcaseItem").title("Marcas y Sliders por Marca"),
               S.documentTypeListItem("category").title("Categorías"),
               S.documentTypeListItem("trendingCategory").title("Categorías en Tendencia (Sidebar)"),
               S.listItem()
@@ -108,10 +108,10 @@ export const structure: StructureResolver = (S) =>
                     .documentId("deal-tile-duo-countdown")
                 ),
               S.listItem()
-                .title("Categorías Principales (5 Combos)")
+                .title("Promos Express (4 Combos Principales)")
                 .child(
                   S.documentList()
-                    .title("5 Combos Categorías Principales")
+                    .title("4 Combos Promos Express")
                     .filter('_type == "dealTile" && _id != "deal-tile-duo-countdown" && !(_id in path("drafts.**"))')
                 ),
               S.documentTypeListItem("dealTile").title("Todos los Deal Tiles / Ofertas"),
@@ -120,7 +120,7 @@ export const structure: StructureResolver = (S) =>
                 .title("Popup Emergente (Promoción de Entrada)")
                 .child(S.document().schemaType("promoPopup").documentId("promo-popup-main")),
               S.listItem()
-                .title("🎬 Videos (YouTube / Drive)")
+                .title("🎬 Videos (YouTube / Vimeo / Drive)")
                 .child(S.document().schemaType("videoSection").documentId("videoSection")),
               S.documentTypeListItem("packoutComponent").title("PACKOUT Builder"),
               S.documentTypeListItem("productReview").title("Reseñas"),

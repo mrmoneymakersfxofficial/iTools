@@ -42,13 +42,22 @@ export function WhyBuySection({ banners, title }: WhyBuySectionProps) {
         <Link
           href={bEquipos?.link || "/categoria/equipos-especializados"}
           {...attrEquipos}
-          className="group relative block w-full h-[120px] sm:h-[150px] md:h-[175px] rounded-xl overflow-hidden shadow-sm border border-[#E0E0E0] dark:border-[#333] transition-transform duration-300 hover:scale-[1.005] mb-3 sm:mb-4"
+          className={`group relative block w-full ${
+            bEquipos?.imageMobile?.asset?.url
+              ? "aspect-[4/3] sm:aspect-auto sm:h-[150px] md:h-[175px]"
+              : "h-[120px] sm:h-[150px] md:h-[175px]"
+          } rounded-xl overflow-hidden shadow-sm border border-[#E0E0E0] dark:border-[#333] transition-transform duration-300 hover:scale-[1.005] mb-3 sm:mb-4`}
         >
-          <img
-            src={bEquipos?.image?.asset?.url || "/banners/sections/equipos-alta-calidad.webp"}
-            alt={bEquipos?.title || "Descubra Equipos de Alta Calidad Compra Ahora"}
-            className="w-full h-full object-cover"
-          />
+          <picture className="w-full h-full block">
+            {bEquipos?.imageMobile?.asset?.url && (
+              <source media="(max-width: 640px)" srcSet={bEquipos.imageMobile.asset.url} />
+            )}
+            <img
+              src={bEquipos?.image?.asset?.url || "/banners/sections/equipos-alta-calidad.webp"}
+              alt={bEquipos?.title || "Descubra Equipos de Alta Calidad Compra Ahora"}
+              className="w-full h-full object-cover"
+            />
+          </picture>
         </Link>
 
         {/* 3 Banners Row (33% / 33% / 33%) */}
@@ -57,39 +66,60 @@ export function WhyBuySection({ banners, title }: WhyBuySectionProps) {
           <Link
             href={bDewalt?.link || "/marca/dewalt"}
             {...attrDewalt}
-            className="group relative block w-full h-[170px] sm:h-[200px] rounded-xl overflow-hidden shadow-sm border border-[#E0E0E0] dark:border-[#333] transition-transform duration-300 hover:scale-[1.01]"
+            className={`group relative block w-full ${
+              bDewalt?.imageMobile?.asset?.url ? "aspect-[5/4] sm:aspect-auto sm:h-[200px]" : "h-[170px] sm:h-[200px]"
+            } rounded-xl overflow-hidden shadow-sm border border-[#E0E0E0] dark:border-[#333] transition-transform duration-300 hover:scale-[1.01]`}
           >
-            <img
-              src={bDewalt?.image?.asset?.url || "/banners/sections/dewalt-promo-33.webp"}
-              alt={bDewalt?.title || "DeWalt Amplíe su tiempo de ejecución Dos baterías Gratis"}
-              className="w-full h-full object-cover"
-            />
+            <picture className="w-full h-full block">
+              {bDewalt?.imageMobile?.asset?.url && (
+                <source media="(max-width: 640px)" srcSet={bDewalt.imageMobile.asset.url} />
+              )}
+              <img
+                src={bDewalt?.image?.asset?.url || "/banners/sections/dewalt-promo-33.webp"}
+                alt={bDewalt?.title || "DeWalt Amplíe su tiempo de ejecución Dos baterías Gratis"}
+                className="w-full h-full object-cover"
+              />
+            </picture>
           </Link>
 
           {/* Makita */}
           <Link
             href={bMakita?.link || "/marca/makita"}
             {...attrMakita}
-            className="group relative block w-full h-[170px] sm:h-[200px] rounded-xl overflow-hidden shadow-sm border border-[#E0E0E0] dark:border-[#333] transition-transform duration-300 hover:scale-[1.01]"
+            className={`group relative block w-full ${
+              bMakita?.imageMobile?.asset?.url ? "aspect-[5/4] sm:aspect-auto sm:h-[200px]" : "h-[170px] sm:h-[200px]"
+            } rounded-xl overflow-hidden shadow-sm border border-[#E0E0E0] dark:border-[#333] transition-transform duration-300 hover:scale-[1.01]`}
           >
-            <img
-              src={bMakita?.image?.asset?.url || "/banners/sections/makita-promo-33.webp"}
-              alt={bMakita?.title || "Makita Obtén una batería Gratis"}
-              className="w-full h-full object-cover"
-            />
+            <picture className="w-full h-full block">
+              {bMakita?.imageMobile?.asset?.url && (
+                <source media="(max-width: 640px)" srcSet={bMakita.imageMobile.asset.url} />
+              )}
+              <img
+                src={bMakita?.image?.asset?.url || "/banners/sections/makita-promo-33.webp"}
+                alt={bMakita?.title || "Makita Obtén una batería Gratis"}
+                className="w-full h-full object-cover"
+              />
+            </picture>
           </Link>
 
           {/* Metabo HPT */}
           <Link
             href={bMetabo?.link || "/categoria/herramientas-inalambricas"}
             {...attrMetabo}
-            className="group relative block w-full h-[170px] sm:h-[200px] rounded-xl overflow-hidden shadow-sm border border-[#E0E0E0] dark:border-[#333] transition-transform duration-300 hover:scale-[1.01]"
+            className={`group relative block w-full ${
+              bMetabo?.imageMobile?.asset?.url ? "aspect-[5/4] sm:aspect-auto sm:h-[200px]" : "h-[170px] sm:h-[200px]"
+            } rounded-xl overflow-hidden shadow-sm border border-[#E0E0E0] dark:border-[#333] transition-transform duration-300 hover:scale-[1.01]`}
           >
-            <img
-              src={bMetabo?.image?.asset?.url || "/banners/sections/metabo-promo-33.webp"}
-              alt={bMetabo?.title || "Metabo HPT Potencia tu sistema Batería Gratis"}
-              className="w-full h-full object-cover"
-            />
+            <picture className="w-full h-full block">
+              {bMetabo?.imageMobile?.asset?.url && (
+                <source media="(max-width: 640px)" srcSet={bMetabo.imageMobile.asset.url} />
+              )}
+              <img
+                src={bMetabo?.image?.asset?.url || "/banners/sections/metabo-promo-33.webp"}
+                alt={bMetabo?.title || "Metabo HPT Potencia tu sistema Batería Gratis"}
+                className="w-full h-full object-cover"
+              />
+            </picture>
           </Link>
         </div>
       </div>

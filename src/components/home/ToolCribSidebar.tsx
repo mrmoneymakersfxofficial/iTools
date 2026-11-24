@@ -67,27 +67,81 @@ function SidebarProductCard({ product }: { product: any }) {
   );
 }
 
-export function ToolCribSidebar({ products }: { products: any[] }) {
+interface ToolCribHomeSettings {
+  toolCribTitle?: string;
+  toolCribSubtitle?: string;
+  toolCribViewMoreText?: string;
+  toolCribHeading?: string;
+  toolCribLink?: string;
+}
+
+export function ToolCribSidebar({
+  products,
+  homeSettings,
+}: {
+  products: any[];
+  homeSettings?: ToolCribHomeSettings | null;
+}) {
   const trendingProducts = (products || []).slice(0, 6);
   if (trendingProducts.length === 0) return null;
+
+  const mainTitle = homeSettings?.toolCribTitle || "TOOL CRIB";
+  const subtitle = homeSettings?.toolCribSubtitle || "OF THE NORTH";
+  const viewMoreText = homeSettings?.toolCribViewMoreText || "Ver más";
+  const sectionHeading = homeSettings?.toolCribHeading || "PRODUCTOS DE MODA";
+  const targetLink = homeSettings?.toolCribLink || "/categoria/herramientas-electricas";
+
   return (
-    <aside className="bg-white dark:bg-[#111111] border border-[#E0E0E0] dark:border-[#333] rounded-lg overflow-hidden" data-section="Productos de Moda">
-      <div className="px-4 py-3 border-b border-[#E0E0E0] dark:border-[#333]">
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="text-sm font-bold text-[#1A1A1A] dark:text-white uppercase tracking-wide leading-tight">Tool Crib</h2>
-            <p className="text-[10px] text-[#999] dark:text-gray-400 uppercase tracking-wider">of the North</p>
+    <aside
+      className="bg-white dark:bg-[#111111] border border-[#E0E0E0] dark:border-[#333] rounded-lg overflow-hidden h-full flex flex-col justify-between"
+      data-section="Productos de Moda"
+    >
+      <div>
+        <div className="px-4 py-3 border-b border-[#E0E0E0] dark:border-[#333]">
+          <div className="flex items-center justify-between gap-2">
+            <div className="min-w-0">
+              <h2
+                {...getSanityAttr("homeSettings", "homeSettings", "toolCribTitle")}
+                className="text-sm font-black text-[#1A1A1A] dark:text-white uppercase tracking-wider leading-tight truncate"
+              >
+                {mainTitle}
+              </h2>
+              <p
+                {...getSanityAttr("homeSettings", "homeSettings", "toolCribSubtitle")}
+                className="text-[10px] font-bold text-[#999] dark:text-gray-400 uppercase tracking-wider mt-0.5 truncate"
+              >
+                {subtitle}
+              </p>
+            </div>
+            <Link
+              href={targetLink}
+              {...getSanityAttr("homeSettings", "homeSettings", "toolCribViewMoreText")}
+              className="flex items-center gap-1 text-xs font-bold text-[#E35205] hover:underline shrink-0"
+            >
+              {viewMoreText}
+              <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </Link>
           </div>
-          <Link href="/categoria/herramientas-electricas" className="flex items-center gap-1 text-xs text-[#E35205] hover:underline">Ver más<svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg></Link>
+        </div>
+        <div
+          className="bg-[#F5F6F8] dark:bg-[#1a1a1a] px-4 py-2 border-b border-[#E0E0E0] dark:border-[#333]"
+          {...getSanityAttr("homeSettings", "homeSettings", "toolCribHeading")}
+        >
+          <div className="flex items-center gap-1.5">
+            <TrendingUp className="h-3.5 w-3.5 text-[#00A651] shrink-0" />
+            <span className="text-xs font-black text-[#00A651] uppercase tracking-wider">
+              {sectionHeading}
+            </span>
+          </div>
         </div>
       </div>
-      <div className="bg-[#F5F6F8] dark:bg-[#1a1a1a] px-4 py-2 border-b border-[#E0E0E0] dark:border-[#333]">
-        <div className="flex items-center gap-1.5">
-          <TrendingUp className="h-3.5 w-3.5 text-[#00A651]" />
-          <span className="text-xs font-bold text-[#00A651] uppercase tracking-wide">Productos de Moda</span>
-        </div>
+      <div className="flex-1 flex flex-col justify-between divide-y divide-[#F0F0F0] dark:divide-[#222]">
+        {trendingProducts.map((product) => (
+          <SidebarProductCard key={product._id} product={product} />
+        ))}
       </div>
-      <div>{trendingProducts.map((product) => (<SidebarProductCard key={product._id} product={product} />))}</div>
     </aside>
   );
 }

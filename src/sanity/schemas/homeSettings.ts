@@ -7,9 +7,27 @@ export default defineType({
   fields: [
     defineField({ 
       name: "toolCribTitle", 
-      title: "Título de la barra Tool Crib", 
+      title: "Título Principal Barra Derecha (Tool Crib)", 
       type: "string", 
-      initialValue: "TOOL CRIB DE LA SEMANA - Hasta 40% DCTO" 
+      initialValue: "TOOL CRIB" 
+    }),
+    defineField({ 
+      name: "toolCribSubtitle", 
+      title: "Subtítulo Barra Derecha (ej: OF THE NORTH)", 
+      type: "string", 
+      initialValue: "OF THE NORTH" 
+    }),
+    defineField({ 
+      name: "toolCribViewMoreText", 
+      title: "Texto botón 'Ver más' (Tool Crib)", 
+      type: "string", 
+      initialValue: "Ver más" 
+    }),
+    defineField({ 
+      name: "toolCribHeading", 
+      title: "Título Sección Moda (ej: PRODUCTOS DE MODA)", 
+      type: "string", 
+      initialValue: "PRODUCTOS DE MODA" 
     }),
     defineField({ 
       name: "toolCribLink", 

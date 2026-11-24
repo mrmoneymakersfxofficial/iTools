@@ -36,7 +36,9 @@ export function ExclusivePromosSection({ banners, title }: ExclusivePromosSectio
           <Link
             href={b1?.link || "/marca/milwaukee"}
             {...attr1}
-            className="group relative block w-full h-[180px] sm:h-[220px] md:h-[250px] rounded-xl overflow-hidden shadow-sm border border-[#E0E0E0] dark:border-[#333] transition-transform duration-300 hover:scale-[1.01]"
+            className={`group relative block w-full ${
+              b1?.imageMobile?.asset?.url ? "aspect-[5/4] sm:aspect-auto sm:h-[220px] md:h-[250px]" : "h-[180px] sm:h-[220px] md:h-[250px]"
+            } rounded-xl overflow-hidden shadow-sm border border-[#E0E0E0] dark:border-[#333] transition-transform duration-300 hover:scale-[1.01]`}
           >
             <picture className="w-full h-full block">
               {b1?.imageMobile?.asset?.url && (
@@ -57,7 +59,9 @@ export function ExclusivePromosSection({ banners, title }: ExclusivePromosSectio
           <Link
             href={b2?.link || "/marca/makita"}
             {...attr2}
-            className="group relative block w-full h-[180px] sm:h-[220px] md:h-[250px] rounded-xl overflow-hidden shadow-sm border border-[#E0E0E0] dark:border-[#333] transition-transform duration-300 hover:scale-[1.01]"
+            className={`group relative block w-full ${
+              b2?.imageMobile?.asset?.url ? "aspect-[5/4] sm:aspect-auto sm:h-[220px] md:h-[250px]" : "h-[180px] sm:h-[220px] md:h-[250px]"
+            } rounded-xl overflow-hidden shadow-sm border border-[#E0E0E0] dark:border-[#333] transition-transform duration-300 hover:scale-[1.01]`}
           >
             <picture className="w-full h-full block">
               {b2?.imageMobile?.asset?.url && (
@@ -79,7 +83,9 @@ export function ExclusivePromosSection({ banners, title }: ExclusivePromosSectio
         <Link
           href={b3?.link || "/categoria/ferreteria-general"}
           {...attr3}
-          className="group relative block w-full h-[120px] sm:h-[150px] md:h-[175px] rounded-xl overflow-hidden shadow-sm border border-[#E0E0E0] dark:border-[#333] transition-transform duration-300 hover:scale-[1.005]"
+          className={`group relative block w-full ${
+            b3?.imageMobile?.asset?.url ? "aspect-[4/3] sm:aspect-auto sm:h-[150px] md:h-[175px]" : "h-[120px] sm:h-[150px] md:h-[175px]"
+          } rounded-xl overflow-hidden shadow-sm border border-[#E0E0E0] dark:border-[#333] transition-transform duration-300 hover:scale-[1.005]`}
         >
           <picture className="w-full h-full block">
             {b3?.imageMobile?.asset?.url && (

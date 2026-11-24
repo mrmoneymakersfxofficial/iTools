@@ -178,11 +178,16 @@ export function BestSellersWorkshopSection({ products, backgroundBanner }: BestS
     >
       {/* ── Background Workshop Graphic with 3 drills (Clear & Crisp, Image 4) ── */}
       <div className="absolute inset-0 z-0" {...bgSanityAttr}>
-        <img
-          src={bgUrl}
-          alt="Fondo Taller Los Más Vendidos"
-          className="w-full h-full object-cover object-top"
-        />
+        <picture className="w-full h-full block">
+          {backgroundBanner?.imageMobile?.asset?.url && (
+            <source media="(max-width: 640px)" srcSet={backgroundBanner.imageMobile.asset.url} />
+          )}
+          <img
+            src={bgUrl}
+            alt="Fondo Taller Los Más Vendidos"
+            className="w-full h-full object-cover object-top"
+          />
+        </picture>
         {/* Subtle bottom fade only to ground the cards */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
       </div>

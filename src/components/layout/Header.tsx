@@ -58,6 +58,7 @@ import { searchProducts } from "@/lib/data";
 import type { Product, Category } from "@/types";
 import { cn } from "@/lib/utils";
 import { useGlobalSettings } from "@/stores/global-settings-context";
+import { getSanityAttr } from "@/lib/sanity/visual-attributes";
 import { officialCategories } from "@/lib/official-categories";
 import { urlFor } from "@/sanity/image";
 import Image from "next/image";
@@ -950,41 +951,56 @@ export function Header() {
   return (
     <>
       <header className="sticky top-0 z-50 w-full">
-        {/* â”€â”€ Top Bar (desktop only) â”€â”€ */}
-        <div className="hidden md:block bg-[#E60000] text-white">
+        {/* ── Top Bar (desktop only) ── */}
+        <div className="hidden md:block bg-[#E60000] text-white" data-sanity-doc="headerConfig">
           <div className="mx-auto max-w-7xl px-4 flex items-center justify-between h-8 text-xs font-medium">
             <div className="flex items-center gap-4">
               <a
                 href={phoneUrl}
+                {...getSanityAttr("headerConfig", "headerConfig", "phone")}
                 className="flex items-center gap-1.5 text-white hover:text-white/90 transition-colors font-medium"
               >
                 <Phone className="h-3 w-3" />
                 <span>{phone}</span>
               </a>
               <span className="text-white/40">|</span>
-              <span className="flex items-center gap-1.5 text-white/90">
+              <span
+                {...getSanityAttr("headerConfig", "headerConfig", "location")}
+                className="flex items-center gap-1.5 text-white/90"
+              >
                 <MapPin className="h-3 w-3" />
                 <span>{location}</span>
               </span>
             </div>
 
             {/* Announcement bar */}
-            <div className="hidden lg:flex items-center text-white font-bold tracking-wide">
+            <div
+              {...getSanityAttr("headerConfig", "headerConfig", "announcementBar")}
+              className="hidden lg:flex items-center text-white font-bold tracking-wide"
+            >
               {config.announcementBar || "🔥 OFERTA ESPECIAL: Hasta 34% OFF en herramientas Milwaukee — ¡Solo esta semana!"}
             </div>
 
             <div className="flex items-center gap-3">
-              <span className="flex items-center gap-1.5 text-white font-medium">
+              <span
+                {...getSanityAttr("headerConfig", "headerConfig", "badge1")}
+                className="flex items-center gap-1.5 text-white font-medium"
+              >
                 <Shield className="h-3.5 w-3.5 text-white/90" />
-                <span>{badge1.replace(/milwaukee/i, "").trim() || "Servicio Técnico Oficial"}</span>
-                <img
-                  src="/brands/milwaukee-white-transparent.svg"
-                  alt="Milwaukee"
-                  className="h-6 sm:h-7 w-auto object-contain inline-block ml-1.5"
-                />
+                <span>{badge1.toLowerCase().includes("milwaukee") ? (badge1.replace(/milwaukee/i, "").trim() || "Servicio Técnico Oficial") : badge1}</span>
+                {badge1.toLowerCase().includes("milwaukee") && (
+                  <img
+                    src="/brands/milwaukee-white-transparent.svg"
+                    alt="Milwaukee"
+                    className="h-6 sm:h-7 w-auto object-contain inline-block ml-1.5"
+                  />
+                )}
               </span>
               <span className="text-white/40">|</span>
-              <span className="flex items-center gap-1.5 text-white/90 font-medium">
+              <span
+                {...getSanityAttr("headerConfig", "headerConfig", "badge2")}
+                className="flex items-center gap-1.5 text-white/90 font-medium"
+              >
                 <Truck className="h-3.5 w-3.5" />
                 <span>{badge2}</span>
               </span>

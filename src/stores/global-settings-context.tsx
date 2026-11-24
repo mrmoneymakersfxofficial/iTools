@@ -50,7 +50,17 @@ export type FooterConfig = {
   workingHours?: string;
   email?: string;
   contactInfo?: { address?: string; phone?: string; email?: string; hours?: string } | string;
-  socialLinks?: { platform: string; url: string }[];
+  socialLinks?: {
+    platform: string;
+    url: string;
+    isActive?: boolean;
+    icon?: { asset?: { url?: string } };
+  }[];
+  paymentMethods?: {
+    name: string;
+    isActive?: boolean;
+    icon?: { asset?: { url?: string } };
+  }[];
   bottomLinks?: { title: string; url: string }[];
   columns?: any[];
   trustFeatures?: { label: string; iconName?: string }[];

@@ -35,7 +35,11 @@ export function SataFavoritesBanner({ banner, title }: SataFavoritesBannerProps)
         <Link
           href={linkUrl}
           {...sanityAttr}
-          className="group relative block w-full h-[120px] sm:h-[150px] md:h-[180px] rounded-xl overflow-hidden shadow-sm border border-[#E0E0E0] dark:border-[#333] transition-transform duration-300 hover:scale-[1.005]"
+          className={`group relative block w-full ${
+            banner?.imageMobile?.asset?.url
+              ? "aspect-[4/3] sm:aspect-auto sm:h-[150px] md:h-[180px]"
+              : "h-[120px] sm:h-[150px] md:h-[180px]"
+          } rounded-xl overflow-hidden shadow-sm border border-[#E0E0E0] dark:border-[#333] transition-transform duration-300 hover:scale-[1.005]`}
         >
           <picture className="w-full h-full block">
             {banner?.imageMobile?.asset?.url && (

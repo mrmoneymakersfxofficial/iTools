@@ -39,22 +39,22 @@ export function TrendingSidebar({ categories, title }: { categories: any[]; titl
 
   return (
     <aside
-      className="bg-white dark:bg-[#151515] border border-[#E0E0E0] dark:border-[#262626] rounded-xl overflow-hidden shadow-sm"
+      className="bg-white dark:bg-[#151515] border border-[#E0E0E0] dark:border-[#262626] rounded-xl overflow-hidden shadow-sm flex-1 flex flex-col"
       data-section="Categorías de Tendencia"
       data-sanity-doc="trendingCategory"
     >
-      {/* Header matching Image 3 */}
+      {/* Header */}
       <div className="bg-[#F5F6F8] dark:bg-[#1C1C1C] px-4 py-3 border-b border-[#E0E0E0] dark:border-[#262626]" {...titleAttr}>
         <div className="flex items-center gap-2">
           <TrendingUp className="h-4 w-4 text-[#00A651] shrink-0" />
           <h2 className="text-xs sm:text-sm font-black text-[#1A1A1A] dark:text-white uppercase tracking-wider">
-            {title || "TRENDING CATEGORIES"}
+            {title || "CATEGORÍAS DE TENDENCIA"}
           </h2>
         </div>
       </div>
 
-      {/* Categories List matching Image 3 */}
-      <ul className="divide-y divide-[#F0F0F0] dark:divide-[#222]">
+      {/* Categories List */}
+      <ul className="divide-y divide-[#F0F0F0] dark:divide-[#222] flex-1 flex flex-col justify-between">
         {safeCategories.map((cat) => {
           const sanityAttr = getSanityAttr(cat._id, "trendingCategory", "name");
           const thumbUrl = getCategoryThumbnail(cat);

@@ -81,11 +81,44 @@ export default defineType({
         {
           type: "object",
           fields: [
-            { name: "platform", title: "Plataforma (ej: facebook, instagram, youtube)", type: "string" },
-            { name: "url", title: "URL", type: "string" }
+            { name: "platform", title: "Plataforma (ej: facebook, instagram, youtube, tiktok)", type: "string" },
+            { name: "url", title: "URL", type: "string" },
+            {
+              name: "icon",
+              title: "Ícono Personalizado (Opcional)",
+              type: "image",
+              options: { hotspot: true },
+              description: "Si subes un ícono aquí (PNG/SVG), reemplazará al ícono predeterminado de la red social.",
+            },
+            { name: "isActive", title: "Activo", type: "boolean", initialValue: true },
           ]
         }
       ]
+    }),
+    defineField({
+      name: "paymentMethods",
+      title: "Medios de Pago (Barra Roja)",
+      type: "array",
+      of: [
+        {
+          type: "object",
+          fields: [
+            { name: "name", title: "Nombre (ej: Yape, Plin, Visa, Mastercard, Amex, Diners)", type: "string" },
+            {
+              name: "icon",
+              title: "Logo / Ícono del Medio de Pago",
+              type: "image",
+              options: { hotspot: true },
+              description: "Sube el logo del medio de pago (PNG/SVG/WebP). Si no subes imagen para Yape, Plin, Visa, Mastercard, Amex o Diners, se mostrará el ícono oficial integrado.",
+            },
+            { name: "isActive", title: "Activo", type: "boolean", initialValue: true },
+          ],
+          preview: {
+            select: { title: "name", media: "icon" },
+          },
+        }
+      ],
+      description: "Personaliza, agrega, ordena o cambia los íconos de los medios de pago de la barra roja.",
     }),
     defineField({
       name: "bottomLinks",

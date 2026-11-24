@@ -105,12 +105,14 @@ export const dealTilesQuery = `*[_type == "dealTile" && isActive == true] | orde
   title,
   subtitle,
   href,
+  countdownEnabled,
   countdownEnd,
   discountPercentage,
   originalPrice,
   promoPrice,
   productSlug,
-  image { asset-> { url, metadata { dimensions { width, height }, lqip } } }
+  image { asset-> { url, metadata { dimensions { width, height }, lqip } } },
+  imageMobile { asset-> { url, metadata { dimensions { width, height }, lqip } } }
 }`;
 
 export const homeSettingsQuery = `coalesce(
@@ -136,6 +138,9 @@ export const homeSettingsQuery = `coalesce(
   experienceTitle,
   whyBuyTitle,
   toolCribTitle,
+  toolCribSubtitle,
+  toolCribViewMoreText,
+  toolCribHeading,
   toolCribLink,
   exploreProductsTitle,
   exploreProductsSubtitle,
@@ -237,7 +242,12 @@ export const videoSectionQuery = `*[_type == "videoSection" && coalesce(isActive
 }`;
 
 // Header Config
-export const headerConfigQuery = `*[_type == "headerConfig"][0]{
+export const headerConfigQuery = `coalesce(
+  *[_type == "headerConfig" && _id == "headerConfig"][0],
+  *[_type == "headerConfig" && _id == "header-config"][0],
+  *[_type == "headerConfig"][0]
+){
+  _id,
   phone,
   phoneUrl,
   location,
@@ -255,6 +265,7 @@ export const headerConfigQuery = `*[_type == "headerConfig"][0]{
 
 // Footer Config
 export const footerConfigQuery = `*[_type == "footerConfig" && _id in ["footerConfig", "drafts.footerConfig", "footer-config", "drafts.footer-config"]] | order(_updatedAt desc)[0]{
+  _id,
   aboutText,
   companyAddress,
   companyPhone,
@@ -275,8 +286,22 @@ export const footerConfigQuery = `*[_type == "footerConfig" && _id in ["footerCo
   },
   socialLinks[] {
     platform,
-    url
+    url,
+    isActive,
+    "icon": icon { asset-> { url } }
   },
+  paymentMethods[] {
+    name,
+    isActive,
+    "icon": icon { asset-> { url } }
+  },
+  trustFeatures[] {
+    label,
+    iconName
+  },
+  socialBarTitle,
+  paymentMethodsTitle,
+  secureStoreTitle,
   bottomLinks[] {
     label,
     href

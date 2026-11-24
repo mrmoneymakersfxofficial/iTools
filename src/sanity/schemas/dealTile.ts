@@ -12,10 +12,17 @@ export default defineType({
     defineField({ name: "subtitle", title: "Subtítulo", type: "string" }),
     defineField({ name: "href", title: "Link destino", type: "string", validation: (r) => r.required() }),
     defineField({
+      name: "countdownEnabled",
+      title: "Habilitar Cuenta Regresiva",
+      type: "boolean",
+      initialValue: true,
+      description: "Activa o desactiva el reloj de cuenta regresiva en el cuadro PROMOS EXPRESS.",
+    }),
+    defineField({
       name: "countdownEnd",
       title: "Fecha de Expiración (Countdown)",
       type: "datetime",
-      description: "Si se establece, muestra una cuenta regresiva. Al llegar a 0, la oferta se marca como expirada automáticamente.",
+      description: "Si se establece una fecha futura, la cuenta regresiva correrá hacia esa fecha y hora exacta.",
     }),
     defineField({
       name: "discountPercentage",
@@ -43,10 +50,17 @@ export default defineType({
     }),
     defineField({
       name: "image",
-      title: "Imagen de fondo (Opcional)",
+      title: "Imagen de fondo (Desktop / Opcional)",
       type: "image",
       options: { hotspot: true },
-      description: "📐 Resoluciones recomendadas:\n• Cuadro Cuenta Regresiva (Flash Sale / Dúo): 600 x 360 px (fondo con gradiente)\n• Categorías Principales (5 Combos): 600 x 520 px (o 1100 x 1070 px formato combo)",
+      description: "📐 Resoluciones recomendadas:\n• Cuadro Cuenta Regresiva (Flash Sale / Dúo): 600 x 360 px (fondo con gradiente)\n• Categorías Principales / Promos Express (4 Combos): 600 x 520 px",
+    }),
+    defineField({
+      name: "imageMobile",
+      title: "Imagen para Móvil / Celular (Opcional)",
+      type: "image",
+      options: { hotspot: true },
+      description: "📐 Imagen adaptada para móviles (ej: 600 x 600 px o 750 x 600 px). Evita distorsiones o cortes en pantallas pequeñas.",
     }),
     defineField({ name: "order", title: "Orden", type: "number", validation: (r) => r.required().min(0) }),
     defineField({ name: "isActive", title: "Activo", type: "boolean", initialValue: true }),

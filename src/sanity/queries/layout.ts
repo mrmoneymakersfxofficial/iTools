@@ -1,4 +1,8 @@
-export const headerConfigQuery = `*[_type == "headerConfig"][0] {
+export const headerConfigQuery = `coalesce(
+  *[_type == "headerConfig" && _id == "headerConfig"][0],
+  *[_type == "headerConfig" && _id == "header-config"][0],
+  *[_type == "headerConfig"][0]
+) {
   _id,
   phone,
   phoneUrl,
@@ -24,7 +28,17 @@ export const footerConfigQuery = `*[_type == "footerConfig" && _id in ["footerCo
   workingHours,
   contactInfo,
   columns,
-  socialLinks,
+  socialLinks[] {
+    platform,
+    url,
+    isActive,
+    "icon": icon { asset-> { url } }
+  },
+  paymentMethods[] {
+    name,
+    isActive,
+    "icon": icon { asset-> { url } }
+  },
   bottomLinks,
   trustFeatures,
   socialBarTitle,

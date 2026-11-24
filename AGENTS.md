@@ -1,52 +1,72 @@
-# Agent Operating Rules
+# 🚀 FASTPAGE PRO - PROTOCOLO AGÉNTICO DE DESARROLLO (V4)
+# Estándar de Ingeniería: Software Limpio, Anti-Spaghetti y Cero Alucinaciones
+# Instructor / Arquitecto: Ing. Fabio Herrera | FastPage Pro
 
-## Role
-AI Solutions Architect / Senior Software Engineer.
+================================================================================
+🎛️ CONFIGURACIÓN DE EJECUCIÓN: [ MODO: CONFIRMAR | MODO: DIRECTO ]
+================================================================================
+(Selecciona CONFIRMAR para funcionalidades complejas, cambios en DB o refactorizaciones;
+ selecciona DIRECTO únicamente para ajustes cosméticos, textos o tareas menores).
 
-## PCA Rule
-Before starting any task, read only:
+---
 
-`PCA_INDEX.md`
+## 1. ESPECIFICACIÓN DEL REQUERIMIENTO
 
-Do not read the full `pca/` folder by default.
+### 📌 CONTEXTO DEL PROYECTO
+• Cliente / Proyecto: iTools Perú (E-commerce oficial de herramientas profesionales)
+• Stack Tecnológico: Next.js 16 (App Router) / React 19 / Tailwind CSS v4 / TypeScript
+• Base de Datos: Turso LibSQL Cloud (@prisma/adapter-libsql v6.19.2) + Prisma ORM
+• CMS: Sanity Studio v6 (Project ID: 3qqlwuul, dataset: production)
+• Integraciones: Bsale ERP (Stock/Precios) / NextAuth (Admin & Clientes)
+• Entornos: Desarrollo Local (localhost:3000) / Producción (https://i-tools-steel.vercel.app)
 
-## Mandatory Context Flow
-1. Read `PCA_INDEX.md`.
-2. Identify task type.
-3. Use PCA retrieval context.
-4. Work only with retrieved context + directly relevant code files.
-5. Never invent project decisions.
-6. Never update roadmap/changelog before closure.
+### 🚨 PROBLEMA O NECESIDAD
+• [Describe con precisión qué falla, qué falta o qué cuello de botella existe]
 
-## RAG Requirement
-PCA requires vector retrieval.
+### 🎯 SOLUCIÓN TÉCNICA REQUERIDA
+• [Indica claramente el objetivo funcional que se debe construir o refactorizar]
 
-If vector context is missing, ask the user to run:
+### 🛑 REGLAS ESTRICTAS DE ARQUITECTURA (NO HACER)
+• NO reescribir archivos enteros si solo se requiere modificar una función (edición quirúrgica).
+• NO borrar funciones existentes, variables de entorno ni comentarios de documentación.
+• NO crear archivos monolíticos mayores a 200 líneas (aplicar modularización y separación de responsabilidades).
+• NO instalar dependencias npm pesadas o redundantes sin previa autorización.
+• NO inventar rutas, endpoints o esquemas de base de datos que no existan en el proyecto.
+• NO usar estilos inline ni CSS puro; usar exclusivamente utilidades de Tailwind CSS.
+• NO reintroducir configuraciones de Supabase/Postgres; la persistencia activa es Turso LibSQL.
 
-```bash
-pca task "<task>"
+### 🧩 REFERENCIA / FRAGMENTO EXISTENTE
+```typescript
+// Pega aquí el código actual, el schema de Prisma o el tipo TypeScript relevante
+// Si es una creación desde cero, escribir: "N/A - Nueva implementación"
 ```
 
-Then use the generated compact context.
+---
 
-## Work Rules
+## 2. CRITERIOS DE ACEPTACIÓN & VALIDACIÓN (CHECKLIST)
+- [ ] Tipado estricto con TypeScript (cero uso de `any`).
+- [ ] Responsive Design verificado (Mobile First, Tablet y Desktop).
+- [ ] Cero errores en consola y validación limpia con `npm run build`.
+- [ ] Manejo explícito de estados: Carga (Loading), Error (Error state) y Éxito (Success).
+- [ ] Seguridad: Cero exposición de claves privadas (API Tokens, Service Roles) en el cliente.
 
-* Keep scope tight.
-* Protect user changes.
-* Do not overwrite files without checking current content.
-* Prefer exact code changes over vague recommendations.
-* Validate before saying done.
-* For UI tasks, check visual memory first.
+================================================================================
+🤖 PROTOCOLO DE OBLIGATORIO CUMPLIMIENTO PARA LA IA (INSTRUCCIÓN DEL SISTEMA)
+================================================================================
 
-## Closure Rule
+SI EL MODO ES "CONFIRMAR":
+ALTO. ESTÁ PROHIBIDO GENERAR O EDITAR CÓDIGO DIRECTAMENTE.
+Analiza los archivos y responde ÚNICAMENTE con:
+1. 🎯 Diagnóstico: Resumen técnico de 3 líneas de lo que vas a ejecutar.
+2. 📂 Plan de Archivos: Lista exacta de los archivos a crear o modificar.
+3. ❓ Pregunta de confirmación: "¿Confirmas el plan técnico para proceder con la generación de código?"
+Espera la confirmación explícita del desarrollador ("Sí", "Procede", "Confirmado") antes de tocar un solo archivo.
 
-At the end ask:
+SI EL MODO ES "DIRECTO":
+Procede de inmediato con la implementación quirúrgica, limpia y modular.
 
-¿Doy esta tarea por terminada?
-
-Only if the user replies exactly `SI`, update:
-
-* `pca/state/roadmap.md`
-* `pca/state/changelog.md`
-* `pca/state/active-decisions.md`
-* `pca/rag/sync-log.md`
+🛡️ ESTÁNDARES AGÉNTICOS DE GENERACIÓN DE CÓDIGO:
+1. Edición Quirúrgica: Sustituye únicamente el bloque, función o componente necesario indicando la ruta relativa exacta.
+2. Auto-Verificación: Antes de concluir, valida que todas las importaciones existan, que las variables coincidan con el contexto y que no queden referencias rotas.
+3. Validación de Compilación: Ejecuta `npm run build` para asegurar que el proyecto no tenga errores de tipado ni de bundling.
+4. Despliegue Limpio: Provee los comandos exactos de git y despliegue para llevar los cambios a Vercel sin fricción.
